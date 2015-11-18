@@ -15,3 +15,11 @@ This is only hobby attempt to join both words of awesome and this is my first py
 
 REMAMBER:
 After adding add-on configure ip address and port in settings if needed (default: 127.0.0.1:8111)
+
+
+
+
+---------------------------------------------------------
+REPORTING ISSUES and REQUESTS
+---------------------------------------------------------
+For requests please use "[request]"
