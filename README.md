@@ -12,3 +12,6 @@ Thats why using a specialized application which is fully dedicated for managing 
 I would like to credit author of JAVStream (http://www.ptom.co.uk/home/) which I used as a base code for my project.
 
 This is only hobby attempt to join both words of awesome and this is my first python project.
+
+REMAMBER:
+After adding add-on configure ip address and port in settings if needed (default: 127.0.0.1:8111)
