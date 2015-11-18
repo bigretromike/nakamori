@@ -17,13 +17,29 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#32001"
-msgid "Nakamori Plugin Settings"
+msgid "JMM Server"
 msgstr ""
 
 msgctxt "#32002"
-msgid "JMM Server IP"
+msgid "IP Address"
 msgstr ""
 
 msgctxt "#32003"
-msgid "JMM Server Port"
+msgid "Port"
+msgstr ""
+
+msgctxt "#32011"
+msgid "JMM User"
+msgstr ""
+
+msgctxt "#32012"
+msgid "User ID"
+msgstr ""
+
+msgctxt "#32021"
+msgid "Searching"
+msgstr ""
+
+msgctxt "#32022"
+msgid "Results Max Limit"
 msgstr ""

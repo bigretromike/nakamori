@@ -1,0 +1,15 @@
+/JMMServerPlex
+
+/GetFilters/user_id				#main menu
+/GetSupportImage/plex_unsort.png  		#get image png icons
+/GetMetadata/user_id/type_id(3)/movie_id 	#get metadata
+/GetFile/file_id				#get file metadata - same as getmetadata type_id = 1:item from group, 2:show, 3:unsorted
+/GetUsers					#1 : default, 2:family friendly
+/Search/user_id/limit/query			#serach inside user view 
+/GetItemsFromGroup/user_id/str_groupId		#BROKEN?
+/GetItemsFromSerie/uder_id/str_serieId		#BROKEN?
+/GetGroupsFromFilter/user_id/str_groupFilterId	#BROKEN?
+
+
+util.addDir(name,url,mode,iconimage,plot,poster, filname)
+util.addMenuItem(caption,link,icon,thumbnail,folder)
