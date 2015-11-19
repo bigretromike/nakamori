@@ -54,7 +54,7 @@ def buildSubMenu(params):
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
 	for atype in e.findall('Directory'):
 		a1=atype.get('title')
-		a2=decodeHex(atype.get('key'))
+		a2=atype.get('key')
 		a3=2
 		try:
 			a4=atype.get('thumb')
