@@ -54,7 +54,7 @@ def buildSubMenu(params):
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
 	for atype in e.findall('Directory'):
 		a1=atype.get('title')
-		a2=atype.get('key')
+		a2=decodeHex(atype.get('key'))
 		a3=2
 		try:
 			a4=atype.get('thumb')
@@ -69,7 +69,7 @@ def buildSubMenu(params):
 		util.addDir(a1,a2,a3,a4,a5,a6,a7)
 	for atype in e.findall('Video'):
 		a1=atype.get('title')
-		a2=decodeHex(atype.get('key'))
+		a2=atype.get('key')
 		a3=3
 		try:
 			a4=atype.get('thumb')
