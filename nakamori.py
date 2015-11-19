@@ -31,7 +31,7 @@ def encodeHex(url):
 	
 def buildMainMenu():
 	params2=""
-	www="http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverplex/getfilters/" + addon.getSetting("userid")
+	www="http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/getfilters/" + addon.getSetting("userid")
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
 	for atype in e.findall('Directory'):
 		a1=atype.get('title')
@@ -42,19 +42,19 @@ def buildMainMenu():
 		a6="1"
 		a7="1"
 		util.addDir(a1,a2,a3,a4,a5,a6,a7)
-	util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverplex/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "1","2","3","4")
+	util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "1","2","3","4")
 	xbmcplugin.endOfDirectory(int(sysarg))
 
 
 def buildSubMenu(params):
 	params2="";
 	if "jmmserverplex" in params['url'].lower():
-		params['url'] = encodeHex(params['url']) 
-	www = decodeHex(params['url'])
+		params['url'] = params['url']
+	www = params['url']
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
 	for atype in e.findall('Directory'):
 		a1=atype.get('title')
-		a2=decodeHex(atype.get('key'))
+		a2=atype.get('key')
 		a3=2
 		try:
 			a4=atype.get('thumb')
@@ -69,7 +69,7 @@ def buildSubMenu(params):
 		util.addDir(a1,a2,a3,a4,a5,a6,a7)
 	for atype in e.findall('Video'):
 		a1=atype.get('title')
-		a2=decodeHex(atype.get('key'))
+		a2=atype.get('key')
 		a3=3
 		try:
 			a4=atype.get('thumb')
@@ -93,12 +93,12 @@ def buildSubMenu(params):
         
 def search(url):
 	term=util.searchBox()
-	toSend = { 'url' : encodeHex(url+term) }	
+	toSend = { 'url' : url+term }	
 	buildSubMenu(toSend)
 	
 
 def getLink(url):
-	www = decodeHex(url)
+	www = url
 	params2 = ""
 	link = ""
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
@@ -108,7 +108,7 @@ def getLink(url):
 
 
 def getTitle(url):
-	www = decodeHex(url)
+	www = url
 	params2 = ""
 	link = ""
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
@@ -118,7 +118,7 @@ def getTitle(url):
 
 	
 def getThumb(url):
-	www = decodeHex(url)
+	www = url
 	params2 = ""
 	link = ""
 	e=xml.etree.ElementTree.XML(getHtml(www,params2))
@@ -131,6 +131,7 @@ def playVideo(params):
 	link = getLink(params['url'])
 	thumb = getThumb(params['url'])
 	title = getTitle(params['url'])
+	xbmcgui.Dialog().ok('MODE=link',str(link))
 	util.playMedia(title, thumb, link, "Video")
 
 
@@ -156,6 +157,7 @@ except:
     mode=None
 
 if mode==1: #VIDEO
+	#xbmcgui.Dialog().ok('MODE=1',str(parameters))
 	playVideo(parameters)
 elif mode==2: #DIRECTORY
 	#xbmcgui.Dialog().ok('MODE=2',str(parameters))
@@ -164,6 +166,7 @@ elif mode==3: #SEARCH
 	#xbmcgui.Dialog().ok('MODE=3',str(parameters))
 	search(parameters['url'])
 elif 'play' in parameters:
+	#xbmcgui.Dialog().ok('MODE=play',str(parameters))
 	playVideo(parameters)
 else:
 	buildMainMenu()
