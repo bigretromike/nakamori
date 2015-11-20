@@ -30,29 +30,50 @@ INSTALATION
 ---------------------------------------------------------
 I) Installing from repository 
   1) Adding Repository to Kodi
+  
   System > File manager 
+  
   Add source:
+  
   location: http://bigretromike.github.io/
+  
   name: BigRetroMike Repo
+  
 
   System > Settings > Add-ons
+  
   Install from zip file
+  
   Pick 'BigRetroMike Repo' and 'repository.bigretromike.zip'
+  
 
   2) Installing plugin from repository
+  
   System > Settings > Add-ons
+  
   Install from repository
+  
   Pick 'BigRetroMike Repo' > 'Video add-ons' > 'Nakamori Plugin'
+  
   In new window pick 'Install'
   
+  
   - OR - 
+  
 
 II) Installing from zip file
+
   1) Download plugin from https://github.com/bigretromike/nakamoriplugin/archive/master.zip 
+  
   2) Rename it to plugin.video.nakamoriplugin.zip
+  
   3) Install zip file
+  
   System > Settings > Add-ons
+  
   Install from zip file
+  
   Browser to location where you saved and rename zip file
+  
   Pick the zip file
     
