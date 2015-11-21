@@ -1,3 +1,6 @@
+v1.0.6 (21/11/2015)
+- changed few static variables to proper one. Almost all information for Video file is done.
+
 v1.0.5 (20/11/2015)
 - added extended information for videos (not series), some are still static
 

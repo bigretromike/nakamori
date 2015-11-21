@@ -1,4 +1,4 @@
-import urllib2, re, urllib, json, sys, os.path, time, base64
+import urllib2, re, urllib, json, sys, os.path, time, base64, datetime
 import xml.etree.ElementTree
 import xbmcaddon, xbmcplugin, xbmcgui, xbmc
 import resources.lib.util as util
@@ -66,7 +66,13 @@ def buildSubMenu(params):
             a5="none"
         a6="none"
         a7="none"
-        util.addDir(a1,a2,a3,a4,a5,a6,a7)
+        #util.addDir(a1,a2,a3,a4,a5,a6,a7)
+        u=sys.argv[0]+"?url="+a2+"&mode="+str(a3)+"&name="+urllib.quote_plus(a1)+"&poster_file="+urllib.quote_plus(a4)+"&filename="+urllib.quote_plus("none")
+        ok=True
+        liz=xbmcgui.ListItem(a1, iconImage="DefaultVideo.png", thumbnailImage=a4)
+        liz.setInfo( type="Video", infoLabels={ "Title": a1,"Plot": a5} )
+        liz.setProperty("Poster_Image",a4)
+        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
     for atype in e.findall('Video'):
         a2=atype.get('key')
         a3=3
@@ -96,14 +102,17 @@ def buildSubMenu(params):
         title=atype.get('title')
         originaltitle=atype.get('original_title')
         sorttitle=title.encode("utf-8")
-        duration=atype.find('Media').get('duration')
+        duration=str(datetime.timedelta(minutes=((int(atype.find('Media').get('duration')))/60000)))[:-3]
         premiered = atype.get('originallyAvailableAt')
+        rating=atype.get('rating')
+        votes = atype.get('votes')
+        season=atype.get('season')
+        mpaa=atype.get('contentRating')
+        plotoutline=plot
+        dateadded = atype.get('addedAt')
         #TODO
-        season="1"
-        rating="9.0"
         playcount="0"
-        mpaa="R"
-        plotoutline="short plot"
+        #NOT IMPLEMENTED IN Contract_AniDBAnime
         studio="Ghilbi"
         tagline="??"
         writer=""
@@ -111,11 +120,9 @@ def buildSubMenu(params):
         status = "Airing"
         aired = "2008-12-07"
         lastplayed = "2009-04-05 23:16:04"
-        votes = "666 votes"
-        dateadded = "2009-04-05 23:16:04"
         #Extended support END#
         u=sys.argv[0]+"?url=" + a2+"&play="+str(4)+"&name="+urllib.quote_plus(title.encode("utf-8"))+ "&thumb="+a4 +"&poster="+a7
-        liz=xbmcgui.ListItem(a1.encode("utf-8"), iconImage=a4, thumbnailImage=a4)
+        liz=xbmcgui.ListItem(title.encode("utf-8"), iconImage=a4, thumbnailImage=a4)
         liz.setInfo( type="Video" , infoLabels={
 		"Title": title.encode("utf-8") , 
 		'Genre': genre,
@@ -136,16 +143,16 @@ def buildSubMenu(params):
         'Originaltitle': originaltitle.encode("utf-8"),
         'Sorttitle': sorttitle,
         'Duration': duration,
-        'Studio':studio,
-        'Tagline': tagline,
-        'Writer': writer,
-        'Tvshowtitle': tvshowtitle,
+        #'Studio':studio,
+        #'Tagline': tagline,
+        #'Writer': writer,
+        #'Tvshowtitle': tvshowtitle,
         'Premiered': premiered,
-        'Status': status,
+        #'Status': status,
         #code : string (tt0110293, - IMDb code
-        'Aired': aired,
+        #'Aired': aired,
         #credits : string (Andy Kaufman, - writing credits
-        'Lastplayed': lastplayed,
+        #'Lastplayed': lastplayed,
         #album : string (The Joshua Tree,
         #artist : list (['U2'],
         'Votes': votes,
