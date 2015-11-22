@@ -1,4 +1,11 @@
 ---------------------------------------------------------
+WARNING
+---------------------------------------------------------
+This Plugin work only with not released version of JMMServer, till then please download JMMServer and compile it yourself to be able to use this plugin
+
+
+
+---------------------------------------------------------
 Nakamori Plugin
 ---------------------------------------------------------
 

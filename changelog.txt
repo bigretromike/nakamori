@@ -1,3 +1,9 @@
+v1.07 (22/11/2015)
+- after changes made to JMMServer now Nakamori is feeded with <Directory> and not both <Directory> and <Video>
+- expanded better info about <Directory> currently same as <Video>
+- cleaning code in <Directory> and <Video> - no one need wasted memory
+- fix'd searching box canceling
+
 v1.0.6 (21/11/2015)
 - changed few static variables to proper one. Almost all information for Video file is done.
 
