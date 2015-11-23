@@ -1,8 +1,12 @@
+v1.0.8 (23/11/2015)
+- Proper handling Series that are splitte into Episode/Special directories (#16)
+- clean up code that wasn't used
+
 v1.07 (22/11/2015)
 - after changes made to JMMServer now Nakamori is feeded with <Directory> and not both <Directory> and <Video>
 - expanded better info about <Directory> currently same as <Video>
 - cleaning code in <Directory> and <Video> - no one need wasted memory
-- fix'd searching box canceling
+- fix'd searching box canceling (#15)
 
 v1.0.6 (21/11/2015)
 - changed few static variables to proper one. Almost all information for Video file is done.
@@ -18,7 +22,7 @@ v1.0.3 (19/11/2015)
 
 v1.0.2 (18/11/2015)
 - added setting to pick user id for more complex setup
-- added Searching option with MaxLimit Setting
+- added Search with MaxLimit setting (#1)
 
 v1.0.1 (18/11/2015)
 - moved file around

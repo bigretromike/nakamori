@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamoriplugin" name="Nakamori Plugin" version="1.0.7" provider-name="BigRetroMike">
+<addon id="plugin.video.nakamoriplugin" name="Nakamori Plugin" version="1.0.8" provider-name="BigRetroMike">
 	<extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
 	</extension>
@@ -11,6 +11,6 @@
 		<language>en</language>
 		<source>https://github.com/bigretromike/nakamoriplugin/</source>
 		<email>bigretromike at gmail dot com</email>
-		<disclaimer lang="en">Remamber to change IP address in settings if your JMM Server is on different computer than Kodi.</disclaimer>
+		<disclaimer lang="en">Remamber to change IP address in settings if your JMM Server is not on the same computer as Kodi.</disclaimer>
 	</extension>
 </addon>
