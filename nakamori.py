@@ -23,13 +23,10 @@ def buildMainMenu():
         url=atype.get('key')
         thumb=atype.get('thumb')
         u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(title)
-        #ListItem([label, label2, iconImage, thumbnailImage, path])
         liz=xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png",  thumbnailImage=thumb, path=url)
         liz.setInfo( type="Video", infoLabels={ "Title": title } )
-        liz.setProperty("Poster_Image", thumb)
-        liz.setProperty("Episode", str(1))
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
-    util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "1","2","3","4")
+    util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -41,7 +38,7 @@ def buildSeriesMenu(params):
         #Extended support
         count=2
         size=3
-        #date
+        #date #of file
         try:
             genre=atype.find('Tag').get('tag')
         except:
@@ -54,9 +51,9 @@ def buildSeriesMenu(params):
         rating=atype.get('rating')
         playcount=toInt(atype.get('viewedLeafCount'))
         #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-        #cast
-        #castandrole
-        #director
+        #cast <---- AniDB
+        #castandrole <---- AniDB
+        #director <---- AniDB
         mpaa=atype.get('contentRating')
         plot=atype.get('summary')
         plotoutline=plot
@@ -66,14 +63,14 @@ def buildSeriesMenu(params):
         except:
             originaltitle=title
         sorttitle=title.encode("utf-8")
-        #duration=str(datetime.timedelta(minutes=((int(atype.find('Media').get('duration')))/60000)))[:-3]
-        #studio="Ghilbi"
+        #duration 
+        #studio <---- AniDB
         #tagline="??"
-        #writer=""
+        #writer <---- AniDB
         tvshowtitle=title
         premiered = atype.get('originallyAvailableAt')
         #status = "Airing"
-        #code = ""
+        #code
         #aired = "2008-12-07"
         #credits
         #lastplayed = "2009-04-05 23:16:04"
