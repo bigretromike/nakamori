@@ -31,6 +31,7 @@ def buildMainMenu():
 
 
 def buildSeriesMenu(params):
+    xbmcplugin.setContent(handle, content='tvshows')
     e=tree.XML(getHtml(params['url'],''))
     for atype in e.findall('Directory'):
         url=atype.get('key')
@@ -51,7 +52,18 @@ def buildSeriesMenu(params):
         rating=atype.get('rating')
         playcount=toInt(atype.get('viewedLeafCount'))
         #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-        #cast <---- AniDB
+        cast = [ ]
+        #xbmcgui.Dialog().ok('atype',str(atype.find('Characters')))
+        if atype.find('Characters'):
+            for char in atype.find('Characters').findall('Character'):
+                char_id = char.get('charID')
+                char_charname=char.get('charname')
+                char_picture=char.get('picture')
+                char_desc=char.get('description')
+                cast.append(char_charname)
+            else:
+                cast = [ ]
+        #xbmcgui.Dialog().ok('CAST',str(cast))
         #castandrole <---- AniDB
         #director <---- AniDB
         mpaa=atype.get('contentRating')
@@ -82,6 +94,14 @@ def buildSeriesMenu(params):
         #Extended support END#
         u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(title)+"&poster_file="+urllib.quote_plus(thumb)+"&filename="+urllib.quote_plus("none")
         liz=xbmcgui.ListItem(title, iconImage="DefaultVideo.png", thumbnailImage=thumb)
+
+        #liz.setProperty('TotalEpisodes', str(10))
+        #liz.setProperty('WatchedEpisodes', str(5))
+        #liz.setProperty('UnWatchedEpisodes', str(5))
+        #Hack to show partial flag for TV shows and seasons
+        #liz.setProperty('TotalTime', '100')
+        #liz.setProperty('ResumeTime', '50')
+
         liz.setInfo( type="Video", infoLabels={
         'Count': count,
         'Size': size,
@@ -96,7 +116,7 @@ def buildSeriesMenu(params):
         'Rating': rating,
         'Playcount': playcount,
         #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-        #cast : list (Michal C. Hall,
+        'Cast': cast, #cast : list (Michal C. Hall,
         #castandrole : list (Michael C. Hall|Dexter,
         #director : string (Dagur Kari,
         'Mpaa': mpaa,
@@ -124,16 +144,15 @@ def buildSeriesMenu(params):
         liz.setProperty('IsPlayable', 'False')
         #Let's set some arts
         #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
-        liz.setProperty('TotalSeasons','2')
-        liz.setProperty('TotalEpisodes','2')
-        liz.setProperty('WatchedEpisodes','1')
-        liz.setProperty('UnWatchedEpisodes','1')
-        liz.setProperty('NumEpisodes','2')
-        liz.setProperty('TVShows.Count','3')
+        #liz.setProperty('TotalSeasons','2')
+        #liz.setProperty('TotalEpisodes','2')
+        #liz.setProperty('WatchedEpisodes','1')
+        #liz.setProperty('UnWatchedEpisodes','1')
+        #liz.setProperty('NumEpisodes','2')
+        #liz.setProperty('TVShows.Count','3')
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
         #xbmcgui.Dialog().ok('PARRRA',str(liz.getProperty('NumEpisodes')))
     xbmcplugin.endOfDirectory(handle)
-    xbmcplugin.setContent(handle, content='tvshows')
 
 
 def buildEpisodesMenu(params):
@@ -280,7 +299,7 @@ def search(url):
     try:
         term=util.searchBox()
         toSend = { 'url' : url+term }    
-        buildSubMenu(toSend)
+        openMenu(toSend)
     except:
         pass
     

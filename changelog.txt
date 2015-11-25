@@ -1,3 +1,7 @@
+v1.0.9 (24/11/2015)
+- Adding Characters in JMMServerKodi to feed them to Nakamori
+_ Characters support almost complete
+
 v1.0.8 (23/11/2015)
 - Proper handling Series that are splitte into Episode/Special directories (#16)
 - clean up code that wasn't used
