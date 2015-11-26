@@ -30,28 +30,103 @@ def buildMainMenu():
     xbmcplugin.endOfDirectory(handle)
 
 
+def setWindowHeading(tree) :
+    WINDOW = xbmcgui.Window( xbmcgui.getCurrentWindowId() )
+    try:
+        WINDOW.setProperty("heading", tree.get('title1'))
+    except:
+        WINDOW.clearProperty("heading")
+    try:
+        WINDOW.setProperty("heading2", tree.get('title2'))
+    except:
+        WINDOW.clearProperty("heading2")
+
+
 def buildSeriesMenu(params):
     xbmcplugin.setContent(handle, content='tvshows')
+    xbmcplugin.addSortMethod(handle, 37 ) #maintain original plex sorted
+    xbmcplugin.addSortMethod(handle, 25 ) #video title ignore THE
+    xbmcplugin.addSortMethod(handle, 3 )  #date
+    xbmcplugin.addSortMethod(handle, 18 ) #rating
+    xbmcplugin.addSortMethod(handle, 17 ) #year
+    xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
+    
+    #Get XML from JMMServer
     e=tree.XML(getHtml(params['url'],''))
+    setWindowHeading(e)
     for atype in e.findall('Directory'):
-        url=atype.get('key')
-        thumb=atype.get('thumb')
-        #Extended support
-        count=2
-        size=3
-        #date #of file
-        try:
-            genre=atype.find('Tag').get('tag')
-        except:
-            genre="none"
-        year=toInt(atype.get('year'))
-        episode=toInt(atype.get('leafCount'))
-        season=toInt(atype.get('season'))
-        #top250=toInt()
-        #tracknumber=toInt()
-        rating=atype.get('rating')
-        playcount=toInt(atype.get('viewedLeafCount'))
+        #new aproche
+        tempgenre=[]
+
+        for child in atype:
+            if child.tag == "Genre":
+                        tempgenre.append(child.get('tag','')) #atype.find('Tag').get('tag')
+        watched = int(atype.get('viewedLeafCount',0))
+
+        details={
+		#'count': count,
+        #'size': size,
+        #'Date': date, 
+        'title': atype.get('title','Unknown').encode('utf-8') , 
+        'genre':  " / ".join(tempgenre),
+        'year': toInt(atype.get('year')),
+        'episode': toInt(atype.get('leafCount','0')),
+        'season': toInt(atype.get('season','0')),  #<------ 0
+        #top250 : integer (192,
+        #tracknumber : integer (3,
+        'rating': atype.get('rating'),
+        #'playcount': toInt(atype.get('viewedLeafCount')),
         #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
+        #'cast': cast, #cast : list (Michal C. Hall,
+        #castandrole : list (Michael C. Hall|Dexter,
+        #director : string (Dagur Kari,
+        'mpaa': atype.get('contentRating',''),
+        'plot': atype.get('summary','').encode('utf-8'),
+        #'plotoutline': plotoutline,
+        #'originaltitle': atype.get('original_title').encode("utf-8"),
+        'sorttitle': atype.get('title','Unknown').encode('utf-8'),
+        #'Duration': duration,
+        #'Studio':studio, < ---
+        #'Tagline': tagline,
+        #'Writer': writer,
+        #'tvshowtitle': tvshowtitle,
+		'tvshowname' : atype.get('title','Unknown').encode('utf-8'),
+        #'premiered': premiered,
+        #'Status': status,
+        #code : string (tt0110293, - IMDb code
+        'aired': atype.get('originallyAvailableAt',''),
+        #credits : string (Andy Kaufman, - writing credits
+        #'Lastplayed': lastplayed,
+        #album : string (The Joshua Tree,
+        #artist : list (['U2'],
+        'votes': atype.get('votes'),
+        #trailer : string (/home/user/trailer.avi,
+        'dateadded': atype.get('addedAt')
+        }
+        
+        extraData={ 'mode'      : 2, 
+                   'type'              : 'video' ,
+                   'source'            : 'tvshows',
+                   'UnWatchedEpisodes' : int(details['episode']) - watched,
+                   'WatchedEpisodes'   : watched,
+                   'TotalEpisodes'     : details['episode'],
+                   'thumb'             : atype.get('thumb') ,
+                   #'fanart_image'      : atype.get('thumb')  ,
+                   'key'               : atype.get('key','') ,
+                   #'ratingKey'         : str(show.get('ratingKey',0)) 
+                 }
+
+        url=atype.get('key')
+
+        #Set up overlays for watched and unwatched episodes
+        if extraData['WatchedEpisodes'] == 0:
+            details['playcount'] = 0
+        elif extraData['UnWatchedEpisodes'] == 0:
+            details['playcount'] = 1
+        else:
+            extraData['partialTV'] = 1
+
+        #Extended support
         cast = [ ]
         #xbmcgui.Dialog().ok('atype',str(atype.find('Characters')))
         if atype.find('Characters'):
@@ -63,99 +138,103 @@ def buildSeriesMenu(params):
                 cast.append(char_charname)
             else:
                 cast = [ ]
-        #xbmcgui.Dialog().ok('CAST',str(cast))
-        #castandrole <---- AniDB
-        #director <---- AniDB
-        mpaa=atype.get('contentRating')
-        plot=atype.get('summary')
-        plotoutline=plot
-        title=atype.get('title')
-        try:
-            originaltitle=atype.get('original_title').encode("utf-8")
-        except:
-            originaltitle=title
-        sorttitle=title.encode("utf-8")
-        #duration 
-        #studio <---- AniDB
-        #tagline="??"
-        #writer <---- AniDB
-        tvshowtitle=title
-        premiered = atype.get('originallyAvailableAt')
-        #status = "Airing"
-        #code
-        #aired = "2008-12-07"
-        #credits
-        #lastplayed = "2009-04-05 23:16:04"
-        #album
-        #artist
-        votes = atype.get('votes')
-        #trailer
-        dateadded = atype.get('addedAt')
         #Extended support END#
-        u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(title)+"&poster_file="+urllib.quote_plus(thumb)+"&filename="+urllib.quote_plus("none")
-        liz=xbmcgui.ListItem(title, iconImage="DefaultVideo.png", thumbnailImage=thumb)
 
+        u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(details['title'])+"&poster_file="+urllib.quote_plus(extraData['thumb'])+"&filename="+urllib.quote_plus("none")
+        context=None
+        addGUIItem(u,details,extraData, context)
+        #liz=xbmcgui.ListItem(title, thumbnailImage=thumb) <<<<<<<<<<<<<<<
+
+        #liz.setInfo( type="Video", infoLabels = info) <<<<<<<<<<<<<<
+        #liz.setProperty('IsPlayable', 'False') <<<<<<<<<<<<<
+        #Let's set some arts
+        #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
+        #This should work
         #liz.setProperty('TotalEpisodes', str(10))
         #liz.setProperty('WatchedEpisodes', str(5))
         #liz.setProperty('UnWatchedEpisodes', str(5))
         #Hack to show partial flag for TV shows and seasons
         #liz.setProperty('TotalTime', '100')
         #liz.setProperty('ResumeTime', '50')
-
-        liz.setInfo( type="Video", infoLabels={
-        'Count': count,
-        'Size': size,
-        #'Date': date, 
-        'Title': title.encode("utf-8"), 
-        'Genre': genre,
-        'Year': year,
-        'Episode': episode,
-        'Season': season,
-        #top250 : integer (192,
-        #tracknumber : integer (3,
-        'Rating': rating,
-        'Playcount': playcount,
-        #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-        'Cast': cast, #cast : list (Michal C. Hall,
-        #castandrole : list (Michael C. Hall|Dexter,
-        #director : string (Dagur Kari,
-        'Mpaa': mpaa,
-        'Plot': plot,
-        'Plotoutline': plotoutline,
-        'Originaltitle': originaltitle,
-        'Sorttitle': sorttitle,
-        #'Duration': duration,
-        #'Studio':studio,
-        #'Tagline': tagline,
-        #'Writer': writer,
-        'Tvshowtitle': tvshowtitle,
-        'Premiered': premiered,
-        #'Status': status,
-        #code : string (tt0110293, - IMDb code
-        #'Aired': aired,
-        #credits : string (Andy Kaufman, - writing credits
-        #'Lastplayed': lastplayed,
-        #album : string (The Joshua Tree,
-        #artist : list (['U2'],
-        'Votes': votes,
-        #trailer : string (/home/user/trailer.avi,
-        'Dateadded': dateadded
-        })
-        liz.setProperty('IsPlayable', 'False')
-        #Let's set some arts
-        #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
-        #liz.setProperty('TotalSeasons','2')
-        #liz.setProperty('TotalEpisodes','2')
-        #liz.setProperty('WatchedEpisodes','1')
-        #liz.setProperty('UnWatchedEpisodes','1')
-        #liz.setProperty('NumEpisodes','2')
-        #liz.setProperty('TVShows.Count','3')
-        xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
-        #xbmcgui.Dialog().ok('PARRRA',str(liz.getProperty('NumEpisodes')))
+        #xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True) <<<<<<<<<<<<<<
     xbmcplugin.endOfDirectory(handle)
 
 
+def addGUIItem(url, details, extraData, context=None, folder=True):
+
+    if extraData.get('parameters'):
+        for argument, value in extraData.get('parameters').items():
+            link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
+
+    liz=xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=extraData.get('thumb'))
+
+    #Set the properties of the item, such as summary, name, season, etc
+    liz.setInfo(type=extraData.get('type','Video'), infoLabels=details )
+
+    #For all end items    
+    if not folder:
+        liz.setProperty('IsPlayable', 'true')
+
+        if extraData.get('type','video').lower() == "video":
+            liz.setProperty('TotalTime', str(extraData.get('duration')))
+            liz.setProperty('ResumeTime', str(extraData.get('resume')))
+
+            if not settings.get_setting('skipflags'):
+                printDebug.debug("Setting VrR as : %s" % extraData.get('VideoResolution',''))
+                liz.setProperty('VideoResolution', extraData.get('VideoResolution',''))
+                liz.setProperty('VideoCodec', extraData.get('VideoCodec',''))
+                liz.setProperty('AudioCodec', extraData.get('AudioCodec',''))
+                liz.setProperty('AudioChannels', extraData.get('AudioChannels',''))
+                liz.setProperty('VideoAspect', extraData.get('VideoAspect',''))
+
+                video_codec={}
+                if extraData.get('xbmc_VideoCodec'): video_codec['codec'] = extraData.get('xbmc_VideoCodec')
+                if extraData.get('xbmc_VideoAspect') : video_codec['aspect'] = float(extraData.get('xbmc_VideoAspect'))
+                if extraData.get('xbmc_height') : video_codec['height'] = int(extraData.get('xbmc_height'))
+                if extraData.get('xbmc_width') : video_codec['width'] = int(extraData.get('xbmc_width'))
+                if extraData.get('duration') : video_codec['duration'] = int(extraData.get('duration'))
+
+                audio_codec={}
+                if extraData.get('xbmc_AudioCodec') : audio_codec['codec'] = extraData.get('xbmc_AudioCodec')
+                if extraData.get('xbmc_AudioChannels') : audio_codec['channels'] = int(extraData.get('xbmc_AudioChannels'))
+
+                liz.addStreamInfo('video', video_codec )
+                liz.addStreamInfo('audio', audio_codec )
+
+    if extraData.get('source') == 'tvshows' or extraData.get('source') =='tvseasons':
+        #Then set the number of watched and unwatched, which will be displayed per season
+        liz.setProperty('TotalEpisodes', str(extraData['TotalEpisodes']))
+        liz.setProperty('WatchedEpisodes', str(extraData['WatchedEpisodes']))
+        liz.setProperty('UnWatchedEpisodes', str(extraData['UnWatchedEpisodes']))
+
+        #Hack to show partial flag for TV shows and seasons
+        if extraData.get('partialTV') == 1:            
+            liz.setProperty('TotalTime', '100')
+            liz.setProperty('ResumeTime', '50')
+
+    #fanart is nearly always available, so exceptions are rare.
+    try:
+        liz.setProperty('fanart_image', extraData.get('fanart_image'))
+    except:
+        pass
+
+    if extraData.get('banner'):
+        liz.setProperty('banner', '%s' % extraData.get('banner', ''))
+
+    if extraData.get('season_thumb'):
+        liz.setProperty('seasonThumb', '%s' % extraData.get('season_thumb', ''))
+
+    if context is not None:
+        if not folder and extraData.get('type','video').lower() == "video":
+            #Play Transcoded
+            context.insert(0,('Play Transcoded', "XBMC.PlayMedia(%s&transcode=1)" % link_url , ))
+        liz.addContextMenuItems( context, settings.get_setting('contextreplace') )
+
+    return xbmcplugin.addDirectoryItem(handle,url,listitem=liz,isFolder=folder)
+
+
 def buildEpisodesMenu(params):
+    xbmcplugin.setContent(handle, content='episodes')
     e=tree.XML(getHtml(params['url'],''))
     for atype in e.findall('Video'):
         url=atype.get('key')
@@ -207,12 +286,12 @@ def buildEpisodesMenu(params):
         dateadded = atype.get('addedAt')
         #Extended support END#
         u=sys.argv[0]+"?url=" + url+"&mode="+str(1)+"&play="+str(1)+"&name="+urllib.quote_plus(title.encode("utf-8")) +"&poster="+thumb+"&filename="+urllib.quote_plus(atype.find('Media').find('Part').get('file'))
-        liz=xbmcgui.ListItem(str(episode) + ". " + title, iconImage="DefaultVideo.png", thumbnailImage=thumb)
-        liz.setInfo( type="Video" , infoLabels={
+        liz=xbmcgui.ListItem(str(episode) + ". " + title, thumbnailImage=thumb)
+        info ={
         #'Count': count,
         'Size': size,
         #'Date': date, 
-        'Title': title.encode("utf-8") , 
+        'Title': str(episode) + ". " + title.encode("utf-8") , 
         'Genre': genre,
         'Year': year,
         'Episode': episode,
@@ -246,7 +325,8 @@ def buildEpisodesMenu(params):
         'Votes': votes,
         #trailer : string (/home/user/trailer.avi,
         'Dateadded': dateadded
-        })
+        }
+        liz.setInfo( type="Video" , infoLabels=info )
         liz.setProperty('IsPlayable', 'true')
         #Let's set some arts
         #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
@@ -263,13 +343,22 @@ def buildEpisodesMenu(params):
                      duration = int(vtype.get('duration'))
                 except:
                      duration = int(0)
+                try:
+                     videores = int(atype.find('Media').get('videoResolution'))
+                except:
+                     videores = 0
                 liz.addStreamInfo('video', { 'Codec': codec, 'Aspect' : aspect, 'Width': width, 'Height': height, 'Duration': duration })
+                liz.setProperty('VideoResolution', str(videores))
+                liz.setProperty('VideoCodec', codec)
+                liz.setProperty('VideoAspect', str(aspect))
             elif stream == 2:
                 #audio
                 codec = vtype.get('codec')
                 language = vtype.get('language')
                 channels = int(vtype.get('channels'))
                 liz.addStreamInfo('audio', { 'Codec': codec, 'Language': language, 'Channels': channels })
+                liz.setProperty('AudioCodec', codec)
+                liz.setProperty('AudioChannels', str(channels))
             elif stream == 3:
                 #subtitle
                 try:
@@ -280,9 +369,28 @@ def buildEpisodesMenu(params):
             else:
                 #error
                 xbmcgui.Dialog().ok('Error',str("Something went wrong!"))
+        #Adding information about count of episodes
+        #liz.setProperty('TotalEpisodes', str())
+        #liz.setProperty('WatchedEpisodes', str())
+        #liz.setProperty('UnWatchedEpisodes', str())
+        #Hack to show partial flag for TV shows and seasons
+        #if extraData.get('partialTV') == 1:            
+        #    liz.setProperty('TotalTime', '100')
+        #    liz.setProperty('ResumeTime', '50')
+        #liz.setProperty('fanart_image', '')
+        #liz.setProperty('banner', '')
+        #liz.setProperty('seasonThumb', ''))
+        xbmcplugin.addSortMethod(handle, 37 ) #maintain original plex sorted
+        xbmcplugin.addSortMethod(handle, 25 ) #video title ignore THE
+        xbmcplugin.addSortMethod(handle, 19 )  #date added
+        xbmcplugin.addSortMethod(handle, 3 )  #date
+        xbmcplugin.addSortMethod(handle, 18 ) #rating
+        xbmcplugin.addSortMethod(handle, 17 ) #year
+        xbmcplugin.addSortMethod(handle, 29 ) #runtime
+        xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=False)
     xbmcplugin.endOfDirectory(handle)
-    xbmcplugin.setContent(handle, content='episodes')
+
 
 
 def openMenu(params):
