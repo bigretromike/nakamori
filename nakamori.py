@@ -1,6 +1,16 @@
-import urllib2, re, urllib, json, sys, os.path, time, base64, datetime
+import urllib2
+import re
+import urllib
+import json
+import sys
+import os.path
+import time
+import base64
+import datetime
 import xml.etree.ElementTree as tree
-import xbmcaddon, xbmcplugin, xbmcgui
+import xbmcaddon
+import xbmcplugin
+import xbmcgui
 import resources.lib.util as util
 
 handle = int(sys.argv[1])
@@ -29,7 +39,6 @@ def buildMainMenu():
     util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
     xbmcplugin.endOfDirectory(handle)
 
-
 def setWindowHeading(tree) :
     WINDOW = xbmcgui.Window( xbmcgui.getCurrentWindowId() )
     try:
@@ -41,9 +50,8 @@ def setWindowHeading(tree) :
     except:
         WINDOW.clearProperty("heading2")
 
-
-def buildSeriesMenu(params):
-    xbmcplugin.setContent(handle, content='tvshows')
+def buildTVShows(params):
+    xbmcplugin.setContent(handle, 'tvshows')
     xbmcplugin.addSortMethod(handle, 37 ) #maintain original plex sorted
     xbmcplugin.addSortMethod(handle, 25 ) #video title ignore THE
     xbmcplugin.addSortMethod(handle, 3 )  #date
@@ -159,6 +167,118 @@ def buildSeriesMenu(params):
         #xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True) <<<<<<<<<<<<<<
     xbmcplugin.endOfDirectory(handle)
 
+def buildTVEpisodes(params):
+    xbmcplugin.setContent(handle, 'episodes')
+    e=tree.XML(getHtml(params['url'],''))
+    setWindowHeading(e)
+    #get banner thumb
+    banner = e.get('banner','')
+
+    #get season thumb for SEASON NODE
+    season_thumb = e.get('thumb','')
+    #Set Sort Method
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE )  #episode
+    xbmcplugin.addSortMethod(handle, 3 )  #date
+    xbmcplugin.addSortMethod(handle, 25 ) #video title ignore THE
+    xbmcplugin.addSortMethod(handle, 19 )  #date added
+    xbmcplugin.addSortMethod(handle, 18 ) #rating
+    xbmcplugin.addSortMethod(handle, 17 ) #year
+    xbmcplugin.addSortMethod(handle, 29 ) #runtime
+    xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
+
+    for atype in e.findall('Video'):
+        tempgenre=[]
+        tempcast=[]
+        tempdir=[]
+        tempwriter=[]
+
+        #Gather some data
+        view_offset=atype.get('viewOffset',0)
+        duration=int(atype.find('Media').get('duration'))/1000
+
+        #Required listItem entries for XBMC
+        details={'plot'        : atype.get('summary','').encode('utf-8') ,
+                 'title'       : atype.get('title','Unknown').encode('utf-8') ,
+                 'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
+                 'rating'      : float(atype.get('rating',0)) ,
+                 #'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
+                 'mpaa'        : atype.get('contentRating','') ,
+                 'year'        : toInt(atype.get('year')) ,
+                 'tagline'     : atype.get('tagline','').encode('utf-8') ,
+                 'episode'     : toInt(atype.get('index',0)),
+                 'aired'       : atype.get('originallyAvailableAt','') ,
+                 'tvshowtitle' : atype.get('grandparentTitle',atype.get('grandparentTitle','')).encode('utf-8') , #<-----------------------
+                 'votes'        : int(atype.get('votes',0)) , 
+                 'season'      : int(atype.get('season',0)) }
+
+        #details['title'] = "%s - %sx%s %s" % ( details['tvshowtitle'], details['season'], str(details['episode']).zfill(2), details['title'] )
+
+        #Extra data required to manage other properties
+        extraData={'type'         : "Video" ,
+                   'source'       : 'tvepisodes',
+                   'thumb'        : atype.get('thumb','') ,
+                   'fanart_image' : atype.get('fanart','') ,
+                   'key'          : atype.get('key',''),
+                   #'ratingKey'    : str(episode.get('ratingKey',0)),
+                   'duration'     : duration,
+                   'resume'       : int(int(view_offset)/1000) }
+
+	    #Information about streams inside video file
+        extraData['xVideoResolution'] = int(atype.find('Media').get('videoResolution'),0)
+        extraData['xVideoCodec']= atype.find('Media').get('audioCodec','')
+        extraData['xVideoAspect']=float(atype.find('Media').get('aspectRatio',0))
+        extraData['xAudioCodec']= atype.find('Media').get('videoCodec','')
+        extraData['xAudioChannels']=int(atype.find('Media').get('audioChannels',0))
+        
+        for vtype in atype.find('Media').find('Part').findall('Stream'): #<-----------------nadpisuje dane
+            stream=int(vtype.get('streamType'))
+            if stream == 1:
+                #video
+                extraData['VideoCodec'] = vtype.get('codec','')
+                extraData['width'] = int(vtype.get('width',0))
+                extraData['height'] = int(vtype.get('height',0) )
+                extraData['duration'] = int(vtype.get('duration',0))
+
+            elif stream == 2:
+                #audio
+                extraData['AudioCodec'] = vtype.get('codec')
+                extraData['AudioLanguage'] = vtype.get('language')
+                extraData['AudioChannels'] = int(vtype.get('channels'))
+                #liz.addStreamInfo('audio', { 'Codec': codec, 'Language': language, 'Channels': channels })
+                #liz.setProperty('AudioCodec', codec)
+                #liz.setProperty('AudioChannels', str(channels))
+            elif stream == 3:
+                #subtitle
+                try:
+                    language = vtype.get('language')
+                    #liz.addStreamInfo('subtitle', { 'Language': language })
+                except:
+                    pass
+            else:
+                #error
+                 xbmcgui.Dialog().ok('Error',str("Something went wrong!"))
+
+        #Determine what tupe of watched flag [overlay] to use
+        if int(atype.get('viewCount',0)) > 0:
+            details['playcount'] = 1
+        else: 
+            details['playcount'] = 0
+
+        #Another Metadata
+        details['cast']     = tempcast
+        details['director'] = " / ".join(tempdir)
+        details['writer']   = " / ".join(tempwriter)
+        details['genre']    = " / ".join(tempgenre)
+
+        context=None
+
+        url=atype.get('key')
+
+        u=sys.argv[0]+"?url=" + url+"&mode="+str(1)+"&play="+str(1)+"&name="+urllib.quote_plus(details['title'].encode("utf-8")) +"&poster="+season_thumb+"&filename="+urllib.quote_plus(atype.find('Media').find('Part').get('file'))
+
+        addGUIItem(u, details, extraData, context, folder=False)
+
+    xbmcplugin.endOfDirectory(handle)
 
 def addGUIItem(url, details, extraData, context=None, folder=True):
 
@@ -179,27 +299,25 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
             liz.setProperty('TotalTime', str(extraData.get('duration')))
             liz.setProperty('ResumeTime', str(extraData.get('resume')))
 
-            if not settings.get_setting('skipflags'):
-                printDebug.debug("Setting VrR as : %s" % extraData.get('VideoResolution',''))
-                liz.setProperty('VideoResolution', extraData.get('VideoResolution',''))
-                liz.setProperty('VideoCodec', extraData.get('VideoCodec',''))
-                liz.setProperty('AudioCodec', extraData.get('AudioCodec',''))
-                liz.setProperty('AudioChannels', extraData.get('AudioChannels',''))
-                liz.setProperty('VideoAspect', extraData.get('VideoAspect',''))
+            liz.setProperty('VideoResolution', str(extraData.get('xVideoResolution','')))
+            liz.setProperty('VideoCodec', extraData.get('xVideoCodec',''))
+            liz.setProperty('AudioCodec', extraData.get('xAudioCodec',''))
+            liz.setProperty('AudioChannels', str(extraData.get('xAudioChannels','')))
+            liz.setProperty('VideoAspect', str(extraData.get('xVideoAspect','')))
 
-                video_codec={}
-                if extraData.get('xbmc_VideoCodec'): video_codec['codec'] = extraData.get('xbmc_VideoCodec')
-                if extraData.get('xbmc_VideoAspect') : video_codec['aspect'] = float(extraData.get('xbmc_VideoAspect'))
-                if extraData.get('xbmc_height') : video_codec['height'] = int(extraData.get('xbmc_height'))
-                if extraData.get('xbmc_width') : video_codec['width'] = int(extraData.get('xbmc_width'))
-                if extraData.get('duration') : video_codec['duration'] = int(extraData.get('duration'))
+            video_codec={}
+            if extraData.get('VideoCodec'): video_codec['codec'] = extraData.get('VideoCodec')
+            if extraData.get('height') : video_codec['height'] = int(extraData.get('height'))
+            if extraData.get('width') : video_codec['width'] = int(extraData.get('width'))
+            if extraData.get('duration') : video_codec['duration'] = int(extraData.get('duration'))
 
-                audio_codec={}
-                if extraData.get('xbmc_AudioCodec') : audio_codec['codec'] = extraData.get('xbmc_AudioCodec')
-                if extraData.get('xbmc_AudioChannels') : audio_codec['channels'] = int(extraData.get('xbmc_AudioChannels'))
+            audio_codec={}
+            if extraData.get('AudioCodec') : audio_codec['codec'] = extraData.get('AudioCodec')
+            if extraData.get('AudioChannels') : audio_codec['channels'] = int(extraData.get('AudioChannels'))
+            if extraData.get('AudioLanguage') : audio_codec['language'] = extraData.get('AudioLanguage')
 
-                liz.addStreamInfo('video', video_codec )
-                liz.addStreamInfo('audio', audio_codec )
+            liz.addStreamInfo('video', video_codec )
+            liz.addStreamInfo('audio', audio_codec )
 
     if extraData.get('source') == 'tvshows' or extraData.get('source') =='tvseasons':
         #Then set the number of watched and unwatched, which will be displayed per season
@@ -231,7 +349,6 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
         liz.addContextMenuItems( context, settings.get_setting('contextreplace') )
 
     return xbmcplugin.addDirectoryItem(handle,url,listitem=liz,isFolder=folder)
-
 
 def buildEpisodesMenu(params):
     xbmcplugin.setContent(handle, content='episodes')
@@ -391,17 +508,15 @@ def buildEpisodesMenu(params):
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=False)
     xbmcplugin.endOfDirectory(handle)
 
-
-
 def openMenu(params):
     e=tree.XML(getHtml(params['url'],''))
     if e.find('Directory') is not None:
-        buildSeriesMenu(params)
+        buildTVShows(params)
     elif e.find('Video') is not None:
-        buildEpisodesMenu(params)
+        #buildEpisodesMenu(params)
+        buildTVEpisodes(params)
     else:
-        buildSeriesMenu(params)
-
+        buildTVShows(params)
 
 def search(url):
     try:
@@ -410,8 +525,6 @@ def search(url):
         openMenu(toSend)
     except:
         pass
-    
-
 
 def playVideo(params):
     e=tree.XML(getHtml(params['url'],""))
@@ -419,7 +532,6 @@ def playVideo(params):
     thumb= e.find('Video').get('thumb')
     link = e.find('Video').find('Media').find('Part').get('key')
     util.playMedia(title, thumb, link, "Video")
-
 
 def getHtml(url, referer):
     referer=urllib2.quote(referer).replace("%3A", ":")
@@ -431,7 +543,6 @@ def getHtml(url, referer):
     response.close()
     return data
 
-
 try:
     #if there is a parameter without value it will faile here.
     parameters=util.parseParameters()
@@ -441,7 +552,6 @@ try:
     mode=int(parameters["mode"])
 except:
     mode=None
-
 
 if mode==1: #VIDEO
     #xbmcgui.Dialog().ok('MODE=1',str(parameters))

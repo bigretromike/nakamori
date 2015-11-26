@@ -1,6 +1,7 @@
 v 1.1.0 (26/11/2015)
 - Added 'Sort' option for series and episodes (#23)
 - Started looking for more elegant function and plexbmc.py came into look - so abomination of code is now :-) so many merges
+- Information about file is better now (flac/h264/HD icons there!)
 
 v1.0.9 (25/11/2015)
 - Adding Characters in JMMServerKodi to feed them to Nakamori
