@@ -1,4 +1,12 @@
-v 1.1.0 (26/11/2015)
+v1.1.1 (28/11/2015)
+- More types of media have been added
+- New way of parsing url
+- new 'Play' function that fix problem with 'random error'
+- FanArt is now shown everywhere (#25)
+- added alot of information about Episodes (#10)
+- added alot of information about TVShows and TVSeasons
+
+v1.1.0 (26/11/2015)
 - Added 'Sort' option for series and episodes (#23)
 - Started looking for more elegant function and plexbmc.py came into look - so abomination of code is now :-) so many merges
 - Information about file is better now (flac/h264/HD icons there!)
