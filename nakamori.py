@@ -444,10 +444,10 @@ def playVideo(url):
     item = xbmcgui.ListItem(path=url)
     return xbmcplugin.setResolvedUrl(handle, True, item)
 
-
+#Script run here
 try:
-    #if there is a parameter without value it will faile here.
     parameters=util.parseParameters()
+    #xbmcgui.Dialog().ok('DEBUG',str(parameters))
 except:
     xbmcgui.Dialog().ok('Forced mode=2','ERROR - This should be fixd')
     parameters = {"mode":2}
