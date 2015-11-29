@@ -1,8 +1,12 @@
 ---------------------------------------------------------
 WARNING
 ---------------------------------------------------------
+<<<<<<< HEAD
 This Plugin work only with not released version of JMMServer, till then please download JMMServer and compile it yourself to be able to use this plugin
 
+=======
+For this plugin to work with JMMServer you need to download and compile it from source!
+>>>>>>> master
 
 
 ---------------------------------------------------------
