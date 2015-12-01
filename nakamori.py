@@ -148,8 +148,27 @@ def buildTVShows(params):
                 tempgenre.append(child.get('tag','')) #atype.find('Tag').get('tag')
         watched = int(atype.get('viewedLeafCount',0))
 
+        #Extended support
+        cast = [ ]
+        listCast = []
+        listCastAndRole = []
+        if atype.find('Characters'):
+            for char in atype.find('Characters').findall('Character'):
+                char_id = char.get('charID')
+                char_charname=char.get('charname')
+                char_picture=char.get('picture','')
+                char_desc=char.get('description','')
+                char_seiyuuname=char.get('seiyuuname','')
+                char_seiyuupic=char.get('seiyuupic','')
+                listCast.append(char_charname)
+                listCastAndRole.append((char_charname, char_seiyuuname))
+        else:
+             cast = [ ]
+        cast = [listCast, listCastAndRole]
+        #Extended support END#
+
         details={
-		#'count': count,
+        #'count': count,
         #'size': size,
         #'Date': date, 
         'title': atype.get('title','Unknown').encode('utf-8') , 
@@ -162,8 +181,8 @@ def buildTVShows(params):
         'rating': atype.get('rating'),
         #'playcount': int(atype.get('viewedLeafCount')),
         #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-        #'cast': cast, #cast : list (Michal C. Hall,
-        #castandrole : list (Michael C. Hall|Dexter,
+        'cast': cast[0], #cast : list (Michal C. Hall,
+        'castandrole': cast[1], # : list (Michael C. Hall|Dexter,
         #director : string (Dagur Kari,
         'mpaa': atype.get('contentRating',''),
         'plot': atype.get('summary','').encode('utf-8'),
@@ -197,7 +216,8 @@ def buildTVShows(params):
                    'thumb'             : atype.get('thumb') ,
                    'fanart_image'      : e.get('art','')  ,
                    'key'               : atype.get('key','') ,
-                   'ratingKey'         : str(atype.get('ratingKey',0))  #<------
+                   'ratingKey'         : str(atype.get('ratingKey',0)),  #<------
+                   'ArtistThumb'     :  'http://s-media-cache-ak0.pinimg.com/236x/11/13/ac/1113acce3968360db3d0280526fd5382.jpg'
                  }
 
         url=atype.get('key')
@@ -209,20 +229,6 @@ def buildTVShows(params):
             details['playcount'] = 1
         else:
             extraData['partialTV'] = 1
-
-        #Extended support
-        cast = [ ]
-        #xbmcgui.Dialog().ok('atype',str(atype.find('Characters')))
-        if atype.find('Characters'):
-            for char in atype.find('Characters').findall('Character'):
-                char_id = char.get('charID')
-                char_charname=char.get('charname')
-                char_picture=char.get('picture')
-                char_desc=char.get('description')
-                cast.append(char_charname)
-            else:
-                cast = [ ]
-        #Extended support END#
 
         #u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(details['title'])+"&poster_file="+urllib.quote_plus(extraData['thumb'])+"&filename="+urllib.quote_plus("none")
         u=sys.argv[0]+"?url="+url+"&mode="+str(5)

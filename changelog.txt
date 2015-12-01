@@ -1,3 +1,6 @@
+v1.1.3 (01/12/2015)
+- Cast now populate with Anime Characters (currently kodi dont support adding thumbs for casts from plugin level)
+
 v1.1.2 (29/11/2015)
 - Letter 'S' before episode number was thanks to lack of info about number of seasons, JMMServer didn't feed Kodi with it (#27)
 
