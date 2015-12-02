@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#32001"
-msgid "JMM Server"
+msgid "JMM Settings"
 msgstr ""
 
 msgctxt "#32002"
@@ -26,6 +26,22 @@ msgstr ""
 
 msgctxt "#32003"
 msgid "Port"
+msgstr ""
+
+msgctxt "#32004"
+msgid "Questy timeout (s)"
+msgstr ""
+
+msgctxt "#32005"
+msgid "Watched status from Kodi"
+msgstr ""
+
+msgctxt "#32006"
+msgid "JMM Server"
+msgstr ""
+
+msgctxt "#32007"
+msgid "Sync settings"
 msgstr ""
 
 msgctxt "#32011"
@@ -42,4 +58,12 @@ msgstr ""
 
 msgctxt "#32022"
 msgid "Results Max Limit"
+msgstr ""
+
+msgctxt "#32031"
+msgid "Voting settings"
+msgstr ""
+
+msgctxt "#32032"
+msgid "Vote after watching every episode"
 msgstr ""
