@@ -72,7 +72,7 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
             if extraData.get('VideoCodec'): video_codec['codec'] = extraData.get('VideoCodec')
             if extraData.get('height') : video_codec['height'] = int(extraData.get('height'))
             if extraData.get('width') : video_codec['width'] = int(extraData.get('width'))
-            if extraData.get('duration') : video_codec['duration'] = int(extraData.get('duration'))
+            if extraData.get('duration') : video_codec['duration'] = extraData.get('duration')
 
             audio_codec={}
             if extraData.get('AudioCodec') : audio_codec['codec'] = extraData.get('AudioCodec')
@@ -370,13 +370,13 @@ def buildTVEpisodes(params):
         #Gather some data
         view_offset=atype.get('viewOffset',0)
         duration=int(atype.find('Media').get('duration'))/1000
-
         #Required listItem entries for XBMC
         details={'plot'        : atype.get('summary','').encode('utf-8') ,
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
                  'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
                  'rating'      : float(atype.get('rating',0)) ,
                  #'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
+                 'duration'    : str(datetime.timedelta(seconds=duration)) ,
                  'mpaa'        : atype.get('contentRating','') ,
                  'year'        : int(atype.get('year',0)) ,
                  'tagline'     : atype.get('tagline','').encode('utf-8') ,
@@ -395,7 +395,7 @@ def buildTVEpisodes(params):
                    'fanart_image' : art ,
                    'key'          : atype.get('key',''),
                    #'ratingKey'    : str(episode.get('ratingKey',0)),
-                   'duration'     : duration,
+                   #'duration'     : duration,
                    'resume'       : int(int(view_offset)/1000),
                    'parentKey'   : atype.get('parentKey','0'),
                    'jmmepisodeid' : atype.get('JMMEpisodeId','0') }
@@ -414,7 +414,7 @@ def buildTVEpisodes(params):
                 extraData['VideoCodec'] = vtype.get('codec','')
                 extraData['width'] = int(vtype.get('width',0))
                 extraData['height'] = int(vtype.get('height',0) )
-                extraData['duration'] = int(vtype.get('duration',0))
+                extraData['duration'] = duration
             elif stream == 2:
                 #audio
                 extraData['AudioCodec'] = vtype.get('codec')

@@ -1,3 +1,6 @@
+v1.1.6 (04/12/2015)
+- Fix bad calculating duration of episode and Total Duration (#32)
+
 v1.1.5 (03/12/2015)
 - In plugin settings you can setup timeout till Kodi drop connection with JMMServer (#30)
 - Watched/Unwatched now work from Episode List from context menu (#19)
