@@ -1,3 +1,10 @@
+v1.1.7 (09/12/2015)
+- Context menu with options for episodes don't show properly in episode view (#36)
+- Closing Vote dialog results in Voting 0 for selected Anime (#37)
+- Passing more information about playing episode to Player (#38)
+- Added 'Play from playlist' context menu to add every episode in folder to playlist (#35)
+- overwrite the Player method for future needs
+
 v1.1.6 (04/12/2015)
 - Fix bad calculating duration of episode and Total Duration (#32)
 
