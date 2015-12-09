@@ -4,6 +4,7 @@ v1.1.7 (09/12/2015)
 - Passing more information about playing episode to Player (#38)
 - Added 'Play from playlist' context menu to add every episode in folder to playlist (#35)
 - overwrite the Player method for future needs
+- Watched status is synced after 80% watched episode and on finishe (#17)
 
 v1.1.6 (04/12/2015)
 - Fix bad calculating duration of episode and Total Duration (#32)

@@ -452,7 +452,8 @@ def buildTVEpisodes(params):
 
         url=atype.get('key')
 
-        u=sys.argv[0]+"?url=" + url+"&mode="+str(1) +"&file=" + atype.find('Media').find('Part').get('key')
+        sys.argv[0]=sys.argv[0]+"?url=" + url+"&mode="+str(1) +"&file=" + atype.find('Media').find('Part').get('key')+"&ep_id=" + extraData.get('jmmepisodeid')
+        u=sys.argv[0]
 
         addGUIItem(u, details, extraData, context, folder=False)
 
@@ -488,6 +489,16 @@ def playVideo(url):
     item.setProperty('IsPlayable', 'true')
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
     nPlayer.play(listitem=item, windowed=False)
+    
+    xbmc.sleep(1000)
+    while nPlayer.is_active:
+        xbmc.sleep(500)
+        if nPlayer.isFinished==False:
+            nPlayer._totalTime = nPlayer.getTotalTime()
+            nPlayer._currentTime = nPlayer.getTime()
+            if (nPlayer._totalTime * 0.8) < nPlayer._currentTime:
+                nPlayer.finished = True
+                xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
 def playPlaylist():
      nPlayer.play(playlist)
@@ -515,7 +526,7 @@ def watchedMark(params):
         watched_msg = "unwatched"
     xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
     getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
-    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
 
 #Script run here
 try:
