@@ -13,6 +13,7 @@
     </category>
 	<category label="32021">
 		<setting label="32022" type="number" id="maxlimit" default="20"/>
+		<setting label="32023" type="number" id="maxlimit_tag" default="100"/>
     </category>
 	<category label="32031">
 		<setting label="32032" type="bool" id="voteallways" default="false"/>

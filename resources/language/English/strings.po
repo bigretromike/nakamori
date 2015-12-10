@@ -25,7 +25,7 @@ msgid "Port"
 msgstr ""
 
 msgctxt "#32004"
-msgid "Questy timeout (s)"
+msgid "Query timeout (s)"
 msgstr ""
 
 msgctxt "#32005"
@@ -54,6 +54,10 @@ msgstr ""
 
 msgctxt "#32022"
 msgid "Results Max Limit"
+msgstr ""
+
+msgctxt "#32023"
+msgid "TAG results Max Limit"
 msgstr ""
 
 msgctxt "#32031"

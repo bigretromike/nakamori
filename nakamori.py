@@ -143,6 +143,7 @@ def buildMainMenu():
         liz.setInfo( type="Video", infoLabels={ "Title": title } )
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
     util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
+    util.addDir("Search by TAG", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/searchtag/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit_tag") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVShows(params):
@@ -159,12 +160,9 @@ def buildTVShows(params):
 
     setWindowHeading(e)
     for atype in e.findall('Directory'):
-        #new aproche
-        tempgenre=[]
+        genre = ""
+        genre = atype.find('Tag').get('tag','None')
 
-        for child in atype:
-            if child.tag == "Genre":
-                tempgenre.append(child.get('tag','')) #atype.find('Tag').get('tag')
         watched = int(atype.get('viewedLeafCount',0))
 
         #Extended support
@@ -191,7 +189,7 @@ def buildTVShows(params):
         #'size': size,
         #'Date': date, 
         'title': atype.get('title','Unknown').encode('utf-8') , 
-        'genre':  " / ".join(tempgenre),
+        'genre': genre.replace(',', '/') ,
         'year': int(atype.get('year',0)),
         'episode': int(atype.get('leafCount',0)),
         'season': int(atype.get('season',0)),
@@ -249,24 +247,10 @@ def buildTVShows(params):
         else:
             extraData['partialTV'] = 1
 
-        #u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(details['title'])+"&poster_file="+urllib.quote_plus(extraData['thumb'])+"&filename="+urllib.quote_plus("none")
         u=sys.argv[0]+"?url="+url+"&mode="+str(5)
         context=None
-        addGUIItem(u,details,extraData, context)
-        #liz=xbmcgui.ListItem(title, thumbnailImage=thumb) <<<<<<<<<<<<<<<
 
-        #liz.setInfo( type="Video", infoLabels = info) <<<<<<<<<<<<<<
-        #liz.setProperty('IsPlayable', 'False') <<<<<<<<<<<<<
-        #Let's set some arts
-        #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
-        #This should work
-        #liz.setProperty('TotalEpisodes', str(10))
-        #liz.setProperty('WatchedEpisodes', str(5))
-        #liz.setProperty('UnWatchedEpisodes', str(5))
-        #Hack to show partial flag for TV shows and seasons
-        #liz.setProperty('TotalTime', '100')
-        #liz.setProperty('ResumeTime', '50')
-        #xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True) <<<<<<<<<<<<<<
+        addGUIItem(u,details,extraData, context)
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVSeasons(params):
@@ -368,10 +352,29 @@ def buildTVEpisodes(params):
     xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
 
     for atype in e.findall('Video'):
-        tempgenre=[]
-        tempcast=[]
+        genre = ""
+        genre = atype.find('Tag').get('tag','None')
         tempdir=[]
         tempwriter=[]
+
+        #Extended support
+        cast = [ ]
+        listCast = []
+        listCastAndRole = []
+        if atype.find('Characters'):
+            for char in atype.find('Characters').findall('Character'):
+                char_id = char.get('charID')
+                char_charname=char.get('charname')
+                char_picture=char.get('picture','')
+                char_desc=char.get('description','')
+                char_seiyuuname=char.get('seiyuuname','')
+                char_seiyuupic=char.get('seiyuupic','')
+                listCast.append(char_charname)
+                listCastAndRole.append((char_charname, char_seiyuuname))
+        else:
+             cast = [ ]
+        cast = [listCast, listCastAndRole]
+        #Extended support END#
 
         #Gather some data
         view_offset=atype.get('viewOffset',0)
@@ -381,10 +384,13 @@ def buildTVEpisodes(params):
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
                  'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
                  'rating'      : float(atype.get('rating',0)) ,
+                 'genre'      : genre.replace(',','/') ,
                  #'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
                  'duration'    : str(datetime.timedelta(seconds=duration)) ,
                  'mpaa'        : atype.get('contentRating','') ,
                  'year'        : int(atype.get('year',0)) ,
+                 'cast': cast[0], #cast : list (Michal C. Hall,
+                 'castandrole': cast[1], # : list (Michael C. Hall|Dexter,
                  'tagline'     : atype.get('tagline','').encode('utf-8') ,
                  'episode'     : int(atype.get('index',0)),
                  'aired'       : atype.get('originallyAvailableAt','') ,
@@ -441,12 +447,6 @@ def buildTVEpisodes(params):
             details['playcount'] = 1
         else: 
             details['playcount'] = 0
-
-        #Another Metadata
-        details['cast']     = tempcast
-        details['director'] = " / ".join(tempdir)
-        details['writer']   = " / ".join(tempwriter)
-        details['genre']    = " / ".join(tempgenre)
 
         context=None
 
