@@ -16,7 +16,10 @@ options to improve Kodi compatibility with Anime, which sometimes break compatib
 
 Thats why using a specialized application which is fully dedicated for managing anime as a back-end for Kodi give great results.
 
-I would like to credit author of JAVStream (http://www.ptom.co.uk/home/) which I used as a base code for my project.
+I would like to credit author of JAVStream (http://www.ptom.co.uk/home/) which I used as a base code for my project at the start.
+A great help was plugin.video.plexbmc (https://github.com/hippojay/plugin.video.plexbmc/) which showed how some things can be done.
+The overwrite of player methods and fix for 'Playback failed' was lookup on forum.kodi.tv (http://forum.kodi.tv/showthread.php?tid=205441&pid=1806212#pid1806212)
+
 
 This is only hobby attempt to join both words of awesome and this is my first python project.
 

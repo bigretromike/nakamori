@@ -12,6 +12,7 @@ import xbmcaddon
 import xbmcplugin
 import xbmcgui
 import resources.lib.util as util
+from resources.lib.nakamoriPlayer import nakamoriPlayer
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
@@ -19,12 +20,17 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
 urlopen = urllib2.urlopen
 Request = urllib2.Request
 
+#global vars
+playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+nPlayer = nakamoriPlayer()
+
 #Internal function
 def getHtml(url, referer):
     referer=urllib2.quote(referer).replace("%3A", ":")
     req = Request(url)
     if len(referer) > 1:
         req.add_header('Referer', referer)
+    #response = urlopen(req, timeout=int(addon.getSetting('timeout')))
     response = urlopen(req, timeout=60)
     data = response.read()
     response.close()
@@ -42,11 +48,11 @@ def setWindowHeading(tree) :
         WINDOW.clearProperty("heading2")
 
 def addGUIItem(url, details, extraData, context=None, folder=True):
-
+    playlist.clear()
     if extraData.get('parameters'):
         for argument, value in extraData.get('parameters').items():
             link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
-
+    link_url = url
     liz=xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=extraData.get('thumb'))
 
     #Set the properties of the item, such as summary, name, season, etc
@@ -70,7 +76,7 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
             if extraData.get('VideoCodec'): video_codec['codec'] = extraData.get('VideoCodec')
             if extraData.get('height') : video_codec['height'] = int(extraData.get('height'))
             if extraData.get('width') : video_codec['width'] = int(extraData.get('width'))
-            if extraData.get('duration') : video_codec['duration'] = int(extraData.get('duration'))
+            if extraData.get('duration') : video_codec['duration'] = extraData.get('duration')
 
             audio_codec={}
             if extraData.get('AudioCodec') : audio_codec['codec'] = extraData.get('AudioCodec')
@@ -79,6 +85,7 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
 
             liz.addStreamInfo('video', video_codec )
             liz.addStreamInfo('audio', audio_codec )
+        playlist.add(url=str(extraData.get('key','err404')), listitem=liz)
 
     if extraData.get('source') == 'tvshows' or extraData.get('source') =='tvseasons':
         #Then set the number of watched and unwatched, which will be displayed per season
@@ -103,12 +110,24 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
     if extraData.get('season_thumb'):
         liz.setProperty('seasonThumb', '%s' % extraData.get('season_thumb', ''))
 
-    if context is not None:
-        if not folder and extraData.get('type','video').lower() == "video":
-            #Play Transcoded
-            context.insert(0,('Play Transcoded', "XBMC.PlayMedia(%s&transcode=1)" % link_url , ))
-        liz.addContextMenuItems( context, settings.get_setting('contextreplace') )
-
+    if context is None:
+        if extraData.get('type','video').lower() == "video":
+            context=[]
+            url_peep = sys.argv[2]
+            #xbmcgui.Dialog().ok('debug', url, str(extraData.get('source','none')) + " --- " + str(url_peep))
+            #if extraData.get('source','none') == 'tvseasons':
+            #    url_peep = url_peep + "&anime_id=" + extraData.get('key') +"&cmd=vote"
+            #    context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1] ,url_peep)))
+            if extraData.get('source','none') == 'tvshows':
+                url_peep = url_peep + "&anime_id=" + extraData.get('key')[2:]+"&cmd=vote"
+                context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1] ,url_peep)))
+            if extraData.get('source','none') == 'tvepisodes':
+                url_peep = url_peep + "&anime_id=" + extraData.get('parentKey') + "&ep_id=" + extraData.get('jmmepisodeid')
+                context.append(('Play from playlist', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=playlist)' % (sys.argv[1], url_peep)))
+                context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=vote)' % (sys.argv[1] ,url_peep)))
+                context.append(('Mark as Watched', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+            liz.addContextMenuItems(context)
     return xbmcplugin.addDirectoryItem(handle,url,listitem=liz,isFolder=folder)
 
 #Adding items to list/menu:
@@ -148,8 +167,27 @@ def buildTVShows(params):
                 tempgenre.append(child.get('tag','')) #atype.find('Tag').get('tag')
         watched = int(atype.get('viewedLeafCount',0))
 
+        #Extended support
+        cast = [ ]
+        listCast = []
+        listCastAndRole = []
+        if atype.find('Characters'):
+            for char in atype.find('Characters').findall('Character'):
+                char_id = char.get('charID')
+                char_charname=char.get('charname')
+                char_picture=char.get('picture','')
+                char_desc=char.get('description','')
+                char_seiyuuname=char.get('seiyuuname','')
+                char_seiyuupic=char.get('seiyuupic','')
+                listCast.append(char_charname)
+                listCastAndRole.append((char_charname, char_seiyuuname))
+        else:
+             cast = [ ]
+        cast = [listCast, listCastAndRole]
+        #Extended support END#
+
         details={
-		#'count': count,
+        #'count': count,
         #'size': size,
         #'Date': date, 
         'title': atype.get('title','Unknown').encode('utf-8') , 
@@ -162,8 +200,8 @@ def buildTVShows(params):
         'rating': atype.get('rating'),
         #'playcount': int(atype.get('viewedLeafCount')),
         #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-        #'cast': cast, #cast : list (Michal C. Hall,
-        #castandrole : list (Michael C. Hall|Dexter,
+        'cast': cast[0], #cast : list (Michal C. Hall,
+        'castandrole': cast[1], # : list (Michael C. Hall|Dexter,
         #director : string (Dagur Kari,
         'mpaa': atype.get('contentRating',''),
         'plot': atype.get('summary','').encode('utf-8'),
@@ -198,6 +236,7 @@ def buildTVShows(params):
                    'fanart_image'      : e.get('art','')  ,
                    'key'               : atype.get('key','') ,
                    'ratingKey'         : str(atype.get('ratingKey',0))  #<------
+                   #'ArtistThumb'     :  'http://s-media-cache-ak0.pinimg.com/236x/11/13/ac/1113acce3968360db3d0280526fd5382.jpg'  #<-----------
                  }
 
         url=atype.get('key')
@@ -209,20 +248,6 @@ def buildTVShows(params):
             details['playcount'] = 1
         else:
             extraData['partialTV'] = 1
-
-        #Extended support
-        cast = [ ]
-        #xbmcgui.Dialog().ok('atype',str(atype.find('Characters')))
-        if atype.find('Characters'):
-            for char in atype.find('Characters').findall('Character'):
-                char_id = char.get('charID')
-                char_charname=char.get('charname')
-                char_picture=char.get('picture')
-                char_desc=char.get('description')
-                cast.append(char_charname)
-            else:
-                cast = [ ]
-        #Extended support END#
 
         #u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(details['title'])+"&poster_file="+urllib.quote_plus(extraData['thumb'])+"&filename="+urllib.quote_plus("none")
         u=sys.argv[0]+"?url="+url+"&mode="+str(5)
@@ -351,13 +376,13 @@ def buildTVEpisodes(params):
         #Gather some data
         view_offset=atype.get('viewOffset',0)
         duration=int(atype.find('Media').get('duration'))/1000
-
         #Required listItem entries for XBMC
         details={'plot'        : atype.get('summary','').encode('utf-8') ,
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
                  'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
                  'rating'      : float(atype.get('rating',0)) ,
                  #'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
+                 'duration'    : str(datetime.timedelta(seconds=duration)) ,
                  'mpaa'        : atype.get('contentRating','') ,
                  'year'        : int(atype.get('year',0)) ,
                  'tagline'     : atype.get('tagline','').encode('utf-8') ,
@@ -376,8 +401,10 @@ def buildTVEpisodes(params):
                    'fanart_image' : art ,
                    'key'          : atype.get('key',''),
                    #'ratingKey'    : str(episode.get('ratingKey',0)),
-                   'duration'     : duration,
-                   'resume'       : int(int(view_offset)/1000) }
+                   #'duration'     : duration,
+                   'resume'       : int(int(view_offset)/1000),
+                   'parentKey'   : atype.get('parentKey','0'),
+                   'jmmepisodeid' : atype.get('JMMEpisodeId','0') }
 
 	    #Information about streams inside video file
         extraData['xVideoResolution'] = atype.find('Media').get('videoResolution',0)
@@ -393,7 +420,7 @@ def buildTVEpisodes(params):
                 extraData['VideoCodec'] = vtype.get('codec','')
                 extraData['width'] = int(vtype.get('width',0))
                 extraData['height'] = int(vtype.get('height',0) )
-                extraData['duration'] = int(vtype.get('duration',0))
+                extraData['duration'] = duration
             elif stream == 2:
                 #audio
                 extraData['AudioCodec'] = vtype.get('codec')
@@ -425,7 +452,8 @@ def buildTVEpisodes(params):
 
         url=atype.get('key')
 
-        u=sys.argv[0]+"?url=" + url+"&mode="+str(1) +"&file=" + atype.find('Media').find('Part').get('key')
+        sys.argv[0]=sys.argv[0]+"?url=" + url+"&mode="+str(1) +"&file=" + atype.find('Media').find('Part').get('key')+"&ep_id=" + extraData.get('jmmepisodeid')
+        u=sys.argv[0]
 
         addGUIItem(u, details, extraData, context, folder=False)
 
@@ -441,8 +469,64 @@ def buildSearch(url):
 
 #Other functions
 def playVideo(url):
-    item = xbmcgui.ListItem(path=url)
-    return xbmcplugin.setResolvedUrl(handle, True, item)
+    details={'plot'          : xbmc.getInfoLabel('ListItem.Plot') ,
+                 'title'         : xbmc.getInfoLabel('ListItem.Title') ,
+                 'sorttitle'    : xbmc.getInfoLabel('ListItem.Title')  ,
+                 'rating'       : xbmc.getInfoLabel('ListItem.Rating') ,
+                 'duration'    : xbmc.getInfoLabel('ListItem.Duration') ,
+                 'mpaa'        : xbmc.getInfoLabel('ListItem.Mpaa') ,
+                 'year'         : xbmc.getInfoLabel('ListItem.Year') ,
+                 'tagline'      : xbmc.getInfoLabel('ListItem.Tagline') ,
+                 'episode'     : xbmc.getInfoLabel('ListItem.Episode'),
+                 'aired'         : xbmc.getInfoLabel('ListItem.Premiered') ,
+                 'tvshowtitle' : xbmc.getInfoLabel('ListItem.TVShowTitle') ,
+                 'votes'        : xbmc.getInfoLabel('ListItem.Votes') ,
+                 'originaltitle' : xbmc.getInfoLabel('ListItem.OriginalTitle') ,
+                 'size'          : xbmc.getInfoLabel('ListItem.Size') ,
+                 'season'      : xbmc.getInfoLabel('ListItem.Season') }
+    item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=url)
+    item.setInfo(type='Video', infoLabels=details )
+    item.setProperty('IsPlayable', 'true')
+    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
+    nPlayer.play(listitem=item, windowed=False)
+    
+    xbmc.sleep(1000)
+    while nPlayer.is_active:
+        xbmc.sleep(500)
+        if nPlayer.isFinished==False:
+            nPlayer._totalTime = nPlayer.getTotalTime()
+            nPlayer._currentTime = nPlayer.getTime()
+            if (nPlayer._totalTime * 0.8) < nPlayer._currentTime:
+                nPlayer.finished = True
+                xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
+
+def playPlaylist():
+     nPlayer.play(playlist)
+
+def voteSeries(params):
+    vote_list = [ 'Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1' ,'0']
+    myVote = xbmcgui.Dialog().select('myVote', vote_list)
+    if myVote == -1: return
+    elif myVote != 0:
+        myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
+        vote_value=str(vote_list[myVote])
+        vote_type = str(1)
+        series_id=params['anime_id'][(myLen+30):]
+        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/" + addon.getSetting("userid") + "/" + series_id + "/" +vote_value + "/" + vote_type, "")
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Vote saved', 'You voted', vote_value , addon.getAddonInfo('icon')))
+
+def watchedMark(params):
+    myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
+    episode_id=params['ep_id']
+    watched=bool(params['watched'])
+    watched_msg = ""
+    if watched is True:
+        watched_msg = "watched"
+    else:
+        watched_msg = "unwatched"
+    xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
+    getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
+    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
 
 #Script run here
 try:
@@ -455,6 +539,24 @@ try:
     mode=int(parameters["mode"])
 except:
     mode=None
+try:
+    cmd=parameters['cmd']
+except:
+    cmd=None
+
+#xbmcgui.Dialog().ok("CMD", cmd)
+#xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
+if cmd != None:
+    if cmd == "vote":
+        voteSeries(parameters)
+    elif cmd == "watched":
+        parameters['watched']=True
+        watchedMark(parameters)
+    elif cmd == "unwatched":
+        parameters['watched']=False
+        watchedMark(parameters)
+    elif cmd == "playlist":
+        playPlaylist()
 
 if mode==1: #VIDEO
     playVideo(parameters['file'])

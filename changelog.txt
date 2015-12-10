@@ -1,3 +1,25 @@
+v1.1.7 (09/12/2015)
+- Context menu with options for episodes don't show properly in episode view (#36)
+- Closing Vote dialog results in Voting 0 for selected Anime (#37)
+- Passing more information about playing episode to Player (#38)
+- Added 'Play from playlist' context menu to add every episode in folder to playlist (#35)
+- overwrite the Player method for future needs
+- Watched status is synced after 80% watched episode and on finishe (#17)
+
+v1.1.6 (04/12/2015)
+- Fix bad calculating duration of episode and Total Duration (#32)
+
+v1.1.5 (03/12/2015)
+- In plugin settings you can setup timeout till Kodi drop connection with JMMServer (#30)
+- Watched/Unwatched now work from Episode List from context menu (#19)
+- I added few new settings for future use (Sync and VoteAllways)
+
+v1.1.4 (02/12/2015)
+- If you are in Episodes you can Vote for whole Series via context menu (Right Mouse Click or 'C')
+
+v1.1.3 (01/12/2015)
+- Cast now populate with Anime Characters (currently kodi dont support adding thumbs for casts from plugin level)
+
 v1.1.2 (29/11/2015)
 - Letter 'S' before episode number was thanks to lack of info about number of seasons, JMMServer didn't feed Kodi with it (#27)
 
