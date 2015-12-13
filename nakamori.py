@@ -160,8 +160,10 @@ def buildTVShows(params):
 
     setWindowHeading(e)
     for atype in e.findall('Directory'):
-        genre = ""
-        genre = atype.find('Tag').get('tag','None')
+        try:
+            genre = atype.find('Tag').get('tag','None')
+        except:
+            genre = ""
 
         watched = int(atype.get('viewedLeafCount',0))
 
@@ -487,18 +489,24 @@ def playVideo(url):
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=url)
     item.setInfo(type='Video', infoLabels=details )
     item.setProperty('IsPlayable', 'true')
+    #pull settings
+    watch_mark = int(addon.getSetting("watched_mark")) * 0.01
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
-    nPlayer.play(listitem=item, windowed=False)
     
+    nPlayer.play(listitem=item, windowed=False)
+
     xbmc.sleep(1000)
     while nPlayer.is_active:
         xbmc.sleep(500)
-        if nPlayer.isFinished==False:
-            nPlayer._totalTime = nPlayer.getTotalTime()
-            nPlayer._currentTime = nPlayer.getTime()
-            if (nPlayer._totalTime * 0.8) < nPlayer._currentTime:
-                nPlayer.finished = True
-                xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
+        try:
+            if nPlayer.finished == False:
+                nPlayer._totalTime = nPlayer.getTotalTime()
+                nPlayer._currentTime = nPlayer.getTime()
+                if (nPlayer._totalTime * watch_mark) < nPlayer._currentTime:
+                    nPlayer.finished = True
+                    watchedMark(sys.argv[2]+"&watched=True")
+        except:
+            pass
 
 def playPlaylist():
      nPlayer.play(playlist)
@@ -517,6 +525,7 @@ def voteSeries(params):
 
 def watchedMark(params):
     myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
+    params = util.parseParameters(params)
     episode_id=params['ep_id']
     watched=bool(params['watched'])
     watched_msg = ""
@@ -526,7 +535,10 @@ def watchedMark(params):
         watched_msg = "unwatched"
     xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
     getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
-    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
+    test = addon.getSetting("watchedbox")
+    #This thing is bugged? even if we change this in settings its ignored, and sometimes change even if we dont?! - String is solution?
+    if (test == "true"):
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
 
 #Script run here
 try:

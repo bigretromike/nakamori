@@ -1,3 +1,8 @@
+v1.1.9 (13/12/2015)
+- Added setting for 'Notification windows' about watched status changed and fixed (#42)
+- Added setting for percent of watched episode to mark as watched (#41)
+- Few settings were move around
+
 v1.1.8 (10/12/2015)
 - 'Search by Tag' have been added (#21)
 - Because of how big is Tag collection there can be needed adding <advancedsettings><playlisttimeout>120</playlisttimeout></advancedsettings> in advancedsettings.xml

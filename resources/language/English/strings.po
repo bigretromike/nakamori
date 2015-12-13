@@ -57,7 +57,15 @@ msgid "Results Max Limit"
 msgstr ""
 
 msgctxt "#32023"
-msgid "TAG results Max Limit"
+msgid "Video settings"
+msgstr ""
+
+msgctxt "#32024"
+msgid "Mark as Watched after hiting this %"
+msgstr ""
+
+msgctxt "#32025"
+msgid "Notification window when marked as Watched"
 msgstr ""
 
 msgctxt "#32031"
@@ -66,4 +74,8 @@ msgstr ""
 
 msgctxt "#32032"
 msgid "Vote after watching every episode"
+msgstr ""
+
+msgctxt "#32033"
+msgid "TAG results Max Limit"
 msgstr ""

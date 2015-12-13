@@ -29,13 +29,15 @@ class nakamoriPlayer (xbmc.Player):
         print("Nakamori Playback: PAUSE <---------")
         self._totalTime = self.getTotalTime()
         self._currentTime = self.getTime()
-        xbmcgui.Dialog().ok("czas", str(self._totalTime), str(self._currentTime))
 
     def onPlayBackResumed(self):
         #Will be called when user resumes a paused file
         print("Nakamori Playback: RESUMED <---------")
 
-    def isFinished():
-        return finished
+    def isFinished(self):
+        self.finished = True
+        finished = True
 
 finished  = False
+_totalTime = 0
+_currentTime = 0
