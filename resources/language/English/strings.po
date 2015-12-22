@@ -40,6 +40,18 @@ msgctxt "#32007"
 msgid "Sync settings"
 msgstr ""
 
+msgctxt "#32008"
+msgid "Language display priority"
+msgstr ""
+
+msgctxt "#32009"
+msgid "Language"
+msgstr ""
+
+msgctxt "#32010"
+msgid "Use MainTitle instead of Official"
+msgstr ""
+
 msgctxt "#32011"
 msgid "JMM User"
 msgstr ""

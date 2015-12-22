@@ -7,6 +7,9 @@
 		<setting label="32004" type="number" id="timeout" default="60"/>
 		<setting label="32011" type="lsep"/>
 		<setting label="32012" type="number" id="userid" default="1"/>
+		<setting label="32008" type="lsep"/>
+		<setting label="32009" type="text" id="displaylang" default="en"/>
+		<setting label="32010" type="bool" id="skipofficial" default="false"/>
     </category>
 	<category label="32023">
 		<setting label="32025" type="bool" id="watchedbox" default="true"/>

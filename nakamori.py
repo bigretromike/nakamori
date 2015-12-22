@@ -36,7 +36,7 @@ def getHtml(url, referer):
     response.close()
     return data
 
-def setWindowHeading(tree) :
+def setWindowHeading(tree):
     WINDOW = xbmcgui.Window( xbmcgui.getCurrentWindowId() )
     try:
         WINDOW.setProperty("heading", tree.get('title1'))
@@ -47,13 +47,34 @@ def setWindowHeading(tree) :
     except:
         WINDOW.clearProperty("heading2")
 
+def getTitle(data):
+    lang = addon.getSetting("displaylang")
+    titles = data.split('|')
+    skip = addon.getSetting("skipofficial")
+    if (skip == "true"):
+        for title in titles:
+            if '{official:' + lang +'}' in title:
+                return title.replace('{official:' + lang +'}','')
+    for title in titles:
+        if '{main:' + lang +'}' in title:
+            return title.replace('{main:' + lang +'}','')
+    return 'err404'
+
 def addGUIItem(url, details, extraData, context=None, folder=True):
     playlist.clear()
     if extraData.get('parameters'):
         for argument, value in extraData.get('parameters').items():
             link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
     link_url = url
-    liz=xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=extraData.get('thumb'))
+    title = ""
+    if folder:
+        title = details.get('originaltitle','')
+        title = getTitle(title)
+        if 'err404' in title:
+            title = details.get('title', 'Unknown')
+    else:
+        title = details.get('title', 'Unknown')
+    liz=xbmcgui.ListItem(title, thumbnailImage=extraData.get('thumb'))
 
     #Set the properties of the item, such as summary, name, season, etc
     liz.setInfo(type=extraData.get('type','Video'), infoLabels=details )
@@ -206,7 +227,7 @@ def buildTVShows(params):
         'mpaa': atype.get('contentRating',''),
         'plot': atype.get('summary','').encode('utf-8'),
         #'plotoutline': plotoutline,
-        #'originaltitle': atype.get('original_title').encode("utf-8"),
+        'originaltitle': atype.get('original_title','').encode("utf-8"),
         'sorttitle': atype.get('title','Unknown').encode('utf-8'),
         #'Duration': duration,
         #'Studio':studio, < ---

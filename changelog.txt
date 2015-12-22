@@ -1,3 +1,7 @@
+v1.2.0 (22/12/2015)
+- Removing deprecated code (http://forum.kodi.tv/showthread.php?tid=250936)
+- Adding support for displaying the title the way you like (#14) with ability to skip official name
+
 v1.1.9 (13/12/2015)
 - Added setting for 'Notification windows' about watched status changed and fixed (#42)
 - Added setting for percent of watched episode to mark as watched (#41)
