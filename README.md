@@ -86,4 +86,15 @@ II) Installing from zip file
   Browser to location where you saved and rename zip file
   
   Pick the zip file
-    
+
+
+
+---------------------------------------------------------
+SETTINGS
+---------------------------------------------------------
+
+If you are changing timeout setting then set also %AppData%\Roaming\Kodi\userdata\advancedsettings.xml to same value
+
+<advancedsettings>
+<playlisttimeout>60</playlisttimeout>
+</advancedsettings>

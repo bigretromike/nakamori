@@ -1,3 +1,8 @@
+v1.2.1 (23/12/2015)
+- Timeout fix, it was once again hardcoded to 60sec, which is bad
+- 'Sync Watched status' is now working
+- Optimalization to server side for character list
+
 v1.2.0 (22/12/2015)
 - Removing deprecated code (http://forum.kodi.tv/showthread.php?tid=250936)
 - Adding support for displaying the title the way you like (#14) with ability to skip official name

@@ -29,7 +29,7 @@ msgid "Query timeout (s)"
 msgstr ""
 
 msgctxt "#32005"
-msgid "Watched status from Kodi"
+msgid "Sync 'Watched status' to JMM"
 msgstr ""
 
 msgctxt "#32006"

@@ -30,8 +30,7 @@ def getHtml(url, referer):
     req = Request(url)
     if len(referer) > 1:
         req.add_header('Referer', referer)
-    #response = urlopen(req, timeout=int(addon.getSetting('timeout')))
-    response = urlopen(req, timeout=60)
+    response = urlopen(req, timeout=int(addon.getSetting('timeout')))
     data = response.read()
     response.close()
     return data
@@ -51,7 +50,7 @@ def getTitle(data):
     lang = addon.getSetting("displaylang")
     titles = data.split('|')
     skip = addon.getSetting("skipofficial")
-    if (skip == "true"):
+    if (skip == "false"):
         for title in titles:
             if '{official:' + lang +'}' in title:
                 return title.replace('{official:' + lang +'}','')
@@ -554,12 +553,18 @@ def watchedMark(params):
         watched_msg = "watched"
     else:
         watched_msg = "unwatched"
-    xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
-    getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
-    test = addon.getSetting("watchedbox")
-    #This thing is bugged? even if we change this in settings its ignored, and sometimes change even if we dont?! - String is solution?
-    if (test == "true"):
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
+    test1 = addon.getSetting("syncwatched")
+    if (test1 == "true"):
+        xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
+        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
+        test = addon.getSetting("watchedbox")
+        #This thing is bugged? even if we change this in settings its ignored, and sometimes change even if we dont?! - String is solution?
+        if (test == "true"):
+            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
+    if (watched is True):
+        test3 = addon.getSetting("voteallways")
+        if (test3 == "true"):
+            voteSeries(params)
 
 #Script run here
 try:
