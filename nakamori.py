@@ -82,6 +82,9 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
     if not folder:
         liz.setProperty('IsPlayable', 'true')
 
+        if (details['playcount'] == 0):
+            liz.select(True)
+
         if extraData.get('type','video').lower() == "video":
             liz.setProperty('TotalTime', str(extraData.get('duration')))
             liz.setProperty('ResumeTime', str(extraData.get('resume')))
@@ -545,7 +548,10 @@ def voteSeries(params):
 
 def watchedMark(params):
     myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
-    params = util.parseParameters(params)
+    try:
+        params = util.parseParameters(params)
+    except:
+        pass
     episode_id=params['ep_id']
     watched=bool(params['watched'])
     watched_msg = ""

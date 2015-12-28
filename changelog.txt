@@ -1,3 +1,7 @@
+v1.2.2 (28/12/2015)
+- Fixed watch status not working
+- When entering Series the unwatched episodes are selected (request from user)
+
 v1.2.1 (23/12/2015)
 - Timeout fix, it was once again hardcoded to 60sec, which is bad
 - 'Sync Watched status' is now working
