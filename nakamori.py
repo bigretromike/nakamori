@@ -85,7 +85,10 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
 
             liz.addStreamInfo('video', video_codec )
             liz.addStreamInfo('audio', audio_codec )
-        playlist.add(url=str(extraData.get('key','err404')), listitem=liz)
+        #playlist.add(url=str(extraData.get('key','err404')), listitem=liz)
+        #Jumpy like this and Nakamori like Jumpy
+        partemp=util.parseParameters(inputString=url)
+        playlist.add(url=str(partemp.get('file','pusto')), listitem=liz)
 
     if extraData.get('source') == 'tvshows' or extraData.get('source') =='tvseasons':
         #Then set the number of watched and unwatched, which will be displayed per season
