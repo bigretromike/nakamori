@@ -30,12 +30,13 @@ def getHtml(url, referer):
     req = Request(url)
     if len(referer) > 1:
         req.add_header('Referer', referer)
-    response = urlopen(req, timeout=int(addon.getSetting('timeout')))
+    #response = urlopen(req, timeout=int(addon.getSetting('timeout')))
+    response = urlopen(req, timeout=60)
     data = response.read()
     response.close()
     return data
 
-def setWindowHeading(tree):
+def setWindowHeading(tree) :
     WINDOW = xbmcgui.Window( xbmcgui.getCurrentWindowId() )
     try:
         WINDOW.setProperty("heading", tree.get('title1'))
@@ -46,34 +47,13 @@ def setWindowHeading(tree):
     except:
         WINDOW.clearProperty("heading2")
 
-def getTitle(data):
-    lang = addon.getSetting("displaylang")
-    titles = data.split('|')
-    skip = addon.getSetting("skipofficial")
-    if (skip == "false"):
-        for title in titles:
-            if '{official:' + lang +'}' in title:
-                return title.replace('{official:' + lang +'}','')
-    for title in titles:
-        if '{main:' + lang +'}' in title:
-            return title.replace('{main:' + lang +'}','')
-    return 'err404'
-
 def addGUIItem(url, details, extraData, context=None, folder=True):
     playlist.clear()
     if extraData.get('parameters'):
         for argument, value in extraData.get('parameters').items():
             link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
     link_url = url
-    title = ""
-    if folder:
-        title = details.get('originaltitle','')
-        title = getTitle(title)
-        if 'err404' in title:
-            title = details.get('title', 'Unknown')
-    else:
-        title = details.get('title', 'Unknown')
-    liz=xbmcgui.ListItem(title, thumbnailImage=extraData.get('thumb'))
+    liz=xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=extraData.get('thumb'))
 
     #Set the properties of the item, such as summary, name, season, etc
     liz.setInfo(type=extraData.get('type','Video'), infoLabels=details )
@@ -81,9 +61,6 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
     #For all end items    
     if not folder:
         liz.setProperty('IsPlayable', 'true')
-
-        if (details['playcount'] == 0):
-            liz.select(True)
 
         if extraData.get('type','video').lower() == "video":
             liz.setProperty('TotalTime', str(extraData.get('duration')))
@@ -108,7 +85,10 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
 
             liz.addStreamInfo('video', video_codec )
             liz.addStreamInfo('audio', audio_codec )
-        playlist.add(url=str(extraData.get('key','err404')), listitem=liz)
+        #playlist.add(url=str(extraData.get('key','err404')), listitem=liz)
+        #Jumpy like this and Nakamori like Jumpy
+        partemp=util.parseParameters(inputString=url)
+        playlist.add(url=str(partemp.get('file','pusto')), listitem=liz)
 
     if extraData.get('source') == 'tvshows' or extraData.get('source') =='tvseasons':
         #Then set the number of watched and unwatched, which will be displayed per season
@@ -166,7 +146,6 @@ def buildMainMenu():
         liz.setInfo( type="Video", infoLabels={ "Title": title } )
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
     util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
-    util.addDir("Search by TAG", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/searchtag/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit_tag") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVShows(params):
@@ -183,11 +162,12 @@ def buildTVShows(params):
 
     setWindowHeading(e)
     for atype in e.findall('Directory'):
-        try:
-            genre = atype.find('Tag').get('tag','None')
-        except:
-            genre = ""
+        #new aproche
+        tempgenre=[]
 
+        for child in atype:
+            if child.tag == "Genre":
+                tempgenre.append(child.get('tag','')) #atype.find('Tag').get('tag')
         watched = int(atype.get('viewedLeafCount',0))
 
         #Extended support
@@ -214,7 +194,7 @@ def buildTVShows(params):
         #'size': size,
         #'Date': date, 
         'title': atype.get('title','Unknown').encode('utf-8') , 
-        'genre': genre.replace(',', '/') ,
+        'genre':  " / ".join(tempgenre),
         'year': int(atype.get('year',0)),
         'episode': int(atype.get('leafCount',0)),
         'season': int(atype.get('season',0)),
@@ -229,7 +209,7 @@ def buildTVShows(params):
         'mpaa': atype.get('contentRating',''),
         'plot': atype.get('summary','').encode('utf-8'),
         #'plotoutline': plotoutline,
-        'originaltitle': atype.get('original_title','').encode("utf-8"),
+        #'originaltitle': atype.get('original_title').encode("utf-8"),
         'sorttitle': atype.get('title','Unknown').encode('utf-8'),
         #'Duration': duration,
         #'Studio':studio, < ---
@@ -272,10 +252,24 @@ def buildTVShows(params):
         else:
             extraData['partialTV'] = 1
 
+        #u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(details['title'])+"&poster_file="+urllib.quote_plus(extraData['thumb'])+"&filename="+urllib.quote_plus("none")
         u=sys.argv[0]+"?url="+url+"&mode="+str(5)
         context=None
-
         addGUIItem(u,details,extraData, context)
+        #liz=xbmcgui.ListItem(title, thumbnailImage=thumb) <<<<<<<<<<<<<<<
+
+        #liz.setInfo( type="Video", infoLabels = info) <<<<<<<<<<<<<<
+        #liz.setProperty('IsPlayable', 'False') <<<<<<<<<<<<<
+        #Let's set some arts
+        #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
+        #This should work
+        #liz.setProperty('TotalEpisodes', str(10))
+        #liz.setProperty('WatchedEpisodes', str(5))
+        #liz.setProperty('UnWatchedEpisodes', str(5))
+        #Hack to show partial flag for TV shows and seasons
+        #liz.setProperty('TotalTime', '100')
+        #liz.setProperty('ResumeTime', '50')
+        #xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True) <<<<<<<<<<<<<<
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVSeasons(params):
@@ -377,29 +371,10 @@ def buildTVEpisodes(params):
     xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
 
     for atype in e.findall('Video'):
-        genre = ""
-        genre = atype.find('Tag').get('tag','None')
+        tempgenre=[]
+        tempcast=[]
         tempdir=[]
         tempwriter=[]
-
-        #Extended support
-        cast = [ ]
-        listCast = []
-        listCastAndRole = []
-        if atype.find('Characters'):
-            for char in atype.find('Characters').findall('Character'):
-                char_id = char.get('charID')
-                char_charname=char.get('charname')
-                char_picture=char.get('picture','')
-                char_desc=char.get('description','')
-                char_seiyuuname=char.get('seiyuuname','')
-                char_seiyuupic=char.get('seiyuupic','')
-                listCast.append(char_charname)
-                listCastAndRole.append((char_charname, char_seiyuuname))
-        else:
-             cast = [ ]
-        cast = [listCast, listCastAndRole]
-        #Extended support END#
 
         #Gather some data
         view_offset=atype.get('viewOffset',0)
@@ -409,13 +384,10 @@ def buildTVEpisodes(params):
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
                  'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
                  'rating'      : float(atype.get('rating',0)) ,
-                 'genre'      : genre.replace(',','/') ,
                  #'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
                  'duration'    : str(datetime.timedelta(seconds=duration)) ,
                  'mpaa'        : atype.get('contentRating','') ,
                  'year'        : int(atype.get('year',0)) ,
-                 'cast': cast[0], #cast : list (Michal C. Hall,
-                 'castandrole': cast[1], # : list (Michael C. Hall|Dexter,
                  'tagline'     : atype.get('tagline','').encode('utf-8') ,
                  'episode'     : int(atype.get('index',0)),
                  'aired'       : atype.get('originallyAvailableAt','') ,
@@ -473,6 +445,12 @@ def buildTVEpisodes(params):
         else: 
             details['playcount'] = 0
 
+        #Another Metadata
+        details['cast']     = tempcast
+        details['director'] = " / ".join(tempdir)
+        details['writer']   = " / ".join(tempwriter)
+        details['genre']    = " / ".join(tempgenre)
+
         context=None
 
         url=atype.get('key')
@@ -512,24 +490,18 @@ def playVideo(url):
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=url)
     item.setInfo(type='Video', infoLabels=details )
     item.setProperty('IsPlayable', 'true')
-    #pull settings
-    watch_mark = int(addon.getSetting("watched_mark")) * 0.01
     xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
-    
     nPlayer.play(listitem=item, windowed=False)
-
+    
     xbmc.sleep(1000)
     while nPlayer.is_active:
         xbmc.sleep(500)
-        try:
-            if nPlayer.finished == False:
-                nPlayer._totalTime = nPlayer.getTotalTime()
-                nPlayer._currentTime = nPlayer.getTime()
-                if (nPlayer._totalTime * watch_mark) < nPlayer._currentTime:
-                    nPlayer.finished = True
-                    watchedMark(sys.argv[2]+"&watched=True")
-        except:
-            pass
+        if nPlayer.isFinished==False:
+            nPlayer._totalTime = nPlayer.getTotalTime()
+            nPlayer._currentTime = nPlayer.getTime()
+            if (nPlayer._totalTime * 0.8) < nPlayer._currentTime:
+                nPlayer.finished = True
+                xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
 def playPlaylist():
      nPlayer.play(playlist)
@@ -548,10 +520,6 @@ def voteSeries(params):
 
 def watchedMark(params):
     myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
-    try:
-        params = util.parseParameters(params)
-    except:
-        pass
     episode_id=params['ep_id']
     watched=bool(params['watched'])
     watched_msg = ""
@@ -559,18 +527,9 @@ def watchedMark(params):
         watched_msg = "watched"
     else:
         watched_msg = "unwatched"
-    test1 = addon.getSetting("syncwatched")
-    if (test1 == "true"):
-        xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
-        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
-        test = addon.getSetting("watchedbox")
-        #This thing is bugged? even if we change this in settings its ignored, and sometimes change even if we dont?! - String is solution?
-        if (test == "true"):
-            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
-    if (watched is True):
-        test3 = addon.getSetting("voteallways")
-        if (test3 == "true"):
-            voteSeries(params)
+    xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
+    getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
+    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
 
 #Script run here
 try:
