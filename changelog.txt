@@ -1,3 +1,28 @@
+v1.2.2 (28/12/2015)
+- Fixed watch status not working
+- When entering Series the unwatched episodes are selected (request from user)
+
+v1.2.1 (23/12/2015)
+- Timeout fix, it was once again hardcoded to 60sec, which is bad
+- 'Sync Watched status' is now working
+- Optimalization to server side for character list
+
+v1.2.0 (22/12/2015)
+- Removing deprecated code (http://forum.kodi.tv/showthread.php?tid=250936)
+- Adding support for displaying the title the way you like (#14) with ability to skip official name
+
+v1.1.9 (13/12/2015)
+- Added setting for 'Notification windows' about watched status changed and fixed (#42)
+- Added setting for percent of watched episode to mark as watched (#41)
+- Few settings were move around
+
+v1.1.8 (10/12/2015)
+- 'Search by Tag' have been added (#21)
+- Because of how big is Tag collection there can be needed adding <advancedsettings><playlisttimeout>120</playlisttimeout></advancedsettings> in advancedsettings.xml
+- Fixed typo in settings menu
+- Genre are now populated with Meta Tags from AniDB (#31)
+- Cast is populated inside Episode menu (#40)
+
 v1.1.7 (09/12/2015)
 - Context menu with options for episodes don't show properly in episode view (#36)
 - Closing Vote dialog results in Voting 0 for selected Anime (#37)
