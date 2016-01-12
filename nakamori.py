@@ -149,6 +149,7 @@ def buildMainMenu():
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVShows(params):
+    #xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
     xbmcplugin.addSortMethod(handle, 37 ) #maintain original plex sorted
     xbmcplugin.addSortMethod(handle, 25 ) #video title ignore THE
@@ -273,12 +274,14 @@ def buildTVShows(params):
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVSeasons(params):
+    #xbmcgui.Dialog().ok('MODE=5','IN')
+    
     xbmcplugin.setContent(handle, 'seasons')
 
     e=tree.XML(getHtml(params['url'],''))
     setWindowHeading(e)
 
-    if not e.find('Directory'):
+    if e.find('Directory') is None:
         params['url'] = params['url'].replace('&mode=5','&mode=6')
         buildTVEpisodes(params)
         return
@@ -350,10 +353,18 @@ def buildTVSeasons(params):
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVEpisodes(params):
+    #xbmcgui.Dialog().ok('MODE=6','IN')
     xbmcplugin.setContent(handle, 'episodes')
 
     e=tree.XML(getHtml(params['url'],''))
     setWindowHeading(e)
+
+    if e.find('Directory') is not None:
+        if (e.find('Directory').get('type','none') == 'season'):
+            params['url'] = params['url'].replace('&mode=6','&mode=5')
+            buildTVSeasons(params)
+            return
+
     #get banner thumb
     banner = e.get('banner','') #<----------
     art = e.get('art','')
@@ -564,14 +575,18 @@ if cmd != None:
 if mode==1: #VIDEO
     playVideo(parameters['file'])
 elif mode==2: #DIRECTORY
-    xbmcgui.Dialog().ok('MODE=2','BAD MODE')
+    xbmcgui.Dialog().ok('MODE=2','MODE')
 elif mode==3: #SEARCH
+    #xbmcgui.Dialog().ok('MODE=3','MODE')
     buildSearch(parameters['url'])
 elif mode==4: #TVShows
+    #xbmcgui.Dialog().ok('MODE=4','MODE')
     buildTVShows(parameters)
 elif mode==5: #TVSeasons
+    #xbmcgui.Dialog().ok('MODE=5','MODE')
     buildTVSeasons(parameters)
 elif mode==6: #TVEpisodes
+    #xbmcgui.Dialog().ok('MODE=6','MODE')
     buildTVEpisodes(parameters)
 else:
     buildMainMenu()

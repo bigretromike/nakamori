@@ -1,3 +1,8 @@
+v1.2.3 (11/01/2016)
+- Added Jumpy support (PMS/UMS)
+- Support nested Groups (#43)
+- Fixing all 'FutureWarning' Errors
+
 v1.2.2 (28/12/2015)
 - Fixed watch status not working
 - When entering Series the unwatched episodes are selected (request from user)
