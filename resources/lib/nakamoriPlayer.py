@@ -10,6 +10,9 @@ class nakamoriPlayer (xbmc.Player):
     def play(self, listitem, windowed):
          xbmc.Player().play(listitem=listitem)
 
+    def playplaylist(self, playlist):
+         xbmc.Player().play(item=playlist)
+
     def onPlayBackEnded(self):
         # Will be called when xbmc stops playing a file
         print("Nakamori Playback: onPlayBackEnded <---------")

@@ -23,5 +23,6 @@
     </category>
 	<category label="32031">
 		<setting label="32032" type="bool" id="voteallways" default="false"/>
+		<setting label="32034" type="bool" id="voteonseries" default="false"/>
     </category>
 </settings>

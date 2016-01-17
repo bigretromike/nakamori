@@ -1,3 +1,8 @@
+v1.2.4 (16/01/2016)
+- Language selection readded (#55 and #56)
+- Adding support for Voting per Episode (#57)
+- Adding setting for making vote per watched episode
+
 v1.2.3 (11/01/2016)
 - Added Jumpy support (PMS/UMS)
 - Support nested Groups (#43)

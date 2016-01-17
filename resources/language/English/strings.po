@@ -49,7 +49,7 @@ msgid "Language"
 msgstr ""
 
 msgctxt "#32010"
-msgid "Use MainTitle instead of Official"
+msgid "Use 'Official' instead of 'Main' Title"
 msgstr ""
 
 msgctxt "#32011"
@@ -85,9 +85,13 @@ msgid "Voting settings"
 msgstr ""
 
 msgctxt "#32032"
-msgid "Vote after watching every episode"
+msgid "Episode Vote after watching every episode"
 msgstr ""
 
 msgctxt "#32033"
 msgid "TAG results Max Limit"
+msgstr ""
+
+msgctxt "#32034"
+msgid "(WIP)Series Vote after completing it"
 msgstr ""
