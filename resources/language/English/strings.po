@@ -95,3 +95,7 @@ msgstr ""
 msgctxt "#32034"
 msgid "(WIP)Series Vote after completing it"
 msgstr ""
+
+msgctxt "#32035"
+msgid "(WIP)Enable voting for Trakt"
+msgstr ""
