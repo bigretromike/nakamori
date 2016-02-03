@@ -5,7 +5,7 @@ class nakamoriPlayer (xbmc.Player):
         self.is_active = True
         self.finished = False
         xbmc.Player.__init__(self)
-        print("Player nakamori Initiated")
+        print("Player Nakamori Initiated <---------")
 
     def play(self, listitem, windowed):
          xbmc.Player().play(listitem=listitem)

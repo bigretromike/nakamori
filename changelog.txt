@@ -1,5 +1,8 @@
-v1.2.6 (02/02/2016)
+v1.2.6 (03/02/2016)
+- Compatible with JMM Server v3.4.6.4
 - New Icon (#8)
+- Added '-continue-' item to move cursor on next not watched episode (#52)
+- Little change in Settings
 
 v1.2.5 (18/01/2016)
 - Added support for few skins that use fanart as cover (ex. Mimic) (#59)

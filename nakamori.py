@@ -136,10 +136,6 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
         if extraData.get('type','video').lower() == "video":
             context=[]
             url_peep = sys.argv[2]
-            #xbmcgui.Dialog().ok('debug', url, str(extraData.get('source','none')) + " --- " + str(url_peep))
-            #if extraData.get('source','none') == 'tvseasons':
-            #    url_peep = url_peep + "&anime_id=" + extraData.get('key') +"&cmd=vote"
-            #    context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1] ,url_peep)))
             if extraData.get('source','none') == 'tvshows':
                 url_peep = url_peep + "&anime_id=" + extraData.get('key')[2:]+"&cmd=vote"
                 context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1] ,url_peep)))
@@ -406,7 +402,7 @@ def buildTVEpisodes(params):
     xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
 
     #value to hold position of not seen episode
-    nextepisode = 2
+    nextepisode = 1
     episode_count = 0
 
     for atype in e.findall('Video'):
@@ -484,8 +480,9 @@ def buildTVEpisodes(params):
             details['playcount'] = 1
         else: 
             details['playcount'] = 0
-            if (nextepisode == 2):
+            if (nextepisode == 1):
                 nextepisode = episode_count
+                nextepisode += 1
 
         #Another Metadata
         details['cast']     = tempcast
@@ -503,7 +500,7 @@ def buildTVEpisodes(params):
         addGUIItem(u, details, extraData, context, folder=False)
 
     #add item to move to not played item
-    util.addDir("-continue-", "url&offset=" + str(nextepisode+1), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
+    util.addDir("-continue-", "url&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
 
     xbmcplugin.endOfDirectory(handle)
 
@@ -550,13 +547,26 @@ def playVideo(url):
 
 def playPlaylist(data):
     # old and future implementation
-	#playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+    #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
     #xbmcgui.Dialog().ok("playlist", str(playlist))
     #xbmc.Player().play(playlist)
     #nPlayer.playplaylist(playlist)
     offset = data['offset']
-	win_id = getCurrentWindowId()
-    xbmc.executebuiltin("Control.SetFocus(" +str(handle) +", "+offset+")")
+    pos = int(offset)
+    if (pos == 1):
+        xbmcgui.Dialog().ok('Finished','You already finished this')
+    else:
+        win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+        cid = win.getFocusId()
+        ctl = win.getControl(cid)
+        ctl.selectItem(pos)
+        #temporary hack to prevent from going back on first item
+        xbmc.sleep(1000)
+        #Jarvis code:
+        #xbmc.executebuiltin("SetFocus(%i, %i)" % (cid, pos))
+
+def TraktScrobble(data):
+    xbmcgui.Dialog().ok('WIP','WIP')
 
 def voteSeries(params):
     vote_list = [ 'Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1' ,'0']

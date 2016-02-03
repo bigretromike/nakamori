@@ -81,7 +81,7 @@ msgid "Notification window when marked as Watched"
 msgstr ""
 
 msgctxt "#32031"
-msgid "Voting settings"
+msgid "Community"
 msgstr ""
 
 msgctxt "#32032"
@@ -92,10 +92,22 @@ msgctxt "#32033"
 msgid "TAG results Max Limit"
 msgstr ""
 
+msgctxt "#32038"
+msgid "Trakt support"
+msgstr ""
+
 msgctxt "#32034"
 msgid "(WIP)Series Vote after completing it"
 msgstr ""
 
 msgctxt "#32035"
 msgid "(WIP)Enable voting for Trakt"
+msgstr ""
+
+msgctxt "#32036"
+msgid "(WIP)Trakt Scrobble (without Notification)"
+msgstr ""
+
+msgctxt "#32037"
+msgid "(WIP)Enable Trakt Scrobble Notification"
 msgstr ""

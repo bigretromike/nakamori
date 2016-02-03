@@ -1,11 +1,4 @@
 ---------------------------------------------------------
-WARNING
----------------------------------------------------------
-This Plugin work only with not released version of JMMServer, till then please download JMMServer and compile it yourself to be able to use this plugin
-
-
-
----------------------------------------------------------
 Nakamori Plugin
 ---------------------------------------------------------
 
@@ -23,7 +16,7 @@ The overwrite of player methods and fix for 'Playback failed' was lookup on foru
 
 This is only hobby attempt to join both words of awesome and this is my first python project.
 
-REMAMBER:
+REMEMBER:
 After adding add-on configure ip address and port in settings if needed (default: 127.0.0.1:8111)
 
 
