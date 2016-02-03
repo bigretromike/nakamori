@@ -5,10 +5,13 @@ class nakamoriPlayer (xbmc.Player):
         self.is_active = True
         self.finished = False
         xbmc.Player.__init__(self)
-        print("Player nakamori Initiated")
+        print("Player Nakamori Initiated <---------")
 
     def play(self, listitem, windowed):
          xbmc.Player().play(listitem=listitem)
+
+    def playplaylist(self, playlist):
+         xbmc.Player().play(item=playlist)
 
     def onPlayBackEnded(self):
         # Will be called when xbmc stops playing a file

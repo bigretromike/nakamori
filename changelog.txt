@@ -1,3 +1,19 @@
+v1.2.6 (03/02/2016)
+- Compatible with JMM Server v3.4.6.4
+- New Icon (#8)
+- Added '-continue-' item to move cursor on next not watched episode (#52)
+- Little change in Settings
+
+v1.2.5 (18/01/2016)
+- Added support for few skins that use fanart as cover (ex. Mimic) (#59)
+- Added more fanart support in default skin
+- 'Unsort' now populate correctly (#58)
+
+v1.2.4 (16/01/2016)
+- Language selection readded (#55 and #56)
+- Adding support for Voting per Episode (#57)
+- Adding setting for making vote per watched episode
+
 v1.2.3 (11/01/2016)
 - Added Jumpy support (PMS/UMS)
 - Support nested Groups (#43)

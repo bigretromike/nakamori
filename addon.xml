@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamoriplugin" name="Nakamori Plugin" version="1.2.3" provider-name="BigRetroMike">
+<addon id="plugin.video.nakamoriplugin" name="Nakamori Plugin" version="1.2.6" provider-name="BigRetroMike">
 	<extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Nakamori Plugin enables you to browse your JMM collection within Kodi.</summary>
-		<description lang="en">Nakamori Plugin enables you to browse your JMM collection within Kodi without needing to reimport it. </description>
+		<description lang="en">Nakamori Plugin enables you to browse your JMM collection within Kodi without needing to reimport it in anyway. Thanks to this approach you are able to still manage your collection with JMM and use information you gathered there to pass them to Kodi. </description>
 		<platform>all</platform>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
 		<language>en</language>
 		<source>https://github.com/bigretromike/nakamoriplugin/</source>
 		<email>bigretromike at gmail dot com</email>
-		<disclaimer lang="en">Remamber to change IP address in settings if your JMM Server is not on the same computer as Kodi.</disclaimer>
+		<disclaimer lang="en">Remember to change IP address in settings if your JMM Server is not on the same computer as Kodi.</disclaimer>
 	</extension>
 </addon>
