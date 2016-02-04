@@ -29,8 +29,7 @@ def getHtml(url, referer):
     req = Request(url)
     if len(referer) > 1:
         req.add_header('Referer', referer)
-    #response = urlopen(req, timeout=int(addon.getSetting('timeout')))
-    response = urlopen(req, timeout=60)
+    response = urlopen(req, timeout=int(addon.getSetting('timeout')))
     data = response.read()
     response.close()
     return data
@@ -563,7 +562,7 @@ def playPlaylist(data):
         #temporary hack to prevent from going back on first item
         xbmc.sleep(1000)
         #Jarvis code:
-        #xbmc.executebuiltin("SetFocus(%i, %i)" % (cid, pos))
+        #xbmc.executebuiltin('SetFocus(%s, %s)' % (cid, pos))
 
 def TraktScrobble(data):
     xbmcgui.Dialog().ok('WIP','WIP')
