@@ -1,6 +1,12 @@
 import sys, urllib, urllib2, re, gzip, StringIO
 import xbmc, xbmcgui, xbmcaddon, xbmcplugin
- 
+
+# get addon info
+__addon__ = xbmcaddon.Addon(id='plugin.video.nakamoriplugin' )
+__addonname__ = __addon__.getAddonInfo('name')
+__icon__ = __addon__.getAddonInfo('icon')
+__localize__ = __addon__.getLocalizedString
+
 ADDON_ID='plugin.video.nakamoriplugin' 
 UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
@@ -83,7 +89,8 @@ def searchBox() :
         return searchText
         
 def addDir(name,url,mode,iconimage,plot="",poster="DefaultVideo.png",filename="none"):
-        u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
+        #u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
+        u=sys.argv[0]+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)+url
         ok=True
         liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
         liz.setInfo( type="Video", infoLabels={ "Title": name,"Plot": plot} )
@@ -280,3 +287,51 @@ def makeUTF8(data):
                 s += i
         #log(repr(s), 5)
         return s
+
+### Define dialogs
+def dialog_msg(action,
+               percentage=0,
+               line0='',
+               line1='',
+               line2='',
+               line3='',
+               background=False,
+               nolabel="no",
+               yeslabel="tak_nie"):
+    # Fix possible unicode errors
+    line0 = line0.encode('utf-8', 'ignore')
+    line1 = line1.encode('utf-8', 'ignore')
+    line2 = line2.encode('utf-8', 'ignore')
+    line3 = line3.encode('utf-8', 'ignore')
+
+    # Dialog logic
+    __addonname__ = "XYZ"
+    if not line0 == '':
+        line0 = __addonname__ + line0
+    else:
+        line0 = __addonname__
+    if not background:
+        if action == 'create':
+            dialog.create(__addonname__, line1, line2, line3)
+        if action == 'update':
+            dialog.update(percentage, line1, line2, line3)
+        if action == 'close':
+            dialog.close()
+        if action == 'iscanceled':
+            if dialog.iscanceled():
+                return True
+            else:
+                return False
+        if action == 'okdialog':
+            xbmcgui.Dialog().ok(line0, line1, line2, line3)
+        if action == 'yesno':
+            return xbmcgui.Dialog().yesno(line0, line1, line2, line3, nolabel, yeslabel)
+    if background:
+        if (action == 'create' or action == 'okdialog'):
+            if line2 == '':
+                msg = line1
+            else:
+                msg = line1 + ': ' + line2
+            xbmc.executebuiltin("XBMC.Notification(%s, %s, 7500, %s)" % (line0, msg, __icon__))
+
+

@@ -1,3 +1,75 @@
+v1.2.7 (13/02/2016)
+- fixed 'FutureWarning'
+- fixed 'XFILE::CDirectory::GetDirectory' (#63)
+
+v1.2.6 (03/02/2016)
+- Compatible with JMM Server v3.4.6.4
+- New Icon (#8)
+- Added '-continue-' item to move cursor on next not watched episode (#52)
+- Little change in Settings
+
+v1.2.5 (18/01/2016)
+- Added support for few skins that use fanart as cover (ex. Mimic) (#59)
+- Added more fanart support in default skin
+- 'Unsort' now populate correctly (#58)
+
+v1.2.4 (16/01/2016)
+- Language selection readded (#55 and #56)
+- Adding support for Voting per Episode (#57)
+- Adding setting for making vote per watched episode
+
+v1.2.3 (11/01/2016)
+- Added Jumpy support (PMS/UMS)
+- Support nested Groups (#43)
+- Fixing all 'FutureWarning' Errors
+
+v1.2.2 (28/12/2015)
+- Fixed watch status not working
+- When entering Series the unwatched episodes are selected (request from user)
+
+v1.2.1 (23/12/2015)
+- Timeout fix, it was once again hardcoded to 60sec, which is bad
+- 'Sync Watched status' is now working
+- Optimalization to server side for character list
+
+v1.2.0 (22/12/2015)
+- Removing deprecated code (http://forum.kodi.tv/showthread.php?tid=250936)
+- Adding support for displaying the title the way you like (#14) with ability to skip official name
+
+v1.1.9 (13/12/2015)
+- Added setting for 'Notification windows' about watched status changed and fixed (#42)
+- Added setting for percent of watched episode to mark as watched (#41)
+- Few settings were move around
+
+v1.1.8 (10/12/2015)
+- 'Search by Tag' have been added (#21)
+- Because of how big is Tag collection there can be needed adding <advancedsettings><playlisttimeout>120</playlisttimeout></advancedsettings> in advancedsettings.xml
+- Fixed typo in settings menu
+- Genre are now populated with Meta Tags from AniDB (#31)
+- Cast is populated inside Episode menu (#40)
+
+v1.1.7 (09/12/2015)
+- Context menu with options for episodes don't show properly in episode view (#36)
+- Closing Vote dialog results in Voting 0 for selected Anime (#37)
+- Passing more information about playing episode to Player (#38)
+- Added 'Play from playlist' context menu to add every episode in folder to playlist (#35)
+- overwrite the Player method for future needs
+- Watched status is synced after 80% watched episode and on finishe (#17)
+
+v1.1.6 (04/12/2015)
+- Fix bad calculating duration of episode and Total Duration (#32)
+
+v1.1.5 (03/12/2015)
+- In plugin settings you can setup timeout till Kodi drop connection with JMMServer (#30)
+- Watched/Unwatched now work from Episode List from context menu (#19)
+- I added few new settings for future use (Sync and VoteAllways)
+
+v1.1.4 (02/12/2015)
+- If you are in Episodes you can Vote for whole Series via context menu (Right Mouse Click or 'C')
+
+v1.1.3 (01/12/2015)
+- Cast now populate with Anime Characters (currently kodi dont support adding thumbs for casts from plugin level)
+
 v1.1.2 (29/11/2015)
 - Letter 'S' before episode number was thanks to lack of info about number of seasons, JMMServer didn't feed Kodi with it (#27)
 

@@ -1,15 +1,4 @@
 ---------------------------------------------------------
-WARNING
----------------------------------------------------------
-<<<<<<< HEAD
-This Plugin work only with not released version of JMMServer, till then please download JMMServer and compile it yourself to be able to use this plugin
-
-=======
-For this plugin to work with JMMServer you need to download and compile it from source!
->>>>>>> master
-
-
----------------------------------------------------------
 Nakamori Plugin
 ---------------------------------------------------------
 
@@ -20,11 +9,14 @@ options to improve Kodi compatibility with Anime, which sometimes break compatib
 
 Thats why using a specialized application which is fully dedicated for managing anime as a back-end for Kodi give great results.
 
-I would like to credit author of JAVStream (http://www.ptom.co.uk/home/) which I used as a base code for my project.
+I would like to credit author of JAVStream (http://www.ptom.co.uk/home/) which I used as a base code for my project at the start.
+A great help was plugin.video.plexbmc (https://github.com/hippojay/plugin.video.plexbmc/) which showed how some things can be done.
+The overwrite of player methods and fix for 'Playback failed' was lookup on forum.kodi.tv (http://forum.kodi.tv/showthread.php?tid=205441&pid=1806212#pid1806212)
+
 
 This is only hobby attempt to join both words of awesome and this is my first python project.
 
-REMAMBER:
+REMEMBER:
 After adding add-on configure ip address and port in settings if needed (default: 127.0.0.1:8111)
 
 
@@ -50,7 +42,6 @@ I) Installing from repository
   
   name: BigRetroMike Repo
   
-
   System > Settings > Add-ons
   
   Install from zip file
@@ -87,4 +78,16 @@ II) Installing from zip file
   Browser to location where you saved and rename zip file
   
   Pick the zip file
-    
+
+
+
+---------------------------------------------------------
+SETTINGS
+---------------------------------------------------------
+
+If you are changing timeout setting then set also %AppData%\Roaming\Kodi\userdata\advancedsettings.xml to same value
+```
+<advancedsettings>
+<playlisttimeout>60</playlisttimeout>
+</advancedsettings>
+```

@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="32001">
-        <setting label="32002" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
+        <setting label="32006" type="lsep"/>
+		<setting label="32002" type="ipaddress" id="ipaddress" default="127.0.0.1"/>
 		<setting label="32003" type="number" id="port" default="8111"/>
-    </category>
-	<category label="32011">
+		<setting label="32004" type="number" id="timeout" default="60"/>
+		<setting label="32011" type="lsep"/>
 		<setting label="32012" type="number" id="userid" default="1"/>
+		<setting label="32008" type="lsep"/>
+		<setting label="32009" type="text" id="displaylang" default="en"/>
+		<setting label="32010" type="bool" id="skipofficial" default="false"/>
+    </category>
+	<category label="32023">
+		<setting label="32025" type="bool" id="watchedbox" default="true"/>
+		<setting label="32024" type="number" id="watched_mark" default="90"/>
+		<setting label="32007" type="lsep"/>
+		<setting label="32005" type="bool" id="syncwatched" default="true"/>
     </category>
 	<category label="32021">
 		<setting label="32022" type="number" id="maxlimit" default="20"/>
+		<setting label="32033" type="number" id="maxlimit_tag" default="100"/>
+    </category>
+	<category label="32031">
+		<setting label="32032" type="bool" id="voteallways" default="false"/>
+		<setting label="32034" type="bool" id="voteonseries" default="false"/>
+		<setting label="32038" type="lsep"/>
+		<setting label="32035" type="bool" id="trakt" default="false"/>
+		<setting label="32036" type="bool" id="traktscrobble" default="false"/>
+		<setting label="32037" type="bool" id="traktscrobblenotif" default="false"/>
     </category>
 </settings>
