@@ -12,16 +12,12 @@ import xbmcaddon
 import xbmcplugin
 import xbmcgui
 import resources.lib.util as util
-from resources.lib.nakamoriPlayer import nakamoriPlayer
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
 
 urlopen = urllib2.urlopen
 Request = urllib2.Request
-
-#global vars
-nPlayer = nakamoriPlayer()
 
 #Internal function
 def getHtml(url, referer):
@@ -539,25 +535,37 @@ def playVideo(url):
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=url)
     item.setInfo(type='Video', infoLabels=details )
     item.setProperty('IsPlayable', 'true')
-    xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, item)
-    nPlayer.play(listitem=item, windowed=False)
-    
+    Player = xbmc.Player()
+    try:
+        Player.play(item=url, listitem=item, windowed=False)
+        xbmcplugin.setResolvedUrl(handle, True, item)
+    except:
+        pass
+    #wait for player (network issue etc)
     xbmc.sleep(1000)
-    while nPlayer.is_active:
-        xbmc.sleep(500)
-        if nPlayer.isFinished==False:
-            nPlayer._totalTime = nPlayer.getTotalTime()
-            nPlayer._currentTime = nPlayer.getTime()
-            if (nPlayer._totalTime * 0.8) < nPlayer._currentTime:
-                nPlayer.finished = True
-                xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watchedwatchedpercent)' % (sys.argv[1], sys.argv[2]))
+    mark = float(addon.getSetting("watched_mark"))
+    mark = mark / 100
+    file_fin = False
+    totalTime = 0
+    currentTime = 0
+    #while finished is False:
+    while Player.isPlaying():
+        try:
+            xbmc.sleep(500)
+            totalTime = Player.getTotalTime()
+            currentTime = Player.getTime()
+            if (totalTime * mark) < currentTime:
+                file_fin = True
+        except:
+            xbmc.sleep(500)
+    if file_fin is True:
+        xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
 def playPlaylist(data):
     # old and future implementation
     #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
     #xbmcgui.Dialog().ok("playlist", str(playlist))
     #xbmc.Player().play(playlist)
-    #nPlayer.playplaylist(playlist)
     offset = data['offset']
     pos = int(offset)
     if (pos == 1):
@@ -592,7 +600,6 @@ def voteEpisode(params):
     myVote = xbmcgui.Dialog().select('myVote', vote_list)
     if myVote == -1: return
     elif myVote != 0:
-        myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
         vote_value=str(vote_list[myVote])
         vote_type = str(4)
         ep_id=params['ep_id']
@@ -600,7 +607,6 @@ def voteEpisode(params):
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Vote saved', 'You voted', vote_value , addon.getAddonInfo('icon')))
 
 def watchedMark(params):
-    myLen = len("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
     episode_id=params['ep_id']
     watched=bool(params['watched'])
     watched_msg = ""
@@ -608,14 +614,13 @@ def watchedMark(params):
         watched_msg = "watched"
     else:
         watched_msg = "unwatched"
-    xbmc.executebuiltin('XBMC.Action(ToggleWatched)',True)
+    xbmc.executebuiltin('XBMC.Action(ToggleWatched)')
     getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
 
 #Script run here
 try:
     parameters=util.parseParameters()
-    #xbmcgui.Dialog().ok('DEBUG',str(parameters))
 except:
     xbmcgui.Dialog().ok('Forced mode=2','ERROR - This should be fixd')
     parameters = {"mode":2}
@@ -635,9 +640,6 @@ if cmd != None:
         voteSeries(parameters)
     elif cmd == "voteEp":
          voteEpisode(parameters)
-    elif cmd == "watchedpercent":
-        parameters['watched']=True
-        watchedMark(parameters)
     elif cmd == "watched":
         parameters['watched']=True
         watchedMark(parameters)
@@ -649,27 +651,27 @@ if cmd != None:
         watchedMark(parameters)
     elif cmd == "playlist":
         playPlaylist()
-
-if mode==1: #VIDEO
-    #xbmcgui.Dialog().ok('MODE=1','MODE')
-    playVideo(parameters['file'])
-    playPlaylist()
-elif mode==2: #DIRECTORY
-    xbmcgui.Dialog().ok('MODE=2','MODE')
-elif mode==3: #SEARCH
-    #xbmcgui.Dialog().ok('MODE=3','MODE')
-    buildSearch(parameters['url'])
-elif mode==4: #TVShows
-    #xbmcgui.Dialog().ok('MODE=4','MODE')
-    buildTVShows(parameters)
-elif mode==5: #TVSeasons
-    #xbmcgui.Dialog().ok('MODE=5','MODE')
-    buildTVSeasons(parameters)
-elif mode==6: #TVEpisodes
-    #xbmcgui.Dialog().ok('MODE=6','MODE')
-    buildTVEpisodes(parameters)
-elif mode==7: #Playlist continue
-    #xbmcgui.Dialog().ok('MODE=7','MODE')
-    playPlaylist(parameters)
 else:
-    buildMainMenu()
+    if mode==1: #VIDEO
+        #xbmcgui.Dialog().ok('MODE=1','MODE')
+        playVideo(parameters['file'])
+        #playPlaylist()
+    elif mode==2: #DIRECTORY
+        xbmcgui.Dialog().ok('MODE=2','MODE')
+    elif mode==3: #SEARCH
+        #xbmcgui.Dialog().ok('MODE=3','MODE')
+        buildSearch(parameters['url'])
+    elif mode==4: #TVShows
+        #xbmcgui.Dialog().ok('MODE=4','MODE')
+        buildTVShows(parameters)
+    elif mode==5: #TVSeasons
+        #xbmcgui.Dialog().ok('MODE=5','MODE')
+        buildTVSeasons(parameters)
+    elif mode==6: #TVEpisodes
+        #xbmcgui.Dialog().ok('MODE=6','MODE')
+        buildTVEpisodes(parameters)
+    elif mode==7: #Playlist continue
+        #xbmcgui.Dialog().ok('MODE=7','MODE')
+        playPlaylist(parameters)
+    else:
+        buildMainMenu()

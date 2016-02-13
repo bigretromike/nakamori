@@ -91,3 +91,13 @@ If you are changing timeout setting then set also %AppData%\Roaming\Kodi\userdat
 <playlisttimeout>60</playlisttimeout>
 </advancedsettings>
 ```
+
+If you dont want Kodi to mark watched videos as watched:
+```
+ <advancedsettings>
+  <video>
+    <playcountminimumpercent>101</playcountminimumpercent>
+    <ignorepercentatend>101</ignorepercentatend>
+  </video>
+</advancedsettings>
+```
