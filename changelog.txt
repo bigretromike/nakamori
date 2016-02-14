@@ -1,3 +1,15 @@
+v1.2.9 (14/02/2016)
+- workaround for slow connection like Android on WiFi trying to watch big H264@1080p
+
+v1.2.8 (14/02/2016)
+- nakamoriPlayer has been deprecated
+- compatible with Kodi v16 (Jarvis) (#63)
+- official Kodi Remote App for iOS work with Nakamori (#34)
+
+v1.2.7 (13/02/2016)
+- fixed 'FutureWarning'
+- fixed 'XFILE::CDirectory::GetDirectory' (#63)
+
 v1.2.6 (03/02/2016)
 - Compatible with JMM Server v3.4.6.4
 - New Icon (#8)

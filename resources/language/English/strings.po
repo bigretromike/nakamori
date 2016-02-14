@@ -80,12 +80,20 @@ msgctxt "#32025"
 msgid "Notification window when marked as Watched"
 msgstr ""
 
+msgctxt "#32026"
+msgid "Kodi player settings"
+msgstr ""
+
+msgctxt "#32027"
+msgid "Max time to wait for buffer (in ms)"
+msgstr ""
+
 msgctxt "#32031"
 msgid "Community"
 msgstr ""
 
 msgctxt "#32032"
-msgid "Episode Vote after watching every episode"
+msgid "(WIP)Episode Vote after watching every episode"
 msgstr ""
 
 msgctxt "#32033"

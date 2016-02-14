@@ -42,7 +42,6 @@ I) Installing from repository
   
   name: BigRetroMike Repo
   
-
   System > Settings > Add-ons
   
   Install from zip file
@@ -87,7 +86,18 @@ SETTINGS
 ---------------------------------------------------------
 
 If you are changing timeout setting then set also %AppData%\Roaming\Kodi\userdata\advancedsettings.xml to same value
-
+```
 <advancedsettings>
 <playlisttimeout>60</playlisttimeout>
 </advancedsettings>
+```
+
+If you dont want Kodi to mark watched videos as watched:
+```
+ <advancedsettings>
+  <video>
+    <playcountminimumpercent>101</playcountminimumpercent>
+    <ignorepercentatend>101</ignorepercentatend>
+  </video>
+</advancedsettings>
+```

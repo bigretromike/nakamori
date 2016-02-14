@@ -13,9 +13,11 @@
     </category>
 	<category label="32023">
 		<setting label="32025" type="bool" id="watchedbox" default="true"/>
-		<setting label="32024" type="number" id="watched_mark" default="90"/>
+		<setting label="32024" type="number" id="watched_mark" default="80"/>
 		<setting label="32007" type="lsep"/>
 		<setting label="32005" type="bool" id="syncwatched" default="true"/>
+		<setting label="32026" type="lsep"/>
+		<setting label="32027" type="number" id="player_sleep" default="5000"/>
     </category>
 	<category label="32021">
 		<setting label="32022" type="number" id="maxlimit" default="20"/>
