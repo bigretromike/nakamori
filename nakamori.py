@@ -173,7 +173,6 @@ def buildMainMenu():
 def buildTVShows(params):
     #xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    #xbmcplugin.addSortMethod(handle, 37 ) #maintain original plex sorted <-- Studio? realy ?
     xbmcplugin.addSortMethod(handle, 25 ) #video title ignore THE
     xbmcplugin.addSortMethod(handle, 3 )  #date
     xbmcplugin.addSortMethod(handle, 18 ) #rating
@@ -274,24 +273,10 @@ def buildTVShows(params):
         else:
             extraData['partialTV'] = 1
 
-        #u=sys.argv[0]+"?url="+url+"&mode="+str(2)+"&name="+urllib.quote_plus(details['title'])+"&poster_file="+urllib.quote_plus(extraData['thumb'])+"&filename="+urllib.quote_plus("none")
         u=sys.argv[0]+"?url="+url+"&mode="+str(5)
         context=None
         addGUIItem(u,details,extraData, context)
-        #liz=xbmcgui.ListItem(title, thumbnailImage=thumb) <<<<<<<<<<<<<<<
 
-        #liz.setInfo( type="Video", infoLabels = info) <<<<<<<<<<<<<<
-        #liz.setProperty('IsPlayable', 'False') <<<<<<<<<<<<<
-        #Let's set some arts
-        #liz.setArt({ 'thumb': thumb, 'poster': poster, 'banner' : banner, 'fanart': fanart, 'clearart': clearart, 'clearlogo': clearlogo, 'landscape': landscape})
-        #This should work
-        #liz.setProperty('TotalEpisodes', str(10))
-        #liz.setProperty('WatchedEpisodes', str(5))
-        #liz.setProperty('UnWatchedEpisodes', str(5))
-        #Hack to show partial flag for TV shows and seasons
-        #liz.setProperty('TotalTime', '100')
-        #liz.setProperty('ResumeTime', '50')
-        #xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True) <<<<<<<<<<<<<<
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVSeasons(params):
@@ -501,9 +486,6 @@ def buildTVEpisodes(params):
 
     #add item to move to not yet played item (not marked as watched)
     util.addDir("-continue-", "&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
-    #details = { 'title' : "-continue-",'sorttitle' : "-continue-" , 'originaltitle' : "-continue-" , 'episode' : 0 }
-    #sys.argv[0]=sys.argv[0]+"?url=" + url+"&mode="+str(7) + "&offset=" +str(nextepisode)
-    #addGUIItem(sys.argv[0], details, extraData=None, context=None, folder=False)
 
     xbmcplugin.endOfDirectory(handle)
 
@@ -548,7 +530,8 @@ def playVideo(url):
     file_fin = False
     totalTime = 0
     currentTime = 0
-    #while finished is False:
+    #hack for slow connection and buffering time
+    xbmc.sleep(int(addon.getSetting("player_sleep")))
     while Player.isPlaying():
         try:
             xbmc.sleep(500)
@@ -556,16 +539,15 @@ def playVideo(url):
             currentTime = Player.getTime()
             if (totalTime * mark) < currentTime:
                 file_fin = True
+            if (Player.isPlaying() == False):
+                break
         except:
             xbmc.sleep(500)
+            break
     if file_fin is True:
         xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
 def playPlaylist(data):
-    # old and future implementation
-    #playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-    #xbmcgui.Dialog().ok("playlist", str(playlist))
-    #xbmc.Player().play(playlist)
     offset = data['offset']
     pos = int(offset)
     if (pos == 1):
@@ -615,8 +597,12 @@ def watchedMark(params):
     else:
         watched_msg = "unwatched"
     xbmc.executebuiltin('XBMC.Action(ToggleWatched)')
-    getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
-    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
+    sync = addon.getSetting("syncwatched")
+    if (sync == "true"):
+        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/watch/" + addon.getSetting("userid")+ "/" +episode_id + "/" + str(watched),"")
+    box = addon.getSetting("watchedbox")
+    if (box == "true"):
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg , addon.getAddonInfo('icon')))
 
 #Script run here
 try:
