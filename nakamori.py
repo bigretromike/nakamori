@@ -167,7 +167,16 @@ def buildMainMenu():
         liz.setProperty('fanart_image', fanart)
         liz.setInfo( type="Video", infoLabels={ "Title": title } )
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
-    util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
+    #Add Search
+    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/"
+    mode = 3
+    title = "Search"
+    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png"
+    liz=xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
+    liz.setInfo( type="Video", infoLabels={ "Title": title } )
+    u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(title)
+    xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
+   #util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 def buildTVShows(params):
@@ -399,7 +408,12 @@ def buildTVEpisodes(params):
 
         #Gather some data
         view_offset=atype.get('viewOffset',0)
-        duration=int(atype.find('Media').get('duration'))/1000
+        #Check for empty duration from MediaInfo check fail and handle it properly
+        tmp_duration = atype.find('Media').get('duration','1000')
+        if not tmp_duration:
+            duration = 1
+        else:
+            duration=int(tmp_duration)/1000
         #Required listItem entries for XBMC
         details={'plot'        : atype.get('summary','').encode('utf-8') ,
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
