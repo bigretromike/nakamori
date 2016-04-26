@@ -119,3 +119,7 @@ msgstr ""
 msgctxt "#32037"
 msgid "(WIP)Enable Trakt Scrobble Notification"
 msgstr ""
+
+msgctxt "#32039"
+msgid "Show -continue-"
+msgstr ""
