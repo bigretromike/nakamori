@@ -1,9 +1,13 @@
+v(tbd)
+-Add setting to hide -continue-
+-Display message if the JMM user is set incorrectly
+
 v1.3.1 (02/03/2016)
 - Fix the Fix for files without duration (#64) (thanks kaigame)
 
 v1.3.0 (01/03/2016)
 - Fix for files without duration (#64)
-- Search is once again avaible (#68)
+- Search is once again available (#68)
 - Fully tested with Jarvice (Final build) (#66)
 
 v1.2.9 (14/02/2016)

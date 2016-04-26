@@ -498,8 +498,9 @@ def buildTVEpisodes(params):
 
         addGUIItem(u, details, extraData, context, folder=False)
 
-    #add item to move to not yet played item (not marked as watched)
-    util.addDir("-continue-", "&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
+    #add item to move to not yet played item (not marked as watched), if the setting allows
+    if addon.getSetting("show_continue"):
+        util.addDir("-continue-", "&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
 
     xbmcplugin.endOfDirectory(handle)
 
