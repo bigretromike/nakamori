@@ -397,7 +397,7 @@ def buildTVSeasons(params):
                 #Create the basic data structures to pass up
                 total = 0
                 if (addon.getSetting("local_total") == "true"):
-                    total = int(atyp.get('localTotal',0))
+                    total = int(atype.get('localTotal',0))
                 else:
                     total = int(atype.get('leafCount',0))
                 details={'title'      : atype.get('title','Unknown').encode('utf-8') ,
