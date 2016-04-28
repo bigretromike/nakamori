@@ -125,7 +125,7 @@ msgid "Show -continue-"
 msgstr ""
 
 msgctxt "#32040"
-msgid "Advanced"
+msgid "Use local file count for total episodes"
 msgstr ""
 
 msgctxt "#32041"
@@ -138,4 +138,8 @@ msgstr ""
 
 msgctxt "#32043"
 msgid "Max episodes before data will be truncated"
+msgstr ""
+
+msgctxt "#32044"
+msgid "Advanced"
 msgstr ""
