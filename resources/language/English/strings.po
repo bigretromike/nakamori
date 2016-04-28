@@ -119,3 +119,23 @@ msgstr ""
 msgctxt "#32037"
 msgid "(WIP)Enable Trakt Scrobble Notification"
 msgstr ""
+
+msgctxt "#32039"
+msgid "Show -continue-"
+msgstr ""
+
+msgctxt "#32040"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#32041"
+msgid "Skip Extra Info on Long Series"
+msgstr ""
+
+msgctxt "#32042"
+msgid "Spam the Log with info (only enable if told to)"
+msgstr ""
+
+msgctxt "#32043"
+msgid "Max episodes before data will be truncated"
+msgstr ""

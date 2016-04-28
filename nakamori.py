@@ -8,6 +8,7 @@ import time
 import base64
 import datetime
 import xml.etree.ElementTree as tree
+import xbmc
 import xbmcaddon
 import xbmcplugin
 import xbmcgui
@@ -57,6 +58,36 @@ def getTitle(data):
 def addGUIItem(url, details, extraData, context=None, folder=True):
     tbi = ""
     tp = 'Video'
+
+    if addon.getSetting("spamLog") == "true":
+        if details is not None:
+            xbmc.log("addGuiItem - details")
+            for i in details:
+                tempLog=""
+                a=details.get(i)
+                if a is None:
+                    tempLog="\'unset\'"
+                elif isinstance(a,list):
+                    for b in a:
+                        tempLog=str(b) if tempLog=="" else tempLog+" | "+str(b)
+                else:
+                    tempLog=str(a)
+                xbmc.log("-"+str(i)+"- "+tempLog)
+
+        if extraData is not None:
+            xbmc.log("addGuiItem - extraData")
+            for i in extraData:
+                tempLog=""
+                a=extraData.get(i)
+                if a is None:
+                    tempLog="\'unset\'"
+                elif isinstance(a,list):
+                    for b in a:
+                        tempLog=str(b) if tempLog=="" else tempLog+" | "+str(b)
+                else:
+                    tempLog=str(a)
+                xbmc.log("-"+str(i)+"- "+tempLog)
+
     if extraData is not None:
         if extraData.get('parameters'):
             for argument, value in extraData.get('parameters').items():
@@ -167,7 +198,16 @@ def buildMainMenu():
         liz.setProperty('fanart_image', fanart)
         liz.setInfo( type="Video", infoLabels={ "Title": title } )
         xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
-    util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
+    #Add Search
+    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/"
+    mode = 3
+    title = "Search"
+    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png"
+    liz=xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
+    liz.setInfo( type="Video", infoLabels={ "Title": title } )
+    u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(title)
+    xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
+   #util.addDir("Search", "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/", 3, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 def buildTVShows(params):
@@ -180,16 +220,25 @@ def buildTVShows(params):
     xbmcplugin.addSortMethod(handle, 28 ) #by MPAA
     
     #Get XML from JMMServer
-    e=tree.XML(getHtml(params['url'],''))
+    html=getHtml(params['url'],'')
+    e=tree.XML(html)
+    if addon.getSetting("spamLog") == "true":
+        xbmc.log(html)
 
     setWindowHeading(e)
     for atype in e.findall('Directory'):
-        #new aproche
-        tempgenre=[]
+        #new approach
+        tempgenre=""
+        #xbmc.log(atype.get('title','Unknown').encode('utf-8')+str(atype.find("Tag")))
+        tag=atype.find("Tag")
+        if tag is not None:
+            tempgenre=tag.get('tag','') #atype.find('Tag').get('tag')
+            tempGenres=str.split(tempgenre,",")
+            tempgenre=""
+            for a in tempGenres:
+                a=" ".join(w.capitalize() for w in a.split())
+                tempgenre=a if tempgenre=="" else tempgenre+" | "+a
 
-        for child in atype:
-            if child.tag == "Genre":
-                tempgenre.append(child.get('tag','')) #atype.find('Tag').get('tag')
         watched = int(atype.get('viewedLeafCount',0))
 
         #Extended support
@@ -216,7 +265,7 @@ def buildTVShows(params):
         #'size': size,
         #'Date': date, 
         'title': atype.get('title','Unknown').encode('utf-8') , 
-        'genre':  " / ".join(tempgenre),
+        'genre':  tempgenre,
         'year': int(atype.get('year',0)),
         'episode': int(atype.get('leafCount',0)),
         'season': int(atype.get('season',0)),
@@ -284,7 +333,10 @@ def buildTVSeasons(params):
     
     xbmcplugin.setContent(handle, 'seasons')
 
-    e=tree.XML(getHtml(params['url'],''))
+    html=getHtml(params['url'],'')
+    e=tree.XML(html)
+    if addon.getSetting("spamLog") == "true":
+        xbmc.log(html)
     setWindowHeading(e)
 
     if e.find('Directory') is None:
@@ -361,7 +413,10 @@ def buildTVSeasons(params):
 def buildTVEpisodes(params):
     #xbmcgui.Dialog().ok('MODE=6','IN')
     xbmcplugin.setContent(handle, 'episodes')
-    e=tree.XML(getHtml(params['url'],''))
+    html=getHtml(params['url'],'')
+    e=tree.XML(html)
+    if addon.getSetting("spamLog") == "true":
+        xbmc.log(html)
     setWindowHeading(e)
 
     if e.find('Directory') is not None:
@@ -390,18 +445,37 @@ def buildTVEpisodes(params):
     nextepisode = 1
     episode_count = 0
 
-    for atype in e.findall('Video'):
+    videoList=e.findall('Video')
+    skip=addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(videoList) > int(addon.getSetting("skipExtraInfoMaxEpisodes"))
+
+    tempgenre=""
+    if not skip:
+        #xbmc.log(str(e.find("Tag")))
+        tag=e.find("Tag")
+        if tag is not None:
+            tempgenre=tag.get('tag','').encode('utf-8')
+            tempGenres=str.split(tempgenre,",")
+            tempgenre=""
+            for a in tempGenres:
+                " ".join(w.capitalize() for w in a.split())
+                tempgenre=a if tempgenre=="" else tempgenre+" | "+a
+
+    for atype in videoList:
         episode_count += 1
-        tempgenre=[]
         tempcast=[]
         tempdir=[]
         tempwriter=[]
 
         #Gather some data
         view_offset=atype.get('viewOffset',0)
-        duration=int(atype.find('Media').get('duration'))/1000
+        #Check for empty duration from MediaInfo check fail and handle it properly
+        tmp_duration = atype.find('Media').get('duration','1000')
+        if not tmp_duration:
+            duration = 1
+        else:
+            duration=int(tmp_duration)/1000
         #Required listItem entries for XBMC
-        details={'plot'        : atype.get('summary','').encode('utf-8') ,
+        details={'plot'        : "..." if skip else atype.get('summary','').encode('utf-8') ,
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
                  'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
                  'rating'      : float(atype.get('rating',0)) ,
@@ -409,7 +483,7 @@ def buildTVEpisodes(params):
                  'duration'    : str(datetime.timedelta(seconds=duration)) ,
                  'mpaa'        : atype.get('contentRating','') ,
                  'year'        : int(atype.get('year',0)) ,
-                 'tagline'     : atype.get('tagline','').encode('utf-8') ,
+                 'tagline'     : "..." if skip else tempgenre ,
                  'episode'     : int(atype.get('index',0)),
                  'aired'       : atype.get('originallyAvailableAt','') ,
                  'tvshowtitle' : atype.get('grandparentTitle',atype.get('grandparentTitle','')).encode('utf-8') , #<-----------------------
@@ -421,8 +495,8 @@ def buildTVEpisodes(params):
         #Extra data required to manage other properties
         extraData={'type'         : "Video" ,
                    'source'       : 'tvepisodes',
-                   'thumb'        : atype.get('thumb','') ,
-                   'fanart_image' : art ,
+                   'thumb'        : None if skip else atype.get('thumb','') ,
+                   'fanart_image' : None if skip else art ,
                    'key'          : atype.get('key',''),
                    #'ratingKey'    : str(episode.get('ratingKey',0)),
                    #'duration'     : duration,
@@ -473,7 +547,7 @@ def buildTVEpisodes(params):
         details['cast']     = tempcast
         details['director'] = " / ".join(tempdir)
         details['writer']   = " / ".join(tempwriter)
-        details['genre']    = " / ".join(tempgenre)
+        details['genre']    = tempgenre
 
         context=None
 
@@ -484,8 +558,9 @@ def buildTVEpisodes(params):
 
         addGUIItem(u, details, extraData, context, folder=False)
 
-    #add item to move to not yet played item (not marked as watched)
-    util.addDir("-continue-", "&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
+    #add item to move to not yet played item (not marked as watched), if the setting allows
+    if addon.getSetting("show_continue") == "true":
+        util.addDir("-continue-", "&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
 
     xbmcplugin.endOfDirectory(handle)
 
