@@ -8,11 +8,14 @@ import time
 import base64
 import datetime
 import xml.etree.ElementTree as tree
+
+import TagBlacklist
 import xbmc
 import xbmcaddon
 import xbmcplugin
 import xbmcgui
 import resources.lib.util as util
+import traceback
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
@@ -188,7 +191,13 @@ def validUser():
 
 def Error(msg, error):
     xbmc.log('---' + msg + '---')
-    xbmc.log(error)
+    try:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        xbmc.log(str(exc_type)+" at line "+str(exc_tb.tb_lineno)+" in file "+str(os.path.split(exc_tb.tb_frame.f_code.co_filename)[1])+" : "+str(error))
+    except:
+        xbmc.log("There was an error catching the error. WTF.")
+        traceback.print_exc()
+
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', msg , addon.getAddonInfo('icon')))
 
 def removeHTML(data):
@@ -220,9 +229,9 @@ def buildMainMenu():
                 liz.setInfo( type="Video", infoLabels={ "Title": title } )
                 xbmcplugin.addDirectoryItem(handle,url=u,listitem=liz,isFolder=True)
         except Exception as e:
-            Error("Error during buildMainMenu",str(e))
+            Error("Error during buildMainMenu",e)
     except Exception as e:
-        Error("Connection error",str(e))
+        Error("Connection error",e)
 
     #Add Search
     url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/"+ addon.getSetting("maxlimit") +"/"
@@ -257,6 +266,8 @@ def buildTVShows(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','')
                     tempGenres=str.split(tempgenre,",")
+                    if addon.getSetting("hideMiscTags") == "true":
+                        tempGenres=TagBlacklist.processTags(tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         a=" ".join(w.capitalize() for w in a.split())
@@ -353,9 +364,9 @@ def buildTVShows(params):
                 context=None
                 addGUIItem(u,details,extraData, context)
         except Exception as e:
-            Error("Error during buildTVShows",str(e))
+            Error("Error during buildTVShows",e)
     except Exception as e:
-        Error("Connection error",str(e))
+        Error("Connection error",e)
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVSeasons(params):
@@ -444,9 +455,9 @@ def buildTVSeasons(params):
                 #Build the screen directory listing
                 addGUIItem(url,details,extraData, context)
         except Exception as e:
-            Error("Error during buildTVSeasons",str(e))
+            Error("Error during buildTVSeasons",e)
     except Exception as e:
-        Error("Connection error",str(e))
+        Error("Connection error",e)
     xbmcplugin.endOfDirectory(handle)
 
 def buildTVEpisodes(params):
@@ -492,6 +503,8 @@ def buildTVEpisodes(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
+                    if addon.getSetting("hideMiscTags") == "true":
+                        tempGenres=TagBlacklist.processTags(tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
@@ -595,9 +608,9 @@ def buildTVEpisodes(params):
             if addon.getSetting("show_continue") == "true":
                 util.addDir("-continue-", "&offset=" + str(nextepisode), 7, "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png","2","3","4")
         except Exception as e:
-            Error("Error during buildTVEpisodes",str(e))
+            Error("Error during buildTVEpisodes",e)
     except Exception as e:
-        Error("Connection error",str(e))
+        Error("Connection error",e)
     xbmcplugin.endOfDirectory(handle)
 
 def buildSearch(url):
@@ -606,7 +619,7 @@ def buildSearch(url):
         toSend = { 'url' : url+term }    
         buildTVShows(toSend)
     except Exception as e:
-        Error("Error during buildSearch",str(e))
+        Error("Error during buildSearch",e)
 
 #Other functions
 def playVideo(url):
