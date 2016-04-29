@@ -3,6 +3,9 @@
 	<extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
 	</extension>
+    <extension point="xbmc.python.module" library="TagBlacklist.py" >
+            <provides></provides>
+    </extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Nakamori Plugin enables you to browse your JMM collection within Kodi.</summary>
 		<description lang="en">Nakamori Plugin enables you to browse your JMM collection within Kodi without needing to reimport it in anyway. Thanks to this approach you are able to still manage your collection with JMM and use information you gathered there to pass them to Kodi. </description>

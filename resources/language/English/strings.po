@@ -143,3 +143,7 @@ msgstr ""
 msgctxt "#32044"
 msgid "Advanced"
 msgstr ""
+
+msgctxt "#32045"
+msgid "Hide AniDB helper or otherwise useless tags"
+msgstr ""
