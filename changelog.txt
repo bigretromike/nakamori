@@ -1,6 +1,13 @@
-v(tbd)
--Add setting to hide -continue-
--Display message if the JMM user is set incorrectly
+v1.3.2 (28/04/2016)
+- removing html tags from plot (#82)
+- message popup when user is invalid (#78)
+- option to disable -continue- (#73) (thanks da3dsoul)
+- genre not populating correctly (#79)
+- genre formating (thanks da3dsoul)
+- some errors are now more accure and show in notification window (#67)
+- option to enable total count of episode base on local file count (#77)
+- option to parse less data of long series (#83) (thanks da3dsoul)
+- Fully tested with Jarvice 16.1
 
 v1.3.1 (02/03/2016)
 - Fix the Fix for files without duration (#64) (thanks kaigame)
