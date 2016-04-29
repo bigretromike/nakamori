@@ -61,11 +61,13 @@ tagBlacklist=[
 
 #Feed this a list of str types
 def processTags(string):
-    for remove in tagBlacklist:
-        if remove in string:
-            string.remove(remove)
+
     toRemove=[]
     for a in string:
+        for remove in tagBlacklist:
+            if remove == str(a).lower():
+                toRemove.append(a)
+                break
         if "to be" in str(a).lower():
             if "merged" in str(a).lower():
                 toRemove.append(a)
