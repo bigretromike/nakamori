@@ -1,5 +1,5 @@
 # Comment any you don't believe should be in here or create an ongoing issue for discussion
-tagBlacklist={
+tagBlacklist=[
     "cast missing",
     "cast",
     "content indicators",
@@ -57,7 +57,7 @@ tagBlacklist={
     "visual novel",
     "watercolour style",
     "widescreen transition"
-}
+]
 
 #Feed this a list of str types
 def processTags(string):
