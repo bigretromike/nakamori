@@ -266,8 +266,7 @@ def buildTVShows(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','')
                     tempGenres=str.split(tempgenre,",")
-                    if addon.getSetting("hideMiscTags") == "true":
-                        tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         a=" ".join(w.capitalize() for w in a.split())
