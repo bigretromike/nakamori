@@ -1,45 +1,39 @@
 # Comment any you don't believe should be in here or create an ongoing issue for discussion
 tagBlacklistAniDBHelpers=[
+    "broadcast cropped to 4-3",
     "cast missing",
     "cast",
     "content indicators",
     "delayed 16-9 broadcast",
     "description missing",
-    "dynamic",
+    "development hell",  # :( God Eater
+    "dialogue driven",  # anidb and their british spellings
     "earth",
     "elements",
     "ensemble cast",
-    "fillers",
+    "fast-paced",
     "full hd version available",
-    "incomplete story",
-    "inconclusive",
-    "inconclusive romantic plot",
     "jdrama adaptation",
     "meta tags",
     "multi-anime projects",
     "new",
     "noitamina",
-    "open-ended",
     "past",
     "place",
     "present",
-    "room for sequel",
     "season",
     "sentai",
     "setting",
     "some wierd shit goin` on",
-    "sudden change of pace",
     "target audience",
     "television programme",
     "themes",
-    "tone changes",
     "translation convention",
-    "tropes",
-    "unresolved",
-    "unresolved romance"
+    "tropes"
 ]
 
 tagBlackListSource=[
+    "4-koma",
     "manga",
     "novel",
     "remake",
@@ -47,7 +41,15 @@ tagBlackListSource=[
 ]
 
 tagBlackListArtStyle=[
+    "3d cg animation",
+    "3d cg closing",
+    "cel-shaded animation",
+    "cgi",
+    "chibi ed",
     "experimental animation",
+    "flash animation",
+    "live-action closing",
+    "live-action imagery",
     "off-model animation",
     "photographic backgrounds",
     "product placement",
@@ -61,18 +63,44 @@ tagBlackListArtStyle=[
 
 tagBlackListUsefulHelpers=[
     "ed variety",
+    "half-length episodes",
     "long episodes",
+    "multi-segment episodes",
     "op and ed sung by characters",
     "op variety",
+    "post-credits scene",
     "recap in opening",
+    "short episodes",
+    "short movie",
+    "stand-alone movie",
     "subtle op ed sequence change"
 ]
 
-#Feed this a list of str types
+tagBlackListPlotSpoilers=[
+    "branching story",
+    "cliffhangers",
+    "colour coded",
+    "complex storyline",
+    "drastic change in sequel",
+    "dynamic",
+    "fillers",
+    "first girl wins",  # seriously a spoiler
+    "incomplete story",
+    "inconclusive",
+    "inconclusive romantic plot",
+    "open-ended",
+    "room for sequel",
+    "sudden change of pace",
+    "tone changes",
+    "unresolved",
+    "unresolved romance"
+]
+
+# Feed this a list of str types
 def processTags(addon,string):
 
     toRemove=[]
-    removeOriginal=0
+    removeOriginal=False
     for a in string:
         if addon.getSetting("hideArtTags") == "true":
             for remove in tagBlackListArtStyle:
@@ -84,16 +112,35 @@ def processTags(addon,string):
                 if remove == str(a).lower():
                     toRemove.append(a)
                     break
+            if "original work" == str(a).lower():
+                toRemove.append(a)
         else:
             for remove in tagBlackListSource:
                 if remove == str(a).lower():
-                    removeOriginal=1
+                    removeOriginal=True
                     break
+
         if addon.getSetting("hideUsefulMiscTags") == "true":
             for remove in tagBlackListUsefulHelpers:
                 if remove == str(a).lower():
                     toRemove.append(a)
                     break
+            if str(a).lower().startswith("preview"):
+                toRemove.append(a)
+
+        if addon.getSetting("hideSpoilerTags") == "true":
+            for remove in tagBlackListPlotSpoilers:
+                if remove == str(a).lower():
+                    toRemove.append(a)
+                    break
+            if str(a).lower().startswith("plot"):
+                toRemove.append(a)
+            if str(a).lower().endswith(" dies"):
+                toRemove.append(a)
+            if str(a).lower().endswith(" end"):
+                toRemove.append(a)
+            if str(a).lower().endswith(" ending"):
+                toRemove.append(a)
 
         if addon.getSetting("hideMiscTags") == "true":
             for remove in tagBlacklistAniDBHelpers:
@@ -113,19 +160,16 @@ def processTags(addon,string):
                 toRemove.append(a)
             elif "censor" in str(a).lower():
                 toRemove.append(a)
-            elif str(a).lower().startswith("plot"):
-                toRemove.append(a)
             elif str(a).lower().startswith("predominantly"):
-                toRemove.append(a)
-            elif str(a).lower().startswith("preview"):
                 toRemove.append(a)
             elif str(a).lower().startswith("weekly"):
                 toRemove.append(a)
     # on a separate loop in case 'original work' came before the source
-    for a in string:
-        if str(a).lower() == "original work":
-            toRemove.append("original work")
-            break
+    if removeOriginal == True:
+        for a in string:
+            if str(a).lower() == "original work":
+                toRemove.append("original work")
+                break
 
     for a in toRemove:
         string.remove(a)
