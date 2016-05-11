@@ -42,7 +42,6 @@ tagBlacklistAniDBHelpers=[
 tagBlackListSource=[
     "manga",
     "novel",
-    "original work",
     "remake",
     "visual novel"
 ]
@@ -73,6 +72,7 @@ tagBlackListUsefulHelpers=[
 def processTags(addon,string):
 
     toRemove=[]
+    removeOriginal=0
     for a in string:
         if addon.getSetting("hideArtTags") == "true":
             for remove in tagBlackListArtStyle:
@@ -83,6 +83,11 @@ def processTags(addon,string):
             for remove in tagBlackListSource:
                 if remove == str(a).lower():
                     toRemove.append(a)
+                    break
+        else:
+            for remove in tagBlackListSource:
+                if remove == str(a).lower():
+                    removeOriginal=1
                     break
         if addon.getSetting("hideUsefulMiscTags") == "true":
             for remove in tagBlackListUsefulHelpers:
@@ -116,7 +121,11 @@ def processTags(addon,string):
                 toRemove.append(a)
             elif str(a).lower().startswith("weekly"):
                 toRemove.append(a)
-
+    # on a separate loop in case 'original work' came before the source
+    for a in string:
+        if str(a).lower() == "original work":
+            toRemove.append("original work")
+            break
 
     for a in toRemove:
         string.remove(a)

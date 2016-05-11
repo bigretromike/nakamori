@@ -294,7 +294,7 @@ def buildTVShows(params):
 
                 total = 0
                 if (addon.getSetting("local_total") == "true"):
-                    total = int(atype.get('localTotal',0))
+                    total = int(atype.get('totalLocal',0))
                 else:
                     total = int(atype.get('leafCount',0))
                 details={
@@ -402,12 +402,15 @@ def buildTVSeasons(params):
                     buildTVEpisodes(u)
                     return
 
+                if plot == "":
+                    plot=removeHTML(atype.get('summary','').encode('utf-8'))
+
                 watched=int(atype.get('viewedLeafCount',0))
 
                 #Create the basic data structures to pass up
                 total = 0
                 if (addon.getSetting("local_total") == "true"):
-                    total = int(atype.get('localTotal',0))
+                    total = int(atype.get('totalLocal',0))
                 else:
                     total = int(atype.get('leafCount',0))
                 details={'title'      : atype.get('title','Unknown').encode('utf-8') ,
@@ -416,8 +419,9 @@ def buildTVSeasons(params):
                      'studio'     : atype.get('studio','').encode('utf-8') ,
                      'plot'       : plot ,
                      'season'     : int(atype.get('season',0)) ,
-                     'episode'    :total ,
+                     'episode'    : total ,
                      'mpaa'       : atype.get('contentRating','') ,
+                     'rating'     : atype.get('rating'),
                      'aired'      : atype.get('originallyAvailableAt','') 
                     }
 
