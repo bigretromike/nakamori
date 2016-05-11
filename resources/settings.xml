@@ -38,6 +38,7 @@
         <setting label="32047" type="bool" id="hideArtTags" default="false"/>
         <setting label="32048" type="bool" id="hideSourceTags" default="false"/>
         <setting label="32049" type="bool" id="hideUsefulMiscTags" default="false"/>
+        <setting label="32050" type="bool" id="hideSpoilerTags" default="false"/>
     </category>
 	<category label="32044">
 		<setting label="32041" type="bool" id="skipExtraInfoOnLongSeries" default="false" />

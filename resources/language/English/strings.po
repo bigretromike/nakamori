@@ -163,3 +163,7 @@ msgstr ""
 msgctxt "#32049"
 msgid "Hide useful helper tags (mostly related to OP/ED style)"
 msgstr ""
+
+msgctxt "#32050"
+msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
+msgstr ""
