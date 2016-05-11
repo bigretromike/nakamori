@@ -405,6 +405,17 @@ def buildTVSeasons(params):
                 if plot == "":
                     plot=removeHTML(atype.get('summary','').encode('utf-8'))
 
+                tempgenre=""
+                tag=atype.find("Tag")
+                if tag is not None:
+                    tempgenre=tag.get('tag','').encode('utf-8')
+                    tempGenres=str.split(tempgenre,",")
+                    tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempgenre=""
+                    for a in tempGenres:
+                        " ".join(w.capitalize() for w in a.split())
+                        tempgenre=a if tempgenre=="" else tempgenre+" | "+a
+
                 watched=int(atype.get('viewedLeafCount',0))
 
                 #Create the basic data structures to pass up
@@ -506,8 +517,7 @@ def buildTVEpisodes(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
-                    if addon.getSetting("hideMiscTags") == "true":
-                        tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempGenres=TagBlacklist.processTags(tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
