@@ -147,3 +147,19 @@ msgstr ""
 msgctxt "#32045"
 msgid "Hide AniDB helper or otherwise useless tags"
 msgstr ""
+
+msgctxt "#32046"
+msgid "Tag Blacklist"
+msgstr ""
+
+msgctxt "#32047"
+msgid "Hide art style related tags"
+msgstr ""
+
+msgctxt "#32048"
+msgid "Hide source tags (Manga, original, etc)"
+msgstr ""
+
+msgctxt "#32049"
+msgid "Hide useful helper tags (mostly related to OP/ED style)"
+msgstr ""
