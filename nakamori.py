@@ -393,7 +393,6 @@ def buildTVSeasons(params):
             banner=e.get('banner','') 
             setWindowHeading(e)
             #For all the directory tags
-            plot=removeHTML(e.get('summary','').encode('utf-8'))
 
             for atype in e.findall('Directory'):
                 if willFlatten:
@@ -402,15 +401,14 @@ def buildTVSeasons(params):
                     buildTVEpisodes(u)
                     return
 
-                if plot == "":
-                    plot=removeHTML(atype.get('summary','').encode('utf-8'))
+                plot=removeHTML(atype.get('summary','').encode('utf-8'))
 
                 tempgenre=""
                 tag=atype.find("Tag")
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
-                    tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
@@ -429,6 +427,7 @@ def buildTVSeasons(params):
                      'sorttitle'  : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8') ,
                      'studio'     : atype.get('studio','').encode('utf-8') ,
                      'plot'       : plot ,
+                     'genre'      : tempgenre,
                      'season'     : int(atype.get('season',0)) ,
                      'episode'    : total ,
                      'mpaa'       : atype.get('contentRating','') ,
@@ -436,7 +435,7 @@ def buildTVSeasons(params):
                      'aired'      : atype.get('originallyAvailableAt','') 
                     }
 
-                if atype.get('sorttitle'): details['sorttitle'] = season.get('sorttitle')
+                if atype.get('sorttitle'): details['sorttitle'] = atype.get('sorttitle')
 
                 extraData={'type'              : 'video' ,
                    'source'            : 'tvseasons',
@@ -517,7 +516,7 @@ def buildTVEpisodes(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
-                    tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
