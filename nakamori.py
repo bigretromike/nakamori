@@ -189,7 +189,7 @@ def validUser():
             valid=True
     return valid
 
-def Error(msg, error):
+def Error(msg, error="Generic"):
     xbmc.log('---' + msg + '---')
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
