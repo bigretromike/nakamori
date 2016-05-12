@@ -266,8 +266,7 @@ def buildTVShows(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','')
                     tempGenres=str.split(tempgenre,",")
-                    if addon.getSetting("hideMiscTags") == "true":
-                        tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         a=" ".join(w.capitalize() for w in a.split())
@@ -295,7 +294,7 @@ def buildTVShows(params):
 
                 total = 0
                 if (addon.getSetting("local_total") == "true"):
-                    total = int(atype.get('localTotal',0))
+                    total = int(atype.get('totalLocal',0))
                 else:
                     total = int(atype.get('leafCount',0))
                 details={
@@ -394,7 +393,6 @@ def buildTVSeasons(params):
             banner=e.get('banner','') 
             setWindowHeading(e)
             #For all the directory tags
-            plot=removeHTML(e.get('summary','').encode('utf-8'))
 
             for atype in e.findall('Directory'):
                 if willFlatten:
@@ -403,12 +401,25 @@ def buildTVSeasons(params):
                     buildTVEpisodes(u)
                     return
 
+                plot=removeHTML(atype.get('summary','').encode('utf-8'))
+
+                tempgenre=""
+                tag=atype.find("Tag")
+                if tag is not None:
+                    tempgenre=tag.get('tag','').encode('utf-8')
+                    tempGenres=str.split(tempgenre,",")
+                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
+                    tempgenre=""
+                    for a in tempGenres:
+                        " ".join(w.capitalize() for w in a.split())
+                        tempgenre=a if tempgenre=="" else tempgenre+" | "+a
+
                 watched=int(atype.get('viewedLeafCount',0))
 
                 #Create the basic data structures to pass up
                 total = 0
                 if (addon.getSetting("local_total") == "true"):
-                    total = int(atype.get('localTotal',0))
+                    total = int(atype.get('totalLocal',0))
                 else:
                     total = int(atype.get('leafCount',0))
                 details={'title'      : atype.get('title','Unknown').encode('utf-8') ,
@@ -416,13 +427,15 @@ def buildTVSeasons(params):
                      'sorttitle'  : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8') ,
                      'studio'     : atype.get('studio','').encode('utf-8') ,
                      'plot'       : plot ,
+                     'genre'      : tempgenre,
                      'season'     : int(atype.get('season',0)) ,
-                     'episode'    :total ,
+                     'episode'    : total ,
                      'mpaa'       : atype.get('contentRating','') ,
+                     'rating'     : atype.get('rating'),
                      'aired'      : atype.get('originallyAvailableAt','') 
                     }
 
-                if atype.get('sorttitle'): details['sorttitle'] = season.get('sorttitle')
+                if atype.get('sorttitle'): details['sorttitle'] = atype.get('sorttitle')
 
                 extraData={'type'              : 'video' ,
                    'source'            : 'tvseasons',
@@ -503,8 +516,7 @@ def buildTVEpisodes(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
-                    if addon.getSetting("hideMiscTags") == "true":
-                        tempGenres=TagBlacklist.processTags(tempGenres)
+                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
