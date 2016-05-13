@@ -88,6 +88,7 @@ tagBlackListPlotSpoilers=[
     "incomplete story",
     "inconclusive",
     "inconclusive romantic plot",
+    "non-linear",
     "open-ended",
     "room for sequel",
     "sudden change of pace",
