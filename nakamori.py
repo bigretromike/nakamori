@@ -792,7 +792,7 @@ if validUser() is True:
         cmd=None
 
     #xbmcgui.Dialog().ok("CMD", cmd)
-    xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
+    #xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
     if cmd != None:
         if cmd == "voteSer":
             voteSeries(parameters)

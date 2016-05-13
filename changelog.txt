@@ -1,5 +1,9 @@
+v1.3.4 (13/05/2016)
+- Subgroups don't have info for individual series (#75)
+- A lot of filtering been added with option to toggle them (da3dsoul)
+
 v1.3.3 (29/04/2016)
-- option to filter junk tags out of genre (#85) (da3dsoul)
+- TagFilter - option to filter junk tags out of genre (#85) (da3dsoul)
 
 v1.3.2 (28/04/2016)
 - removing html tags from plot (#82)
