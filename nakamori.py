@@ -1,21 +1,20 @@
-import urllib2
-import re
-import urllib
-import json
-import sys
-import os.path
-import time
 import base64
 import datetime
-import xml.etree.ElementTree as tree
-
-import TagBlacklist
+import json
+import os.path
+import re
+import resources.lib.TagBlacklist as TagFilter
+import resources.lib.util as util
+import sys
+import time
+import traceback
+import urllib
+import urllib2
 import xbmc
 import xbmcaddon
-import xbmcplugin
 import xbmcgui
-import resources.lib.util as util
-import traceback
+import xbmcplugin
+import xml.etree.ElementTree as tree
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
@@ -268,7 +267,7 @@ def buildTVShows(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','')
                     tempGenres=str.split(tempgenre,",")
-                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
+                    tempGenres=TagFilter.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         a=" ".join(w.capitalize() for w in a.split())
@@ -308,7 +307,7 @@ def buildTVShows(params):
                 #'count'        : count,
                 #'size'         : size,
                 #'Date'         : date,
-                 'rating'       : float(atype.get('rating')),
+                 'rating'       : float(str(atype.get('rating',0))),
                 #'playcount'    : int(atype.get('viewedLeafCount')),
                 #overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
                  'cast'         : listCastAndRole, #cast : list (Michal C. Hall,
@@ -408,7 +407,7 @@ def buildTVSeasons(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
-                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
+                    tempGenres=TagFilter.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
@@ -534,7 +533,7 @@ def buildTVEpisodes(params):
                 if tag is not None:
                     tempgenre=tag.get('tag','').encode('utf-8')
                     tempGenres=str.split(tempgenre,",")
-                    tempGenres=TagBlacklist.processTags(addon,tempGenres)
+                    tempGenres=TagFilter.processTags(addon,tempGenres)
                     tempgenre=""
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
