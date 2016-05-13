@@ -139,28 +139,24 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
         #Jumpy like this and Nakamori like Jumpy
         partemp=util.parseParameters(inputString=url)
         liz.setProperty('path', str(partemp.get('file','pusto')))
+
     if extraData and len(extraData) > 0:
         if extraData.get('source') == 'tvshows' or extraData.get('source') =='tvseasons':
             #Then set the number of watched and unwatched, which will be displayed per season
             liz.setProperty('TotalEpisodes', str(extraData['TotalEpisodes']))
             liz.setProperty('WatchedEpisodes', str(extraData['WatchedEpisodes']))
             liz.setProperty('UnWatchedEpisodes', str(extraData['UnWatchedEpisodes']))
-
             #Hack to show partial flag for TV shows and seasons
             if extraData.get('partialTV') == 1:            
                 liz.setProperty('TotalTime', '100')
                 liz.setProperty('ResumeTime', '50')
-
-    if extraData and len(extraData) > 0:
-        #fanart is nearly always available, so exceptions are rare.
-        if extraData.get('fanart_image'):
-            liz.setProperty('fanart_image', extraData.get('fanart_image'))
-
-        if extraData.get('banner'):
-            liz.setProperty('banner', '%s' % extraData.get('banner', ''))
-
-        if extraData.get('season_thumb'):
-            liz.setProperty('seasonThumb', '%s' % extraData.get('season_thumb', ''))
+            #fanart is nearly always available, so exceptions are rare.
+            if extraData.get('fanart_image'):
+                liz.setProperty('fanart_image', extraData.get('fanart_image'))
+            if extraData.get('banner'):
+                liz.setProperty('banner', '%s' % extraData.get('banner', ''))
+            if extraData.get('season_thumb'):
+                liz.setProperty('seasonThumb', '%s' % extraData.get('season_thumb', ''))
 
     if context is None:
         if extraData and len(extraData) > 0:
@@ -357,8 +353,10 @@ def buildTVShows(params):
                     details['playcount'] = 1
                 else:
                     extraData['partialTV'] = 1
-
-                u=sys.argv[0]+"?url="+url+"&mode="+str(5)
+                mode = 5
+                if "data/1/2/" in extraData['key'].lower():
+                    mode = 4
+                u=sys.argv[0]+"?url="+url+"&mode="+str(mode)
                 context=None
                 addGUIItem(u,details,extraData, context)
         except Exception as e:
@@ -793,8 +791,8 @@ if validUser() is True:
     except:
         cmd=None
 
-#xbmcgui.Dialog().ok("CMD", cmd)
-#xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
+    #xbmcgui.Dialog().ok("CMD", cmd)
+    xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
     if cmd != None:
         if cmd == "voteSer":
             voteSeries(parameters)
