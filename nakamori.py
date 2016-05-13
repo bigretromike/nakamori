@@ -202,7 +202,7 @@ def validUser ():
     valid = False
     for atype in e.findall('User'):
         id = atype.get('id')
-        if (id == addon.getSetting("userid")):
+        if id == addon.getSetting("userid"):
             valid = True
     return valid
 
@@ -222,7 +222,7 @@ def Error (msg, error="Generic"):
 
 def removeHTML (data):
     # p = re.compile(r'<.*?>')
-    p = re.compile('http:\/\/anidb.net\/[a-z]{1,3}[0-9]{1,7}[ ]')
+    p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
     data2 = p.sub('', data)
     p = re.compile('(\[|\])')
     return p.sub('', data2)
@@ -238,9 +238,9 @@ def buildMainMenu ():
             for atype in e.findall('Directory'):
                 title = atype.get('title')
                 mode = 4
-                if (title == 'Continue Watching (SYSTEM)'):
+                if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
-                elif (title == 'Unsort'):
+                elif title == 'Unsort':
                     mode = 6
                 url = atype.get('key')
                 thumb = atype.get('thumb', '')
@@ -322,7 +322,7 @@ def buildTVShows (params):
                 # Extended support END#
 
                 total = 0
-                if (addon.getSetting("local_total") == "true"):
+                if addon.getSetting("local_total") == "true":
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
@@ -464,7 +464,7 @@ def buildTVSeasons (params):
 
                 # Create the basic data structures to pass up
                 total = 0
-                if (addon.getSetting("local_total") == "true"):
+                if addon.getSetting("local_total") == "true":
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
@@ -680,7 +680,7 @@ def buildTVEpisodes (params):
                     details['playcount'] = 1
                 else:
                     details['playcount'] = 0
-                    if (nextepisode == 1):
+                    if nextepisode == 1:
                         nextepisode = episode_count
                         nextepisode += 1
 
@@ -761,7 +761,7 @@ def playVideo (url):
             currentTime = Player.getTime()
             if (totalTime * mark) < currentTime:
                 file_fin = True
-            if (Player.isPlaying() == False):
+            if Player.isPlaying() == False:
                 break
         except:
             xbmc.sleep(500)
@@ -773,7 +773,7 @@ def playVideo (url):
 def playPlaylist (data):
     offset = data['offset']
     pos = int(offset)
-    if (pos == 1):
+    if pos == 1:
         xbmcgui.Dialog().ok('Finished', 'You already finished this')
     else:
         win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
@@ -834,11 +834,11 @@ def watchedMark (params):
         watched_msg = "unwatched"
     xbmc.executebuiltin('XBMC.Action(ToggleWatched)')
     sync = addon.getSetting("syncwatched")
-    if (sync == "true"):
+    if sync == "true":
         getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
                 "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched), "")
     box = addon.getSetting("watchedbox")
-    if (box == "true"):
+    if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
             'Watched status changed', 'Mark as ', watched_msg, addon.getAddonInfo('icon')))
 
