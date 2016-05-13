@@ -1,9 +1,27 @@
+v1.3.4 (13/05/2016)
+- Subgroups don't have info for individual series (#75)
+- A lot of filtering been added with option to toggle them (da3dsoul)
+
+v1.3.3 (29/04/2016)
+- TagFilter - option to filter junk tags out of genre (#85) (da3dsoul)
+
+v1.3.2 (28/04/2016)
+- removing html tags from plot (#82)
+- message popup when user is invalid (#78)
+- option to disable -continue- (#73) (thanks da3dsoul)
+- genre not populating correctly (#79)
+- genre formating (thanks da3dsoul)
+- some errors are now more accure and show in notification window (#67)
+- option to enable total count of episode base on local file count (#77)
+- option to parse less data of long series (#83) (thanks da3dsoul)
+- Fully tested with Jarvice 16.1
+
 v1.3.1 (02/03/2016)
 - Fix the Fix for files without duration (#64) (thanks kaigame)
 
 v1.3.0 (01/03/2016)
 - Fix for files without duration (#64)
-- Search is once again avaible (#68)
+- Search is once again available (#68)
 - Fully tested with Jarvice (Final build) (#66)
 
 v1.2.9 (14/02/2016)
