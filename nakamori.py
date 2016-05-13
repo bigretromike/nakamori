@@ -153,9 +153,8 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
             if extraData.get('partialTV') == 1:
                 liz.setProperty('TotalTime', '100')
                 liz.setProperty('ResumeTime', '50')
-            # fanart is nearly always available, so exceptions are rare.
             if extraData.get('fanart_image'):
-                liz.setProperty('fanart_image', extraData.get('fanart_image'))
+                liz.setProperty('fanart_image', '%s' % extraData.get('fanart_image', ''))
             if extraData.get('banner'):
                 liz.setProperty('banner', '%s' % extraData.get('banner', ''))
             if extraData.get('season_thumb'):
@@ -172,17 +171,15 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
                     url_peep = url_peep + "&anime_id=" + extraData.get('key') + "&cmd=voteSer"
                     context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1], url_peep)))
                 if extraData.get('source', 'none') == 'tvepisodes':
-                    url_peep = url_peep + "&anime_id=" + extraData.get('parentKey') + "&ep_id=" + extraData.get(
-                        'jmmepisodeid')
+                    url_peep = url_peep + "&anime_id=" + extraData.get('parentKey') + "&ep_id=" + extraData.get('jmmepisodeid')
                     context.append(('Vote for Series', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=voteSer)' % (
                     sys.argv[1], url_peep)))
                     context.append(('Vote for Episode', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=voteEp)' % (
                     sys.argv[1], url_peep)))
                     context.append(('Mark as Watched', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (
                     sys.argv[1], url_peep)))
-                    context.append(('Mark as Unwatched',
-                                    'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=unwatched)' % (
-                                    sys.argv[1], url_peep)))
+                    context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=unwatched)' % (
+                    sys.argv[1], url_peep)))
                 liz.addContextMenuItems(context)
     return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
 
@@ -224,8 +221,7 @@ def removeHTML (data):
 def buildMainMenu ():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
-        e = tree.XML(getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-            "port") + "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
+        e = tree.XML(getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
             for atype in e.findall('Directory'):
                 title = atype.get('title')
@@ -238,12 +234,9 @@ def buildMainMenu ():
                 thumb = atype.get('thumb', '')
                 fanart = atype.get('art', thumb)
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
-                liz = xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb,
-                                       path=url)
+                liz = xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
                 liz.setProperty('fanart_image', fanart)
-                liz.setInfo(type="Video", infoLabels={
-                    "Title": title
-                    })
+                liz.setInfo(type="Video", infoLabels={ "Title": title })
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
             Error("Error during buildMainMenu", str(e))
@@ -251,16 +244,12 @@ def buildMainMenu ():
         Error("Connection error", str(e))
 
     # Add Search
-    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-        "port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
+    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
     mode = 3
     title = "Search"
-    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-        "port") + "/jmmserverkodi/GetSupportImage/plex_others.png"
+    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
-    liz.setInfo(type="Video", infoLabels={
-        "Title": title
-        })
+    liz.setInfo(type="Video", infoLabels={ "Title": title })
     u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle, True, False, False)
@@ -295,7 +284,9 @@ def buildTVShows (params):
                         tempgenre = a if tempgenre == "" else tempgenre + " | " + a
                 watched = int(atype.get('viewedLeafCount', 0))
 
+                # This is not used here because JMM dont present this data to cut the data size on 'ALL' groups but we will leave this here to future support
                 # Extended support
+                listCast = []
                 listCastAndRole = []
                 charTag = atype.find('Characters')
                 if charTag is not None:
@@ -305,12 +296,14 @@ def buildTVShows (params):
                         char_charname = char.get('charname', '')
                         # char_picture=char.get('picture','')
                         # char_desc=char.get('description','')
-                        char_seiyuuname = char.get('seiyuuname', '')
+                        char_seiyuuname = char.get('seiyuuname', 'Unknown')
                         # char_seiyuupic=char.get('seiyuupic','')
                         # only add it if it has data
                         # reorder these to match the convention (Actor is cast, character is role, in that order)
-                        if len(char_charname) != 0 or len(char_seiyuuname) != 0:
-                            listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
+                        if len(char_charname) != 0:
+                            listCast.append(str(char_charname))
+                            if len(char_seiyuuname) != 0:
+                                listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
                 # Extended support END#
 
                 total = 0
@@ -319,7 +312,6 @@ def buildTVShows (params):
                 else:
                     total = int(atype.get('leafCount', 0))
                 details = {
-
                     'title'        : atype.get('title', 'Unknown').encode('utf-8'),
                     'genre'        : tempgenre,
                     'year'         : int(atype.get('year', 0)),
@@ -331,7 +323,7 @@ def buildTVShows (params):
                     'rating'       : float(str(atype.get('rating', 0))),
                     # 'playcount'    : int(atype.get('viewedLeafCount')),
                     # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
-                    'cast'         : listCastAndRole,  # cast : list (Michal C. Hall,
+                    'cast'         : listCast,  # cast : list (Michal C. Hall,
                     'castandrole'  : listCastAndRole,
                     # This also does nothing. Those gremlins.
                     # 'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
@@ -380,6 +372,7 @@ def buildTVShows (params):
                 else:
                     extraData['partialTV'] = 1
                 mode = 5
+                # this will help when users is using grouping option in jmm which results in series in series
                 if "data/1/2/" in extraData['key'].lower():
                     mode = 4
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode)
@@ -569,12 +562,13 @@ def buildTVEpisodes (params):
                         " ".join(w.capitalize() for w in a.split())
                         tempgenre = a if tempgenre == "" else tempgenre + " | " + a
             # keep this init out of the loop, as we only provide this once
+	      	# Extended support
+            listCast = []
             listCastAndRole = []
             for atype in videoList:
                 episode_count += 1
-
                 # we only get this onc, so only set it if it's not already set
-                if len(listCastAndRole) == 0:
+                if len(listCast) == 0:
                     charTag = atype.find('Characters')
                     if charTag is not None:
                         for char in charTag.findall('Character'):
@@ -583,12 +577,15 @@ def buildTVEpisodes (params):
                             char_charname = char.get('charname', '')
                             # char_picture=char.get('picture','')
                             # char_desc=char.get('description','')
-                            char_seiyuuname = char.get('seiyuuname', '')
+                            char_seiyuuname = char.get('seiyuuname', 'Unknown')
                             # char_seiyuupic=char.get('seiyuupic','')
                             # only add it if it has data
                             # reorder these to match the convention (Actor is cast, character is role, in that order)
-                            if len(char_charname) != 0 or len(char_seiyuuname) != 0:
-                                listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
+                            if len(char_charname) != 0:
+                                listCast.append(str(char_charname))
+                                if len(char_seiyuuname) != 0:
+                                    listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
+                # Extended support END#
                 tempdir = []
                 tempwriter = []
                 view_offset = atype.get('viewOffset', 0)
@@ -609,7 +606,8 @@ def buildTVEpisodes (params):
                     # 'cast'        : list(['Actor1','Actor2']),
                     # 'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
                     # According to the docs, this will auto fill castandrole
-                    'cast'         : listCastAndRole,
+                    'CastAndRole'  : listCastAndRole,
+                    'Cast'         : listCast,
                     'director'     : " / ".join(tempdir),
                     'writer'       : " / ".join(tempwriter),
                     'genre'        : tempgenre,
@@ -620,7 +618,6 @@ def buildTVEpisodes (params):
                     'episode'      : int(atype.get('index', 0)),
                     'aired'        : atype.get('originallyAvailableAt', ''),
                     'tvshowtitle'  : atype.get('grandparentTitle', atype.get('grandparentTitle', '')).encode('utf-8'),
-                    # <-----------------------
                     'votes'        : int(atype.get('votes', 0)),
                     'originaltitle': atype.get('original_title', ''),
                     'size'         : int(atype.find('Media').find('Part').get('size', 0)),

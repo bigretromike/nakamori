@@ -1,6 +1,7 @@
 v1.3.4 (13/05/2016)
 - Subgroups don't have info for individual series (#75)
 - A lot of filtering been added with option to toggle them (da3dsoul)
+- Cast and Role fix (#100) 
 
 v1.3.3 (29/04/2016)
 - TagFilter - option to filter junk tags out of genre (#85) (da3dsoul)
