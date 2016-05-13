@@ -236,7 +236,7 @@ def buildMainMenu ():
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
                 liz = xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
                 liz.setProperty('fanart_image', fanart)
-                liz.setInfo(type="Video", infoLabels={ "Title": title })
+                liz.setInfo(type="Video", infoLabels={ "Title": title, "Plot": title })
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
             Error("Error during buildMainMenu", str(e))
