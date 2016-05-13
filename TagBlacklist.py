@@ -24,7 +24,7 @@ tagBlacklistAniDBHelpers=[
     "season",
     "sentai",
     "setting",
-    "some wierd shit goin` on",
+    "some weird shit goin` on", # these are some grave accents in use...
     "target audience",
     "television programme",
     "themes",
@@ -88,6 +88,7 @@ tagBlackListPlotSpoilers=[
     "incomplete story",
     "inconclusive",
     "inconclusive romantic plot",
+    "non-linear",
     "open-ended",
     "room for sequel",
     "sudden change of pace",
@@ -155,6 +156,13 @@ def processTags(addon,string):
                 elif "split" in str(a).lower():
                     toRemove.append(a)
                 elif "moved" in str(a).lower():
+                    toRemove.append(a)
+            elif "needs" in str(a).lower():
+                if "merging" in str(a).lower():
+                    toRemove.append(a)
+                elif "deleting" in str(a).lower():
+                    toRemove.append(a)
+                elif "moving" in str(a).lower():
                     toRemove.append(a)
             elif "old animetags" in str(a).lower():
                 toRemove.append(a)

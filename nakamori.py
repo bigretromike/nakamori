@@ -168,6 +168,8 @@ def addGUIItem(url, details, extraData, context=None, folder=True):
             if extraData.get('type','video').lower() == "video":
                 context=[]
                 url_peep = sys.argv[2]
+                # Always allow 'More Info' to be executed. Some places have more info than others
+                context.append(('More Info', 'Action(Info)'))
                 if extraData.get('source','none') == 'tvshows':
                     url_peep = url_peep + "&anime_id=" + extraData.get('key')[2:]+"&cmd=vote"
                     context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1] ,url_peep)))
@@ -274,22 +276,21 @@ def buildTVShows(params):
                 watched = int(atype.get('viewedLeafCount',0))
 
                 #Extended support
-                cast = [ ]
-                listCast = []
                 listCastAndRole = []
-                if atype.find('Characters') is not None:
-                    for char in atype.find('Characters').findall('Character'):
-                        char_id = char.get('charID')
-                        char_charname=char.get('charname')
-                        char_picture=char.get('picture','')
-                        char_desc=char.get('description','')
+                charTag = atype.find('Characters')
+                if charTag is not None:
+                    for char in charTag.findall('Character'):
+                        # don't init any variables we don't need
+                        #char_id = char.get('charID')
+                        char_charname=char.get('charname','')
+                        #char_picture=char.get('picture','')
+                        #char_desc=char.get('description','')
                         char_seiyuuname=char.get('seiyuuname','')
-                        char_seiyuupic=char.get('seiyuupic','')
-                        listCast.append(char_charname)
-                        listCastAndRole.append((char_charname, char_seiyuuname))
-                else:
-                     cast = [ ]
-                cast = [listCast, listCastAndRole]
+                        #char_seiyuupic=char.get('seiyuupic','')
+                        # only add it if it has data
+                        # reorder these to match the convention (Actor is cast, character is role, in that order)
+                        if len(char_charname) != 0 or len(char_seiyuuname) != 0:
+                            listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
                 #Extended support END#
 
                 total = 0
@@ -298,44 +299,44 @@ def buildTVShows(params):
                 else:
                     total = int(atype.get('leafCount',0))
                 details={
-                #'count': count,
-                #'size': size,
-                #'Date': date, 
-                'title': atype.get('title','Unknown').encode('utf-8') , 
-                'genre':  tempgenre,
-                'year': int(atype.get('year',0)),
-                'episode': total,
-                'season': int(atype.get('season',0)),
-                #top250 : integer (192,
-                #tracknumber : integer (3,
-                'rating': atype.get('rating'),
-                #'playcount': int(atype.get('viewedLeafCount')),
-                #overlay : integer (2, - range is 0..8. See GUIListItem.h for values
-                'cast': cast[0], #cast : list (Michal C. Hall,
-                'castandrole': cast[1], # : list (Michael C. Hall|Dexter,
-                #director : string (Dagur Kari,
-                'mpaa': atype.get('contentRating',''),
-                'plot': removeHTML(atype.get('summary','').encode('utf-8')),
-                #'plotoutline': plotoutline,
-                'originaltitle': atype.get('original_title','').encode("utf-8"),
-                'sorttitle': atype.get('title','Unknown').encode('utf-8'),
-                #'Duration': duration,
-                #'Studio':studio, < ---
-                #'Tagline': tagline,
-                #'Writer': writer,
-                #'tvshowtitle': tvshowtitle,
-                'tvshowname' : atype.get('title','Unknown').encode('utf-8'),
-                #'premiered': premiered,
-                #'Status': status,
-                #code : string (tt0110293, - IMDb code
-                'aired': atype.get('originallyAvailableAt',''),
-                #credits : string (Andy Kaufman, - writing credits
-                #'Lastplayed': lastplayed,
-                #album : string (The Joshua Tree,
-                #artist : list (['U2'],
-                'votes': atype.get('votes'),
-                #trailer : string (/home/user/trailer.avi,
-                'dateadded': atype.get('addedAt')
+
+                 'title'        : atype.get('title','Unknown').encode('utf-8') ,
+                 'genre'        :  tempgenre,
+                 'year'         : int(atype.get('year',0)),
+                 'episode'      : total,
+                 'season'       : int(atype.get('season',0)),
+                #'count'        : count,
+                #'size'         : size,
+                #'Date'         : date,
+                 'rating'       : float(atype.get('rating')),
+                #'playcount'    : int(atype.get('viewedLeafCount')),
+                #overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
+                 'cast'         : listCastAndRole, #cast : list (Michal C. Hall,
+                 'castandrole'  : listCastAndRole,
+                # This also does nothing. Those gremlins.
+                #'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
+                #'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
+                #director       : string (Dagur Kari,
+                 'mpaa'         : atype.get('contentRating',''),
+                 'plot'         : removeHTML(atype.get('summary','').encode('utf-8')),
+                #'plotoutline'  : plotoutline,
+                 'originaltitle': atype.get('original_title','').encode("utf-8"),
+                 'sorttitle'    : atype.get('title','Unknown').encode('utf-8'),
+                #'Duration'     : duration,
+                #'Studio'       : studio, < ---
+                #'Tagline'      : tagline,
+                #'Writer'       : writer,
+                #'tvshowtitle'  : tvshowtitle,
+                 'tvshowname'   : atype.get('title','Unknown').encode('utf-8'),
+                #'premiered'    : premiered,
+                #'Status'       : status,
+                #code           : string (tt0110293, - IMDb code
+                 'aired'        : atype.get('originallyAvailableAt',''),
+                #credits        : string (Andy Kaufman, - writing credits
+                #'Lastplayed'   : lastplayed,
+                 'votes'        : atype.get('votes'),
+                #trailer        : string (/home/user/trailer.avi,
+                 'dateadded'    : atype.get('addedAt')
                 }
         
                 extraData={ 'type'              : 'video' ,
@@ -347,7 +348,6 @@ def buildTVShows(params):
                    'fanart_image'      : atype.get('art', atype.get('thumb'))  ,
                    'key'               : atype.get('key','') ,
                    'ratingKey'         : str(atype.get('ratingKey',0))
-                   #'ArtistThumb'     :  'http://s-media-cache-ak0.pinimg.com/236x/11/13/ac/1113acce3968360db3d0280526fd5382.jpg'  #<-----------
                  }
                 url=atype.get('key')
 
@@ -416,6 +416,22 @@ def buildTVSeasons(params):
 
                 watched=int(atype.get('viewedLeafCount',0))
 
+                listCastAndRole = []
+                charTag = atype.find('Characters')
+                if charTag is not None:
+                    for char in charTag.findall('Character'):
+                        # don't init any variables we don't need
+                        #char_id = char.get('charID')
+                        char_charname=char.get('charname','')
+                        #char_picture=char.get('picture','')
+                        #char_desc=char.get('description','')
+                        char_seiyuuname=char.get('seiyuuname','')
+                        #char_seiyuupic=char.get('seiyuupic','')
+                        # only add it if it has data
+                        # reorder these to match the convention (Actor is cast, character is role, in that order)
+                        if len(char_charname) != 0 or len(char_seiyuuname) != 0:
+                            listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
+
                 #Create the basic data structures to pass up
                 total = 0
                 if (addon.getSetting("local_total") == "true"):
@@ -426,6 +442,8 @@ def buildTVSeasons(params):
                      'tvshowname' : atype.get('title','Unknown').encode('utf-8') ,
                      'sorttitle'  : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8') ,
                      'studio'     : atype.get('studio','').encode('utf-8') ,
+                     'cast'       : listCastAndRole,
+                     'castandrole': listCastAndRole,
                      'plot'       : plot ,
                      'genre'      : tempgenre,
                      'season'     : int(atype.get('season',0)) ,
@@ -484,7 +502,7 @@ def buildTVEpisodes(params):
         setWindowHeading(e)
         try:
             if e.find('Directory') is not None:
-                if (e.find('Directory').get('type','none') == 'season'):
+                if e.find('Directory').get('type','none') == 'season':
                     params['url'] = params['url'].replace('&mode=6','&mode=5')
                     buildTVSeasons(params)
                     return
@@ -521,10 +539,27 @@ def buildTVEpisodes(params):
                     for a in tempGenres:
                         " ".join(w.capitalize() for w in a.split())
                         tempgenre=a if tempgenre=="" else tempgenre+" | "+a
-                    
+            # keep this init out of the loop, as we only provide this once
+            listCastAndRole = []
             for atype in videoList:
                 episode_count += 1
-                tempcast=[]
+
+                # we only get this onc, so only set it if it's not already set
+                if len(listCastAndRole) == 0:
+                    charTag = atype.find('Characters')
+                    if charTag is not None:
+                        for char in charTag.findall('Character'):
+                            # don't init any variables we don't need
+                            #char_id = char.get('charID')
+                            char_charname=char.get('charname','')
+                            #char_picture=char.get('picture','')
+                            #char_desc=char.get('description','')
+                            char_seiyuuname=char.get('seiyuuname','')
+                            #char_seiyuupic=char.get('seiyuupic','')
+                            # only add it if it has data
+                            # reorder these to match the convention (Actor is cast, character is role, in that order)
+                            if len(char_charname) != 0 or len(char_seiyuuname) != 0:
+                                listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
                 tempdir=[]
                 tempwriter=[]
                 view_offset=atype.get('viewOffset',0)
@@ -535,11 +570,20 @@ def buildTVEpisodes(params):
                 else:
                     duration=int(tmp_duration)/1000
                 #Required listItem entries for XBMC
-                details={'plot'        : "..." if skip else atype.get('summary','').encode('utf-8') ,
+                details={
+                 'plot'        : "..." if skip else atype.get('summary','').encode('utf-8') ,
                  'title'       : atype.get('title','Unknown').encode('utf-8') ,
                  'sorttitle'   : atype.get('titleSort', atype.get('title','Unknown')).encode('utf-8')  ,
                  'rating'      : float(atype.get('rating',0)) ,
                  #'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
+                 # This doesn't work, some gremlins be afoot in this code...it's probably just that it only applies at series level
+                 #'cast'        : list(['Actor1','Actor2']),
+                 #'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
+                 # According to the docs, this will auto fill castandrole
+                 'cast'        : listCastAndRole,
+                 'director'    : " / ".join(tempdir),
+                 'writer'      : " / ".join(tempwriter),
+                 'genre'       :  tempgenre,
                  'duration'    : str(datetime.timedelta(seconds=duration)) ,
                  'mpaa'        : atype.get('contentRating','') ,
                  'year'        : int(atype.get('year',0)) ,
@@ -601,12 +645,6 @@ def buildTVEpisodes(params):
                     if (nextepisode == 1):
                         nextepisode = episode_count
                         nextepisode += 1
-
-                #Another Metadata
-                details['cast']     = tempcast
-                details['director'] = " / ".join(tempdir)
-                details['writer']   = " / ".join(tempwriter)
-                details['genre']    = tempgenre
 
                 context=None
                 url=atype.get('key')
