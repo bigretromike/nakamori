@@ -107,12 +107,16 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
     else:
         title = details.get('title', 'Unknown')
     details['title'] = title
-    liz = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=tbi)
+    #liz = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=tbi)
+    liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
+    if len(tbi) > 0:
+        liz.setArt( { 'thumb' : tbi } )
+        liz.setArt( { 'poster' : getPoster(tbi) } )
 
     # Set the properties of the item, such as summary, name, season, etc
     liz.setInfo(type=tp, infoLabels=details)
 
-    # For all end items
+    # For all video items
     if not folder:
         liz.setProperty('IsPlayable', 'true')
         if extraData and len(extraData) > 0:
@@ -141,7 +145,7 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
                 liz.addStreamInfo('audio', audio_codec)
         # Jumpy like this and Nakamori like Jumpy
         partemp = util.parseParameters(inputString=url)
-        liz.setProperty('path', str(partemp.get('file', 'pusto')))
+        liz.setProperty('path', str(partemp.get('file', 'empty')))
 
     if extraData and len(extraData) > 0:
         if extraData.get('source') == 'tvshows' or extraData.get('source') == 'tvseasons':
@@ -154,11 +158,12 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
                 liz.setProperty('TotalTime', '100')
                 liz.setProperty('ResumeTime', '50')
             if extraData.get('fanart_image'):
-                liz.setProperty('fanart_image', '%s' % extraData.get('fanart_image', ''))
+                liz.setArt( { "fanart" : extraData.get('fanart_image','') } )
+            # We probably dont use those (second is probably custom)
             if extraData.get('banner'):
-                liz.setProperty('banner', '%s' % extraData.get('banner', ''))
+                liz.setArt({ 'banner' : extraData.get('banner', '') })
             if extraData.get('season_thumb'):
-                liz.setProperty('seasonThumb', '%s' % extraData.get('season_thumb', ''))
+                liz.setArt({ 'seasonThumb' : extraData.get('season_thumb', '') })
 
     if context is None:
         if extraData and len(extraData) > 0:
@@ -217,6 +222,17 @@ def removeHTML (data):
     return p.sub('', data2)
 
 
+def getPoster (data):
+    result = data
+    if len(data) > 0 and "getthumb" in data.lower():
+        p = data.lower().replace('getthumb','getimage')
+        s = p.split("/")
+        last_word = ""
+        for chunk in s:
+            last_word = chunk
+        result = p.replace(last_word,'')[:-1]
+    return result
+
 # Adding items to list/menu:
 def buildMainMenu ():
     xbmcplugin.setContent(handle, content='tvshows')
@@ -234,23 +250,23 @@ def buildMainMenu ():
                 thumb = atype.get('thumb', '')
                 fanart = atype.get('art', thumb)
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
-                liz = xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
-                liz.setProperty('fanart_image', fanart)
+                liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+                liz.setArt({ 'thumb' : thumb , 'fanart' : fanart, 'poster' : getPoster(thumb), 'icon' : 'DefaultVideo.png' })
                 liz.setInfo(type="Video", infoLabels={ "Title": title, "Plot": title })
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
             Error("Error during buildMainMenu", str(e))
     except Exception as e:
-        Error("Connection error", str(e))
+        Error("Connection error #1", str(e))
 
     # Add Search
     url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
-    mode = 3
     title = "Search"
     thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png"
-    liz = xbmcgui.ListItem(label=title, label2=title, iconImage="DefaultVideo.png", thumbnailImage=thumb, path=url)
-    liz.setInfo(type="Video", infoLabels={ "Title": title })
-    u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
+    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+    liz.setArt({ 'thumb' : thumb , 'poster' : getPoster(thumb), 'icon' : 'DefaultVideo.png' })
+    liz.setInfo(type="Video", infoLabels={ "Title": title, "Plot": title })
+    u = sys.argv[0] + "?url=" + url + "&mode=" + str(3) + "&name=" + urllib.quote_plus(title)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
@@ -381,7 +397,7 @@ def buildTVShows (params):
         except Exception as e:
             Error("Error during buildTVShows", str(e))
     except Exception as e:
-        Error("Connection error", str(e))
+        Error("Connection error #2", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -508,7 +524,7 @@ def buildTVSeasons (params):
         except Exception as e:
             Error("Error during buildTVSeasons", str(e))
     except Exception as e:
-        Error("Connection error", str(e))
+        Error("Connection error #3", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -692,7 +708,7 @@ def buildTVEpisodes (params):
         except Exception as e:
             Error("Error during buildTVEpisodes", str(e))
     except Exception as e:
-        Error("Connection error", str(e))
+        Error("Connection error #4", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
