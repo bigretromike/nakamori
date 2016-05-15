@@ -328,8 +328,9 @@ def buildTVShows (params):
                 listCastAndRole = []
                 if len(listCast) == 0:
                     list = getCastAndRole(atype.find('Characters'))
-                    listCast = list[0]
-                    listCastAndRole = list[1]
+                    if list is not None:
+                        listCast = list[0]
+                        listCastAndRole = list[1]
 
                 total = 0
                 if addon.getSetting("local_total") == "true":
@@ -462,8 +463,9 @@ def buildTVSeasons (params):
                 listCastAndRole = []
                 if len(listCast) == 0:
                     list = getCastAndRole(atype.find('Characters'))
-                    listCast = list[0]
-                    listCastAndRole = list[1]
+                    if list is not None:
+                        listCast = list[0]
+                        listCastAndRole = list[1]
 
                 # Create the basic data structures to pass up
                 total = 0
@@ -584,8 +586,9 @@ def buildTVEpisodes (params):
                 # we only get this once, so only set it if it's not already set
                 if len(listCast) == 0:
                     list = getCastAndRole(atype.find('Characters'))
-                    listCast = list[0]
-                    listCastAndRole = list[1]
+                    if list is not None:
+                        listCast = list[0]
+                        listCastAndRole = list[1]
 	      	# Extended support
             for atype in videoList:
                 episode_count += 1
