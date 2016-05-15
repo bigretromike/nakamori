@@ -21,7 +21,6 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
 urlopen = urllib2.urlopen
 Request = urllib2.Request
 
-
 # Internal function
 def getHtml (url, referer):
     referer = urllib2.quote(referer).replace("%3A", ":")
@@ -233,6 +232,30 @@ def getPoster (data):
         result = p.replace(last_word,'')[:-1]
     return result
 
+
+def getCastAndRole (data):
+    if data is not None:
+        list = []
+        listCast = []
+        listCastAndRole = []
+        for char in data.findall('Character'):
+            # don't init any variables we don't need
+            # char_id = char.get('charID')
+            char_charname = char.get('charname', '')
+            # char_picture=char.get('picture','')
+            # char_desc=char.get('description','')
+            char_seiyuuname = char.get('seiyuuname', 'Unknown')
+            char_seiyuupic=char.get('seiyuupic','err404')
+            # only add it if it has data
+            # reorder these to match the convention (Actor is cast, character is role, in that order)
+            if len(char_charname) != 0:
+                listCast.append(str(char_charname))
+                if len(char_seiyuuname) != 0:
+                    listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
+        list.append(listCast)
+        list.append(listCastAndRole)
+        return list
+
 # Adding items to list/menu:
 def buildMainMenu ():
     xbmcplugin.setContent(handle, content='tvshows')
@@ -301,26 +324,13 @@ def buildTVShows (params):
                 watched = int(atype.get('viewedLeafCount', 0))
 
                 # This is not used here because JMM dont present this data to cut the data size on 'ALL' groups but we will leave this here to future support
-                # Extended support
                 listCast = []
                 listCastAndRole = []
-                charTag = atype.find('Characters')
-                if charTag is not None:
-                    for char in charTag.findall('Character'):
-                        # don't init any variables we don't need
-                        # char_id = char.get('charID')
-                        char_charname = char.get('charname', '')
-                        # char_picture=char.get('picture','')
-                        # char_desc=char.get('description','')
-                        char_seiyuuname = char.get('seiyuuname', 'Unknown')
-                        # char_seiyuupic=char.get('seiyuupic','')
-                        # only add it if it has data
-                        # reorder these to match the convention (Actor is cast, character is role, in that order)
-                        if len(char_charname) != 0:
-                            listCast.append(str(char_charname))
-                            if len(char_seiyuuname) != 0:
-                                listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
-                # Extended support END#
+                for atype in videoList:
+                    if len(listCast) == 0:
+                        list = getCastAndRole(atype.find('Characters'))
+                        listCast = list[0]
+                        listCastAndRole = list[1]
 
                 total = 0
                 if addon.getSetting("local_total") == "true":
@@ -449,21 +459,13 @@ def buildTVSeasons (params):
 
                 watched = int(atype.get('viewedLeafCount', 0))
 
+                listCast = []
                 listCastAndRole = []
-                charTag = atype.find('Characters')
-                if charTag is not None:
-                    for char in charTag.findall('Character'):
-                        # don't init any variables we don't need
-                        # char_id = char.get('charID')
-                        char_charname = char.get('charname', '')
-                        # char_picture=char.get('picture','')
-                        # char_desc=char.get('description','')
-                        char_seiyuuname = char.get('seiyuuname', '')
-                        # char_seiyuupic=char.get('seiyuupic','')
-                        # only add it if it has data
-                        # reorder these to match the convention (Actor is cast, character is role, in that order)
-                        if len(char_charname) != 0 or len(char_seiyuuname) != 0:
-                            listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
+                for atype in videoList:
+                    if len(listCast) == 0:
+                        list = getCastAndRole(atype.find('Characters'))
+                        listCast = list[0]
+                        listCastAndRole = list[1]
 
                 # Create the basic data structures to pass up
                 total = 0
@@ -476,7 +478,7 @@ def buildTVSeasons (params):
                     'tvshowname' : atype.get('title', 'Unknown').encode('utf-8'),
                     'sorttitle'  : atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
                     'studio'     : atype.get('studio', '').encode('utf-8'),
-                    'cast'       : listCastAndRole,
+                    'cast'       : listCast,
                     'castandrole': listCastAndRole,
                     'plot'       : plot,
                     'genre'      : tempgenre,
@@ -579,29 +581,17 @@ def buildTVEpisodes (params):
                         tempgenre = a if tempgenre == "" else tempgenre + " | " + a
             # keep this init out of the loop, as we only provide this once
 	      	# Extended support
-            listCast = []
-            listCastAndRole = []
             for atype in videoList:
                 episode_count += 1
                 # we only get this onc, so only set it if it's not already set
-                if len(listCast) == 0:
-                    charTag = atype.find('Characters')
-                    if charTag is not None:
-                        for char in charTag.findall('Character'):
-                            # don't init any variables we don't need
-                            # char_id = char.get('charID')
-                            char_charname = char.get('charname', '')
-                            # char_picture=char.get('picture','')
-                            # char_desc=char.get('description','')
-                            char_seiyuuname = char.get('seiyuuname', 'Unknown')
-                            # char_seiyuupic=char.get('seiyuupic','')
-                            # only add it if it has data
-                            # reorder these to match the convention (Actor is cast, character is role, in that order)
-                            if len(char_charname) != 0:
-                                listCast.append(str(char_charname))
-                                if len(char_seiyuuname) != 0:
-                                    listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
-                # Extended support END#
+                listCast = []
+                listCastAndRole = []
+                for atype in videoList:
+                    if len(listCast) == 0:
+                        list = getCastAndRole(atype.find('Characters'))
+                        listCast = list[0]
+                        listCastAndRole = list[1]
+            # Extended support END#
                 tempdir = []
                 tempwriter = []
                 view_offset = atype.get('viewOffset', 0)
@@ -808,9 +798,7 @@ def voteSeries (params):
         vote_value = str(vote_list[myVote])
         vote_type = str(1)
         series_id = params['anime_id'][(myLen + 30):]
-        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-            "port") + "/jmmserverkodi/vote/" + addon.getSetting(
-            "userid") + "/" + series_id + "/" + vote_value + "/" + vote_type, "")
+        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/" + addon.getSetting("userid") + "/" + series_id + "/" + vote_value + "/" + vote_type, "")
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
         'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
 
@@ -856,9 +844,7 @@ if validUser() is True:
         parameters = util.parseParameters()
     except:
         xbmcgui.Dialog().ok('Forced mode=2', 'ERROR - This should be fixd')
-        parameters = {
-            "mode": 2
-            }
+        parameters = { "mode": 2 }
     try:
         mode = int(parameters["mode"])
     except:
