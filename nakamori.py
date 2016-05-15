@@ -326,9 +326,9 @@ def buildTVShows (params):
                 # This is not used here because JMM dont present this data to cut the data size on 'ALL' groups but we will leave this here to future support
                 listCast = []
                 listCastAndRole = []
-                for atype in videoList:
-                    if len(listCast) == 0:
-                        list = getCastAndRole(atype.find('Characters'))
+                if len(listCast) == 0:
+                    list = getCastAndRole(atype.find('Characters'))
+                    if list is not None:
                         listCast = list[0]
                         listCastAndRole = list[1]
 
@@ -461,9 +461,9 @@ def buildTVSeasons (params):
 
                 listCast = []
                 listCastAndRole = []
-                for atype in videoList:
-                    if len(listCast) == 0:
-                        list = getCastAndRole(atype.find('Characters'))
+                if len(listCast) == 0:
+                    list = getCastAndRole(atype.find('Characters'))
+                    if list is not None:
                         listCast = list[0]
                         listCastAndRole = list[1]
 
@@ -580,17 +580,19 @@ def buildTVEpisodes (params):
                         " ".join(w.capitalize() for w in a.split())
                         tempgenre = a if tempgenre == "" else tempgenre + " | " + a
             # keep this init out of the loop, as we only provide this once
+            listCast = []
+            listCastAndRole = []
+            for atype in videoList:
+                # we only get this once, so only set it if it's not already set
+                if len(listCast) == 0:
+                    list = getCastAndRole(atype.find('Characters'))
+                    if list is not None:
+                        listCast = list[0]
+                        listCastAndRole = list[1]
 	      	# Extended support
             for atype in videoList:
                 episode_count += 1
-                # we only get this onc, so only set it if it's not already set
-                listCast = []
-                listCastAndRole = []
-                for atype in videoList:
-                    if len(listCast) == 0:
-                        list = getCastAndRole(atype.find('Characters'))
-                        listCast = list[0]
-                        listCastAndRole = list[1]
+
             # Extended support END#
                 tempdir = []
                 tempwriter = []
