@@ -16,7 +16,7 @@ import xbmcgui
 import xbmcplugin
 
 handle = int(sys.argv[1])
-addon = xbmcaddon.Addon(id='plugin.video.nakamoriplugin')
+addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
 urlopen = urllib2.urlopen
 Request = urllib2.Request
@@ -173,16 +173,16 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
                 context.append(('More Info', 'Action(Info)'))
                 if extraData.get('source', 'none') == 'tvshows':
                     url_peep = url_peep + "&anime_id=" + extraData.get('key') + "&cmd=voteSer"
-                    context.append(('Vote', 'RunScript(plugin.video.nakamoriplugin, %s, %s)' % (sys.argv[1], url_peep)))
+                    context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
                 if extraData.get('source', 'none') == 'tvepisodes':
                     url_peep = url_peep + "&anime_id=" + extraData.get('parentKey') + "&ep_id=" + extraData.get('jmmepisodeid')
-                    context.append(('Vote for Series', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=voteSer)' % (
+                    context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
                     sys.argv[1], url_peep)))
-                    context.append(('Vote for Episode', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=voteEp)' % (
+                    context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
                     sys.argv[1], url_peep)))
-                    context.append(('Mark as Watched', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (
+                    context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
                     sys.argv[1], url_peep)))
-                    context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=unwatched)' % (
+                    context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (
                     sys.argv[1], url_peep)))
                 liz.addContextMenuItems(context)
     return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
@@ -766,7 +766,7 @@ def playVideo (url):
             xbmc.sleep(500)
             break
     if file_fin is True:
-        xbmc.executebuiltin('RunScript(plugin.video.nakamoriplugin, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
+        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
 
 def playPlaylist (data):

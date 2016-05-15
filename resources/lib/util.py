@@ -2,12 +2,12 @@ import sys, urllib, urllib2, re, gzip, StringIO
 import xbmc, xbmcgui, xbmcaddon, xbmcplugin
 
 # get addon info
-__addon__ = xbmcaddon.Addon(id='plugin.video.nakamoriplugin' )
+__addon__ = xbmcaddon.Addon(id='plugin.video.nakamori' )
 __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
 
-ADDON_ID='plugin.video.nakamoriplugin' 
+ADDON_ID='plugin.video.nakamori' 
 UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
 

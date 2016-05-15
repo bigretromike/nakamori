@@ -1,3 +1,9 @@
+v1.3.5 (15/05/2016)
+- Changing name from 'nakamoriplugin' to 'nakamori' #103 
+- Fix atype's and videolist's #102 
+- Add More Info context menu option and some other little things non-functional #97 
+- Reformat whitespace, fix a merge oopsies, fix voting on series level, fix other minor errors #99
+
 v1.3.4 (13/05/2016)
 - Subgroups don't have info for individual series (#75)
 - A lot of filtering been added with option to toggle them (da3dsoul)
