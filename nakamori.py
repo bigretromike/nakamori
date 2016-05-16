@@ -286,7 +286,7 @@ def buildMainMenu ():
             Error("Error during buildMainMenu", str(e))
     except Exception as e:
         # getHtml now catches, so an XML error is the only thing this will catch
-        Error("Invalid XML Received", str(e))
+        Error("Invalid XML Received in buildMainMenu", str(e))
 
     # Add Search
     url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
