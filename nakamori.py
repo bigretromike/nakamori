@@ -27,9 +27,14 @@ def getHtml (url, referer):
     req = Request(url)
     if len(referer) > 1:
         req.add_header('Referer', referer)
-    response = urlopen(req, timeout=int(addon.getSetting('timeout')))
-    data = response.read()
-    response.close()
+    data = None
+    try:
+        response = urlopen(req, timeout=int(addon.getSetting('timeout')))
+        data = response.read()
+        response.close()
+    except:
+        Error('Connection Failed')
+
     return data
 
 
@@ -280,7 +285,8 @@ def buildMainMenu ():
         except Exception as e:
             Error("Error during buildMainMenu", str(e))
     except Exception as e:
-        Error("Connection error #1", str(e))
+        # getHtml now catches, so an XML error is the only thing this will catch
+        Error("Invalid XML Received in buildMainMenu", str(e))
 
     # Add Search
     url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
@@ -407,7 +413,7 @@ def buildTVShows (params):
         except Exception as e:
             Error("Error during buildTVShows", str(e))
     except Exception as e:
-        Error("Connection error #2", str(e))
+        Error("Invalid XML Received in buildTVShows", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -526,7 +532,7 @@ def buildTVSeasons (params):
         except Exception as e:
             Error("Error during buildTVSeasons", str(e))
     except Exception as e:
-        Error("Connection error #3", str(e))
+        Error("Invalid XML Received in buildTVSeasons", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -700,7 +706,7 @@ def buildTVEpisodes (params):
         except Exception as e:
             Error("Error during buildTVEpisodes", str(e))
     except Exception as e:
-        Error("Connection error #4", str(e))
+        Error("Invalid XML Received in buildTVEpisodes", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
