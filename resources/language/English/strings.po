@@ -123,3 +123,47 @@ msgstr ""
 msgctxt "#32039"
 msgid "Show -continue-"
 msgstr ""
+
+msgctxt "#32040"
+msgid "Use local file count for total episodes"
+msgstr ""
+
+msgctxt "#32041"
+msgid "Skip Extra Info on Long Series"
+msgstr ""
+
+msgctxt "#32042"
+msgid "Spam the Log with info (only enable if told to)"
+msgstr ""
+
+msgctxt "#32043"
+msgid "Max episodes before data will be truncated"
+msgstr ""
+
+msgctxt "#32044"
+msgid "Advanced"
+msgstr ""
+
+msgctxt "#32045"
+msgid "Hide AniDB helper or otherwise useless tags"
+msgstr ""
+
+msgctxt "#32046"
+msgid "Tag Blacklist"
+msgstr ""
+
+msgctxt "#32047"
+msgid "Hide art style related tags"
+msgstr ""
+
+msgctxt "#32048"
+msgid "Hide source tags (Manga, original, etc)"
+msgstr ""
+
+msgctxt "#32049"
+msgid "Hide useful helper tags (mostly related to OP/ED style)"
+msgstr ""
+
+msgctxt "#32050"
+msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
+msgstr ""
