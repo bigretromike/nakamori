@@ -274,9 +274,21 @@ def buildMainMenu ():
                     title = 'Continue Watching'
                 elif title == 'Unsort':
                     mode = 6
-                url = atype.get('key')
-                thumb = atype.get('thumb', '')
+
+                key = atype.get('key', '')
+                if not key.startswith("http"):
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                if addon.getSetting("spamLog") == "true":
+                    xbmc.log("buildMainMenu - key = " + key)
+                url = key
+
+                thumb = atype.get('thumb')
+                if not thumb.startswith("http"):
+                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + thumb
                 fanart = atype.get('art', thumb)
+                if not fanart.startswith("http"):
+                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({ 'thumb' : thumb , 'fanart' : fanart, 'poster' : getPoster(thumb), 'icon' : 'DefaultVideo.png' })
@@ -383,18 +395,28 @@ def buildTVShows (params):
                     'dateadded'    : atype.get('addedAt')
                 }
 
+                key = atype.get('key', '')
+                if not key.startswith("http"):
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                thumb = atype.get('thumb')
+                if not thumb.startswith("http"):
+                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
+                fanart = atype.get('art', thumb)
+                if not fanart.startswith("http"):
+                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+
                 extraData = {
                     'type'             : 'video',
                     'source'           : 'tvshows',
                     'UnWatchedEpisodes': int(details['episode']) - watched,
                     'WatchedEpisodes'  : watched,
                     'TotalEpisodes'    : details['episode'],
-                    'thumb'            : atype.get('thumb'),
-                    'fanart_image'     : atype.get('art', atype.get('thumb')),
-                    'key'              : atype.get('key', ''),
+                    'thumb'            : thumb,
+                    'fanart_image'     : fanart,
+                    'key'              : key,
                     'ratingKey'        : str(atype.get('ratingKey', 0))
                     }
-                url = atype.get('key')
+                url = key
 
                 # Set up overlays for watched and unwatched episodes
                 if extraData['WatchedEpisodes'] == 0:
@@ -439,13 +461,21 @@ def buildTVSeasons (params):
                 willFlatten = True
 
             sectionart = e.get('art', '')
+            if not sectionart.startswith("http"):
+                sectionart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + sectionart
             banner = e.get('banner', '')
+            if not banner.startswith("http"):
+                banner = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + banner
+
             setWindowHeading(e)
             # For all the directory tags
 
             for atype in e.findall('Directory'):
+                key = atype.get('key', '');
+                if not key.startswith("http"):
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if willFlatten:
-                    url = atype.get('key')
+                    url = key
                     u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
                     buildTVEpisodes(u)
                     return
@@ -497,15 +527,22 @@ def buildTVSeasons (params):
 
                 if atype.get('sorttitle'): details['sorttitle'] = atype.get('sorttitle')
 
+                thumb = atype.get('thumb', '');
+                if not thumb.startswith("http"):
+                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
+                fanart = atype.get('art', '');
+                if not fanart.startswith("http"):
+                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+
                 extraData = {
                     'type'             : 'video',
                     'source'           : 'tvseasons',
                     'TotalEpisodes'    : details['episode'],
                     'WatchedEpisodes'  : watched,
                     'UnWatchedEpisodes': details['episode'] - watched,
-                    'thumb'            : atype.get('thumb', ''),
-                    'fanart_image'     : atype.get('art', ''),
-                    'key'              : atype.get('key', ''),
+                    'thumb'            : thumb,
+                    'fanart_image'     : fanart,
+                    'key'              : key,
                     'ratingKey'        : str(atype.get('ratingKey', 0)),  # <--------------
                     'mode'             : str(6)
                     }
@@ -553,8 +590,15 @@ def buildTVEpisodes (params):
                     return
 
             banner = e.get('banner', '')
+            if not banner.startswith("http"):
+                banner = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + banner
             art = e.get('art', '')
-            season_thumb = e.get('thumb', '')
+            if not art.startswith("http"):
+                art = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + art
+
+            # unused
+            #season_thumb = e.get('thumb', '')
+
             # Set Sort Method
             xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
             xbmcplugin.addSortMethod(handle, 3)  # date
@@ -573,28 +617,32 @@ def buildTVEpisodes (params):
             skip = addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(videoList) > int(
                 addon.getSetting("skipExtraInfoMaxEpisodes"))
 
-            tempgenre = ""
-            if not skip:
-                # xbmc.log(str(e.find("Tag")))
-                tag = e.find("Tag")
-                if tag is not None:
-                    tempgenre = tag.get('tag', '').encode('utf-8')
-                    tempGenres = str.split(tempgenre, ",")
-                    tempGenres = TagFilter.processTags(addon, tempGenres)
-                    tempgenre = ""
-                    for a in tempGenres:
-                        " ".join(w.capitalize() for w in a.split())
-                        tempgenre = a if tempgenre == "" else tempgenre + " | " + a
             # keep this init out of the loop, as we only provide this once
             listCast = []
             listCastAndRole = []
-            for atype in videoList:
-                # we only get this once, so only set it if it's not already set
-                if len(listCast) == 0:
-                    list = getCastAndRole(atype.find('Characters'))
-                    if list is not None:
-                        listCast = list[0]
-                        listCastAndRole = list[1]
+            tempgenre = ""
+            parentkey = ""
+            if not skip:
+                for atype in videoList:
+                    # we only get this once, so only set it if it's not already set
+                    if len(listCast) == 0:
+                        list = getCastAndRole(atype.find('Characters'))
+                        if list is not None:
+                            listCast = list[0]
+                            listCastAndRole = list[1]
+                        tag = atype.find("Tag")
+                        if tag is not None:
+                            tempgenre = tag.get('tag', '').encode('utf-8')
+                            tempGenres = str.split(tempgenre, ",")
+                            tempGenres = TagFilter.processTags(addon, tempGenres)
+                            tempgenre = ""
+                            for a in tempGenres:
+                                " ".join(w.capitalize() for w in a.split())
+                                tempgenre = a if tempgenre == "" else tempgenre + " | " + a
+                        parentkey = atype.get('parentKey', '0')
+                        if not parentkey.startswith("http"):
+                            parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
+                        grandparenttitle = atype.get('grandparentTitle', atype.get('grandparentTitle', '')).encode('utf-8');
 	      	# Extended support
             for atype in videoList:
                 episode_count += 1
@@ -624,31 +672,38 @@ def buildTVEpisodes (params):
                     'Cast'         : listCast,
                     'director'     : " / ".join(tempdir),
                     'writer'       : " / ".join(tempwriter),
-                    'genre'        : tempgenre,
+                    'genre'        : "..." if skip else tempgenre,
                     'duration'     : str(datetime.timedelta(seconds=duration)),
                     'mpaa'         : atype.get('contentRating', ''),
                     'year'         : int(atype.get('year', 0)),
                     'tagline'      : "..." if skip else tempgenre,
                     'episode'      : int(atype.get('index', 0)),
                     'aired'        : atype.get('originallyAvailableAt', ''),
-                    'tvshowtitle'  : atype.get('grandparentTitle', atype.get('grandparentTitle', '')).encode('utf-8'),
+                    'tvshowtitle'  : grandparenttitle,
                     'votes'        : int(atype.get('votes', 0)),
                     'originaltitle': atype.get('original_title', ''),
                     'size'         : int(atype.find('Media').find('Part').get('size', 0)),
                     'season'       : int(atype.get('season', 0))
                 }
 
+                thumb = atype.get('thumb', '');
+                if not thumb.startswith("http"):
+                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + thumb
+                key = atype.get('key', '');
+                if not key.startswith("http"):
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
+
                 # Extra data required to manage other properties
                 extraData = {
                     'type'        : "Video",
                     'source'      : 'tvepisodes',
-                    'thumb'       : None if skip else atype.get('thumb', ''),
+                    'thumb'       : None if skip else thumb,
                     'fanart_image': None if skip else art,
-                    'key'         : atype.get('key', ''),
+                    'key'         : key,
                     # 'ratingKey'    : str(episode.get('ratingKey',0)),
                     # 'duration'     : duration,
                     'resume'      : int(int(view_offset) / 1000),
-                    'parentKey'   : atype.get('parentKey', '0'),
+                    'parentKey'   : parentkey,
                     'jmmepisodeid': atype.get('JMMEpisodeId', '0')
                     }
 
@@ -690,10 +745,12 @@ def buildTVEpisodes (params):
                         nextepisode += 1
 
                 context = None
-                url = atype.get('key')
+                url = key
 
-                sys.argv[0] = sys.argv[0] + "?url=" + url + "&mode=" + str(1) + "&file=" + atype.find('Media').find(
-                    'Part').get('key') + "&ep_id=" + extraData.get('jmmepisodeid')
+                key = atype.find('Media').find('Part').get('key')
+                if not key.startswith("http"):
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
+                sys.argv[0] = sys.argv[0] + "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" + extraData.get('jmmepisodeid')
                 u = sys.argv[0]
 
                 addGUIItem(u, details, extraData, context, folder=False)
