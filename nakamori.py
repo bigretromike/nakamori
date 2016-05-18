@@ -284,7 +284,7 @@ def buildMainMenu ():
 
                 thumb = atype.get('thumb')
                 if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + thumb
+                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
                 fanart = atype.get('art', thumb)
                 if not fanart.startswith("http"):
                     fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
