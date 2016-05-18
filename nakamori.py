@@ -218,7 +218,7 @@ def Error (msg, error="Generic"):
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', msg, addon.getAddonInfo('icon')))
 
 
-def removeHTML (data):
+def removeHTML (data = ""):
     # p = re.compile(r'<.*?>')
     p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
     data2 = p.sub('', data)
@@ -226,7 +226,7 @@ def removeHTML (data):
     return p.sub('', data2)
 
 
-def getPoster (data):
+def getPoster (data = ""):
     result = data
     if len(data) > 0 and "getthumb" in data.lower():
         p = data.lower().replace('getthumb','getimage')
@@ -236,6 +236,13 @@ def getPoster (data):
             last_word = chunk
         result = p.replace(last_word,'')[:-1]
     return result
+
+# define it with a default value to trick intellij into knowing the type
+def genImageHTTP (data = ""):
+    if data.endswith("0.6667"):
+        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + data
+    else:
+        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + data
 
 
 def getCastAndRole (data):
@@ -284,10 +291,10 @@ def buildMainMenu ():
 
                 thumb = atype.get('thumb')
                 if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
+                    thumb = gentImageHTTP(thumb)
                 fanart = atype.get('art', thumb)
                 if not fanart.startswith("http"):
-                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+                    fanart = gentImageHTTP(fanart)
 
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -400,10 +407,10 @@ def buildTVShows (params):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 thumb = atype.get('thumb')
                 if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
+                    thumb = gentImageHTTP(thumb)
                 fanart = atype.get('art', thumb)
                 if not fanart.startswith("http"):
-                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+                    fanart = gentImageHTTP(fanart)
 
                 extraData = {
                     'type'             : 'video',
@@ -529,10 +536,10 @@ def buildTVSeasons (params):
 
                 thumb = atype.get('thumb', '');
                 if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
+                    thumb = gentImageHTTP(thumb)
                 fanart = atype.get('art', '');
                 if not fanart.startswith("http"):
-                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+                    fanart = gentImageHTTP(fanart)
 
                 extraData = {
                     'type'             : 'video',
@@ -688,7 +695,7 @@ def buildTVEpisodes (params):
 
                 thumb = atype.get('thumb', '');
                 if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + thumb
+                    thumb = gentImageHTTP(thumb)
                 key = atype.get('key', '');
                 if not key.startswith("http"):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
