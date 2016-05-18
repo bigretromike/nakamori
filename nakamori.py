@@ -291,10 +291,10 @@ def buildMainMenu ():
 
                 thumb = atype.get('thumb')
                 if not thumb.startswith("http"):
-                    thumb = gentImageHTTP(thumb)
+                    thumb = getImageHTTP(thumb)
                 fanart = atype.get('art', thumb)
                 if not fanart.startswith("http"):
-                    fanart = gentImageHTTP(fanart)
+                    fanart = getImageHTTP(fanart)
 
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -407,10 +407,10 @@ def buildTVShows (params):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 thumb = atype.get('thumb')
                 if not thumb.startswith("http"):
-                    thumb = gentImageHTTP(thumb)
+                    thumb = getImageHTTP(thumb)
                 fanart = atype.get('art', thumb)
                 if not fanart.startswith("http"):
-                    fanart = gentImageHTTP(fanart)
+                    fanart = getImageHTTP(fanart)
 
                 extraData = {
                     'type'             : 'video',
@@ -536,10 +536,10 @@ def buildTVSeasons (params):
 
                 thumb = atype.get('thumb', '');
                 if not thumb.startswith("http"):
-                    thumb = gentImageHTTP(thumb)
+                    thumb = getImageHTTP(thumb)
                 fanart = atype.get('art', '');
                 if not fanart.startswith("http"):
-                    fanart = gentImageHTTP(fanart)
+                    fanart = getImageHTTP(fanart)
 
                 extraData = {
                     'type'             : 'video',
@@ -695,7 +695,7 @@ def buildTVEpisodes (params):
 
                 thumb = atype.get('thumb', '');
                 if not thumb.startswith("http"):
-                    thumb = gentImageHTTP(thumb)
+                    thumb = getImageHTTP(thumb)
                 key = atype.get('key', '');
                 if not key.startswith("http"):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
