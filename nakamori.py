@@ -218,7 +218,7 @@ def Error (msg, error="Generic"):
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', msg, addon.getAddonInfo('icon')))
 
 
-def removeHTML (data):
+def removeHTML (data = ""):
     # p = re.compile(r'<.*?>')
     p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
     data2 = p.sub('', data)
@@ -226,7 +226,7 @@ def removeHTML (data):
     return p.sub('', data2)
 
 
-def getPoster (data):
+def getPoster (data = ""):
     result = data
     if len(data) > 0 and "getthumb" in data.lower():
         p = data.lower().replace('getthumb','getimage')
@@ -236,6 +236,15 @@ def getPoster (data):
             last_word = chunk
         result = p.replace(last_word,'')[:-1]
     return result
+
+# define it with a default value to trick intellij into knowing the type
+def genImageHTTP (data = ""):
+    if data.startswith("http"):
+        return data
+    if data.endswith("0.6667"):
+        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + data
+    else:
+        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + data
 
 
 def getCastAndRole (data):
@@ -282,12 +291,8 @@ def buildMainMenu ():
                     xbmc.log("buildMainMenu - key = " + key)
                 url = key
 
-                thumb = atype.get('thumb')
-                if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + thumb
-                fanart = atype.get('art', thumb)
-                if not fanart.startswith("http"):
-                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+                thumb = genImageHTTP(atype.get('thumb'))
+                fanart = genImageHTTP(atype.get('art', thumb))
 
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -398,12 +403,11 @@ def buildTVShows (params):
                 key = atype.get('key', '')
                 if not key.startswith("http"):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
-                thumb = atype.get('thumb')
-                if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
-                fanart = atype.get('art', thumb)
-                if not fanart.startswith("http"):
-                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+                thumb = genImageHTTP(atype.get('thumb'))
+                fanart = genImageHTTP(atype.get('art', thumb))
+
+                # we really should fix banners. JMM doesn't send them...
+                banner = genImageHTTP(e.get('banner', ''))
 
                 extraData = {
                     'type'             : 'video',
@@ -413,6 +417,7 @@ def buildTVShows (params):
                     'TotalEpisodes'    : details['episode'],
                     'thumb'            : thumb,
                     'fanart_image'     : fanart,
+                    'banner'           : banner,
                     'key'              : key,
                     'ratingKey'        : str(atype.get('ratingKey', 0))
                     }
@@ -460,12 +465,8 @@ def buildTVSeasons (params):
             if int(e.get('size', 0)) == 1:
                 willFlatten = True
 
-            sectionart = e.get('art', '')
-            if not sectionart.startswith("http"):
-                sectionart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + sectionart
-            banner = e.get('banner', '')
-            if not banner.startswith("http"):
-                banner = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + banner
+            sectionart = genImageHTTP(e.get('art', ''))
+            banner = genImageHTTP(e.get('banner', ''))
 
             setWindowHeading(e)
             # For all the directory tags
@@ -527,12 +528,8 @@ def buildTVSeasons (params):
 
                 if atype.get('sorttitle'): details['sorttitle'] = atype.get('sorttitle')
 
-                thumb = atype.get('thumb', '');
-                if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + thumb
-                fanart = atype.get('art', '');
-                if not fanart.startswith("http"):
-                    fanart = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + fanart
+                thumb = genImageHTTP(atype.get('thumb'))
+                fanart = genImageHTTP(atype.get('art', thumb))
 
                 extraData = {
                     'type'             : 'video',
@@ -589,12 +586,8 @@ def buildTVEpisodes (params):
                     buildTVSeasons(params)
                     return
 
-            banner = e.get('banner', '')
-            if not banner.startswith("http"):
-                banner = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + banner
-            art = e.get('art', '')
-            if not art.startswith("http"):
-                art = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + art
+            banner = genImageHTTP(e.get('banner', ''))
+            art = genImageHTTP(e.get('art', ''))
 
             # unused
             #season_thumb = e.get('thumb', '')
@@ -686,9 +679,7 @@ def buildTVEpisodes (params):
                     'season'       : int(atype.get('season', 0))
                 }
 
-                thumb = atype.get('thumb', '');
-                if not thumb.startswith("http"):
-                    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + thumb
+                thumb = genImageHTTP(atype.get('thumb', ''))
                 key = atype.get('key', '');
                 if not key.startswith("http"):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
