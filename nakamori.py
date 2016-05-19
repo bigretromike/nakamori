@@ -206,13 +206,13 @@ def validUser ():
 
 
 def Error (msg, error="Generic"):
-    xbmc.log('---' + msg + '---')
+    xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error))
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error), xbmc.LOGERROR)
     except:
-        xbmc.log("There was an error catching the error. WTF.")
+        xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
         traceback.print_exc()
 
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', msg, addon.getAddonInfo('icon')))
