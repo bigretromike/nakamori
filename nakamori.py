@@ -23,8 +23,8 @@ Request = urllib2.Request
 
 # Internal function
 def getHtml (url, referer):
-    referer = urllib2.quote(referer).replace("%3A", ":")
-    req = Request(url)
+    referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
+    req = Request(url.encode('utf-8'))
     if len(referer) > 1:
         req.add_header('Referer', referer)
     data = None
@@ -57,10 +57,10 @@ def getTitle (data):
     if skip == "true":
         for title in titles:
             if '{official:' + lang + '}' in title:
-                return title.replace('{official:' + lang + '}', '')
+                return unicode(title.replace('{official:' + lang + '}', ''), 'utf8')
     for title in titles:
         if '{main:' + lang + '}' in title:
-            return title.replace('{main:' + lang + '}', '')
+            return unicode(title.replace('{main:' + lang + '}', ''), 'utf8')
     return 'err404'
 
 
@@ -104,7 +104,7 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
     link_url = url
     title = ""
     if folder:
-        title = details.get('originaltitle', '')
+        title = unicode(details.get('originaltitle', ''), 'utf8')
         title = getTitle(title)
         if 'err404' in title:
             title = details.get('title', 'Unknown')
@@ -327,7 +327,7 @@ def buildTVShows (params):
     xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        html = getHtml(params['url'], '')
+        html = getHtml(params['url'].encode('utf-8'), '').encode('utf-8')
         e = tree.XML(html)
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
@@ -343,7 +343,7 @@ def buildTVShows (params):
                     tempgenre = ""
                     for a in tempGenres:
                         a = " ".join(w.capitalize() for w in a.split())
-                        tempgenre = a if tempgenre == "" else tempgenre + " | " + a
+                        tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
                 watched = int(atype.get('viewedLeafCount', 0))
 
                 # This is not used here because JMM dont present this data to cut the data size on 'ALL' groups but we will leave this here to future support
@@ -449,7 +449,7 @@ def buildTVSeasons (params):
 
     xbmcplugin.setContent(handle, 'seasons')
     try:
-        html = getHtml(params['url'], '')
+        html = getHtml(params['url'].encode('utf-8'), '').encode('utf-8')
         e = tree.XML(html)
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
@@ -574,7 +574,7 @@ def buildTVEpisodes (params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        html = getHtml(params['url'], '')
+        html = getHtml(params['url'].encode('utf-8'), '').encode('utf-8')
         e = tree.XML(html)
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
