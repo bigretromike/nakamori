@@ -1,3 +1,7 @@
+v1.3.6 (22/05/2016)
+- Main Title instead of Official Title Setting only applies at Series Level instead of group level #76 (da3dsoul)
+ -Jumpy support #110 
+
 v1.3.5 (15/05/2016)
 - Changing name from 'nakamoriplugin' to 'nakamori' #103 
 - Fix atype's and videolist's #102 
