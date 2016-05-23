@@ -329,9 +329,9 @@ def buildTVShows (params):
     xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        html = getHtml(params['url'].encode('utf-8'), '').decode('utf-8').encode('utf-8')
+        html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
         if addon.getSetting("spamLog") == "true":
-            xbmc.log(params['url'].encode('utf-8'))
+            xbmc.log(params['url'])
             xbmc.log(html)
         e = tree.XML(html)
         setWindowHeading(e)
@@ -452,7 +452,7 @@ def buildTVSeasons (params):
 
     xbmcplugin.setContent(handle, 'seasons')
     try:
-        html = getHtml(params['url'].encode('utf-8'), '').decode('utf-8').encode('utf-8')
+        html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
         e = tree.XML(html)
@@ -577,7 +577,7 @@ def buildTVEpisodes (params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        html = getHtml(params['url'].encode('utf-8'), '').encode('utf-8')
+        html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
         e = tree.XML(html)
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
