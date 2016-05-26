@@ -322,7 +322,7 @@ def buildMainMenu ():
 def buildTVShows (params):
     # xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    xbmcplugin.addSortMethod(handle, 25)  # video title ignore THE
+    xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
     xbmcplugin.addSortMethod(handle, 3)  # date
     xbmcplugin.addSortMethod(handle, 18)  # rating
     xbmcplugin.addSortMethod(handle, 17)  # year
@@ -402,6 +402,9 @@ def buildTVShows (params):
                     # trailer        : string (/home/user/trailer.avi,
                     'dateadded'    : atype.get('addedAt')
                 }
+                tempdate = str(details['aired']).split('-')
+                if len(tempdate) == 3: # format is 2016-01-24, we want it 24.01.2016
+                    details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
                 key = atype.get('key', '')
                 if not key.startswith("http"):
@@ -451,6 +454,8 @@ def buildTVSeasons (params):
     # xbmcgui.Dialog().ok('MODE=5','IN')
 
     xbmcplugin.setContent(handle, 'seasons')
+
+
     try:
         html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
         if addon.getSetting("spamLog") == "true":
@@ -528,6 +533,9 @@ def buildTVSeasons (params):
                     'rating'     : atype.get('rating'),
                     'aired'      : atype.get('originallyAvailableAt', '')
                     }
+                tempdate = str(details['aired']).split('-')
+                if len(tempdate) == 3: # format is 2016-01-24, we want it 24.01.2016
+                    details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
                 if atype.get('sorttitle'): details['sorttitle'] = atype.get('sorttitle')
 
@@ -566,6 +574,13 @@ def buildTVSeasons (params):
 
                 # Build the screen directory listing
                 addGUIItem(url, details, extraData, context)
+
+            xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
+            xbmcplugin.addSortMethod(handle, 3)  # date
+            xbmcplugin.addSortMethod(handle, 18)  # rating
+            xbmcplugin.addSortMethod(handle, 17)  # year
+            xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+
         except Exception as e:
             Error("Error during buildTVSeasons", str(e))
     except Exception as e:
@@ -681,6 +696,9 @@ def buildTVEpisodes (params):
                     'size'         : int(atype.find('Media').find('Part').get('size', 0)),
                     'season'       : int(atype.get('season', 0))
                 }
+                tempdate = str(details['aired']).split('-')
+                if len(tempdate) == 3: # format is 2016-01-24, we want it 24.01.2016
+                    details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
                 thumb = genImageHTTP(atype.get('thumb', ''))
                 key = atype.get('key', '');
@@ -810,18 +828,21 @@ def playVideo (url):
     currentTime = 0
     # hack for slow connection and buffering time
     xbmc.sleep(int(addon.getSetting("player_sleep")))
-    while Player.isPlaying():
-        try:
-            xbmc.sleep(500)
-            totalTime = Player.getTotalTime()
-            currentTime = Player.getTime()
-            if (totalTime * mark) < currentTime:
-                file_fin = True
-            if Player.isPlaying() == False:
+    try:
+        while Player.isPlaying():
+            try:
+                xbmc.sleep(500)
+                totalTime = Player.getTotalTime()
+                currentTime = Player.getTime()
+                if (totalTime * mark) < currentTime:
+                    file_fin = True
+                if Player.isPlaying() == False:
+                    break
+            except:
+                xbmc.sleep(500)
                 break
-        except:
-            xbmc.sleep(500)
-            break
+    except:
+        pass
     if file_fin is True:
         xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
