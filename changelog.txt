@@ -1,6 +1,10 @@
+v1.3.7 (31/05/2016)
+- Sort TV seasons by date #111 (da3dsoul)
+- Make errors actually log as errors #112 (da3dsoul)
+
 v1.3.6 (22/05/2016)
 - Main Title instead of Official Title Setting only applies at Series Level instead of group level #76 (da3dsoul)
-- Jumpy support #110 
+- Jumpy support #110 (by force_resolve)
 
 v1.3.5 (15/05/2016)
 - Changing name from 'nakamoriplugin' to 'nakamori' #103 
