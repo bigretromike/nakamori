@@ -245,24 +245,28 @@ def removeHTML (data = ""):
 
 
 def getPoster (data = ""):
-    result = data
-    if len(data) > 0 and "getthumb" in data.lower():
-        p = data.lower().replace('getthumb','getimage')
-        s = p.split("/")
-        last_word = ""
-        for chunk in s:
-            last_word = chunk
-        result = p.replace(last_word,'')[:-1]
-    return result
+    if data is not None:
+        result = data
+        if len(data) > 0 and "getthumb" in data.lower():
+            p = data.lower().replace('getthumb','getimage')
+            s = p.split("/")
+            last_word = ""
+            for chunk in s:
+                last_word = chunk
+            result = p.replace(last_word,'')[:-1]
+        return result
+    return data
 
 # define it with a default value to trick intellij into knowing the type
 def genImageHTTP (data = ""):
-    if data.startswith("http"):
-        return data
-    if data.endswith("0.6667"):
-        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + data
-    else:
-        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + data
+    if data is not None:
+        if data.startswith("http"):
+            return data
+        if data.endswith("0.6667"):
+            return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + data
+        else:
+            return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + data
+    return data
 
 
 def getCastAndRole (data):
