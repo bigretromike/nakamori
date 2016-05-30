@@ -14,22 +14,22 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+from StringIO import StringIO
+import gzip
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
-urlopen = urllib2.urlopen
-Request = urllib2.Request
 
 # Internal function
 def getHtml (url, referer):
     referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
-    req = Request(url.encode('utf-8'))
+    req = urllib2.Request(url.encode('utf-8'))
     if len(referer) > 1:
         req.add_header('Referer', referer)
     data = None
     try:
-        response = urlopen(req, timeout=int(addon.getSetting('timeout')))
+        response = urllib2.urlopen(req, timeout=int(addon.getSetting('timeout')))
         data = response.read()
         response.close()
     except:
