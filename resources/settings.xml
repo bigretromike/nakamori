@@ -44,6 +44,7 @@
 		<setting label="32041" type="bool" id="skipExtraInfoOnLongSeries" default="false" />
 		<setting label="32043" type="number" id="skipExtraInfoMaxEpisodes" default="50"/>
 		<setting label="32042" type="bool" id="spamLog" default="false" />
+		<setting label="32013" type="bool" id="use_gzip" default="true" />
         <setting label="32051" type="bool" id="useSeasons" default="false" />
 	</category>
 </settings>
