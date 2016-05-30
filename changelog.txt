@@ -2,7 +2,6 @@ v2.0.0 ()
 - Compatibility with JMMServer 3.5 #114 
 - Support gzip request/respond #115 
 
-
 v1.3.7 (31/05/2016)
 - Sort TV seasons by date #111 (da3dsoul)
 - Make errors actually log as errors #112 (da3dsoul)
