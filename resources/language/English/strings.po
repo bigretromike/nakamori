@@ -60,6 +60,10 @@ msgctxt "#32012"
 msgid "User ID"
 msgstr ""
 
+msgctxt "#32013"
+msgid "Use gzip"
+msgstr ""
+
 msgctxt "#32021"
 msgid "Searching"
 msgstr ""
