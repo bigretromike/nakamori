@@ -116,8 +116,7 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
         link_url = url
         title = ""
         if folder:
-            title = unicode(details.get('originaltitle', ''), 'utf8')
-            title = getTitle(title.encode('utf-8'))
+            title = getTitle(title)
             if 'err404' in title:
                 title = details.get('title', 'Unknown')
         else:
