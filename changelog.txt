@@ -1,6 +1,8 @@
 v2.0.0 ()
 - Compatibility with JMMServer 3.5 #114 
-- Support gzip request/respond #115 
+- Support gzip request/respond #115
+- Code cleaning
+- PEP8 code style applied
 
 v1.3.7 (31/05/2016)
 - Sort TV seasons by date #111 (da3dsoul)
