@@ -475,7 +475,7 @@ def build_tv_shows(params):
                     'ratingKey': str(atype.get('ratingKey', 0))
                     }
                 url = key
-                set_watch_flag()
+                set_watch_flag(extra_data, details)
                 use_mode = 5
                 # this will help when users is using grouping option in jmm which results in series in series
                 if "data/1/2/" in extra_data['key'].lower():
@@ -599,7 +599,7 @@ def build_tv_seasons(params):
                 if extra_data['fanart_image'] == "":
                     extra_data['fanart_image'] = sectionart
 
-                set_watch_flag()
+                set_watch_flag(extra_data, details)
 
                 url = sys.argv[0] + "?url=" + extra_data['key'] + "&mode=" + str(6)
                 context = None
