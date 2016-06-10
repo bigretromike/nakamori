@@ -117,6 +117,11 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
             liz.setArt( { 'thumb' : tbi } )
             liz.setArt( { 'poster' : getPoster(tbi) } )
 
+        # use the year as a fallback in case the date is unavailable
+        if details['date'] == "":
+            if details['year'] != "":
+                details['date'] = "01.01."+details['year']
+
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
 
@@ -437,9 +442,10 @@ def buildTVShows (params):
                 else:
                     extraData['partialTV'] = 1
                 mode = 5
-                # this will help when users is using grouping option in jmm which results in series in series
-                if "data/1/2/" in extraData['key'].lower():
-                    mode = 4
+                if addon.getSetting("useSeasons") == "false":
+                    # this will help when users is using grouping option in jmm which results in series in series
+                    if "data/1/2/" in extraData['key'].lower():
+                        mode = 4
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode)
                 context = None
                 addGUIItem(u, details, extraData, context)

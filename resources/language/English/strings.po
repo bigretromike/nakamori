@@ -167,3 +167,7 @@ msgstr ""
 msgctxt "#32050"
 msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
 msgstr ""
+
+msgctxt "#32051"
+msgid "Treat Subgroups as 'Seasons'"
+msgstr ""
