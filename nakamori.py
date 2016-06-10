@@ -481,12 +481,12 @@ def build_tv_shows(params):
                     }
                 url = key
                 set_watch_flag(extra_data, details)
-                mode = 5
+                use_mode = 5
                 if addon.getSetting("useSeasons") == "false":
                     # this will help when users is using grouping option in jmm which results in series in series
-                    if "data/1/2/" in extraData['key'].lower():
-                        mode = 4
-                u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode)
+                    if "data/1/2/" in extra_data['key'].lower():
+                        use_mode = 4
+                u = sys.argv[0] + "?url=" + url + "&mode=" + str(use_mode)
                 context = None
                 add_gui_item(u, details, extra_data, context)
         except Exception as e:
