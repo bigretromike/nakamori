@@ -118,8 +118,8 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
             liz.setArt( { 'poster' : getPoster(tbi) } )
 
         # use the year as a fallback in case the date is unavailable
-        if details['date'] == "":
-            if details['year'] != "":
+        if details.get('date', '') == '':
+            if details.get('year', '') != '':
                 details['date'] = "01.01."+details['year']
 
         # Set the properties of the item, such as summary, name, season, etc
