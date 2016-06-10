@@ -128,6 +128,11 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
             liz.setArt({'thumb': tbi})
             liz.setArt({'poster': get_poster(tbi)})
 
+        # use the year as a fallback in case the date is unavailable
+        if details['date'] == "":
+            if details['year'] != "":
+                details['date'] = "01.01."+details['year']
+
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
 
@@ -477,9 +482,10 @@ def build_tv_shows(params):
                 url = key
                 set_watch_flag(extra_data, details)
                 use_mode = 5
-                # this will help when users is using grouping option in jmm which results in series in series
-                if "data/1/2/" in extra_data['key'].lower():
-                    use_mode = 4
+                if addon.getSetting("useSeasons") == "false":
+                    # this will help when users is using grouping option in jmm which results in series in series
+                    if "data/1/2/" in extra_data['key'].lower():
+                        use_mode = 4
                 u = sys.argv[0] + "?url=" + url + "&mode=" + str(use_mode)
                 context = None
                 add_gui_item(u, details, extra_data, context)
