@@ -81,9 +81,18 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
         tbi = ""
         tp = 'Video'
         link_url = ""
-        if addon.getSetting("spamLog") == "true":
+
+        # do this before so it'll log
+        # use the year as a fallback in case the date is unavailable
+        if details.get('date', '') == '':
+            if details.get('year', '') != '' and details['year'] != 0:
+                details['date'] = '01.01.'+str(details['year'])
+                details['aired'] = details['date']
+                #details['aired'] = str(details['year'])+'-01-01'
+
+        if addon.getSetting("spamLog") == 'true':
             if details is not None:
-                xbmc.log("add_gui_item - details")
+                xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
                 for i in details:
                     temp_log = ""
                     a = details.get(i.encode('utf-8'))
@@ -94,9 +103,9 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
                             temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
                     else:
                         temp_log = str(a)
-                    xbmc.log("-" + str(i) + "- " + temp_log)
+                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
             if extra_data is not None:
-                xbmc.log("add_gui_item - extra_data")
+                xbmc.log("add_gui_item - extra_data", xbmc.LOGWARNING)
                 for i in extra_data:
                     temp_log = ""
                     a = extra_data.get(i.encode('utf-8'))
@@ -107,7 +116,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
                             temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
                     else:
                         temp_log = str(a)
-                    xbmc.log("-" + str(i) + "- " + temp_log)
+                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
 
         if extra_data is not None:
             if extra_data.get('parameters'):
@@ -127,11 +136,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
         if len(tbi) > 0:
             liz.setArt({'thumb': tbi})
             liz.setArt({'poster': get_poster(tbi)})
-
-        # use the year as a fallback in case the date is unavailable
-        if details.get('date', '') == '':
-            if details.get('year', '') != '':
-                details['date'] = "01.01."+details['year']
 
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
@@ -574,7 +578,8 @@ def build_tv_seasons(params):
                     'episode': total,
                     'mpaa': atype.get('contentRating', ''),
                     'rating': atype.get('rating'),
-                    'aired': atype.get('originallyAvailableAt', '')
+                    'aired': atype.get('originallyAvailableAt', ''),
+                    'year': int(atype.get('year', 0))
                     }
                 tempdate = str(details['aired']).split('-')
                 if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
@@ -613,10 +618,11 @@ def build_tv_seasons(params):
                 # Build the screen directory listing
                 add_gui_item(url, details, extra_data, context)
 
+            # Apparently date sorting in Kodi has been broken for years
+            xbmcplugin.addSortMethod(handle, 17)  # year
             xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
             xbmcplugin.addSortMethod(handle, 3)  # date
             xbmcplugin.addSortMethod(handle, 18)  # rating
-            xbmcplugin.addSortMethod(handle, 17)  # year
             xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
         except Exception as e:
@@ -957,9 +963,9 @@ if valid_user() is True:
         parameters = util.parseParameters()
     except Exception as e:
         error('valid_user parseParameters() error', str(e))
-        parameters = {"mode": 2}
+        parameters = {'mode': 2}
     try:
-        mode = int(parameters["mode"])
+        mode = int(parameters['mode'])
     except Exception as e:
         error('valid_user set \'mode\' error', str(e))
         mode = None
