@@ -1,3 +1,6 @@
+v1.3.8 (13/06/2016)
+- setting to treat subgroups as seasons (use old style). use year as a fallback if there is no date #122
+
 v1.3.7 (31/05/2016)
 - Sort TV seasons by date #111 (da3dsoul)
 - Make errors actually log as errors #112 (da3dsoul)
