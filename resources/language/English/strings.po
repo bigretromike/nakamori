@@ -174,4 +174,4 @@ msgstr ""
 
 msgctxt "#32051"
 msgid "Treat Subgroups as 'Seasons'"
-msgstr "" 
+msgstr ""
