@@ -1,6 +1,7 @@
-v1.3.8 (10/06/2016)
+v1.3.8 (13/06/2016)
 - Setting to treat subgroups as seasons (use old style) #122
 - Use year as a fallback if there is no date #122
+- use a more safe way to handle date fallback #123
 
 v1.3.7 (31/05/2016)
 - Sort TV seasons by date #111 (da3dsoul)
