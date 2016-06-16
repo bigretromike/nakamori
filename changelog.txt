@@ -1,3 +1,6 @@
+v1.3.9 (16/06/2016)
+- Yet another UTF-8 fix
+
 v1.3.8 (13/06/2016)
 - Setting to treat subgroups as seasons (use old style) #122
 - Use year as a fallback if there is no date #122

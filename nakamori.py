@@ -1,5 +1,6 @@
+#-*- coding: utf-8 -*-
 import datetime
-import os.path
+import os
 import re
 import sys
 import traceback
@@ -51,17 +52,21 @@ def setWindowHeading (tree):
 
 
 def getTitle (data):
-    lang = addon.getSetting("displaylang")
-    titles = data.split('|')
-    skip = addon.getSetting("skipofficial")
-    if skip == "true":
+    try:
+        data = unicode(str(data), 'utf-8')
+        lang = addon.getSetting("displaylang")
+        titles = data.split('|')
+        skip = addon.getSetting("skipofficial")
+        if skip == "true":
+            for title in titles:
+                if '{official:' + lang + '}' in title:
+                    return unicode(title.replace('{official:' + lang + '}', ''), 'utf-8')
         for title in titles:
-            if '{official:' + lang + '}' in title:
-                return unicode(title.replace('{official:' + lang + '}', ''), 'utf8')
-    for title in titles:
-        if '{main:' + lang + '}' in title:
-            return unicode(title.replace('{main:' + lang + '}', ''), 'utf8')
-    return 'err404'
+            if '{main:' + lang + '}' in title:
+                return unicode(title.replace('{main:' + lang + '}', ''), 'utf-8')
+        return 'err404'
+    except Exception as e:
+        Error("Error during getTitle", str(e))
 
 
 def addGUIItem (url, details, extraData, context=None, folder=True):
