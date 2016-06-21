@@ -325,6 +325,7 @@ def get_cast_and_role(data):
 def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
+        # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         e = Tree.XML(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                               "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
