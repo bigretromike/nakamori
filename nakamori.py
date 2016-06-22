@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import datetime
 import os
 import re
@@ -63,17 +65,21 @@ def set_window_heading(var_tree):
 
 
 def get_title(data):
-    lang = addon.getSetting("displaylang")
-    titles = data.split('|')
-    skip = addon.getSetting("skipofficial")
-    if skip == "true":
+    try:
+        data = unicode(str(data), 'utf-8')
+        lang = addon.getSetting("displaylang")
+        titles = data.split('|')
+        skip = addon.getSetting("skipofficial")
+        if skip == "true":
+            for title in titles:
+                if '{official:' + lang + '}' in title:
+                    return unicode(title.replace('{official:' + lang + '}', ''), 'utf-8')
         for title in titles:
-            if '{official:' + lang + '}' in title:
-                return unicode(title.replace('{official:' + lang + '}', ''), 'utf8')
-    for title in titles:
-        if '{main:' + lang + '}' in title:
-            return unicode(title.replace('{main:' + lang + '}', ''), 'utf8')
-    return 'err404'
+            if '{main:' + lang + '}' in title:
+                return unicode(title.replace('{main:' + lang + '}', ''), 'utf-8')
+        return 'err404'
+    except Exception as e:
+        error("get_title Exception", str(e))
 
 
 def add_gui_item(url, details, extra_data, context=None, folder=True):
@@ -325,6 +331,7 @@ def get_cast_and_role(data):
 def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
+        # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         e = Tree.XML(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                               "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:

@@ -4,6 +4,9 @@ v2.0.0 ()
 - Code cleaning
 - PEP8 code style applied
 
+v1.3.9 (16/06/2016)
+- Yet another UTF-8 fix
+
 v1.3.8 (10/06/2016)
 - Setting to treat subgroups as seasons (use old style) #122
 - Use year as a fallback if there is no date #122
