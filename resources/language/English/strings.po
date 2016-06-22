@@ -17,7 +17,7 @@ msgid "JMM Settings"
 msgstr ""
 
 msgctxt "#32002"
-msgid "IP Address"
+msgid "IP Address or Hostname"
 msgstr ""
 
 msgctxt "#32003"
