@@ -964,10 +964,13 @@ if valid_user() is True:
     except Exception as e:
         error('valid_user parseParameters() error', str(e))
         parameters = {'mode': 2}
-    try:
-        mode = int(parameters['mode'])
-    except Exception as e:
-        error('valid_user set \'mode\' error', str(e))
+    if parameters:
+        try:
+            mode = int(parameters['mode'])
+        except Exception as e:
+            error('valid_user set \'mode\' error', str(e) + " parameters: " + str(parameters))
+            mode = None
+    else:
         mode = None
     try:
         cmd = parameters['cmd']
