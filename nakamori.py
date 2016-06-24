@@ -287,7 +287,7 @@ def buildMainMenu ():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
-        e = tree.XML(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
+        e = tree.XML(getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                               "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
             for atype in e.findall('Directory'):
