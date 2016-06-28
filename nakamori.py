@@ -286,7 +286,9 @@ def getCastAndRole (data):
 def buildMainMenu ():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
-        e = tree.XML(getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
+        # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
+        e = tree.XML(getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
+                              "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
             for atype in e.findall('Directory'):
                 title = atype.get('title')

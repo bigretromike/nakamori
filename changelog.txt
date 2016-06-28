@@ -1,3 +1,6 @@
+v1.4.0 (24/06/2016)
+- make ip also accept hostnames (#127)
+
 v1.3.9 (16/06/2016)
 - Yet another UTF-8 fix
 
