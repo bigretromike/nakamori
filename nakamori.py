@@ -125,7 +125,7 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
             if details.get('year', '') != '':
-                details['date'] = "01.01."+details['year']
+                details['date'] = "01.01."+str(details['year'])
 
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
