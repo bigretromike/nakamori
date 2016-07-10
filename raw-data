@@ -1,0 +1,118 @@
+# groups/filter
+
+group: {
+	count: int,
+	groups [
+				{ id: int, 
+				title : string, 
+				key: string, 
+				art: {
+							thumb: url,
+							fanart: url, 
+							banner: url
+						}
+				}
+			]
+		}
+
+# series/seasons
+serie: {
+	count: int,
+	series: [
+			{ 	id: int, 
+				count_local: int,
+				tag: [ string, string, string ],
+				castandrole: [
+									{ actor: string, character: string, picture: string },
+									{ actor: string, character: string, picture: string } 
+				],
+				title: {
+							official: {
+											jp: string,
+											en: string
+										},
+							synonym: {
+											jp: string,
+											en: string
+										},
+							short: {
+											jp: string,
+											en: string
+										}
+						},
+				year: int,
+				episode: int,
+				season: int,
+				rating: float,
+				votes: int,
+				my_rating: float,
+				datastart: datetime,
+				datastop: datetime,
+				plot: string,
+				status: string,
+				dateadded: datetime,
+				key : url,
+				art: {
+						thumb: url,
+						fanart: url, 
+						banner: url
+					}
+				source: tvshows,
+				watched: int
+			}
+			]
+		}
+
+# episodes
+episode: {
+	count: int,
+	tag: [ string, string, string ],
+	castandrole: [
+						{ actor: string, character: string, picture: string },
+						{ actor: string, character: string, picture: string } 
+				],
+	year: int,
+	episodes: [
+			{ 	id: int, 
+				title: string,
+				episode: int,
+				season: int,
+				rating: float,
+				votes: int,
+				my_rating: float,
+				datastart: datetime,
+				datastop: datetime,
+				plot: string,
+				status: string,
+				dateadded: datetime,
+				key : url,
+				art: {
+						thumb: url,
+						fanart: url, 
+						banner: url
+					}
+				watched: int
+				media {
+					videoResolution: string,
+					audioCodec: string,
+					aspectRatio: string,
+					videoCodec: string,
+					audioChannels: string,
+					Part [
+							#stream=1
+							Stream: int,
+							VideoCodec: string, 
+							width: int,
+							height: int,
+							duration: int
+							#stream=2
+							AudioCodec: string,
+							AudioLanguage: string,
+							AudioChannels: string,
+							#stream=3
+							Language: string
+					]
+			}
+			]
+		}
+                              
