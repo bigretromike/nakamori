@@ -331,6 +331,7 @@ def get_cast_and_role(data):
 def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
+        # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         e = Tree.XML(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                               "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
@@ -970,10 +971,13 @@ if valid_user() is True:
     except Exception as e:
         error('valid_user parseParameters() error', str(e))
         parameters = {'mode': 2}
-    try:
-        mode = int(parameters['mode'])
-    except Exception as e:
-        error('valid_user set \'mode\' error', str(e))
+    if parameters:
+        try:
+            mode = int(parameters['mode'])
+        except Exception as e:
+            error('valid_user set \'mode\' error', str(e) + " parameters: " + str(parameters))
+            mode = None
+    else:
         mode = None
     try:
         cmd = parameters['cmd']
