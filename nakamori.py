@@ -139,7 +139,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
             title = details.get('title', 'Unknown')
         details['title'] = title
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
-        if len(tbi) > 0:
+        if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi})
             liz.setArt({'poster': get_poster(tbi)})
 
