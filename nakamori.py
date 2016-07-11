@@ -82,6 +82,13 @@ def get_title(data):
         error("get_title Exception", str(e))
 
 
+def filter_gui_item_by_tag(title):
+    #xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', 'Running filter tags', addon.getAddonInfo('icon')))
+    str1 = [title]
+    str1 = TagFilter.processTags(addon,str1)
+    return len(str1) > 0
+
+
 def add_gui_item(url, details, extra_data, context=None, folder=True):
     try:
         tbi = ""
@@ -138,6 +145,10 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
         else:
             title = details.get('title', 'Unknown')
         details['title'] = title
+        if details.get('parenttitle','').lower() == 'tags':
+            if not filter_gui_item_by_tag(title):
+                return
+
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi})
@@ -397,6 +408,12 @@ def build_tv_shows(params):
         e = Tree.XML(html)
         set_window_heading(e)
         try:
+            parent_title=''
+            try:
+                parent_title=e.get('title1', '')
+            except Exception:
+                error("Unable to get parent title in buildTVShows")
+                pass
             for atype in e.findall('Directory'):
                 tempgenre = ""
                 tag = atype.find("Tag")
@@ -427,6 +444,7 @@ def build_tv_shows(params):
                     total = int(atype.get('leafCount', 0))
                 details = {
                     'title': atype.get('title', 'Unknown').encode('utf-8'),
+                    'parenttitle': parent_title.encode('utf-8'),
                     'genre': tempgenre,
                     'year': int(atype.get('year', 0)),
                     'episode': total,
@@ -517,6 +535,12 @@ def build_tv_seasons(params):
         e = Tree.XML(html)
         set_window_heading(e)
         try:
+            parent_title=''
+            try:
+                parent_title = e.get('title1', '')
+            except Exception:
+                error("Unable to get parent title in buildTVSeasons")
+                pass
             if e.find('Directory') is None:
                 params['url'] = params['url'].replace('&mode=5', '&mode=6')
                 build_tv_episodes(params)
@@ -574,6 +598,7 @@ def build_tv_seasons(params):
                     total = int(atype.get('leafCount', 0))
                 details = {
                     'title': atype.get('title', 'Unknown').encode('utf-8'),
+                    'parenttitle': parent_title.encode('utf-8'),
                     'tvshowname': atype.get('title', 'Unknown').encode('utf-8'),
                     'sorttitle': atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
                     'studio': atype.get('studio', '').encode('utf-8'),
@@ -649,6 +674,12 @@ def build_tv_episodes(params):
             xbmc.log(html)
         set_window_heading(e)
         try:
+            parent_title=''
+            try:
+                parent_title = e.get('title1', '')
+            except Exception:
+                error("Unable to get parent title in buildTVEpisodes")
+                pass
             if e.find('Directory') is not None:
                 if e.find('Directory').get('type', 'none') == 'season':
                     params['url'] = params['url'].replace('&mode=6', '&mode=5')
@@ -727,6 +758,7 @@ def build_tv_episodes(params):
                     'plot': "..." if skip else atype.get('summary', '').encode('utf-8'),
                     'title': atype.get('title', 'Unknown').encode('utf-8'),
                     'sorttitle': atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
+                    'parenttitle': parent_title.encode('utf-8'),
                     'rating': float(atype.get('rating', 0)),
                     # 'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
                     # This doesn't work, some gremlins be afoot in this code...
