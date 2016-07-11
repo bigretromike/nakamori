@@ -793,6 +793,11 @@ def build_tv_episodes(params):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
 
+                ext = atype.find('Media').find('Part').get('container', '')
+                newkey = atype.find('Media').find('Part').get('key', '')
+                if not 'videolocal' in key:
+                    key = newkey + '.' + ext
+
                 # Extra data required to manage other properties
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
                               'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
