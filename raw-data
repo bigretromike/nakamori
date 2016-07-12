@@ -6,6 +6,7 @@ group: {
 				{ id: int, 
 				title : string, 
 				key: string, 
+				count: int,
 				art: {
 							thumb: url,
 							fanart: url, 
@@ -59,6 +60,7 @@ serie: {
 					}
 				source: tvshows,
 				watched: int
+				genre: [ string ]
 			}
 			]
 		}
