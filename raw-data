@@ -1,6 +1,6 @@
 # groups/filter
 
-group: {
+{
 	count: int,
 	groups [
 				{ id: int, 
@@ -17,17 +17,13 @@ group: {
 		}
 
 # series/seasons
-serie: {
+{
 	count: int,
 	series: [
 			{ 	id: int, 
 				count_local: int,
-				tag: [ string, string, string ],
-				castandrole: [
-									{ actor: string, character: string, picture: string },
-									{ actor: string, character: string, picture: string } 
-				],
-				title: {
+				title : string, 
+				titles: {
 							official: {
 											jp: string,
 											en: string
@@ -45,12 +41,12 @@ serie: {
 				episode: int,
 				season: int,
 				rating: float,
-				votes: int,
-				my_rating: float,
+				//votes: int,
+				//my_rating: float,
 				datastart: datetime,
-				datastop: datetime,
+				//datastop: datetime,
 				plot: string,
-				status: string,
+				//status: string,
 				dateadded: datetime,
 				key : url,
 				art: {
@@ -60,32 +56,62 @@ serie: {
 					}
 				source: tvshows,
 				watched: int
-				genre: [ string ]
+				genre: [ string, string, string ]
+				cast: [
+									{ 
+										actor: string, 
+										actorpic: string,
+										role: string, 
+										roledesc: string,
+										rolepic: string 
+										},
+									{ 
+										actor: string, 
+										actorpic: string,
+										role: string, 
+										roledesc: string,
+										rolepic: string 
+										}
+				],
+				tag: [ string, string, string ],
 			}
 			]
 		}
 
 # episodes
-episode: {
+{
 	count: int,
 	tag: [ string, string, string ],
-	castandrole: [
-						{ actor: string, character: string, picture: string },
-						{ actor: string, character: string, picture: string } 
+	cast: [
+									{ 
+										actor: string, 
+										actorpic: string,
+										role: string, 
+										roledesc: string,
+										rolepic: string 
+										},
+									{ 
+										actor: string, 
+										actorpic: string,
+										role: string, 
+										roledesc: string,
+										rolepic: string 
+										}
 				],
 	year: int,
+	genre: [ string, string, string ]
 	episodes: [
 			{ 	id: int, 
-				title: string,
+				title: string,				
 				episode: int,
 				season: int,
 				rating: float,
-				votes: int,
-				my_rating: float,
+				//votes: int,
+				//my_rating: float,
 				datastart: datetime,
-				datastop: datetime,
+				//datastop: datetime,
 				plot: string,
-				status: string,
+				//status: string,
 				dateadded: datetime,
 				key : url,
 				art: {
@@ -94,27 +120,38 @@ episode: {
 						banner: url
 					}
 				watched: int
-				media {
-					videoResolution: string,
-					audioCodec: string,
-					aspectRatio: string,
-					videoCodec: string,
-					audioChannels: string,
-					Part [
-							#stream=1
-							Stream: int,
-							VideoCodec: string, 
-							width: int,
-							height: int,
-							duration: int
-							#stream=2
-							AudioCodec: string,
-							AudioLanguage: string,
-							AudioChannels: string,
-							#stream=3
-							Language: string
-					]
+				media: [
+							{
+								parts: [
+											{
+												#stream=1
+												{
+													id: int,
+													type: string,
+													VideoCodec: string, 
+													width: int,
+													height: int,
+													duration: int
+												},
+												#stream=2
+												{
+													id: int,
+													type: string,
+													AudioCodec: string,
+													AudioLanguage: string,
+													AudioChannels: string,
+												},
+												#stream=3
+												{
+													id: int,
+													type: string,
+													Language: string
+												}
+											}
+										]
+									}
+								]
 			}
-			]
-		}
+		]
+	}
                               
