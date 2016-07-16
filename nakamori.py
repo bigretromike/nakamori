@@ -66,20 +66,32 @@ def set_window_heading(var_tree):
 
 def get_title(data):
     try:
-        data = unicode(str(data), 'utf-8')
+        if addon.getSetting('use_server_title') == 'true':
+            return data.get('title','Unknown').encode('utf-8')
         lang = addon.getSetting("displaylang")
-        titles = data.split('|')
-        skip = addon.getSetting("skipofficial")
-        if skip == "true":
-            for title in titles:
-                if '{official:' + lang + '}' in title:
-                    return unicode(title.replace('{official:' + lang + '}', ''), 'utf-8')
-        for title in titles:
-            if '{main:' + lang + '}' in title:
-                return unicode(title.replace('{main:' + lang + '}', ''), 'utf-8')
-        return 'err404'
+        type = addon.getSetting("title_type")
+        try:
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Type').text.lower() == type.lower():
+                    if titleTag.find('Language').text.lower() == lang.lower():
+                        return titleTag.find('Title').text.encode('utf-8')
+            # fallback on language any title
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Language').text.lower() == lang.lower():
+                    return titleTag.find('Title').text.encode('utf-8')
+            # fallback on x-jat main title
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Type').text.lower() == 'main':
+                    if titleTag.find('Language').text.lower() == 'x-jat':
+                        return titleTag.find('Title').text.encode('utf-8')
+            # fallback on directory title
+            return data.get('title', 'Unknown').encode('utf-8')
+        except:
+            error('Error thrown on getting title')
+            return data.get('title','Error').encode('utf-8')
     except Exception as e:
         error("get_title Exception", str(e))
+        return 'Error'
 
 
 def filter_gui_item_by_tag(title):
@@ -137,16 +149,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
                     link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
             tbi = extra_data.get('thumb', '')
             tp = extra_data.get('type', 'Video')
-        title = ""
-        if folder:
-            title = get_title(title)
-            if 'err404' in title:
-                title = details.get('title', 'Unknown')
-        else:
-            title = details.get('title', 'Unknown')
-        details['title'] = title
         if details.get('parenttitle','').lower() == 'tags':
-            if not filter_gui_item_by_tag(title):
+            if not filter_gui_item_by_tag(details.get('title','')):
                 return
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
@@ -314,18 +318,34 @@ def set_watch_flag(extra_data, details):
         extra_data['partialTV'] = 1
 
 
+def get_tags(atype):
+    tempgenre = ""
+    try:
+        temp_genres = []
+        for tag in atype.findall("Genre"):
+            if tag is not None:
+                tempgenre = tag.get('tag', '').encode('utf-8').strip()
+                temp_genres.append(tempgenre)
+                tempgenre = ""
+        temp_genres = TagFilter.processTags(addon, temp_genres)
+        tempgenre = " | ".join(temp_genres)
+        return tempgenre
+    except:
+        error('Error generating tags')
+        return ''
+
 def get_cast_and_role(data):
     if data is not None:
         result_list = []
         list_cast = []
         list_cast_and_role = []
-        for char in data.findall('Character'):
+        for char in data.findall('Role'):
             # Don't init any variables we don't need right now
             # char_id = char.get('charID')
-            char_charname = char.get('charname', '')
+            char_charname = char.get('role', '')
             # char_picture=char.get('picture','')
             # char_desc=char.get('description','')
-            char_seiyuuname = char.get('seiyuuname', 'Unknown')
+            char_seiyuuname = char.get('tag', 'Unknown')
             # char_seiyuupic=char.get('seiyuupic', 'err404')
             # only add it if it has data
             # reorder these to match the convention (Actor is cast, character is role, in that order)
@@ -413,18 +433,8 @@ def build_tv_shows(params):
                 parent_title=e.get('title1', '')
             except Exception:
                 error("Unable to get parent title in buildTVShows")
-                pass
             for atype in e.findall('Directory'):
-                tempgenre = ""
-                tag = atype.find("Tag")
-                if tag is not None:
-                    tempgenre = tag.get('tag', '')
-                    temp_genres = str.split(tempgenre, ",")
-                    temp_genres = TagFilter.processTags(addon, temp_genres)
-                    tempgenre = ""
-                    for a in temp_genres:
-                        a = " ".join(w.capitalize() for w in a.split())
-                        tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
+                tempgenre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
                 # TODO: Decide about future of cast_and_role in ALL
@@ -433,7 +443,7 @@ def build_tv_shows(params):
                 list_cast = []
                 list_cast_and_role = []
                 if len(list_cast) == 0:
-                    result_list = get_cast_and_role(atype.find('Characters'))
+                    result_list = get_cast_and_role(atype)
                     if result_list is not None:
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
@@ -442,8 +452,9 @@ def build_tv_shows(params):
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
+                title = get_title(atype)
                 details = {
-                    'title': atype.get('title', 'Unknown').encode('utf-8'),
+                    'title': title,
                     'parenttitle': parent_title.encode('utf-8'),
                     'genre': tempgenre,
                     'year': int(atype.get('year', 0)),
@@ -465,13 +476,13 @@ def build_tv_shows(params):
                     'plot': remove_html(atype.get('summary', '').encode('utf-8')),
                     # 'plotoutline'  : plotoutline,
                     'originaltitle': atype.get('original_title', '').encode("utf-8"),
-                    'sorttitle': atype.get('title', 'Unknown').encode('utf-8'),
+                    'sorttitle': title,
                     # 'Duration'     : duration,
                     # 'Studio'       : studio, < ---
                     # 'Tagline'      : tagline,
                     # 'Writer'       : writer,
                     # 'tvshowtitle'  : tvshowtitle,
-                    'tvshowname': atype.get('title', 'Unknown').encode('utf-8'),
+                    'tvshowname': title,
                     # 'premiered'    : premiered,
                     # 'Status'       : status,
                     # code           : string (tt0110293, - IMDb code
@@ -540,7 +551,6 @@ def build_tv_seasons(params):
                 parent_title = e.get('title1', '')
             except Exception:
                 error("Unable to get parent title in buildTVSeasons")
-                pass
             if e.find('Directory') is None:
                 params['url'] = params['url'].replace('&mode=5', '&mode=6')
                 build_tv_episodes(params)
@@ -570,23 +580,13 @@ def build_tv_seasons(params):
 
                 plot = remove_html(atype.get('summary', '').encode('utf-8'))
 
-                tempgenre = ""
-                tag = atype.find("Tag")
-                if tag is not None:
-                    tempgenre = tag.get('tag', '').encode('utf-8')
-                    temp_genres = str.split(tempgenre, ",")
-                    temp_genres = TagFilter.processTags(addon, temp_genres)
-                    tempgenre = ""
-                    for a in temp_genres:
-                        " ".join(w.capitalize() for w in a.split())
-                        tempgenre = a if tempgenre == "" else tempgenre + " | " + a
-
+                tempgenre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
                 list_cast = []
                 list_cast_and_role = []
                 if len(list_cast) == 0:
-                    result_list = get_cast_and_role(atype.find('Characters'))
+                    result_list = get_cast_and_role(atype)
                     if result_list is not None:
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
@@ -596,11 +596,12 @@ def build_tv_seasons(params):
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
+                title = get_title(atype)
                 details = {
-                    'title': atype.get('title', 'Unknown').encode('utf-8'),
+                    'title': title,
                     'parenttitle': parent_title.encode('utf-8'),
-                    'tvshowname': atype.get('title', 'Unknown').encode('utf-8'),
-                    'sorttitle': atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
+                    'tvshowname': title,
+                    'sorttitle': atype.get('titleSort', title).encode('utf-8'),
                     'studio': atype.get('studio', '').encode('utf-8'),
                     'cast': list_cast,
                     'castandrole': list_cast_and_role,
@@ -679,7 +680,6 @@ def build_tv_episodes(params):
                 parent_title = e.get('title1', '')
             except Exception:
                 error("Unable to get parent title in buildTVEpisodes")
-                pass
             if e.find('Directory') is not None:
                 if e.find('Directory').get('type', 'none') == 'season':
                     params['url'] = params['url'].replace('&mode=6', '&mode=5')
@@ -720,19 +720,11 @@ def build_tv_episodes(params):
                 for atype in video_list:
                     # we only get this once, so only set it if it's not already set
                     if len(list_cast) == 0:
-                        result_list = get_cast_and_role(atype.find('Characters'))
+                        result_list = get_cast_and_role(atype)
                         if result_list is not None:
                             list_cast = result_list[0]
                             list_cast_and_role = result_list[1]
-                        tag = atype.find("Tag")
-                        if tag is not None:
-                            tempgenre = tag.get('tag', '').encode('utf-8')
-                            temp_genres = str.split(tempgenre, ",")
-                            temp_genres = TagFilter.processTags(addon, temp_genres)
-                            tempgenre = ""
-                            for a in temp_genres:
-                                " ".join(w.capitalize() for w in a.split())
-                                tempgenre = a if tempgenre == "" else tempgenre + " | " + a
+                        tempgenre = get_tags(atype)
                         parentkey = atype.get('parentKey', '0')
                         if not parentkey.startswith("http"):
                             parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
