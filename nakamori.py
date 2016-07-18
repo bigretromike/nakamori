@@ -369,12 +369,17 @@ def build_main_menu():
             for atype in e.findall('Directory'):
                 title = atype.get('title')
                 use_mode = 4
+
+                key = atype.get('key', '')
+
                 if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
                 elif title == 'Unsort':
+                    title = 'Unsorted'
                     use_mode = 6
+                    if key[-1] == '/':
+                        key = key[:-1]
 
-                key = atype.get('key', '')
                 if not key.startswith("http"):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
