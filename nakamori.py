@@ -64,64 +64,6 @@ def set_window_heading(var_tree):
         window_obj.clearProperty("heading2")
 
 
-def get_legacy_title(data):
-    lang = addon.getSetting("displaylang")
-    type = addon.getSetting("title_type")
-    temptitle = data.get('original_title', 'Unknown').encode('utf-8')
-    titles = temptitle.split('|')
-
-    for title in titles:
-        xbmc.log('title: ' + title, xbmc.LOGWARNING)
-        stripped = unicode(title[title.index('}') + 1:], 'utf-8')
-        if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
-            xbmc.log('First (type and lang): ' + stripped, xbmc.LOGWARNING)
-            return stripped
-    for title in titles:
-        # fallback on language
-        if (':' + lang.lower() + '}') in title:
-            xbmc.log('Second (lang): ' + stripped, xbmc.LOGWARNING)
-            return stripped
-    for title in titles:
-        # fallback on x-jat
-        if '{main:x-jat}' in title:
-            xbmc.log('Third (x-jat): ' + stripped, xbmc.LOGWARNING)
-            return stripped
-
-    return data.get('title', 'Unknown').encode('utf-8')
-
-
-def get_title(data):
-    try:
-        if addon.getSetting('use_server_title') == 'true':
-            return data.get('title','Unknown').encode('utf-8')
-        if data.get('original_title', '') != '':
-            return get_legacy_title(data)
-        lang = addon.getSetting("displaylang")
-        type = addon.getSetting("title_type")
-        try:
-            for titleTag in data.findall('AnimeTitle'):
-                if titleTag.find('Type').text.lower() == type.lower():
-                    if titleTag.find('Language').text.lower() == lang.lower():
-                        return titleTag.find('Title').text.encode('utf-8')
-            # fallback on language any title
-            for titleTag in data.findall('AnimeTitle'):
-                if titleTag.find('Language').text.lower() == lang.lower():
-                    return titleTag.find('Title').text.encode('utf-8')
-            # fallback on x-jat main title
-            for titleTag in data.findall('AnimeTitle'):
-                if titleTag.find('Type').text.lower() == 'main':
-                    if titleTag.find('Language').text.lower() == 'x-jat':
-                        return titleTag.find('Title').text.encode('utf-8')
-            # fallback on directory title
-            return data.get('title', 'Unknown').encode('utf-8')
-        except:
-            error('Error thrown on getting title')
-            return data.get('title','Error').encode('utf-8')
-    except Exception as e:
-        error("get_title Exception", str(e))
-        return 'Error'
-
-
 def filter_gui_item_by_tag(title):
     #xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', 'Running filter tags', addon.getAddonInfo('icon')))
     str1 = [title]
@@ -291,6 +233,7 @@ def error(msg, error_msg="Generic"):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
                 os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+        traceback.print_exc()
     except Exception as e:
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
         xbmc.log("There error message: ", str(e))
@@ -346,6 +289,63 @@ def set_watch_flag(extra_data, details):
         extra_data['partialTV'] = 1
 
 
+def get_legacy_title(data):
+    lang = addon.getSetting("displaylang")
+    type = addon.getSetting("title_type")
+    temptitle = unicode(data.get('original_title', 'Unknown'))
+    titles = temptitle.split('|')
+
+    for title in titles:
+        stripped = title[title.index('}') + 1:]
+        if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
+            return stripped
+    for title in titles:
+        # fallback on language
+        stripped = title[title.index('}') + 1:]
+        if (':' + lang.lower() + '}') in title:
+            return stripped
+    for title in titles:
+        # fallback on x-jat
+        stripped = title[title.index('}') + 1:]
+        if '{main:x-jat}' in title:
+            return stripped
+
+    return data.get('title', 'Unknown').encode('utf-8')
+
+
+def get_title(data):
+    try:
+        if addon.getSetting('use_server_title') == 'true':
+            return data.get('title','Unknown').encode('utf-8')
+        if data.get('original_title', '') != '':
+            return get_legacy_title(data)
+        lang = addon.getSetting("displaylang")
+        type = addon.getSetting("title_type")
+        try:
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Type').text.lower() == type.lower():
+                    if titleTag.find('Language').text.lower() == lang.lower():
+                        return titleTag.find('Title').text.encode('utf-8')
+            # fallback on language any title
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Language').text.lower() == lang.lower():
+                    return titleTag.find('Title').text.encode('utf-8')
+            # fallback on x-jat main title
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Type').text.lower() == 'main':
+                    if titleTag.find('Language').text.lower() == 'x-jat':
+                        return titleTag.find('Title').text.encode('utf-8')
+            # fallback on directory title
+            return data.get('title', 'Unknown').encode('utf-8')
+        except:
+            error('Error thrown on getting title')
+            return data.get('title','Error').encode('utf-8')
+    except Exception as e:
+        error("get_title Exception", str(e))
+        return 'Error'
+
+
+
 def get_legacy_tags(atype):
     tempgenre = ""
     tag = atype.find("Tag")
@@ -387,7 +387,8 @@ def get_cast_and_role(data):
         list_cast_and_role = []
 
         characterTag = 'Role'
-        if data.find('Character') is not None:
+        if data.find('Characters') is not None:
+            data = data.find('Characters')
             characterTag = 'Character'
         for char in data.findall(characterTag):
             # Don't init any variables we don't need right now
