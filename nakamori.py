@@ -339,9 +339,27 @@ def set_watch_flag(extra_data, details):
         extra_data['partialTV'] = 1
 
 
+def get_legacy_tags(atype):
+    tempgenre = ""
+    tag = atype.find("Tag")
+
+    if tag is not None:
+        tempgenre = tag.get('tag', '')
+        temp_genres = str.split(tempgenre, ",")
+        temp_genres = TagFilter.processTags(addon, temp_genres)
+        tempgenre = ""
+
+        for a in temp_genres:
+            a = " ".join(w.capitalize() for w in a.split())
+            tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
+    return tempgenre
+
 def get_tags(atype):
     tempgenre = ""
     try:
+        if atype.find('Tag') is not None:
+            return get_legacy_tags(atype)
+
         temp_genres = []
         for tag in atype.findall("Genre"):
             if tag is not None:
@@ -360,13 +378,23 @@ def get_cast_and_role(data):
         result_list = []
         list_cast = []
         list_cast_and_role = []
-        for char in data.findall('Role'):
+
+        characterTag = 'Role'
+        if data.find('Character') is not None:
+            characterTag = 'Character'
+        for char in data.findall(characterTag):
             # Don't init any variables we don't need right now
             # char_id = char.get('charID')
-            char_charname = char.get('role', '')
+            if characterTag == 'Role':
+                char_charname = char.get('role', '')
+            else:
+                char_charname = char.get('charname', '')
             # char_picture=char.get('picture','')
             # char_desc=char.get('description','')
-            char_seiyuuname = char.get('tag', 'Unknown')
+            if characterTag == 'Role':
+                char_seiyuuname = char.get('seiyuuname', 'Unknown')
+            else:
+                char_seiyuuname = char.get('tag', 'Unknown')
             # char_seiyuupic=char.get('seiyuupic', 'err404')
             # only add it if it has data
             # reorder these to match the convention (Actor is cast, character is role, in that order)
