@@ -10,7 +10,7 @@
 		<setting label="32008" type="lsep"/>
         <setting label="32052" type="bool" id="use_server_title" default="false" />
 		<setting label="32009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)"/>
-		<setting label="32010" type="labelenum" id="title_type" default="Main" values="Official|Main|Synonym|Short" enable="eq(-2,false)"/>
+		<setting label="32010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)"/>
     </category>
 	<category label="32023">
 		<setting label="32025" type="bool" id="watchedbox" default="true"/>
