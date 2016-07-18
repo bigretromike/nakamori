@@ -1,4 +1,7 @@
-v2.0.0 ()
+v2.0.0 (18/07/2016)
+- add support for new file stream url (backwards compatible)
+- Fix titles for legacy 
+- Make 'Official' the default Title Type
 - Compatibility with JMMServer 3.5 #114 
 - Support gzip request/respond #115
 - Code cleaning
