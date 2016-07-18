@@ -67,27 +67,34 @@ def set_window_heading(var_tree):
 def get_legacy_title(data):
     lang = addon.getSetting("displaylang")
     type = addon.getSetting("title_type")
-    temptitle = data.get('originaltitle', 'Unkown').encode('utf-8')
+    temptitle = data.get('original_title', 'Unknown').encode('utf-8')
     titles = temptitle.split('|')
 
     for title in titles:
-        if '{' + type.lower() + ':' + lang + '}' in title:
-            return unicode(title.replace('{' + type.lower() + '):' + lang + '}', ''), 'utf-8')
+        xbmc.log('title: ' + title, xbmc.LOGWARNING)
+        stripped = unicode(title[title.index('}') + 1:], 'utf-8')
+        if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
+            xbmc.log('First (type and lang): ' + stripped, xbmc.LOGWARNING)
+            return stripped
+    for title in titles:
         # fallback on language
-        if ':' + lang + '}' in title:
-            return unicode(str(title)[title.index(':'):].replace(lang + '}', ''), 'utf-8')
+        if (':' + lang.lower() + '}') in title:
+            xbmc.log('Second (lang): ' + stripped, xbmc.LOGWARNING)
+            return stripped
+    for title in titles:
         # fallback on x-jat
-        if '{official:x-jat}' in title:
-            return unicode(title.replace('{official):x-jat}', ''), 'utf-8')
-        return data.get('title', 'Unknown').encode('utf-8')
-    return 'err404'
+        if '{main:x-jat}' in title:
+            xbmc.log('Third (x-jat): ' + stripped, xbmc.LOGWARNING)
+            return stripped
+
+    return data.get('title', 'Unknown').encode('utf-8')
 
 
 def get_title(data):
     try:
         if addon.getSetting('use_server_title') == 'true':
             return data.get('title','Unknown').encode('utf-8')
-        if data.get('originaltitle', '') != '':
+        if data.get('original_title', '') != '':
             return get_legacy_title(data)
         lang = addon.getSetting("displaylang")
         type = addon.getSetting("title_type")
