@@ -25,7 +25,7 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
 # Internal function
 def get_html(url, referer):
-    referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
+    referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":").replace("%2f", "/")
     req = urllib2.Request(url.encode('utf-8'))
     if len(referer) > 1:
         req.add_header('Referer', referer)
