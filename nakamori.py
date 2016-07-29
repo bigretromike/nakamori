@@ -316,9 +316,19 @@ def get_legacy_title(data):
 def get_title(data):
     try:
         if addon.getSetting('use_server_title') == 'true':
-            return data.get('title','Unknown').encode('utf-8')
-        if data.get('original_title', '') != '':
+            return data.get('title', 'Unknown').encode('utf-8')
+        xbmc.log(data.get('title', 'Unknown'))
+        if data.get('original_title', '') != '' \
+                and data.get('title', '') != 'Ova' and data.get('title', '') != 'Ovas' \
+                and data.get('title', '') != 'Episode' and data.get('title', '') != 'Episodes' \
+                and data.get('title', '') != 'Special' and data.get('title', '') != 'Specials' \
+                and data.get('title', '') != 'Parody' and data.get('title', '') != 'Parodies' \
+                and data.get('title', '') != 'Credit' and data.get('title', '') != 'Credits' \
+                and data.get('title', '') != 'Trailer' and data.get('title', '') != 'Trailers' \
+                and data.get('title', '') != 'Other' and data.get('title', '') != 'Others':
             return get_legacy_title(data)
+        else:
+            return data.get('title', 'Unknown').encode('utf-8')
         lang = addon.getSetting("displaylang")
         type = addon.getSetting("title_type")
         try:
@@ -345,7 +355,6 @@ def get_title(data):
         return 'Error'
 
 
-
 def get_legacy_tags(atype):
     tempgenre = ""
     tag = atype.find("Tag")
@@ -361,6 +370,7 @@ def get_legacy_tags(atype):
             tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
     return tempgenre
 
+	
 def get_tags(atype):
     tempgenre = ""
     try:
@@ -380,6 +390,7 @@ def get_tags(atype):
         error('Error generating tags')
         return ''
 
+		
 def get_cast_and_role(data):
     if data is not None:
         result_list = []
