@@ -49,7 +49,7 @@ msgid "Language"
 msgstr ""
 
 msgctxt "#32010"
-msgid "Use 'Official' instead of 'Main' Title"
+msgid "Title Type"
 msgstr ""
 
 msgctxt "#32011"
@@ -58,6 +58,10 @@ msgstr ""
 
 msgctxt "#32012"
 msgid "User ID"
+msgstr ""
+
+msgctxt "#32013"
+msgid "Use gzip"
 msgstr ""
 
 msgctxt "#32021"
@@ -170,4 +174,8 @@ msgstr ""
 
 msgctxt "#32051"
 msgid "Treat Subgroups as 'Seasons'"
+msgstr ""
+
+msgctxt "#32052"
+msgid "Use Server Title"
 msgstr ""

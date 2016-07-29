@@ -1,11 +1,12 @@
-#-*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import datetime
 import os
 import re
 import sys
 import traceback
 import urllib
-import xml.etree.ElementTree as tree
+import xml.etree.ElementTree as Tree
 
 import urllib2
 
@@ -15,117 +16,117 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcplugin
+from StringIO import StringIO
+import gzip
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
-urlopen = urllib2.urlopen
-Request = urllib2.Request
 
 # Internal function
-def getHtml (url, referer):
-    referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
-    req = Request(url.encode('utf-8'))
+def get_html(url, referer):
+    referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":").replace("%2f", "/")
+    req = urllib2.Request(url.encode('utf-8'))
     if len(referer) > 1:
         req.add_header('Referer', referer)
+    use_gzip = addon.getSetting("use_gzip")
+    if use_gzip == "true":
+        req.add_header('Accept-encoding', 'gzip')
     data = None
     try:
-        response = urlopen(req, timeout=int(addon.getSetting('timeout')))
-        data = response.read()
+        response = urllib2.urlopen(req, timeout=int(addon.getSetting('timeout')))
+        if response.info().get('Content-Encoding') == 'gzip':
+            try:
+                buf = StringIO(response.read())
+                f = gzip.GzipFile(fileobj=buf)
+                data = f.read()
+            except Exception as e:
+                error('Decompresing gzip respond failed', str(e))
+        else:
+            data = response.read()
         response.close()
-    except:
-        Error('Connection Failed')
-
+    except Exception as e:
+        error('Connection Failed', str(e))
     return data
 
 
-def setWindowHeading (tree):
-    WINDOW = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+def set_window_heading(var_tree):
+    window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     try:
-        WINDOW.setProperty("heading", tree.get('title1'))
-    except:
-        WINDOW.clearProperty("heading")
-    try:
-        WINDOW.setProperty("heading2", tree.get('title2'))
-    except:
-        WINDOW.clearProperty("heading2")
-
-
-def getTitle (data):
-    try:
-        data = unicode(str(data), 'utf-8')
-        lang = addon.getSetting("displaylang")
-        titles = data.split('|')
-        skip = addon.getSetting("skipofficial")
-        if skip == "true":
-            for title in titles:
-                if '{official:' + lang + '}' in title:
-                    return unicode(title.replace('{official:' + lang + '}', ''), 'utf-8')
-        for title in titles:
-            if '{main:' + lang + '}' in title:
-                return unicode(title.replace('{main:' + lang + '}', ''), 'utf-8')
-        return 'err404'
+        window_obj.setProperty("heading", var_tree.get('title1'))
     except Exception as e:
-        Error("Error during getTitle", str(e))
+        error('set_window_heading Exception', str(e))
+        window_obj.clearProperty("heading")
+    try:
+        window_obj.setProperty("heading2", var_tree.get('title2'))
+    except Exception as e:
+        error('set_window_heading2 Exception', str(e))
+        window_obj.clearProperty("heading2")
 
 
-def addGUIItem (url, details, extraData, context=None, folder=True):
+def filter_gui_item_by_tag(title):
+    #xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', 'Running filter tags', addon.getAddonInfo('icon')))
+    str1 = [title]
+    str1 = TagFilter.processTags(addon,str1)
+    return len(str1) > 0
+
+
+def add_gui_item(url, details, extra_data, context=None, folder=True):
     try:
         tbi = ""
         tp = 'Video'
-        if addon.getSetting("spamLog") == "true":
-            if details is not None:
-                xbmc.log("addGuiItem - details")
-                for i in details:
-                    tempLog = ""
-                    a = details.get(i.encode('utf-8'))
-                    if a is None:
-                        tempLog = "\'unset\'"
-                    elif isinstance(a, list):
-                        for b in a:
-                            tempLog = str(b) if tempLog == "" else tempLog + " | " + str(b)
-                    else:
-                        tempLog = str(a)
-                    xbmc.log("-" + str(i) + "- " + tempLog)
-            if extraData is not None:
-                xbmc.log("addGuiItem - extraData")
-                for i in extraData:
-                    tempLog = ""
-                    a = extraData.get(i.encode('utf-8'))
-                    if a is None:
-                        tempLog = "\'unset\'"
-                    elif isinstance(a, list):
-                        for b in a:
-                            tempLog = str(b) if tempLog == "" else tempLog + " | " + str(b)
-                    else:
-                        tempLog = str(a)
-                    xbmc.log("-" + str(i) + "- " + tempLog)
+        link_url = ""
 
-        if extraData is not None:
-            if extraData.get('parameters'):
-                for argument, value in extraData.get('parameters').items():
-                    link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
-            tbi = extraData.get('thumb', '')
-            tp = extraData.get('type', 'Video')
-        link_url = url
-        title = ""
-        if folder:
-            title = unicode(details.get('originaltitle', ''), 'utf8')
-            title = getTitle(title.encode('utf-8'))
-            if 'err404' in title:
-                title = details.get('title', 'Unknown')
-        else:
-            title = details.get('title', 'Unknown')
-        details['title'] = title
-        liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
-        if len(tbi) > 0:
-            liz.setArt( { 'thumb' : tbi } )
-            liz.setArt( { 'poster' : getPoster(tbi) } )
-
+        # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
-            if details.get('year', '') != '':
-                details['date'] = "01.01."+str(details['year'])
+            if details.get('year', '') != '' and details['year'] != 0:
+                details['date'] = '01.01.'+str(details['year'])
+                details['aired'] = details['date']
+                #details['aired'] = str(details['year'])+'-01-01'
+
+        if addon.getSetting("spamLog") == 'true':
+            if details is not None:
+                xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
+                for i in details:
+                    temp_log = ""
+                    a = details.get(i.encode('utf-8'))
+                    if a is None:
+                        temp_log = "\'unset\'"
+                    elif isinstance(a, list):
+                        for b in a:
+                            temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
+                    else:
+                        temp_log = str(a)
+                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+            if extra_data is not None:
+                xbmc.log("add_gui_item - extra_data", xbmc.LOGWARNING)
+                for i in extra_data:
+                    temp_log = ""
+                    a = extra_data.get(i.encode('utf-8'))
+                    if a is None:
+                        temp_log = "\'unset\'"
+                    elif isinstance(a, list):
+                        for b in a:
+                            temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
+                    else:
+                        temp_log = str(a)
+                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+
+        if extra_data is not None:
+            if extra_data.get('parameters'):
+                for argument, value in extra_data.get('parameters').items():
+                    link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
+            tbi = extra_data.get('thumb', '')
+            tp = extra_data.get('type', 'Video')
+        if details.get('parenttitle','').lower() == 'tags':
+            if not filter_gui_item_by_tag(details.get('title','')):
+                return
+
+        liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
+        if tbi is not None and len(tbi) > 0:
+            liz.setArt({'thumb': tbi})
+            liz.setArt({'poster': get_poster(tbi)})
 
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
@@ -133,27 +134,34 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
         # For all video items
         if not folder:
             liz.setProperty('IsPlayable', 'true')
-            if extraData and len(extraData) > 0:
-                if extraData.get('type', 'video').lower() == "video":
-                    liz.setProperty('TotalTime', str(extraData.get('duration')))
-                    liz.setProperty('ResumeTime', str(extraData.get('resume')))
+            if extra_data and len(extra_data) > 0:
+                if extra_data.get('type', 'video').lower() == "video":
+                    liz.setProperty('TotalTime', str(extra_data.get('duration')))
+                    liz.setProperty('ResumeTime', str(extra_data.get('resume')))
 
-                    liz.setProperty('VideoResolution', str(extraData.get('xVideoResolution', '')))
-                    liz.setProperty('VideoCodec', extraData.get('xVideoCodec', ''))
-                    liz.setProperty('AudioCodec', extraData.get('xAudioCodec', ''))
-                    liz.setProperty('AudioChannels', str(extraData.get('xAudioChannels', '')))
-                    liz.setProperty('VideoAspect', str(extraData.get('xVideoAspect', '')))
+                    liz.setProperty('VideoResolution', str(extra_data.get('xVideoResolution', '')))
+                    liz.setProperty('VideoCodec', extra_data.get('xVideoCodec', ''))
+                    liz.setProperty('AudioCodec', extra_data.get('xAudioCodec', ''))
+                    liz.setProperty('AudioChannels', str(extra_data.get('xAudioChannels', '')))
+                    liz.setProperty('VideoAspect', str(extra_data.get('xVideoAspect', '')))
 
-                    video_codec = { }
-                    if extraData.get('VideoCodec'): video_codec['codec'] = extraData.get('VideoCodec')
-                    if extraData.get('height'): video_codec['height'] = int(extraData.get('height'))
-                    if extraData.get('width'): video_codec['width'] = int(extraData.get('width'))
-                    if extraData.get('duration'): video_codec['duration'] = extraData.get('duration')
+                    video_codec = {}
+                    if extra_data.get('VideoCodec'):
+                        video_codec['codec'] = extra_data.get('VideoCodec')
+                    if extra_data.get('height'):
+                        video_codec['height'] = int(extra_data.get('height'))
+                    if extra_data.get('width'):
+                        video_codec['width'] = int(extra_data.get('width'))
+                    if extra_data.get('duration'):
+                        video_codec['duration'] = extra_data.get('duration')
 
-                    audio_codec = { }
-                    if extraData.get('AudioCodec'): audio_codec['codec'] = extraData.get('AudioCodec')
-                    if extraData.get('AudioChannels'): audio_codec['channels'] = int(extraData.get('AudioChannels'))
-                    if extraData.get('AudioLanguage'): audio_codec['language'] = extraData.get('AudioLanguage')
+                    audio_codec = {}
+                    if extra_data.get('AudioCodec'):
+                        audio_codec['codec'] = extra_data.get('AudioCodec')
+                    if extra_data.get('AudioChannels'):
+                        audio_codec['channels'] = int(extra_data.get('AudioChannels'))
+                    if extra_data.get('AudioLanguage'):
+                        audio_codec['language'] = extra_data.get('AudioLanguage')
 
                     liz.addStreamInfo('video', video_codec)
                     liz.addStreamInfo('audio', audio_codec)
@@ -161,177 +169,322 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
             partemp = util.parseParameters(inputString=url)
             liz.setProperty('path', str(partemp.get('file', 'empty')))
 
-        if extraData and len(extraData) > 0:
-            if extraData.get('source') == 'tvshows' or extraData.get('source') == 'tvseasons':
+        if extra_data and len(extra_data) > 0:
+            if extra_data.get('source') == 'tvshows' or extra_data.get('source') == 'tvseasons':
                 # Then set the number of watched and unwatched, which will be displayed per season
-                liz.setProperty('TotalEpisodes', str(extraData['TotalEpisodes']))
-                liz.setProperty('WatchedEpisodes', str(extraData['WatchedEpisodes']))
-                liz.setProperty('UnWatchedEpisodes', str(extraData['UnWatchedEpisodes']))
+                liz.setProperty('TotalEpisodes', str(extra_data['TotalEpisodes']))
+                liz.setProperty('WatchedEpisodes', str(extra_data['WatchedEpisodes']))
+                liz.setProperty('UnWatchedEpisodes', str(extra_data['UnWatchedEpisodes']))
                 # Hack to show partial flag for TV shows and seasons
-                if extraData.get('partialTV') == 1:
+                if extra_data.get('partialTV') == 1:
                     liz.setProperty('TotalTime', '100')
                     liz.setProperty('ResumeTime', '50')
-                if extraData.get('fanart_image'):
-                    liz.setArt( { "fanart" : extraData.get('fanart_image','') } )
-                # We probably dont use those (second is probably custom)
-                if extraData.get('banner'):
-                    liz.setArt({ 'banner' : extraData.get('banner', '') })
-                if extraData.get('season_thumb'):
-                    liz.setArt({ 'seasonThumb' : extraData.get('season_thumb', '') })
+                if extra_data.get('fanart_image'):
+                    liz.setArt({"fanart": extra_data.get('fanart_image', '')})
+                # TODO: We support this with JMM Patch or drop this (i prefer support)
+                # We probably don't use those (second is probably custom)
+                if extra_data.get('banner'):
+                    liz.setArt({'banner': extra_data.get('banner', '')})
+                if extra_data.get('season_thumb'):
+                    liz.setArt({'seasonThumb': extra_data.get('season_thumb', '')})
 
         if context is None:
-            if extraData and len(extraData) > 0:
-                if extraData.get('type', 'video').lower() == "video":
+            if extra_data and len(extra_data) > 0:
+                if extra_data.get('type', 'video').lower() == "video":
                     context = []
                     url_peep = sys.argv[2]
                     # Always allow 'More Info' to be executed. Some places have more info than others
                     context.append(('More Info', 'Action(Info)'))
-                    if extraData.get('source', 'none') == 'tvshows':
-                        url_peep = url_peep + "&anime_id=" + extraData.get('key') + "&cmd=voteSer"
+                    if extra_data.get('source', 'none') == 'tvshows':
+                        url_peep = url_peep + "&anime_id=" + extra_data.get('key') + "&cmd=voteSer"
                         context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
-                    if extraData.get('source', 'none') == 'tvepisodes':
-                        url_peep = url_peep + "&anime_id=" + extraData.get('parentKey') + "&ep_id=" + extraData.get('jmmepisodeid')
+                    if extra_data.get('source', 'none') == 'tvepisodes':
+                        url_peep = url_peep + "&anime_id=" + extra_data.get('parentKey') + "&ep_id=" \
+                                   + extra_data.get('jmmepisodeid')
                         context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
-                        sys.argv[1], url_peep)))
+                            sys.argv[1], url_peep)))
                         context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
-                        sys.argv[1], url_peep)))
+                            sys.argv[1], url_peep)))
                         context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                        sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (
-                        sys.argv[1], url_peep)))
+                            sys.argv[1], url_peep)))
+                        context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                        (sys.argv[1], url_peep)))
                     liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
-        Error("Error during addGUIItem", str(e))
+        error("Error during add_gui_item", str(e))
 
 
-def validUser ():
-    e = tree.XML(
-        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/getusers",
-                ""))
+def valid_user():
+    e = Tree.XML(
+        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
+                 "/jmmserverkodi/getusers", ""))
     valid = False
     for atype in e.findall('User'):
-        id = atype.get('id')
-        if id == addon.getSetting("userid"):
+        user_id = atype.get('id')
+        if user_id == addon.getSetting("userid"):
             valid = True
     return valid
 
 
-def Error (msg, error="Generic"):
+def error(msg, error_msg="Generic"):
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error), xbmc.LOGERROR)
-    except:
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+        traceback.print_exc()
+    except Exception as e:
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
+        xbmc.log("There error message: ", str(e))
         traceback.print_exc()
 
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', msg, addon.getAddonInfo('icon')))
 
 
-def removeHTML (data = ""):
-    # p = re.compile(r'<.*?>')
+def remove_html(data=""):
+    # search for string with 1 to 3 letters and 1 to 7 numbers
     p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
     data2 = p.sub('', data)
+    # remove '[' and ']' that included link to anidb.net
     p = re.compile('(\[|\])')
     return p.sub('', data2)
 
 
-def getPoster (data = ""):
-    result = data
-    if len(data) > 0 and "getthumb" in data.lower():
-        p = data.lower().replace('getthumb','getimage')
-        s = p.split("/")
-        last_word = ""
-        for chunk in s:
-            last_word = chunk
-        result = p.replace(last_word,'')[:-1]
-    return result
-
-# define it with a default value to trick intellij into knowing the type
-def genImageHTTP (data = ""):
-    if data.startswith("http"):
-        return data
-    if data.endswith("0.6667"):
-        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetThumb/" + data
-    else:
-        return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerREST/GetImage/" + data
-
-
-def getCastAndRole (data):
+def get_poster(data=""):
     if data is not None:
-        list = []
-        listCast = []
-        listCastAndRole = []
-        for char in data.findall('Character'):
-            # don't init any variables we don't need
+        result = data
+        if len(data) > 0 and "getthumb" in data.lower():
+            p = data.lower().replace('getthumb', 'getimage')
+            s = p.split("/")
+            last_word = ""
+            for chunk in s:
+                last_word = chunk
+            result = p.replace(last_word, '')[:-1]
+        return result
+    return data
+
+
+def gen_image_url(data=""):
+    if data is not None:
+        if data.startswith("http"):
+            return data
+        if data.endswith("0.6667"):
+            return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                   + "/JMMServerREST/GetThumb/" + data
+        else:
+            return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                   + "/JMMServerREST/GetImage/" + data
+    return data
+
+
+def set_watch_flag(extra_data, details):
+    # TODO: Real watch progress instead of 0,50,100%
+    # Set up overlays for watched and unwatched episodes
+    if extra_data['WatchedEpisodes'] == 0:
+        details['playcount'] = 0
+    elif extra_data['UnWatchedEpisodes'] == 0:
+        details['playcount'] = 1
+    else:
+        extra_data['partialTV'] = 1
+
+
+def get_legacy_title(data):
+    lang = addon.getSetting("displaylang")
+    type = addon.getSetting("title_type")
+    temptitle = unicode(data.get('original_title', 'Unknown'))
+    titles = temptitle.split('|')
+
+    for title in titles:
+        stripped = title[title.index('}') + 1:]
+        if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
+            return stripped
+    for title in titles:
+        # fallback on language
+        stripped = title[title.index('}') + 1:]
+        if (':' + lang.lower() + '}') in title:
+            return stripped
+    for title in titles:
+        # fallback on x-jat
+        stripped = title[title.index('}') + 1:]
+        if '{main:x-jat}' in title:
+            return stripped
+
+    return data.get('title', 'Unknown').encode('utf-8')
+
+
+def get_title(data):
+    try:
+        if addon.getSetting('use_server_title') == 'true':
+            return data.get('title', 'Unknown').encode('utf-8')
+        xbmc.log(data.get('title', 'Unknown'))
+        if data.get('original_title', '') != '' \
+                and data.get('title', '') != 'Ova' and data.get('title', '') != 'Ovas' \
+                and data.get('title', '') != 'Episode' and data.get('title', '') != 'Episodes' \
+                and data.get('title', '') != 'Special' and data.get('title', '') != 'Specials' \
+                and data.get('title', '') != 'Parody' and data.get('title', '') != 'Parodies' \
+                and data.get('title', '') != 'Credit' and data.get('title', '') != 'Credits' \
+                and data.get('title', '') != 'Trailer' and data.get('title', '') != 'Trailers' \
+                and data.get('title', '') != 'Other' and data.get('title', '') != 'Others':
+            return get_legacy_title(data)
+        else:
+            return data.get('title', 'Unknown').encode('utf-8')
+        lang = addon.getSetting("displaylang")
+        type = addon.getSetting("title_type")
+        try:
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Type').text.lower() == type.lower():
+                    if titleTag.find('Language').text.lower() == lang.lower():
+                        return titleTag.find('Title').text.encode('utf-8')
+            # fallback on language any title
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Language').text.lower() == lang.lower():
+                    return titleTag.find('Title').text.encode('utf-8')
+            # fallback on x-jat main title
+            for titleTag in data.findall('AnimeTitle'):
+                if titleTag.find('Type').text.lower() == 'main':
+                    if titleTag.find('Language').text.lower() == 'x-jat':
+                        return titleTag.find('Title').text.encode('utf-8')
+            # fallback on directory title
+            return data.get('title', 'Unknown').encode('utf-8')
+        except:
+            error('Error thrown on getting title')
+            return data.get('title','Error').encode('utf-8')
+    except Exception as e:
+        error("get_title Exception", str(e))
+        return 'Error'
+
+
+def get_legacy_tags(atype):
+    tempgenre = ""
+    tag = atype.find("Tag")
+
+    if tag is not None:
+        tempgenre = tag.get('tag', '')
+        temp_genres = str.split(tempgenre, ",")
+        temp_genres = TagFilter.processTags(addon, temp_genres)
+        tempgenre = ""
+
+        for a in temp_genres:
+            a = " ".join(w.capitalize() for w in a.split())
+            tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
+    return tempgenre
+
+	
+def get_tags(atype):
+    tempgenre = ""
+    try:
+        if atype.find('Tag') is not None:
+            return get_legacy_tags(atype)
+
+        temp_genres = []
+        for tag in atype.findall("Genre"):
+            if tag is not None:
+                tempgenre = tag.get('tag', '').encode('utf-8').strip()
+                temp_genres.append(tempgenre)
+                tempgenre = ""
+        temp_genres = TagFilter.processTags(addon, temp_genres)
+        tempgenre = " | ".join(temp_genres)
+        return tempgenre
+    except:
+        error('Error generating tags')
+        return ''
+
+		
+def get_cast_and_role(data):
+    if data is not None:
+        result_list = []
+        list_cast = []
+        list_cast_and_role = []
+
+        characterTag = 'Role'
+        if data.find('Characters') is not None:
+            data = data.find('Characters')
+            characterTag = 'Character'
+        for char in data.findall(characterTag):
+            # Don't init any variables we don't need right now
             # char_id = char.get('charID')
-            char_charname = char.get('charname', '')
+            if characterTag == 'Role':
+                char_charname = char.get('role', '')
+            else:
+                char_charname = char.get('charname', '')
             # char_picture=char.get('picture','')
             # char_desc=char.get('description','')
-            char_seiyuuname = char.get('seiyuuname', 'Unknown')
-            char_seiyuupic=char.get('seiyuupic','err404')
+            if characterTag == 'Role':
+                char_seiyuuname = char.get('seiyuuname', 'Unknown')
+            else:
+                char_seiyuuname = char.get('tag', 'Unknown')
+            # char_seiyuupic=char.get('seiyuupic', 'err404')
             # only add it if it has data
             # reorder these to match the convention (Actor is cast, character is role, in that order)
             if len(char_charname) != 0:
-                listCast.append(str(char_charname))
+                list_cast.append(str(char_charname))
                 if len(char_seiyuuname) != 0:
-                    listCastAndRole.append((str(char_seiyuuname), str(char_charname)))
-        list.append(listCast)
-        list.append(listCastAndRole)
-        return list
+                    list_cast_and_role.append((str(char_seiyuuname), str(char_charname)))
+        result_list.append(list_cast)
+        result_list.append(list_cast_and_role)
+        return result_list
+
 
 # Adding items to list/menu:
-def buildMainMenu ():
+def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
-        e = tree.XML(getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
+        e = Tree.XML(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                               "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
             for atype in e.findall('Directory'):
                 title = atype.get('title')
-                mode = 4
+                use_mode = 4
+
+                key = atype.get('key', '')
+
                 if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
                 elif title == 'Unsort':
-                    mode = 6
+                    title = 'Unsorted'
+                    use_mode = 6
+                    if key[-1] == '/':
+                        key = key[:-1]
 
-                key = atype.get('key', '')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if addon.getSetting("spamLog") == "true":
-                    xbmc.log("buildMainMenu - key = " + key)
+                    xbmc.log("build_main_menu - key = " + key)
                 url = key
 
-                thumb = genImageHTTP(atype.get('thumb'))
-                fanart = genImageHTTP(atype.get('art', thumb))
+                thumb = gen_image_url(atype.get('thumb'))
+                fanart = gen_image_url(atype.get('art', thumb))
 
-                u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(title)
+                u = sys.argv[0] + "?url=" + url + "&mode=" + str(use_mode) + "&name=" + urllib.quote_plus(title)
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-                liz.setArt({ 'thumb' : thumb , 'fanart' : fanart, 'poster' : getPoster(thumb), 'icon' : 'DefaultVideo.png' })
-                liz.setInfo(type="Video", infoLabels={ "Title": title, "Plot": title })
+                liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
+                liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
-            Error("Error during buildMainMenu", str(e))
+            error("Error during build_main_menu", str(e))
     except Exception as e:
-        # getHtml now catches, so an XML error is the only thing this will catch
-        Error("Invalid XML Received in buildMainMenu", str(e))
+        # get_html now catches, so an XML error is the only thing this will catch
+        error("Invalid XML Received in build_main_menu", str(e))
 
-    # Add Search
-    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
+    # Start Add_Search
+    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+          + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
     title = "Search"
-    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png"
+    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+            + "/jmmserverkodi/GetSupportImage/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({ 'thumb' : thumb , 'poster' : getPoster(thumb), 'icon' : 'DefaultVideo.png' })
-    liz.setInfo(type="Video", infoLabels={ "Title": title, "Plot": title })
+    liz.setArt({'thumb': thumb, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0] + "?url=" + url + "&mode=" + str(3) + "&name=" + urllib.quote_plus(title)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+    # End Add_Search
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
-def buildTVShows (params):
+def build_tv_shows(params):
     # xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
     xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -341,287 +494,276 @@ def buildTVShows (params):
     xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
+        html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
         if addon.getSetting("spamLog") == "true":
             xbmc.log(params['url'])
             xbmc.log(html)
-        e = tree.XML(html)
-        setWindowHeading(e)
+        e = Tree.XML(html)
+        set_window_heading(e)
         try:
+            parent_title=''
+            try:
+                parent_title=e.get('title1', '')
+            except Exception:
+                error("Unable to get parent title in buildTVShows")
             for atype in e.findall('Directory'):
-                tempgenre = ""
-                tag = atype.find("Tag")
-                if tag is not None:
-                    tempgenre = tag.get('tag', '')
-                    tempGenres = str.split(tempgenre, ",")
-                    tempGenres = TagFilter.processTags(addon, tempGenres)
-                    tempgenre = ""
-                    for a in tempGenres:
-                        a = " ".join(w.capitalize() for w in a.split())
-                        tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
+                tempgenre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
-                # This is not used here because JMM dont present this data to cut the data size on 'ALL' groups but we will leave this here to future support
-                listCast = []
-                listCastAndRole = []
-                if len(listCast) == 0:
-                    list = getCastAndRole(atype.find('Characters'))
-                    if list is not None:
-                        listCast = list[0]
-                        listCastAndRole = list[1]
+                # TODO: Decide about future of cast_and_role in ALL
+                # This is not used here because JMM don't present this data because of the size in 'ALL'
+                # but we will leave this here to future support if we shrink the data flow
+                list_cast = []
+                list_cast_and_role = []
+                if len(list_cast) == 0:
+                    result_list = get_cast_and_role(atype)
+                    if result_list is not None:
+                        list_cast = result_list[0]
+                        list_cast_and_role = result_list[1]
 
-                total = 0
                 if addon.getSetting("local_total") == "true":
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
+                title = get_title(atype)
                 details = {
-                    'title'        : atype.get('title', 'Unknown').encode('utf-8'),
-                    'genre'        : tempgenre,
-                    'year'         : int(atype.get('year', 0)),
-                    'episode'      : total,
-                    'season'       : int(atype.get('season', 0)),
+                    'title': title,
+                    'parenttitle': parent_title.encode('utf-8'),
+                    'genre': tempgenre,
+                    'year': int(atype.get('year', 0)),
+                    'episode': total,
+                    'season': int(atype.get('season', 0)),
                     # 'count'        : count,
                     # 'size'         : size,
                     # 'Date'         : date,
-                    'rating'       : float(str(atype.get('rating', 0))),
+                    'rating': float(str(atype.get('rating', 0))),
                     # 'playcount'    : int(atype.get('viewedLeafCount')),
                     # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
-                    'cast'         : listCast,  # cast : list (Michal C. Hall,
-                    'castandrole'  : listCastAndRole,
+                    'cast': list_cast,  # cast : list (Michal C. Hall,
+                    'castandrole': list_cast_and_role,
                     # This also does nothing. Those gremlins.
                     # 'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
                     # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
                     # director       : string (Dagur Kari,
-                    'mpaa'         : atype.get('contentRating', ''),
-                    'plot'         : removeHTML(atype.get('summary', '').encode('utf-8')),
+                    'mpaa': atype.get('contentRating', ''),
+                    'plot': remove_html(atype.get('summary', '').encode('utf-8')),
                     # 'plotoutline'  : plotoutline,
                     'originaltitle': atype.get('original_title', '').encode("utf-8"),
-                    'sorttitle'    : atype.get('title', 'Unknown').encode('utf-8'),
+                    'sorttitle': title,
                     # 'Duration'     : duration,
                     # 'Studio'       : studio, < ---
                     # 'Tagline'      : tagline,
                     # 'Writer'       : writer,
                     # 'tvshowtitle'  : tvshowtitle,
-                    'tvshowname'   : atype.get('title', 'Unknown').encode('utf-8'),
+                    'tvshowname': title,
                     # 'premiered'    : premiered,
                     # 'Status'       : status,
                     # code           : string (tt0110293, - IMDb code
-                    'aired'        : atype.get('originallyAvailableAt', ''),
+                    'aired': atype.get('originallyAvailableAt', ''),
                     # credits        : string (Andy Kaufman, - writing credits
                     # 'Lastplayed'   : lastplayed,
-                    'votes'        : atype.get('votes'),
+                    'votes': atype.get('votes'),
                     # trailer        : string (/home/user/trailer.avi,
-                    'dateadded'    : atype.get('addedAt')
+                    'dateadded': atype.get('addedAt')
                 }
                 tempdate = str(details['aired']).split('-')
-                if len(tempdate) == 3: # format is 2016-01-24, we want it 24.01.2016
+                if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
                     details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
                 key = atype.get('key', '')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
-                thumb = genImageHTTP(atype.get('thumb'))
-                fanart = genImageHTTP(atype.get('art', thumb))
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                thumb = gen_image_url(atype.get('thumb'))
+                fanart = gen_image_url(atype.get('art', thumb))
 
-                # we really should fix banners. JMM doesn't send them...
-                banner = genImageHTTP(e.get('banner', ''))
+                # TODO: we really should fix banners. JMM doesn't send them...
+                banner = gen_image_url(e.get('banner', ''))
 
-                extraData = {
-                    'type'             : 'video',
-                    'source'           : 'tvshows',
+                extra_data = {
+                    'type': 'video',
+                    'source': 'tvshows',
                     'UnWatchedEpisodes': int(details['episode']) - watched,
-                    'WatchedEpisodes'  : watched,
-                    'TotalEpisodes'    : details['episode'],
-                    'thumb'            : thumb,
-                    'fanart_image'     : fanart,
-                    'banner'           : banner,
-                    'key'              : key,
-                    'ratingKey'        : str(atype.get('ratingKey', 0))
+                    'WatchedEpisodes': watched,
+                    'TotalEpisodes': details['episode'],
+                    'thumb': thumb,
+                    'fanart_image': fanart,
+                    'banner': banner,
+                    'key': key,
+                    'ratingKey': str(atype.get('ratingKey', 0))
                     }
                 url = key
-
-                # Set up overlays for watched and unwatched episodes
-                if extraData['WatchedEpisodes'] == 0:
-                    details['playcount'] = 0
-                elif extraData['UnWatchedEpisodes'] == 0:
-                    details['playcount'] = 1
-                else:
-                    extraData['partialTV'] = 1
-                mode = 5
+                set_watch_flag(extra_data, details)
+                use_mode = 5
                 if addon.getSetting("useSeasons") == "false":
                     # this will help when users is using grouping option in jmm which results in series in series
-                    if "data/1/2/" in extraData['key'].lower():
-                        mode = 4
-                u = sys.argv[0] + "?url=" + url + "&mode=" + str(mode)
+                    if "data/1/2/" in extra_data['key'].lower():
+                        use_mode = 4
+                u = sys.argv[0] + "?url=" + url + "&mode=" + str(use_mode)
                 context = None
-                addGUIItem(u, details, extraData, context)
+                add_gui_item(u, details, extra_data, context)
         except Exception as e:
-            Error("Error during buildTVShows", str(e))
+            error("Error during build_tv_shows", str(e))
     except Exception as e:
-        Error("Invalid XML Received in buildTVShows", str(e))
+        error("Invalid XML Received in build_tv_shows", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
-def buildTVSeasons (params):
+def build_tv_seasons(params):
     # xbmcgui.Dialog().ok('MODE=5','IN')
-
     xbmcplugin.setContent(handle, 'seasons')
-
-
     try:
-        html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
+        html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
-        e = tree.XML(html)
-        setWindowHeading(e)
+        e = Tree.XML(html)
+        set_window_heading(e)
         try:
+            parent_title=''
+            try:
+                parent_title = e.get('title1', '')
+            except Exception:
+                error("Unable to get parent title in buildTVSeasons")
             if e.find('Directory') is None:
                 params['url'] = params['url'].replace('&mode=5', '&mode=6')
-                buildTVEpisodes(params)
+                build_tv_episodes(params)
                 return
 
-            willFlatten = False
+            will_flatten = False
             # check for a single season
             if int(e.get('size', 0)) == 1:
-                willFlatten = True
+                will_flatten = True
 
-            sectionart = genImageHTTP(e.get('art', ''))
-            banner = genImageHTTP(e.get('banner', ''))
+            sectionart = gen_image_url(e.get('art', ''))
+            banner = gen_image_url(e.get('banner', ''))
 
-            setWindowHeading(e)
+            set_window_heading(e)
             # For all the directory tags
 
             for atype in e.findall('Directory'):
-                key = atype.get('key', '');
+                key = atype.get('key', '')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
-                if willFlatten:
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                if will_flatten:
                     url = key
                     u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
-                    buildTVEpisodes(u)
+                    build_tv_episodes(u)
                     return
 
-                plot = removeHTML(atype.get('summary', '').encode('utf-8'))
+                plot = remove_html(atype.get('summary', '').encode('utf-8'))
 
-                tempgenre = ""
-                tag = atype.find("Tag")
-                if tag is not None:
-                    tempgenre = tag.get('tag', '').encode('utf-8')
-                    tempGenres = str.split(tempgenre, ",")
-                    tempGenres = TagFilter.processTags(addon, tempGenres)
-                    tempgenre = ""
-                    for a in tempGenres:
-                        " ".join(w.capitalize() for w in a.split())
-                        tempgenre = a if tempgenre == "" else tempgenre + " | " + a
-
+                tempgenre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
-                listCast = []
-                listCastAndRole = []
-                if len(listCast) == 0:
-                    list = getCastAndRole(atype.find('Characters'))
-                    if list is not None:
-                        listCast = list[0]
-                        listCastAndRole = list[1]
+                list_cast = []
+                list_cast_and_role = []
+                if len(list_cast) == 0:
+                    result_list = get_cast_and_role(atype)
+                    if result_list is not None:
+                        list_cast = result_list[0]
+                        list_cast_and_role = result_list[1]
 
                 # Create the basic data structures to pass up
-                total = 0
                 if addon.getSetting("local_total") == "true":
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
+                title = get_title(atype)
                 details = {
-                    'title'      : atype.get('title', 'Unknown').encode('utf-8'),
-                    'tvshowname' : atype.get('title', 'Unknown').encode('utf-8'),
-                    'sorttitle'  : atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
-                    'studio'     : atype.get('studio', '').encode('utf-8'),
-                    'cast'       : listCast,
-                    'castandrole': listCastAndRole,
-                    'plot'       : plot,
-                    'genre'      : tempgenre,
-                    'season'     : int(atype.get('season', 0)),
-                    'episode'    : total,
-                    'mpaa'       : atype.get('contentRating', ''),
-                    'rating'     : atype.get('rating'),
-                    'aired'      : atype.get('originallyAvailableAt', '')
+                    'title': title,
+                    'parenttitle': parent_title.encode('utf-8'),
+                    'tvshowname': title,
+                    'sorttitle': atype.get('titleSort', title).encode('utf-8'),
+                    'studio': atype.get('studio', '').encode('utf-8'),
+                    'cast': list_cast,
+                    'castandrole': list_cast_and_role,
+                    'plot': plot,
+                    'genre': tempgenre,
+                    'season': int(atype.get('season', 0)),
+                    'episode': total,
+                    'mpaa': atype.get('contentRating', ''),
+                    'rating': atype.get('rating'),
+                    'aired': atype.get('originallyAvailableAt', ''),
+                    'year': int(atype.get('year', 0))
                     }
                 tempdate = str(details['aired']).split('-')
-                if len(tempdate) == 3: # format is 2016-01-24, we want it 24.01.2016
+                if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
                     details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
-                if atype.get('sorttitle'): details['sorttitle'] = atype.get('sorttitle')
+                if atype.get('sorttitle'):
+                    details['sorttitle'] = atype.get('sorttitle')
 
-                thumb = genImageHTTP(atype.get('thumb'))
-                fanart = genImageHTTP(atype.get('art', thumb))
+                thumb = gen_image_url(atype.get('thumb'))
+                fanart = gen_image_url(atype.get('art', thumb))
 
-                extraData = {
-                    'type'             : 'video',
-                    'source'           : 'tvseasons',
-                    'TotalEpisodes'    : details['episode'],
-                    'WatchedEpisodes'  : watched,
+                extra_data = {
+                    'type': 'video',
+                    'source': 'tvseasons',
+                    'TotalEpisodes': details['episode'],
+                    'WatchedEpisodes': watched,
                     'UnWatchedEpisodes': details['episode'] - watched,
-                    'thumb'            : thumb,
-                    'fanart_image'     : fanart,
-                    'key'              : key,
-                    'ratingKey'        : str(atype.get('ratingKey', 0)),  # <--------------
-                    'mode'             : str(6)
+                    'thumb': thumb,
+                    'fanart_image': fanart,
+                    'key': key,
+                    'ratingKey': str(atype.get('ratingKey', 0)),  # TODO: Do we need ratingKey ?
+                    'mode': str(6)
                     }
 
                 if banner:
-                    extraData['banner'] = banner
+                    extra_data['banner'] = banner
 
-                if extraData['fanart_image'] == "":
-                    extraData['fanart_image'] = sectionart
+                if extra_data['fanart_image'] == "":
+                    extra_data['fanart_image'] = sectionart
 
-                # Set up overlays for watched and unwatched episodes
-                if extraData['WatchedEpisodes'] == 0:
-                    details['playcount'] = 0
-                elif extraData['UnWatchedEpisodes'] == 0:
-                    details['playcount'] = 1
-                else:
-                    extraData['partialTV'] = 1
+                set_watch_flag(extra_data, details)
 
-                url = sys.argv[0] + "?url=" + extraData['key'] + "&mode=" + str(6)
+                url = sys.argv[0] + "?url=" + extra_data['key'] + "&mode=" + str(6)
                 context = None
 
                 # Build the screen directory listing
-                addGUIItem(url, details, extraData, context)
+                add_gui_item(url, details, extra_data, context)
 
+            # Apparently date sorting in Kodi has been broken for years
+            xbmcplugin.addSortMethod(handle, 17)  # year
             xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
             xbmcplugin.addSortMethod(handle, 3)  # date
             xbmcplugin.addSortMethod(handle, 18)  # rating
-            xbmcplugin.addSortMethod(handle, 17)  # year
             xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
         except Exception as e:
-            Error("Error during buildTVSeasons", str(e))
+            error("Error during build_tv_seasons", str(e))
     except Exception as e:
-        Error("Invalid XML Received in buildTVSeasons", str(e))
+        error("Invalid XML Received in build_tv_seasons", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
-def buildTVEpisodes (params):
+def build_tv_episodes(params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        html = getHtml(params['url'], '').decode('utf-8').encode('utf-8')
-        e = tree.XML(html)
+        html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
+        e = Tree.XML(html)
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
-        setWindowHeading(e)
+        set_window_heading(e)
         try:
+            parent_title=''
+            try:
+                parent_title = e.get('title1', '')
+            except Exception:
+                error("Unable to get parent title in buildTVEpisodes")
             if e.find('Directory') is not None:
                 if e.find('Directory').get('type', 'none') == 'season':
                     params['url'] = params['url'].replace('&mode=6', '&mode=5')
-                    buildTVSeasons(params)
+                    build_tv_seasons(params)
                     return
-
-            banner = genImageHTTP(e.get('banner', ''))
-            art = genImageHTTP(e.get('art', ''))
+            # TODO: when banner is supported add it here also
+            # banner = gen_image_url(e.get('banner', ''))
+            art = gen_image_url(e.get('art', ''))
 
             # unused
-            #season_thumb = e.get('thumb', '')
+            # season_thumb = e.get('thumb', '')
 
             # Set Sort Method
             xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
@@ -637,38 +779,33 @@ def buildTVEpisodes (params):
             nextepisode = 1
             episode_count = 0
 
-            videoList = e.findall('Video')
-            skip = addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(videoList) > int(
+            video_list = e.findall('Video')
+            skip = addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(video_list) > int(
                 addon.getSetting("skipExtraInfoMaxEpisodes"))
 
             # keep this init out of the loop, as we only provide this once
-            listCast = []
-            listCastAndRole = []
+            list_cast = []
+            list_cast_and_role = []
             tempgenre = ""
             parentkey = ""
+            grandparenttitle = ""
             if not skip:
-                for atype in videoList:
+                for atype in video_list:
                     # we only get this once, so only set it if it's not already set
-                    if len(listCast) == 0:
-                        list = getCastAndRole(atype.find('Characters'))
-                        if list is not None:
-                            listCast = list[0]
-                            listCastAndRole = list[1]
-                        tag = atype.find("Tag")
-                        if tag is not None:
-                            tempgenre = tag.get('tag', '').encode('utf-8')
-                            tempGenres = str.split(tempgenre, ",")
-                            tempGenres = TagFilter.processTags(addon, tempGenres)
-                            tempgenre = ""
-                            for a in tempGenres:
-                                " ".join(w.capitalize() for w in a.split())
-                                tempgenre = a if tempgenre == "" else tempgenre + " | " + a
+                    if len(list_cast) == 0:
+                        result_list = get_cast_and_role(atype)
+                        if result_list is not None:
+                            list_cast = result_list[0]
+                            list_cast_and_role = result_list[1]
+                        tempgenre = get_tags(atype)
                         parentkey = atype.get('parentKey', '0')
                         if not parentkey.startswith("http"):
-                            parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
-                        grandparenttitle = atype.get('grandparentTitle', atype.get('grandparentTitle', '')).encode('utf-8');
-	      	# Extended support
-            for atype in videoList:
+                            parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                                        + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
+                        grandparenttitle = atype.get('grandparentTitle',
+                                                     atype.get('grandparentTitle', '')).encode('utf-8')
+            # Extended support
+            for atype in video_list:
                 episode_count += 1
 
             # Extended support END#
@@ -683,82 +820,80 @@ def buildTVEpisodes (params):
                     duration = int(tmp_duration) / 1000
                 # Required listItem entries for XBMC
                 details = {
-                    'plot'         : "..." if skip else atype.get('summary', '').encode('utf-8'),
-                    'title'        : atype.get('title', 'Unknown').encode('utf-8'),
-                    'sorttitle'    : atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
-                    'rating'       : float(atype.get('rating', 0)),
+                    'plot': "..." if skip else atype.get('summary', '').encode('utf-8'),
+                    'title': atype.get('title', 'Unknown').encode('utf-8'),
+                    'sorttitle': atype.get('titleSort', atype.get('title', 'Unknown')).encode('utf-8'),
+                    'parenttitle': parent_title.encode('utf-8'),
+                    'rating': float(atype.get('rating', 0)),
                     # 'studio'      : episode.get('studio',tree.get('studio','')).encode('utf-8') ,
-                    # This doesn't work, some gremlins be afoot in this code...it's probably just that it only applies at series level
+                    # This doesn't work, some gremlins be afoot in this code...
+                    # it's probably just that it only applies at series level
                     # 'cast'        : list(['Actor1','Actor2']),
                     # 'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
                     # According to the docs, this will auto fill castandrole
-                    'CastAndRole'  : listCastAndRole,
-                    'Cast'         : listCast,
-                    'director'     : " / ".join(tempdir),
-                    'writer'       : " / ".join(tempwriter),
-                    'genre'        : "..." if skip else tempgenre,
-                    'duration'     : str(datetime.timedelta(seconds=duration)),
-                    'mpaa'         : atype.get('contentRating', ''),
-                    'year'         : int(atype.get('year', 0)),
-                    'tagline'      : "..." if skip else tempgenre,
-                    'episode'      : int(atype.get('index', 0)),
-                    'aired'        : atype.get('originallyAvailableAt', ''),
-                    'tvshowtitle'  : grandparenttitle,
-                    'votes'        : int(atype.get('votes', 0)),
+                    'CastAndRole': list_cast_and_role,
+                    'Cast': list_cast,
+                    'director': " / ".join(tempdir),
+                    'writer': " / ".join(tempwriter),
+                    'genre': "..." if skip else tempgenre,
+                    'duration': str(datetime.timedelta(seconds=duration)),
+                    'mpaa': atype.get('contentRating', ''),
+                    'year': int(atype.get('year', 0)),
+                    'tagline': "..." if skip else tempgenre,
+                    'episode': int(atype.get('index', 0)),
+                    'aired': atype.get('originallyAvailableAt', ''),
+                    'tvshowtitle': grandparenttitle,
+                    'votes': int(atype.get('votes', 0)),
                     'originaltitle': atype.get('original_title', ''),
-                    'size'         : int(atype.find('Media').find('Part').get('size', 0)),
-                    'season'       : int(atype.get('season', 0))
+                    'size': int(atype.find('Media').find('Part').get('size', 0)),
+                    'season': int(atype.get('season', 0))
                 }
                 tempdate = str(details['aired']).split('-')
-                if len(tempdate) == 3: # format is 2016-01-24, we want it 24.01.2016
+                if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
                     details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
-                thumb = genImageHTTP(atype.get('thumb', ''))
-                key = atype.get('key', '');
+                thumb = gen_image_url(atype.get('thumb', ''))
+                key = atype.get('key', '')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
+                          + "/videolocal/0/" + key
+
+                ext = atype.find('Media').find('Part').get('container', '')
+                newkey = atype.find('Media').find('Part').get('key', '')
+                if not 'videolocal' in key:
+                    key = newkey + '.' + ext
 
                 # Extra data required to manage other properties
-                extraData = {
-                    'type'        : "Video",
-                    'source'      : 'tvepisodes',
-                    'thumb'       : None if skip else thumb,
-                    'fanart_image': None if skip else art,
-                    'key'         : key,
-                    # 'ratingKey'    : str(episode.get('ratingKey',0)),
-                    # 'duration'     : duration,
-                    'resume'      : int(int(view_offset) / 1000),
-                    'parentKey'   : parentkey,
-                    'jmmepisodeid': atype.get('JMMEpisodeId', '0')
-                    }
+                extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
+                              'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
+                              'parentKey': parentkey, 'jmmepisodeid': atype.get('JMMEpisodeId', '0'),
+                              'xVideoResolution': atype.find('Media').get('videoResolution', 0),
+                              'xVideoCodec': atype.find('Media').get('audioCodec', ''),
+                              'xVideoAspect': float(atype.find('Media').get('aspectRatio', 0)),
+                              'xAudioCodec': atype.find('Media').get('videoCodec', ''),
+                              'xAudioChannels': int(atype.find('Media').get('audioChannels', 0))}
 
                 # Information about streams inside video file
-                extraData['xVideoResolution'] = atype.find('Media').get('videoResolution', 0)
-                extraData['xVideoCodec'] = atype.find('Media').get('audioCodec', '')
-                extraData['xVideoAspect'] = float(atype.find('Media').get('aspectRatio', 0))
-                extraData['xAudioCodec'] = atype.find('Media').get('videoCodec', '')
-                extraData['xAudioChannels'] = int(atype.find('Media').get('audioChannels', 0))
 
                 for vtype in atype.find('Media').find('Part').findall('Stream'):
                     stream = int(vtype.get('streamType'))
                     if stream == 1:
-                        extraData['VideoCodec'] = vtype.get('codec', '')
-                        extraData['width'] = int(vtype.get('width', 0))
-                        extraData['height'] = int(vtype.get('height', 0))
-                        extraData['duration'] = duration
+                        extra_data['VideoCodec'] = vtype.get('codec', '')
+                        extra_data['width'] = int(vtype.get('width', 0))
+                        extra_data['height'] = int(vtype.get('height', 0))
+                        extra_data['duration'] = duration
                     elif stream == 2:
-                        extraData['AudioCodec'] = vtype.get('codec')
-                        extraData['AudioLanguage'] = vtype.get('language')
-                        extraData['AudioChannels'] = int(vtype.get('channels'))
+                        extra_data['AudioCodec'] = vtype.get('codec')
+                        extra_data['AudioLanguage'] = vtype.get('language')
+                        extra_data['AudioChannels'] = int(vtype.get('channels'))
                     elif stream == 3:
                         # subtitle
-                        try:
-                            language = vtype.get('language')
-                        except:
-                            pass
+                        # TODO: we don't use this, but we have data so let's use it!
+                        # language = vtype.get('language', '')
+                        pass
                     else:
                         # error
-                        Error("Something went wrong!")
+                        error("Something went wrong!")
 
                 # Determine what type of watched flag [overlay] to use
                 if int(atype.get('viewCount', 0)) > 0:
@@ -774,11 +909,13 @@ def buildTVEpisodes (params):
 
                 key = atype.find('Media').find('Part').get('key')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
-                sys.argv[0] = sys.argv[0] + "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" + extraData.get('jmmepisodeid')
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
+                          + "/videolocal/0/" + key
+                sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
+                               + extra_data.get('jmmepisodeid')
                 u = sys.argv[0]
 
-                addGUIItem(u, details, extraData, context, folder=False)
+                add_gui_item(u, details, extra_data, context, folder=False)
 
             # add item to move to next not played item (not marked as watched)
             if addon.getSetting("show_continue") == "true":
@@ -786,70 +923,66 @@ def buildTVEpisodes (params):
                             "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
                                 "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
         except Exception as e:
-            Error("Error during buildTVEpisodes", str(e))
+            error("Error during build_tv_episodes", str(e))
     except Exception as e:
-        Error("Invalid XML Received in buildTVEpisodes", str(e))
+        error("Invalid XML Received in build_tv_episodes", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
-def buildSearch (url):
+def build_search(url):
     try:
         term = util.searchBox()
-        toSend = {
-            'url': url + term
-            }
-        buildTVShows(toSend)
-    except Exception as e:
-        Error("Error during buildSearch", str(e))
+        tosend = {'url': url + term}
+        build_tv_shows(tosend)
+    except Exception as ex:
+        error("Error during build_search", str(ex))
 
 
 # Other functions
-def playVideo (url):
+def play_video(url):
     details = {
-        'plot'         : xbmc.getInfoLabel('ListItem.Plot'),
-        'title'        : xbmc.getInfoLabel('ListItem.Title'),
-        'sorttitle'    : xbmc.getInfoLabel('ListItem.Title'),
-        'rating'       : xbmc.getInfoLabel('ListItem.Rating'),
-        'duration'     : xbmc.getInfoLabel('ListItem.Duration'),
-        'mpaa'         : xbmc.getInfoLabel('ListItem.Mpaa'),
-        'year'         : xbmc.getInfoLabel('ListItem.Year'),
-        'tagline'      : xbmc.getInfoLabel('ListItem.Tagline'),
-        'episode'      : xbmc.getInfoLabel('ListItem.Episode'),
-        'aired'        : xbmc.getInfoLabel('ListItem.Premiered'),
-        'tvshowtitle'  : xbmc.getInfoLabel('ListItem.TVShowTitle'),
-        'votes'        : xbmc.getInfoLabel('ListItem.Votes'),
+        'plot': xbmc.getInfoLabel('ListItem.Plot'),
+        'title': xbmc.getInfoLabel('ListItem.Title'),
+        'sorttitle': xbmc.getInfoLabel('ListItem.Title'),
+        'rating': xbmc.getInfoLabel('ListItem.Rating'),
+        'duration': xbmc.getInfoLabel('ListItem.Duration'),
+        'mpaa': xbmc.getInfoLabel('ListItem.Mpaa'),
+        'year': xbmc.getInfoLabel('ListItem.Year'),
+        'tagline': xbmc.getInfoLabel('ListItem.Tagline'),
+        'episode': xbmc.getInfoLabel('ListItem.Episode'),
+        'aired': xbmc.getInfoLabel('ListItem.Premiered'),
+        'tvshowtitle': xbmc.getInfoLabel('ListItem.TVShowTitle'),
+        'votes': xbmc.getInfoLabel('ListItem.Votes'),
         'originaltitle': xbmc.getInfoLabel('ListItem.OriginalTitle'),
-        'size'         : xbmc.getInfoLabel('ListItem.Size'),
-        'season'       : xbmc.getInfoLabel('ListItem.Season')
+        'size': xbmc.getInfoLabel('ListItem.Size'),
+        'season': xbmc.getInfoLabel('ListItem.Season')
         }
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
                             path=url)
     item.setInfo(type='Video', infoLabels=details)
     item.setProperty('IsPlayable', 'true')
-    Player = xbmc.Player()
+    player = xbmc.Player()
     try:
-        Player.play(item=url, listitem=item, windowed=False)
+        player.play(item=url, listitem=item, windowed=False)
         xbmcplugin.setResolvedUrl(handle, True, item)
     except:
         pass
     # wait for player (network issue etc)
     xbmc.sleep(1000)
     mark = float(addon.getSetting("watched_mark"))
-    mark = mark / 100
+    mark /= 100
     file_fin = False
-    totalTime = 0
-    currentTime = 0
     # hack for slow connection and buffering time
     xbmc.sleep(int(addon.getSetting("player_sleep")))
     try:
-        while Player.isPlaying():
+        while player.isPlaying():
             try:
                 xbmc.sleep(500)
-                totalTime = Player.getTotalTime()
-                currentTime = Player.getTime()
-                if (totalTime * mark) < currentTime:
+                totaltime = player.getTotalTime()
+                currenttime = player.getTime()
+                if (totaltime * mark) < currenttime:
                     file_fin = True
-                if Player.isPlaying() == False:
+                if not player.isPlaying():
                     break
             except:
                 xbmc.sleep(500)
@@ -860,7 +993,8 @@ def playVideo (url):
         xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
 
 
-def playPlaylist (data):
+# TODO: Not used maybe it should be added to '-continue-' that would add all episodes to list? or Drop it
+def play_playlist(data):
     offset = data['offset']
     pos = int(offset)
     if pos == 1:
@@ -876,46 +1010,47 @@ def playPlaylist (data):
         # xbmc.executebuiltin('SetFocus(%s, %s)' % (cid, pos))
 
 
-def TraktScrobble (data):
-    xbmcgui.Dialog().ok('WIP', 'WIP')
+# TODO: Trakt_Scrobble need work - JMM support it (for series not movies)
+def trakt_scrobble(data=""):
+    xbmcgui.Dialog().ok('WIP', str(data))
 
 
-def voteSeries (params):
+def vote_series(params):
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    myVote = xbmcgui.Dialog().select('myVote', vote_list)
-    if myVote == -1:
+    my_vote = xbmcgui.Dialog().select('my_vote', vote_list)
+    if my_vote == -1:
         return
-    elif myVote != 0:
-        myLen = len(
+    elif my_vote != 0:
+        my_len = len(
             "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
-        vote_value = str(vote_list[myVote])
+        vote_value = str(vote_list[my_vote])
         vote_type = str(1)
-        series_id = params['anime_id'][(myLen + 30):]
-        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/" + addon.getSetting("userid") + "/" + series_id + "/" + vote_value + "/" + vote_type, "")
+        series_id = params['anime_id'][(my_len + 30):]
+        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/" \
+                 + addon.getSetting("userid") + "/" + series_id + "/" + vote_value + "/" + vote_type, "")
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-        'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
+            'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
 
 
-def voteEpisode (params):
+def vote_episode(params):
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    myVote = xbmcgui.Dialog().select('myVote', vote_list)
-    if myVote == -1:
+    my_vote = xbmcgui.Dialog().select('my_vote', vote_list)
+    if my_vote == -1:
         return
-    elif myVote != 0:
-        vote_value = str(vote_list[myVote])
+    elif my_vote != 0:
+        vote_value = str(vote_list[my_vote])
         vote_type = str(4)
         ep_id = params['ep_id']
-        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
+        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
             "port") + "/jmmserverkodi/vote/" + addon.getSetting(
             "userid") + "/" + ep_id + "/" + vote_value + "/" + vote_type, "")
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-        'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
+            'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
 
 
-def watchedMark (params):
+def watched_mark(params):
     episode_id = params['ep_id']
     watched = bool(params['watched'])
-    watched_msg = ""
     if watched is True:
         watched_msg = "watched"
     else:
@@ -923,24 +1058,28 @@ def watchedMark (params):
     xbmc.executebuiltin('XBMC.Action(ToggleWatched)')
     sync = addon.getSetting("syncwatched")
     if sync == "true":
-        getHtml("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
+        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
             "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched), "")
     box = addon.getSetting("watchedbox")
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
-        'Watched status changed', 'Mark as ', watched_msg, addon.getAddonInfo('icon')))
+            'Watched status changed', 'Mark as ', watched_msg, addon.getAddonInfo('icon')))
 
 
 # Script run from here
-if validUser() is True:
+if valid_user() is True:
     try:
         parameters = util.parseParameters()
-    except:
-        xbmcgui.Dialog().ok('Forced mode=2', 'ERROR - This should be fixd')
-        parameters = { "mode": 2 }
-    try:
-        mode = int(parameters["mode"])
-    except:
+    except Exception as e:
+        error('valid_user parseParameters() error', str(e))
+        parameters = {'mode': 2}
+    if parameters:
+        try:
+            mode = int(parameters['mode'])
+        except Exception as e:
+            error('valid_user set \'mode\' error', str(e) + " parameters: " + str(parameters))
+            mode = None
+    else:
         mode = None
     try:
         cmd = parameters['cmd']
@@ -951,43 +1090,43 @@ if validUser() is True:
     # xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
     if cmd is not None:
         if cmd == "voteSer":
-            voteSeries(parameters)
+            vote_series(parameters)
         elif cmd == "voteEp":
-            voteEpisode(parameters)
+            vote_episode(parameters)
         elif cmd == "watched":
             parameters['watched'] = True
-            watchedMark(parameters)
+            watched_mark(parameters)
             voting = addon.getSetting("voteallways")
             if voting == "true":
-                voteEpisode(parameters)
+                vote_episode(parameters)
         elif cmd == "unwatched":
             parameters['watched'] = False
-            watchedMark(parameters)
+            watched_mark(parameters)
         elif cmd == "playlist":
-            playPlaylist(parameters)
+            play_playlist(parameters)
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
-            playVideo(parameters['file'])
-            # playPlaylist()
+            play_video(parameters['file'])
+            # play_playlist()
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # SEARCH
             # xbmcgui.Dialog().ok('MODE=3','MODE')
-            buildSearch(parameters['url'])
+            build_search(parameters['url'])
         elif mode == 4:  # TVShows
             # xbmcgui.Dialog().ok('MODE=4','MODE')
-            buildTVShows(parameters)
+            build_tv_shows(parameters)
         elif mode == 5:  # TVSeasons
             # xbmcgui.Dialog().ok('MODE=5','MODE')
-            buildTVSeasons(parameters)
+            build_tv_seasons(parameters)
         elif mode == 6:  # TVEpisodes
             # xbmcgui.Dialog().ok('MODE=6','MODE')
-            buildTVEpisodes(parameters)
+            build_tv_episodes(parameters)
         elif mode == 7:  # Playlist continue
             # xbmcgui.Dialog().ok('MODE=7','MODE')
-            playPlaylist(parameters)
+            play_playlist(parameters)
         else:
-            buildMainMenu()
+            build_main_menu()
 else:
-    Error("Wrong USER")
+    error("Wrong UserID", "Please change UserID in Settings")

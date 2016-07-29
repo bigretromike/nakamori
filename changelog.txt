@@ -1,13 +1,24 @@
+v2.0.1 (29/07/2016)
+- Nakamori 2.0.0 no longer shows Episodes, Specials #143
+
+v2.0.0 (18/07/2016)
+- add support for new file stream url (backwards compatible)
+- Fix titles for legacy 
+- Make 'Official' the default Title Type
+- Compatibility with JMMServer 3.5 #114 
+- Support gzip request/respond #115
+- Code cleaning
+- PEP8 code style applied
+
 v1.4.0 (24/06/2016)
 - make ip also accept hostnames (#127)
 
 v1.3.9 (16/06/2016)
 - Yet another UTF-8 fix
 
-v1.3.8 (13/06/2016)
+v1.3.8 (10/06/2016)
 - Setting to treat subgroups as seasons (use old style) #122
 - Use year as a fallback if there is no date #122
-- use a more safe way to handle date fallback #123
 
 v1.3.7 (31/05/2016)
 - Sort TV seasons by date #111 (da3dsoul)
