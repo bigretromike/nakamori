@@ -102,6 +102,7 @@ def processTags(addon,string):
 
     toRemove=[]
     removeOriginal=False
+
     for a in string:
         if addon.getSetting("hideArtTags") == "true":
             for remove in tagBlackListArtStyle:
@@ -172,14 +173,19 @@ def processTags(addon,string):
                 toRemove.append(a)
             elif str(a).lower().startswith("weekly"):
                 toRemove.append(a)
+
     # on a separate loop in case 'original work' came before the source
     if removeOriginal == True:
         for a in string:
             if str(a).lower() == "original work":
                 toRemove.append("original work")
+                # both just in case
+                toRemove.append("Original Work")
                 break
 
+
     for a in toRemove:
-        string.remove(a)
+        if a in string:
+            string.remove(a)
 
     return string
