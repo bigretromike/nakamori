@@ -295,20 +295,23 @@ def get_legacy_title(data):
     temptitle = unicode(data.get('original_title', 'Unknown'))
     titles = temptitle.split('|')
 
-    for title in titles:
-        stripped = title[title.index('}') + 1:]
-        if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
-            return stripped
-    for title in titles:
-        # fallback on language
-        stripped = title[title.index('}') + 1:]
-        if (':' + lang.lower() + '}') in title:
-            return stripped
-    for title in titles:
-        # fallback on x-jat
-        stripped = title[title.index('}') + 1:]
-        if '{main:x-jat}' in title:
-            return stripped
+    try:
+        for title in titles:
+            stripped = title[title.index('}') + 1:]
+            if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
+                return stripped
+        for title in titles:
+            # fallback on language
+            stripped = title[title.index('}') + 1:]
+            if (':' + lang.lower() + '}') in title:
+                return stripped
+        for title in titles:
+            # fallback on x-jat
+            stripped = title[title.index('}') + 1:]
+            if '{main:x-jat}' in title:
+                return stripped
+    except:
+    	pass
 
     return data.get('title', 'Unknown').encode('utf-8')
 
