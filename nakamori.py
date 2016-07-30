@@ -103,6 +103,7 @@ def addGUIItem (url, details, extraData, context=None, folder=True):
 
         if extraData is not None:
             if extraData.get('parameters'):
+                link_url = ""
                 for argument, value in extraData.get('parameters').items():
                     link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
             tbi = extraData.get('thumb', '')
@@ -493,9 +494,10 @@ def buildTVSeasons (params):
             # For all the directory tags
 
             for atype in e.findall('Directory'):
-                key = atype.get('key', '');
+                key = atype.get('key', '')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +\
+                          "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if willFlatten:
                     url = key
                     u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
@@ -646,6 +648,7 @@ def buildTVEpisodes (params):
             listCastAndRole = []
             tempgenre = ""
             parentkey = ""
+            grandparenttitle = ""
             if not skip:
                 for atype in videoList:
                     # we only get this once, so only set it if it's not already set
@@ -665,9 +668,10 @@ def buildTVEpisodes (params):
                                 tempgenre = a if tempgenre == "" else tempgenre + " | " + a
                         parentkey = atype.get('parentKey', '0')
                         if not parentkey.startswith("http"):
-                            parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
-                        grandparenttitle = atype.get('grandparentTitle', atype.get('grandparentTitle', '')).encode('utf-8');
-	      	# Extended support
+                            parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + \
+                                        "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
+                        grandparenttitle = atype.get('grandparentTitle', atype.get('grandparentTitle', '')).encode('utf-8')
+            # Extended support
             for atype in videoList:
                 episode_count += 1
 
@@ -714,9 +718,10 @@ def buildTVEpisodes (params):
                     details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
                 thumb = genImageHTTP(atype.get('thumb', ''))
-                key = atype.get('key', '');
+                key = atype.get('key', '')
                 if not key.startswith("http"):
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) + "/videolocal/0/" + key
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) +\
+                          "/videolocal/0/" + key
 
                 # Extra data required to manage other properties
                 extraData = {
