@@ -1,3 +1,6 @@
+v2.0.2 (04/08/2016)
+- Fix title logic errors
+
 v2.0.1 (29/07/2016)
 - Nakamori 2.0.0 no longer shows Episodes, Specials #143
 
