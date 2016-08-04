@@ -321,17 +321,17 @@ def get_title(data):
         if addon.getSetting('use_server_title') == 'true':
             return data.get('title', 'Unknown').encode('utf-8')
         xbmc.log(data.get('title', 'Unknown'))
-        if data.get('original_title', '') != '' \
-                and data.get('title', '') != 'Ova' and data.get('title', '') != 'Ovas' \
-                and data.get('title', '') != 'Episode' and data.get('title', '') != 'Episodes' \
-                and data.get('title', '') != 'Special' and data.get('title', '') != 'Specials' \
-                and data.get('title', '') != 'Parody' and data.get('title', '') != 'Parodies' \
-                and data.get('title', '') != 'Credit' and data.get('title', '') != 'Credits' \
-                and data.get('title', '') != 'Trailer' and data.get('title', '') != 'Trailers' \
-                and data.get('title', '') != 'Other' and data.get('title', '') != 'Others':
+        title = unicode(data.get('title', '')).lower()
+        if title == 'ova' or title == 'ovas' \
+                or title == 'episode' or title == 'episodes' \
+                or title == 'special' or title == 'specials' \
+                or title == 'parody' or title == 'parodies' \
+                or title == 'credit' or title == 'credits' \
+                or title == 'trailer' or title == 'trailers' \
+                or title == 'other' or title == 'others':
+            return data.get('title','Error').encode('utf-8')
+        if data.get('original_title', '') != '':
             return get_legacy_title(data)
-        else:
-            return data.get('title', 'Unknown').encode('utf-8')
         lang = addon.getSetting("displaylang")
         type = addon.getSetting("title_type")
         try:
