@@ -505,11 +505,12 @@ def build_main_menu():
 def build_tv_shows(params):
     # xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
-    xbmcplugin.addSortMethod(handle, 3)  # date
-    xbmcplugin.addSortMethod(handle, 18)  # rating
-    xbmcplugin.addSortMethod(handle, 17)  # year
-    xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+    if addon.getSetting('use_server_sort') == 'false':
+        xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
+        xbmcplugin.addSortMethod(handle, 3)  # date
+        xbmcplugin.addSortMethod(handle, 18)  # rating
+        xbmcplugin.addSortMethod(handle, 17)  # year
+        xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
         html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
@@ -742,12 +743,13 @@ def build_tv_seasons(params):
                 # Build the screen directory listing
                 add_gui_item(url, details, extra_data, context)
 
-            # Apparently date sorting in Kodi has been broken for years
-            xbmcplugin.addSortMethod(handle, 17)  # year
-            xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
-            xbmcplugin.addSortMethod(handle, 3)  # date
-            xbmcplugin.addSortMethod(handle, 18)  # rating
-            xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+            if addon.getSetting('use_server_sort') == 'false':
+                # Apparently date sorting in Kodi has been broken for years
+                xbmcplugin.addSortMethod(handle, 17)  # year
+                xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
+                xbmcplugin.addSortMethod(handle, 3)  # date
+                xbmcplugin.addSortMethod(handle, 18)  # rating
+                xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
         except Exception as e:
             error("Error during build_tv_seasons", str(e))
@@ -783,15 +785,16 @@ def build_tv_episodes(params):
             # unused
             # season_thumb = e.get('thumb', '')
 
-            # Set Sort Method
-            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
-            xbmcplugin.addSortMethod(handle, 3)  # date
-            xbmcplugin.addSortMethod(handle, 25)  # video title ignore THE
-            xbmcplugin.addSortMethod(handle, 19)  # date added
-            xbmcplugin.addSortMethod(handle, 18)  # rating
-            xbmcplugin.addSortMethod(handle, 17)  # year
-            xbmcplugin.addSortMethod(handle, 29)  # runtime
-            xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+            if addon.getSetting('use_server_sort') == 'false':
+                # Set Sort Method
+                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
+                xbmcplugin.addSortMethod(handle, 3)  # date
+                xbmcplugin.addSortMethod(handle, 25)  # video title ignore THE
+                xbmcplugin.addSortMethod(handle, 19)  # date added
+                xbmcplugin.addSortMethod(handle, 18)  # rating
+                xbmcplugin.addSortMethod(handle, 17)  # year
+                xbmcplugin.addSortMethod(handle, 29)  # runtime
+                xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
             # value to hold position of not seen episode
             nextepisode = 1
