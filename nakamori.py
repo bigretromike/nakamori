@@ -25,6 +25,13 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
 # Internal function
 def get_html(url, referer):
+
+    # hacky fix for common url issues in 3.6, feel free to add to it
+    if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":" \
+            + addon.getSetting("port") + "/jmmserverkodi/"):
+        if url.lower().startswith(':' + addon.getSetting("port")):
+            url = 'http://' + addon.getSetting("ipaddress") + url
+
     referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":").replace("%2f", "/")
     req = urllib2.Request(url.encode('utf-8'))
     if len(referer) > 1:
@@ -46,8 +53,16 @@ def get_html(url, referer):
             data = response.read()
         response.close()
     except Exception as e:
+        xbmc.log('There was an error retrieving url: ' + url)
         error('Connection Failed', str(e))
     return data
+
+
+def xml(xmlstring):
+    e = Tree.XML(xmlstring)
+    if e.get('ErrorString','') != '':
+        error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
+    return e
 
 
 def set_window_heading(var_tree):
@@ -216,7 +231,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
 
 
 def valid_user():
-    e = Tree.XML(
+    e = xml(
         get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                  "/jmmserverkodi/getusers", ""))
     valid = False
@@ -227,7 +242,7 @@ def valid_user():
     return valid
 
 
-def error(msg, error_msg="Generic"):
+def error(msg, error_msg="Generic", error_type='Error'):
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -239,7 +254,7 @@ def error(msg, error_msg="Generic"):
         xbmc.log("There error message: ", str(e))
         traceback.print_exc()
 
-    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', msg, addon.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (error_type, ' ', msg, addon.getAddonInfo('icon')))
 
 
 def remove_html(data=""):
@@ -320,7 +335,7 @@ def get_title(data):
     try:
         if addon.getSetting('use_server_title') == 'true':
             return data.get('title', 'Unknown').encode('utf-8')
-        xbmc.log(data.get('title', 'Unknown'))
+        #xbmc.log(data.get('title', 'Unknown'))
         title = unicode(data.get('title', '')).lower()
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
@@ -434,7 +449,7 @@ def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
-        e = Tree.XML(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
+        e = xml(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                               "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
             for atype in e.findall('Directory'):
@@ -501,7 +516,7 @@ def build_tv_shows(params):
         if addon.getSetting("spamLog") == "true":
             xbmc.log(params['url'])
             xbmc.log(html)
-        e = Tree.XML(html)
+        e = xml(html)
         set_window_heading(e)
         try:
             parent_title=''
@@ -574,7 +589,7 @@ def build_tv_shows(params):
                     details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
 
                 key = atype.get('key', '')
-                if not key.startswith("http"):
+                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 thumb = gen_image_url(atype.get('thumb'))
@@ -619,7 +634,7 @@ def build_tv_seasons(params):
         html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
-        e = Tree.XML(html)
+        e = xml(html)
         set_window_heading(e)
         try:
             parent_title=''
@@ -645,7 +660,7 @@ def build_tv_seasons(params):
 
             for atype in e.findall('Directory'):
                 key = atype.get('key', '')
-                if not key.startswith("http"):
+                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if will_flatten:
@@ -746,7 +761,7 @@ def build_tv_episodes(params):
     xbmcplugin.setContent(handle, 'episodes')
     try:
         html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
-        e = Tree.XML(html)
+        e = xml(html)
         if addon.getSetting("spamLog") == "true":
             xbmc.log(html)
         set_window_heading(e)
@@ -802,7 +817,7 @@ def build_tv_episodes(params):
                             list_cast_and_role = result_list[1]
                         tempgenre = get_tags(atype)
                         parentkey = atype.get('parentKey', '0')
-                        if not parentkey.startswith("http"):
+                        if not parentkey.startswith("http") and not 'jmmserverkodi' in parentkey.lower():
                             parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                                         + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
                         grandparenttitle = atype.get('grandparentTitle',
@@ -857,7 +872,7 @@ def build_tv_episodes(params):
 
                 thumb = gen_image_url(atype.get('thumb', ''))
                 key = atype.get('key', '')
-                if not key.startswith("http"):
+                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
 
@@ -911,7 +926,7 @@ def build_tv_episodes(params):
                 url = key
 
                 key = atype.find('Media').find('Part').get('key')
-                if not key.startswith("http"):
+                if not key.startswith("http") and not 'videolocal' in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
                 sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
