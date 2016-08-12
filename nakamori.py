@@ -525,7 +525,14 @@ def build_tv_shows(params):
                 parent_title=e.get('title1', '')
             except Exception:
                 error("Unable to get parent title in buildTVShows")
-            for atype in e.findall('Directory'):
+
+            directory_list = e.findall('Directory')
+            if len(directory_list) <= 0:
+                if e.find('Video') is not None:
+                    build_tv_episodes(params)
+                    return
+                error("No directory listing")
+            for atype in directory_list:
                 tempgenre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
@@ -659,16 +666,25 @@ def build_tv_seasons(params):
             set_window_heading(e)
             # For all the directory tags
 
-            for atype in e.findall('Directory'):
+            if will_flatten:
+                url = key
+                u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
+                build_tv_episodes(u)
+                return
+
+            directory_list = e.findall('Directory')
+            if len(directory_list) <= 0:
+                if e.find('Video') is not None:
+                    url = key
+                    u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
+                    build_tv_episodes(u)
+                    return 
+                error("No directory listings")
+            for atype in directory_list:
                 key = atype.get('key', '')
                 if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
-                if will_flatten:
-                    url = key
-                    u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
-                    build_tv_episodes(u)
-                    return
 
                 plot = remove_html(atype.get('summary', '').encode('utf-8'))
 
@@ -774,10 +790,11 @@ def build_tv_episodes(params):
             except Exception:
                 error("Unable to get parent title in buildTVEpisodes")
             if e.find('Directory') is not None:
-                if e.find('Directory').get('type', 'none') == 'season':
-                    params['url'] = params['url'].replace('&mode=6', '&mode=5')
-                    build_tv_seasons(params)
-                    return
+                # this is never true
+                #if e.find('Directory').get('type', 'none') == 'season':
+                params['url'] = params['url'].replace('&mode=6', '&mode=5')
+                build_tv_seasons(params)
+                return
             # TODO: when banner is supported add it here also
             # banner = gen_image_url(e.get('banner', ''))
             art = gen_image_url(e.get('art', ''))
@@ -801,6 +818,8 @@ def build_tv_episodes(params):
             episode_count = 0
 
             video_list = e.findall('Video')
+            if len(video_list) <= 0:
+                error("No episodes in list")
             skip = addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(video_list) > int(
                 addon.getSetting("skipExtraInfoMaxEpisodes"))
 
