@@ -1,3 +1,6 @@
+v2.0.4 (12/08/2016)
+- Fix watch marking
+
 v2.0.3 (12/08/2016)
 - Better url handling for special case errors. Better error handling. 
 - Option to strictly obey the server's sorting (override kodi's options and use jmm's)
