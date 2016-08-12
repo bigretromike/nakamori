@@ -158,7 +158,7 @@ def processTags(addon,string):
                     toRemove.append(a)
                 elif "moved" in str(a).lower():
                     toRemove.append(a)
-            elif "needs" in str(a).lower():
+            elif "need" in str(a).lower():
                 if "merging" in str(a).lower():
                     toRemove.append(a)
                 elif "deleting" in str(a).lower():
