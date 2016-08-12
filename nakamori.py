@@ -906,7 +906,7 @@ def build_tv_episodes(params):
                 # Extra data required to manage other properties
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
                               'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
-                              'parentKey': parentkey, 'jmmepisodeid': atype.get('JMMEpisodeId', '0'),
+                              'parentKey': parentkey, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId', '0')),
                               'xVideoResolution': atype.find('Media').get('videoResolution', 0),
                               'xVideoCodec': atype.find('Media').get('audioCodec', ''),
                               'xVideoAspect': float(atype.find('Media').get('aspectRatio', 0)),
