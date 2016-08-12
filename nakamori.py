@@ -213,7 +213,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
                     if extra_data.get('source', 'none') == 'tvshows':
                         url_peep = url_peep + "&anime_id=" + extra_data.get('key') + "&cmd=voteSer"
                         context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
-                    if extra_data.get('source', 'none') == 'tvepisodes':
+                    elif extra_data.get('source', 'none') == 'tvepisodes':
                         url_peep = url_peep + "&anime_id=" + extra_data.get('parentKey') + "&ep_id=" \
                                    + extra_data.get('jmmepisodeid')
                         context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
@@ -678,7 +678,7 @@ def build_tv_seasons(params):
                     url = key
                     u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
                     build_tv_episodes(u)
-                    return 
+                    return
                 error("No directory listings")
             for atype in directory_list:
                 key = atype.get('key', '')
@@ -1090,6 +1090,10 @@ def vote_episode(params):
 
 def watched_mark(params):
     episode_id = params['ep_id']
+    if addon.getSetting('log_spam') == 'true':
+        xbmc.log('epid: ' + str(episode_id))
+        xbmc.log('key: ' + "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
+                "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched))
     watched = bool(params['watched'])
     if watched is True:
         watched_msg = "watched"
