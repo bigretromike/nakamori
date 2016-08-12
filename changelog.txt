@@ -1,3 +1,6 @@
+v2.0.5 (12/08/2016)
+- Fix minor error in tag filtering. Fix #70. Massive search overhaul which includes name and tag searching
+
 v2.0.4 (12/08/2016)
 - Fix watch marking
 
