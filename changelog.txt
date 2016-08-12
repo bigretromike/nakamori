@@ -1,3 +1,9 @@
+v2.0.3 (12/08/2016)
+- Better url handling for special case errors. Better error handling. 
+- Option to strictly obey the server's sorting (override kodi's options and use jmm's)
+- Fixed an empty directory issue with some shows with specials (a little better resolution of item type)
+- More logging for watched mark.
+
 v2.0.2 (04/08/2016)
 - Fix title logic errors
 
