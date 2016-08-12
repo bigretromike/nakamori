@@ -502,10 +502,10 @@ def build_main_menu():
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
-def build_tv_shows(params):
+def build_tv_shows(params, extra_directories=None):
     # xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    if addon.getSetting('use_server_sort') == 'false':
+    if addon.getSetting('use_server_sort') == 'false' and extra_directories is None:
         xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
         xbmcplugin.addSortMethod(handle, 3)  # date
         xbmcplugin.addSortMethod(handle, 18)  # rating
@@ -526,7 +526,11 @@ def build_tv_shows(params):
             except Exception:
                 error("Unable to get parent title in buildTVShows")
 
+            if extra_directories is not None:
+                e.extend(extra_directories)
+
             directory_list = e.findall('Directory')
+
             if len(directory_list) <= 0:
                 if e.find('Video') is not None:
                     build_tv_episodes(params)
@@ -598,8 +602,13 @@ def build_tv_shows(params):
 
                 key = atype.get('key', '')
                 if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                    if key != '':
+                        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                              + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                    else:
+                        if 'serie' in atype.get('AnimeType').lower():
+                            key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + atype.get('GenericId', '')
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
 
@@ -635,7 +644,7 @@ def build_tv_shows(params):
     xbmcplugin.endOfDirectory(handle)
 
 
-def build_tv_seasons(params):
+def build_tv_seasons(params, extra_directories=None):
     # xbmcgui.Dialog().ok('MODE=5','IN')
     xbmcplugin.setContent(handle, 'seasons')
     try:
@@ -650,6 +659,10 @@ def build_tv_seasons(params):
                 parent_title = e.get('title1', '')
             except Exception:
                 error("Unable to get parent title in buildTVSeasons")
+
+            if extra_directories is not None:
+                e.extend(extra_directories)
+
             if e.find('Directory') is None:
                 params['url'] = params['url'].replace('&mode=5', '&mode=6')
                 build_tv_episodes(params)
@@ -683,8 +696,13 @@ def build_tv_seasons(params):
             for atype in directory_list:
                 key = atype.get('key', '')
                 if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                    if key != '':
+                        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                    else:
+                        if 'serie' in atype.get('AnimeType').lower():
+                            key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + atype.get('GenericId', '')
 
                 plot = remove_html(atype.get('summary', '').encode('utf-8'))
 
@@ -759,7 +777,7 @@ def build_tv_seasons(params):
                 # Build the screen directory listing
                 add_gui_item(url, details, extra_data, context)
 
-            if addon.getSetting('use_server_sort') == 'false':
+            if addon.getSetting('use_server_sort') == 'false' and extra_directories is None:
                 # Apparently date sorting in Kodi has been broken for years
                 xbmcplugin.addSortMethod(handle, 17)  # year
                 xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -969,11 +987,18 @@ def build_tv_episodes(params):
     xbmcplugin.endOfDirectory(handle)
 
 
-def build_search(url):
+def build_search(url=''):
     try:
         term = util.searchBox()
+        term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
         tosend = {'url': url + term}
-        build_tv_shows(tosend)
+        url2 = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+              + "/jmmserverkodi/searchtag/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit_tag") + "/"
+        e = xml(get_html(url2 + term, '').decode('utf-8').encode('utf-8'))
+        directories = e.findall('Directory')
+        if len(directories) <= 0:
+            directories = None
+        build_tv_shows(tosend, directories)
     except Exception as ex:
         error("Error during build_search", str(ex))
 
