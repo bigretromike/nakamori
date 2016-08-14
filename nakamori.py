@@ -177,7 +177,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             if not filter_gui_item_by_tag(details.get('title','')):
                 return
 
-        prevstate = bool(int(details.get('playcount','0')) > 0)
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi})
@@ -256,7 +255,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         url_peep = url_peep + "&anime_id=" + extra_data.get('parentKey') + "&ep_id=" \
                                    + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
-                        #xbmc.log("addguiitem - " + details.get('title', 'Unknown') + ' -- ' + 'prevstatus=' + str(prevstate), xbmc.LOGWARNING)
                         context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
                             sys.argv[1], url_peep)))
                         context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
@@ -996,7 +994,7 @@ def build_tv_episodes(params):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
                 sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
-                               + extra_data.get('jmmepisodeid') + '&prevstatus=' + str(details['playcount'] > 0)
+                               + extra_data.get('jmmepisodeid') + '&ui_index=' + str(int(episode_count-1))
                 u = sys.argv[0]
 
                 add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count-1))
@@ -1030,7 +1028,7 @@ def build_search(url=''):
 
 
 # Other functions
-def play_video(url, epid, prevstatus):
+def play_video(url, epid, index):
     details = {
         'plot': xbmc.getInfoLabel('ListItem.Plot'),
         'title': xbmc.getInfoLabel('ListItem.Title'),
@@ -1083,8 +1081,8 @@ def play_video(url, epid, prevstatus):
         pass
 
     if file_fin is True:
-        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&prevstatus=%s&ep_id=%s)' % (sys.argv[1], sys.argv[2], \
-                prevstatus, epid))
+        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&ep_id=%s&ui_index=%s)' % (sys.argv[1], sys.argv[2], \
+                            epid, index))
 
 
 # TODO: Not used maybe it should be added to '-continue-' that would add all episodes to list? or Drop it
@@ -1144,7 +1142,6 @@ def vote_episode(params):
 
 def watched_mark(params):
     episode_id = params['ep_id']
-    prevstatus = bool(params.get('prevstatus', 'False'))
 
     if addon.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
@@ -1155,7 +1152,6 @@ def watched_mark(params):
         watched_msg = "watched"
     else:
         watched_msg = "unwatched"
-    #xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ("watched_mark - " + watched_msg, 'prevstatus=' + str(prevstatus), addon.getAddonInfo('icon')))
 
     sync = addon.getSetting("syncwatched")
     if sync == "true":
@@ -1198,14 +1194,12 @@ if valid_user() is True:
         elif cmd == "voteEp":
             vote_episode(parameters)
         elif cmd == "watched":
-            #xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ("Main - watched", 'prevstatus=' + parameters['prevstatus'], addon.getAddonInfo('icon')))
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("voteallways")
             if voting == "true":
                 vote_episode(parameters)
         elif cmd == "unwatched":
-            #xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ("Main - unwatched", 'prevstatus=' + parameters['prevstatus'], addon.getAddonInfo('icon')))
             parameters['watched'] = False
             watched_mark(parameters)
         elif cmd == "playlist":
@@ -1213,7 +1207,7 @@ if valid_user() is True:
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
-            play_video(parameters['file'], parameters['ep_id'], parameters['prevstatus'])
+            play_video(parameters['file'], parameters['ep_id'], parameters['ui_index'])
             # play_playlist()
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
