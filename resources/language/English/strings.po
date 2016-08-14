@@ -187,3 +187,7 @@ msgstr ""
 msgctxt "#32054"
 msgid "Browsing"
 msgstr ""
+
+msgctxt "#32055"
+msgid "Time to wait for refresh to move selection (adjust for sync)"
+msgstr ""

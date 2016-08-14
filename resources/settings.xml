@@ -17,6 +17,7 @@
 	<category label="32023">
 		<setting label="32025" type="bool" id="watchedbox" default="true"/>
 		<setting label="32024" type="number" id="watched_mark" default="80"/>
+        <setting label="32055" type="number" id="refresh_wait" default="1000"/>
 		<setting label="32039" type="bool" id="show_continue" default="true"/>
 		<setting label="32040" type="bool" id="local_total" default="false"/>
 		<setting label="32007" type="lsep"/>

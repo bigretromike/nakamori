@@ -84,6 +84,8 @@ def refresh(index=0):
     index += 1
     # refresh
     xbmc.executebuiltin('Container.Refresh')
+    # Allow time for the ui to reload (this may need to be tweaked, I am running on localhost)
+    xbmc.sleep(int(addon.getSetting('refresh_wait')))
 
     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     ctl = win.getControl(win.getFocusId())
