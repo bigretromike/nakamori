@@ -183,3 +183,7 @@ msgstr ""
 msgctxt "#32053"
 msgid "Use Server Sorting"
 msgstr ""
+
+msgctxt "#32054"
+msgid "Browsing"
+msgstr ""

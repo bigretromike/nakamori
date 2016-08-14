@@ -58,11 +58,48 @@ def get_html(url, referer):
     return data
 
 
+def error(msg, error_msg="Generic", error_type='Error'):
+    xbmc.log('---' + msg + '---', xbmc.LOGERROR)
+    try:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+        traceback.print_exc()
+    except Exception as e:
+        xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
+        xbmc.log("There error message: ", str(e))
+        traceback.print_exc()
+
+    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (error_type, ' ', msg, addon.getAddonInfo('icon')))
+
+
 def xml(xmlstring):
     e = Tree.XML(xmlstring)
     if e.get('ErrorString','') != '':
         error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
     return e
+
+
+def refresh(index=0):
+    index += 1
+    # refresh
+    xbmc.executebuiltin('Container.Refresh')
+
+    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+    ctl = win.getControl(win.getFocusId())
+
+    try:
+        ctl.selectItem(index)
+    except:
+        try:
+            index -= 1
+            ctl.selectItem(index)
+        except:
+            error('Unable to reselect item')
+            xbmc.log('winid: ' + str(xbmcgui.getCurrentWindowId()), xbmc.LOGWARNING)
+            xbmc.log('focusid: ' + str(win.getFocusId()), xbmc.LOGWARNING)
+            xbmc.log('index: ' + str(index), xbmc.LOGWARNING)
+
 
 
 def set_window_heading(var_tree):
@@ -86,7 +123,7 @@ def filter_gui_item_by_tag(title):
     return len(str1) > 0
 
 
-def add_gui_item(url, details, extra_data, context=None, folder=True):
+def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
     try:
         tbi = ""
         tp = 'Video'
@@ -138,6 +175,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
             if not filter_gui_item_by_tag(details.get('title','')):
                 return
 
+        prevstate = bool(int(details.get('playcount','0')) > 0)
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi})
@@ -215,7 +253,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True):
                         context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         url_peep = url_peep + "&anime_id=" + extra_data.get('parentKey') + "&ep_id=" \
-                                   + extra_data.get('jmmepisodeid')
+                                   + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
+                        #xbmc.log("addguiitem - " + details.get('title', 'Unknown') + ' -- ' + 'prevstatus=' + str(prevstate), xbmc.LOGWARNING)
                         context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
                             sys.argv[1], url_peep)))
                         context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
@@ -240,21 +279,6 @@ def valid_user():
         if user_id == addon.getSetting("userid"):
             valid = True
     return valid
-
-
-def error(msg, error_msg="Generic", error_type='Error'):
-    xbmc.log('---' + msg + '---', xbmc.LOGERROR)
-    try:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
-        traceback.print_exc()
-    except Exception as e:
-        xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
-        xbmc.log("There error message: ", str(e))
-        traceback.print_exc()
-
-    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (error_type, ' ', msg, addon.getAddonInfo('icon')))
 
 
 def remove_html(data=""):
@@ -970,10 +994,10 @@ def build_tv_episodes(params):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
                 sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
-                               + extra_data.get('jmmepisodeid')
+                               + extra_data.get('jmmepisodeid') + '&prevstatus=' + str(details['playcount'] > 0)
                 u = sys.argv[0]
 
-                add_gui_item(u, details, extra_data, context, folder=False)
+                add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count-1))
 
             # add item to move to next not played item (not marked as watched)
             if addon.getSetting("show_continue") == "true":
@@ -1004,7 +1028,7 @@ def build_search(url=''):
 
 
 # Other functions
-def play_video(url):
+def play_video(url, epid, prevstatus):
     details = {
         'plot': xbmc.getInfoLabel('ListItem.Plot'),
         'title': xbmc.getInfoLabel('ListItem.Title'),
@@ -1027,6 +1051,7 @@ def play_video(url):
     item.setInfo(type='Video', infoLabels=details)
     item.setProperty('IsPlayable', 'true')
     player = xbmc.Player()
+
     try:
         player.play(item=url, listitem=item, windowed=False)
         xbmcplugin.setResolvedUrl(handle, True, item)
@@ -1054,8 +1079,10 @@ def play_video(url):
                 break
     except:
         pass
+
     if file_fin is True:
-        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], sys.argv[2]))
+        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&prevstatus=%s&ep_id=%s)' % (sys.argv[1], sys.argv[2], \
+                prevstatus, epid))
 
 
 # TODO: Not used maybe it should be added to '-continue-' that would add all episodes to list? or Drop it
@@ -1115,6 +1142,8 @@ def vote_episode(params):
 
 def watched_mark(params):
     episode_id = params['ep_id']
+    prevstatus = bool(params.get('prevstatus', 'False'))
+
     if addon.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('key: ' + "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
@@ -1124,11 +1153,15 @@ def watched_mark(params):
         watched_msg = "watched"
     else:
         watched_msg = "unwatched"
-    xbmc.executebuiltin('XBMC.Action(ToggleWatched)')
+    #xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ("watched_mark - " + watched_msg, 'prevstatus=' + str(prevstatus), addon.getAddonInfo('icon')))
+
     sync = addon.getSetting("syncwatched")
     if sync == "true":
         get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
             "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched), "")
+
+    refresh(int(params['ui_index']))
+
     box = addon.getSetting("watchedbox")
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
@@ -1163,12 +1196,14 @@ if valid_user() is True:
         elif cmd == "voteEp":
             vote_episode(parameters)
         elif cmd == "watched":
+            #xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ("Main - watched", 'prevstatus=' + parameters['prevstatus'], addon.getAddonInfo('icon')))
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("voteallways")
             if voting == "true":
                 vote_episode(parameters)
         elif cmd == "unwatched":
+            #xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ("Main - unwatched", 'prevstatus=' + parameters['prevstatus'], addon.getAddonInfo('icon')))
             parameters['watched'] = False
             watched_mark(parameters)
         elif cmd == "playlist":
@@ -1176,7 +1211,7 @@ if valid_user() is True:
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
-            play_video(parameters['file'])
+            play_video(parameters['file'], parameters['ep_id'], parameters['prevstatus'])
             # play_playlist()
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
