@@ -80,27 +80,23 @@ def xml(xml_string):
     return e
 
 
-def refresh(index=0):
-    index = int(index) + 1
-    # refresh
+def refresh():
+    # refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
     xbmc.executebuiltin('Container.Refresh')
     # Allow time for the ui to reload (this may need to be tweaked, I am running on localhost)
     xbmc.sleep(int(addon.getSetting('refresh_wait')))
 
-    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-    ctl = win.getControl(win.getFocusId())
 
+def move_position_on_list(control_list, position):
     try:
-        ctl.selectItem(index)
+        control_list.selectItem(position)
     except:
         try:
-            index -= 1
-            ctl.selectItem(index)
+            control_list.selectItem(position-1)
         except:
             error('Unable to reselect item')
-            xbmc.log('winid: ' + str(xbmcgui.getCurrentWindowId()), xbmc.LOGWARNING)
-            xbmc.log('focusid: ' + str(win.getFocusId()), xbmc.LOGWARNING)
-            xbmc.log('index: ' + str(index), xbmc.LOGWARNING)
+            xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
+            xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
 
 
 def set_window_heading(var_tree):
@@ -118,9 +114,8 @@ def set_window_heading(var_tree):
 
 
 def filter_gui_item_by_tag(title):
-    # xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', 'Running filter tags', addon.getAddonInfo('icon')))
     str1 = [title]
-    str1 = TagFilter.processTags(addon,str1)
+    str1 = TagFilter.processTags(addon, str1)
     return len(str1) > 0
 
 
@@ -1023,7 +1018,7 @@ def build_search(url=''):
 
 
 # Other functions
-def play_video(url, ep_id, index):
+def play_video(url, ep_id):
     details = {
         'plot': xbmc.getInfoLabel('ListItem.Plot'),
         'title': xbmc.getInfoLabel('ListItem.Title'),
@@ -1077,33 +1072,27 @@ def play_video(url, ep_id, index):
 
     no_watch_status = False
     if addon.getSetting('no_mark') != "0":
-        no_watch_status = True;
+        no_watch_status = True
         # reset no_mark so next file will mark watched status
         addon.setSetting('no_mark', '0')
 
     if file_fin is True:
         if no_watch_status is False:
-            xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&ep_id=%s&ui_index=%s)' %
-                                (sys.argv[1], sys.argv[2], ep_id, index))
-            # after toggle watch status another refresh restore original position of selected item in case of esc/tab
-            refresh(int(index)+2)
+            return ep_id
+    return 0
 
 
-# TODO: Not used maybe it should be added to '-continue-' that would add all episodes to list? or Drop it
-def play_playlist(data):
+def play_continue_item(data):
     offset = data['offset']
     pos = int(offset)
     if pos == 1:
         xbmcgui.Dialog().ok('Finished', 'You already finished this')
     else:
-        win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-        cid = win.getFocusId()
-        ctl = win.getControl(cid)
-        ctl.selectItem(pos)
-        # temporary hack to prevent from going back on first item
+        wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+        control_id = wind.getFocusId()
+        control_list = wind.getControl(control_id)
+        control_list.selectItem(pos)
         xbmc.sleep(1000)
-        # Jarvis code:
-        # xbmc.executebuiltin('SetFocus(%s, %s)' % (cid, pos))
 
 
 # TODO: Trakt_Scrobble need work - JMM support it (for series not movies)
@@ -1166,8 +1155,7 @@ def watched_mark(params):
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
             'Watched status changed', 'Mark as ', watched_msg, addon.getAddonInfo('icon')))
-    # refresh restore original position in case menu movement
-    refresh(int(params['ui_index'])+2)
+    refresh()
 
 
 # Script run from here
@@ -1198,6 +1186,10 @@ if valid_user() is True:
         elif cmd == "voteEp":
             vote_episode(parameters)
         elif cmd == "watched":
+            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            cid = win.getFocusId()
+            ctl = win.getControl(cid)
+            move_position_on_list(ctl, int(parameters['ui_index'])+3)
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("vote_always")
@@ -1207,14 +1199,19 @@ if valid_user() is True:
             parameters['watched'] = False
             watched_mark(parameters)
         elif cmd == "playlist":
-            play_playlist(parameters)
+            play_continue_item(parameters)
         elif cmd == "no_mark":
             addon.setSetting('no_mark', '1')
             xbmc.executebuiltin('Action(Select)')
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
-            play_video(parameters['file'], parameters['ep_id'], parameters['ui_index'])
+            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            ctl = win.getControl(win.getFocusId())
+            if play_video(parameters['file'], parameters['ep_id']) != 0:
+                move_position_on_list(ctl, int(parameters['ui_index'])+3)
+                parameters['watched'] = True
+                watched_mark(parameters)
             # play_playlist()
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
@@ -1230,9 +1227,9 @@ if valid_user() is True:
         elif mode == 6:  # TVEpisodes
             # xbmcgui.Dialog().ok('MODE=6','MODE')
             build_tv_episodes(parameters)
-        elif mode == 7:  # Playlist continue
+        elif mode == 7:  # Playlist -continue-
             # xbmcgui.Dialog().ok('MODE=7','MODE')
-            play_playlist(parameters)
+            play_continue_item(parameters)
         else:
             build_main_menu()
 else:
