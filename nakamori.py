@@ -25,7 +25,6 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
 # Internal function
 def get_html(url, referer):
-
     # hacky fix for common url issues in 3.6, feel free to add to it
     if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":"
                                   + addon.getSetting("port") + "/jmmserverkodi/"):
@@ -466,7 +465,6 @@ def get_cast_and_role(data):
 def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
-        # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         e = xml(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                          "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
