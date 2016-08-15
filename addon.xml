@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.0.5" provider-name="BigRetroMike">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.0.6" provider-name="BigRetroMike">
 	<extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Nakamori enables you to browse your JMM collection within Kodi.</summary>
-		<description lang="en">Nakamori enables you to browse your JMM collection within Kodi without needing to reimport it in anyway. Thanks to this approach you are able to still manage your collection with JMM and use information you gathered there to pass them to Kodi. </description>
+		<description lang="en">Nakamori enables you to browse your JMM collection within Kodi without needing to re-import it in anyway. Thanks to this approach you are able to still manage your collection with JMM and use information you gathered there to pass them to Kodi. </description>
 		<platform>all</platform>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
 		<language>en</language>

@@ -27,8 +27,8 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 def get_html(url, referer):
 
     # hacky fix for common url issues in 3.6, feel free to add to it
-    if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":" \
-            + addon.getSetting("port") + "/jmmserverkodi/"):
+    if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":"
+                                  + addon.getSetting("port") + "/jmmserverkodi/"):
         if url.lower().startswith(':' + addon.getSetting("port")):
             url = 'http://' + addon.getSetting("ipaddress") + url
 
@@ -73,9 +73,9 @@ def error(msg, error_msg="Generic", error_type='Error'):
     xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (error_type, ' ', msg, addon.getAddonInfo('icon')))
 
 
-def xml(xmlstring):
-    e = Tree.XML(xmlstring)
-    if e.get('ErrorString','') != '':
+def xml(xml_string):
+    e = Tree.XML(xml_string)
+    if e.get('ErrorString', '') != '':
         error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
     return e
 
@@ -103,7 +103,6 @@ def refresh(index=0):
             xbmc.log('index: ' + str(index), xbmc.LOGWARNING)
 
 
-
 def set_window_heading(var_tree):
     window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     try:
@@ -119,7 +118,7 @@ def set_window_heading(var_tree):
 
 
 def filter_gui_item_by_tag(title):
-    #xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', 'Running filter tags', addon.getAddonInfo('icon')))
+    # xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('ERROR', ' ', 'Running filter tags', addon.getAddonInfo('icon')))
     str1 = [title]
     str1 = TagFilter.processTags(addon,str1)
     return len(str1) > 0
@@ -137,7 +136,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             if details.get('year', '') != '' and details['year'] != 0:
                 details['date'] = '01.01.'+str(details['year'])
                 details['aired'] = details['date']
-                #details['aired'] = str(details['year'])+'-01-01'
+                # details['aired'] = str(details['year'])+'-01-01'
 
         if addon.getSetting("spamLog") == 'true':
             if details is not None:
@@ -173,8 +172,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
             tbi = extra_data.get('thumb', '')
             tp = extra_data.get('type', 'Video')
-        if details.get('parenttitle','').lower() == 'tags':
-            if not filter_gui_item_by_tag(details.get('title','')):
+        if details.get('parenttitle', '').lower() == 'tags':
+            if not filter_gui_item_by_tag(details.get('title', '')):
                 return
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
@@ -330,14 +329,14 @@ def set_watch_flag(extra_data, details):
 
 def get_legacy_title(data):
     lang = addon.getSetting("displaylang")
-    type = addon.getSetting("title_type")
+    title_type = addon.getSetting("title_type")
     temptitle = unicode(data.get('original_title', 'Unknown'))
     titles = temptitle.split('|')
 
     try:
         for title in titles:
             stripped = title[title.index('}') + 1:]
-            if ('{' + type.lower() + ':' + lang.lower() + '}') in title:
+            if ('{' + title_type.lower() + ':' + lang.lower() + '}') in title:
                 return stripped
         for title in titles:
             # fallback on language
@@ -350,7 +349,7 @@ def get_legacy_title(data):
             if '{main:x-jat}' in title:
                 return stripped
     except:
-    	pass
+        pass
 
     return data.get('title', 'Unknown').encode('utf-8')
 
@@ -359,7 +358,7 @@ def get_title(data):
     try:
         if addon.getSetting('use_server_title') == 'true':
             return data.get('title', 'Unknown').encode('utf-8')
-        #xbmc.log(data.get('title', 'Unknown'))
+        # xbmc.log(data.get('title', 'Unknown'))
         title = unicode(data.get('title', '')).lower()
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
@@ -368,14 +367,14 @@ def get_title(data):
                 or title == 'credit' or title == 'credits' \
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
-            return data.get('title','Error').encode('utf-8')
+            return data.get('title', 'Error').encode('utf-8')
         if data.get('original_title', '') != '':
             return get_legacy_title(data)
         lang = addon.getSetting("displaylang")
-        type = addon.getSetting("title_type")
+        title_type = addon.getSetting("title_type")
         try:
             for titleTag in data.findall('AnimeTitle'):
-                if titleTag.find('Type').text.lower() == type.lower():
+                if titleTag.find('Type').text.lower() == title_type.lower():
                     if titleTag.find('Language').text.lower() == lang.lower():
                         return titleTag.find('Title').text.encode('utf-8')
             # fallback on language any title
@@ -389,32 +388,31 @@ def get_title(data):
                         return titleTag.find('Title').text.encode('utf-8')
             # fallback on directory title
             return data.get('title', 'Unknown').encode('utf-8')
-        except:
-            error('Error thrown on getting title')
-            return data.get('title','Error').encode('utf-8')
-    except Exception as e:
-        error("get_title Exception", str(e))
+        except Exception as ex:
+            error('Error thrown on getting title', str(ex))
+            return data.get('title', 'Error').encode('utf-8')
+    except Exception as ex:
+        error("get_title Exception", str(ex))
         return 'Error'
 
 
 def get_legacy_tags(atype):
-    tempgenre = ""
+    temp_genre = ""
     tag = atype.find("Tag")
 
     if tag is not None:
-        tempgenre = tag.get('tag', '')
-        temp_genres = str.split(tempgenre, ",")
+        temp_genre = tag.get('tag', '')
+        temp_genres = str.split(temp_genre, ",")
         temp_genres = TagFilter.processTags(addon, temp_genres)
-        tempgenre = ""
+        temp_genre = ""
 
         for a in temp_genres:
             a = " ".join(w.capitalize() for w in a.split())
-            tempgenre = unicode(a, 'utf8') if tempgenre == "" else tempgenre + " | " + unicode(a, 'utf8')
-    return tempgenre
+            temp_genre = unicode(a, 'utf8') if temp_genre == "" else temp_genre + " | " + unicode(a, 'utf8')
+    return temp_genre
 
-	
+
 def get_tags(atype):
-    tempgenre = ""
     try:
         if atype.find('Tag') is not None:
             return get_legacy_tags(atype)
@@ -422,37 +420,36 @@ def get_tags(atype):
         temp_genres = []
         for tag in atype.findall("Genre"):
             if tag is not None:
-                tempgenre = tag.get('tag', '').encode('utf-8').strip()
-                temp_genres.append(tempgenre)
-                tempgenre = ""
+                temp_genre = tag.get('tag', '').encode('utf-8').strip()
+                temp_genres.append(temp_genre)
         temp_genres = TagFilter.processTags(addon, temp_genres)
-        tempgenre = " | ".join(temp_genres)
-        return tempgenre
-    except:
-        error('Error generating tags')
+        temp_genre = " | ".join(temp_genres)
+        return temp_genre
+    except Exception as ex:
+        error('Error generating tags', str(ex))
         return ''
 
-		
+
 def get_cast_and_role(data):
     if data is not None:
         result_list = []
         list_cast = []
         list_cast_and_role = []
 
-        characterTag = 'Role'
+        character_tag = 'Role'
         if data.find('Characters') is not None:
             data = data.find('Characters')
-            characterTag = 'Character'
-        for char in data.findall(characterTag):
+            character_tag = 'Character'
+        for char in data.findall(character_tag):
             # Don't init any variables we don't need right now
             # char_id = char.get('charID')
-            if characterTag == 'Role':
+            if character_tag == 'Role':
                 char_charname = char.get('role', '')
             else:
                 char_charname = char.get('charname', '')
             # char_picture=char.get('picture','')
             # char_desc=char.get('description','')
-            if characterTag == 'Role':
+            if character_tag == 'Role':
                 char_seiyuuname = char.get('seiyuuname', 'Unknown')
             else:
                 char_seiyuuname = char.get('tag', 'Unknown')
@@ -474,7 +471,7 @@ def build_main_menu():
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         e = xml(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
-                              "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
+                         "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
         try:
             for atype in e.findall('Directory'):
                 title = atype.get('title')
@@ -544,11 +541,11 @@ def build_tv_shows(params, extra_directories=None):
         e = xml(html)
         set_window_heading(e)
         try:
-            parent_title=''
+            parent_title = ''
             try:
-                parent_title=e.get('title1', '')
-            except Exception:
-                error("Unable to get parent title in buildTVShows")
+                parent_title = e.get('title1', '')
+            except Exception as ex:
+                error("Unable to get parent title in buildTVShows", str(ex))
 
             if extra_directories is not None:
                 e.extend(extra_directories)
@@ -561,7 +558,7 @@ def build_tv_shows(params, extra_directories=None):
                     return
                 error("No directory listing")
             for atype in directory_list:
-                tempgenre = get_tags(atype)
+                temp_genre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
                 # TODO: Decide about future of cast_and_role in ALL
@@ -583,7 +580,7 @@ def build_tv_shows(params, extra_directories=None):
                 details = {
                     'title': title,
                     'parenttitle': parent_title.encode('utf-8'),
-                    'genre': tempgenre,
+                    'genre': temp_genre,
                     'year': int(atype.get('year', 0)),
                     'episode': total,
                     'season': int(atype.get('season', 0)),
@@ -620,19 +617,20 @@ def build_tv_shows(params, extra_directories=None):
                     # trailer        : string (/home/user/trailer.avi,
                     'dateadded': atype.get('addedAt')
                 }
-                tempdate = str(details['aired']).split('-')
-                if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                    details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
+                temp_date = str(details['aired']).split('-')
+                if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
+                    details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 key = atype.get('key', '')
-                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
+                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     if key != '':
                         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                               + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                     else:
                         if 'serie' in atype.get('AnimeType').lower():
                             key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + atype.get('GenericId', '')
+                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + \
+                                  atype.get('GenericId', '')
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
 
@@ -678,11 +676,11 @@ def build_tv_seasons(params, extra_directories=None):
         e = xml(html)
         set_window_heading(e)
         try:
-            parent_title=''
+            parent_title = ''
             try:
                 parent_title = e.get('title1', '')
-            except Exception:
-                error("Unable to get parent title in buildTVSeasons")
+            except Exception as ex:
+                error("Unable to get parent title in buildTVSeasons", str(ex))
 
             if extra_directories is not None:
                 e.extend(extra_directories)
@@ -693,44 +691,37 @@ def build_tv_seasons(params, extra_directories=None):
                 return
 
             will_flatten = False
+
             # check for a single season
             if int(e.get('size', 0)) == 1:
                 will_flatten = True
 
-            sectionart = gen_image_url(e.get('art', ''))
+            section_art = gen_image_url(e.get('art', ''))
             banner = gen_image_url(e.get('banner', ''))
 
             set_window_heading(e)
-            # For all the directory tags
 
-            if will_flatten:
-                url = key
-                u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
-                build_tv_episodes(u)
-                return
-
-            directory_list = e.findall('Directory')
-            if len(directory_list) <= 0:
-                if e.find('Video') is not None:
-                    url = key
-                    u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
-                    build_tv_episodes(u)
-                    return
-                error("No directory listings")
-            for atype in directory_list:
+            for atype in e.findall('Directory'):
                 key = atype.get('key', '')
-                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
+                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     if key != '':
                         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                     else:
                         if 'serie' in atype.get('AnimeType').lower():
                             key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + atype.get('GenericId', '')
+                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + \
+                                  atype.get('GenericId', '')
+
+                if will_flatten:
+                    url = key
+                    u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
+                    build_tv_episodes(u)
+                    return
 
                 plot = remove_html(atype.get('summary', '').encode('utf-8'))
 
-                tempgenre = get_tags(atype)
+                temp_genre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
 
                 list_cast = []
@@ -756,7 +747,7 @@ def build_tv_seasons(params, extra_directories=None):
                     'cast': list_cast,
                     'castandrole': list_cast_and_role,
                     'plot': plot,
-                    'genre': tempgenre,
+                    'genre': temp_genre,
                     'season': int(atype.get('season', 0)),
                     'episode': total,
                     'mpaa': atype.get('contentRating', ''),
@@ -764,9 +755,9 @@ def build_tv_seasons(params, extra_directories=None):
                     'aired': atype.get('originallyAvailableAt', ''),
                     'year': int(atype.get('year', 0))
                     }
-                tempdate = str(details['aired']).split('-')
-                if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                    details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
+                temp_date = str(details['aired']).split('-')
+                if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
+                    details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 if atype.get('sorttitle'):
                     details['sorttitle'] = atype.get('sorttitle')
@@ -791,7 +782,7 @@ def build_tv_seasons(params, extra_directories=None):
                     extra_data['banner'] = banner
 
                 if extra_data['fanart_image'] == "":
-                    extra_data['fanart_image'] = sectionart
+                    extra_data['fanart_image'] = section_art
 
                 set_watch_flag(extra_data, details)
 
@@ -809,10 +800,10 @@ def build_tv_seasons(params, extra_directories=None):
                 xbmcplugin.addSortMethod(handle, 18)  # rating
                 xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
-        except Exception as e:
-            error("Error during build_tv_seasons", str(e))
-    except Exception as e:
-        error("Invalid XML Received in build_tv_seasons", str(e))
+        except Exception as ex:
+            error("Error during build_tv_seasons", str(ex))
+    except Exception as ex:
+        error("Invalid XML Received in build_tv_seasons", str(ex))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -826,14 +817,14 @@ def build_tv_episodes(params):
             xbmc.log(html)
         set_window_heading(e)
         try:
-            parent_title=''
+            parent_title = ''
             try:
                 parent_title = e.get('title1', '')
-            except Exception:
-                error("Unable to get parent title in buildTVEpisodes")
+            except Exception as ex:
+                error("Unable to get parent title in buildTVEpisodes", str(ex))
             if e.find('Directory') is not None:
                 # this is never true
-                #if e.find('Directory').get('type', 'none') == 'season':
+                # if e.find('Directory').get('type', 'none') == 'season':
                 params['url'] = params['url'].replace('&mode=6', '&mode=5')
                 build_tv_seasons(params)
                 return
@@ -856,7 +847,7 @@ def build_tv_episodes(params):
                 xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
             # value to hold position of not seen episode
-            nextepisode = 1
+            next_episode = 1
             episode_count = 0
 
             video_list = e.findall('Video')
@@ -868,9 +859,9 @@ def build_tv_episodes(params):
             # keep this init out of the loop, as we only provide this once
             list_cast = []
             list_cast_and_role = []
-            tempgenre = ""
-            parentkey = ""
-            grandparenttitle = ""
+            temp_genre = ""
+            parent_key = ""
+            grandparent_title = ""
             if not skip:
                 for atype in video_list:
                     # we only get this once, so only set it if it's not already set
@@ -879,13 +870,13 @@ def build_tv_episodes(params):
                         if result_list is not None:
                             list_cast = result_list[0]
                             list_cast_and_role = result_list[1]
-                        tempgenre = get_tags(atype)
-                        parentkey = atype.get('parentKey', '0')
-                        if not parentkey.startswith("http") and not 'jmmserverkodi' in parentkey.lower():
-                            parentkey = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                        + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parentkey
-                        grandparenttitle = atype.get('grandparentTitle',
-                                                     atype.get('grandparentTitle', '')).encode('utf-8')
+                        temp_genre = get_tags(atype)
+                        parent_key = atype.get('parentKey', '0')
+                        if not parent_key.startswith("http") and 'jmmserverkodi' not in parent_key.lower():
+                            parent_key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                                        + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parent_key
+                        grandparent_title = atype.get('grandparentTitle',
+                                                      atype.get('grandparentTitle', '')).encode('utf-8')
             # Extended support
             for atype in video_list:
                 episode_count += 1
@@ -917,38 +908,39 @@ def build_tv_episodes(params):
                     'Cast': list_cast,
                     'director': " / ".join(tempdir),
                     'writer': " / ".join(tempwriter),
-                    'genre': "..." if skip else tempgenre,
+                    'genre': "..." if skip else temp_genre,
                     'duration': str(datetime.timedelta(seconds=duration)),
                     'mpaa': atype.get('contentRating', ''),
                     'year': int(atype.get('year', 0)),
-                    'tagline': "..." if skip else tempgenre,
+                    'tagline': "..." if skip else temp_genre,
                     'episode': int(atype.get('index', 0)),
                     'aired': atype.get('originallyAvailableAt', ''),
-                    'tvshowtitle': grandparenttitle,
+                    'tvshowtitle': grandparent_title,
                     'votes': int(atype.get('votes', 0)),
                     'originaltitle': atype.get('original_title', ''),
                     'size': int(atype.find('Media').find('Part').get('size', 0)),
                     'season': int(atype.get('season', 0))
                 }
-                tempdate = str(details['aired']).split('-')
-                if len(tempdate) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                    details['date'] = tempdate[1] + '.' + tempdate[2] + '.' + tempdate[0]
+                temp_date = str(details['aired']).split('-')
+                if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
+                    details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 thumb = gen_image_url(atype.get('thumb', ''))
                 key = atype.get('key', '')
-                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
+                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
 
                 ext = atype.find('Media').find('Part').get('container', '')
-                newkey = atype.find('Media').find('Part').get('key', '')
-                if not 'videolocal' in key:
-                    key = newkey + '.' + ext
+                new_key = atype.find('Media').find('Part').get('key', '')
+                if 'videolocal' not in key:
+                    key = new_key + '.' + ext
 
                 # Extra data required to manage other properties
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
                               'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
-                              'parentKey': parentkey, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId', '0')),
+                              'parentKey': parent_key, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId',
+                                                                                                           '0')),
                               'xVideoResolution': atype.find('Media').get('videoResolution', 0),
                               'xVideoCodec': atype.find('Media').get('audioCodec', ''),
                               'xVideoAspect': float(atype.find('Media').get('aspectRatio', 0)),
@@ -982,15 +974,15 @@ def build_tv_episodes(params):
                     details['playcount'] = 1
                 else:
                     details['playcount'] = 0
-                    if nextepisode == 1:
-                        nextepisode = episode_count
-                        nextepisode += 1
+                    if next_episode == 1:
+                        next_episode = episode_count
+                        next_episode += 1
 
                 context = None
                 url = key
 
                 key = atype.find('Media').find('Part').get('key')
-                if not key.startswith("http") and not 'videolocal' in key.lower():
+                if not key.startswith("http") and 'videolocal' not in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
                 sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
@@ -1001,13 +993,13 @@ def build_tv_episodes(params):
 
             # add item to move to next not played item (not marked as watched)
             if addon.getSetting("show_continue") == "true":
-                util.addDir("-continue-", "&offset=" + str(nextepisode), 7,
+                util.addDir("-continue-", "&offset=" + str(next_episode), 7,
                             "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
                                 "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
-        except Exception as e:
-            error("Error during build_tv_episodes", str(e))
-    except Exception as e:
-        error("Invalid XML Received in build_tv_episodes", str(e))
+        except Exception as ex:
+            error("Error during build_tv_episodes", str(ex))
+    except Exception as ex:
+        error("Invalid XML Received in build_tv_episodes", str(ex))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -1015,20 +1007,20 @@ def build_search(url=''):
     try:
         term = util.searchBox()
         term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
-        tosend = {'url': url + term}
+        to_send = {'url': url + term}
         url2 = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-              + "/jmmserverkodi/searchtag/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit_tag") + "/"
+               + "/jmmserverkodi/searchtag/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit_tag") + "/"
         e = xml(get_html(url2 + term, '').decode('utf-8').encode('utf-8'))
         directories = e.findall('Directory')
         if len(directories) <= 0:
             directories = None
-        build_tv_shows(tosend, directories)
+        build_tv_shows(to_send, directories)
     except Exception as ex:
         error("Error during build_search", str(ex))
 
 
 # Other functions
-def play_video(url, epid, index):
+def play_video(url, ep_id, index):
     details = {
         'plot': xbmc.getInfoLabel('ListItem.Plot'),
         'title': xbmc.getInfoLabel('ListItem.Title'),
@@ -1068,9 +1060,9 @@ def play_video(url, epid, index):
         while player.isPlaying():
             try:
                 xbmc.sleep(500)
-                totaltime = player.getTotalTime()
-                currenttime = player.getTime()
-                if (totaltime * mark) < currenttime:
+                total_time = player.getTotalTime()
+                current_time = player.getTime()
+                if (total_time * mark) < current_time:
                     file_fin = True
                 if not player.isPlaying():
                     break
@@ -1081,8 +1073,8 @@ def play_video(url, epid, index):
         pass
 
     if file_fin is True:
-        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&ep_id=%s&ui_index=%s)' % (sys.argv[1], sys.argv[2], \
-                            epid, index))
+        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&ep_id=%s&ui_index=%s)' % (sys.argv[1],
+                            sys.argv[2], ep_id, index))
 
 
 # TODO: Not used maybe it should be added to '-continue-' that would add all episodes to list? or Drop it
@@ -1118,7 +1110,7 @@ def vote_series(params):
         vote_value = str(vote_list[my_vote])
         vote_type = str(1)
         series_id = params['anime_id'][(my_len + 30):]
-        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/" \
+        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/"
                  + addon.getSetting("userid") + "/" + series_id + "/" + vote_value + "/" + vote_type, "")
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
             'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
@@ -1142,16 +1134,16 @@ def vote_episode(params):
 
 def watched_mark(params):
     episode_id = params['ep_id']
-
-    if addon.getSetting('log_spam') == 'true':
-        xbmc.log('epid: ' + str(episode_id))
-        xbmc.log('key: ' + "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-                "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched))
     watched = bool(params['watched'])
     if watched is True:
         watched_msg = "watched"
     else:
         watched_msg = "unwatched"
+
+    if addon.getSetting('log_spam') == 'true':
+        xbmc.log('epid: ' + str(episode_id))
+        xbmc.log('key: ' + "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port")
+                 + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched))
 
     sync = addon.getSetting("syncwatched")
     if sync == "true":
@@ -1170,14 +1162,14 @@ def watched_mark(params):
 if valid_user() is True:
     try:
         parameters = util.parseParameters()
-    except Exception as e:
-        error('valid_user parseParameters() error', str(e))
+    except Exception as exp:
+        error('valid_user parseParameters() error', str(exp))
         parameters = {'mode': 2}
     if parameters:
         try:
             mode = int(parameters['mode'])
-        except Exception as e:
-            error('valid_user set \'mode\' error', str(e) + " parameters: " + str(parameters))
+        except Exception as exp:
+            error('valid_user set \'mode\' error', str(exp) + " parameters: " + str(parameters))
             mode = None
     else:
         mode = None
@@ -1196,7 +1188,7 @@ if valid_user() is True:
         elif cmd == "watched":
             parameters['watched'] = True
             watched_mark(parameters)
-            voting = addon.getSetting("voteallways")
+            voting = addon.getSetting("vote_always")
             if voting == "true":
                 vote_episode(parameters)
         elif cmd == "unwatched":
@@ -1213,7 +1205,7 @@ if valid_user() is True:
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # SEARCH
             # xbmcgui.Dialog().ok('MODE=3','MODE')
-            build_search(parameters['url'])
+            build_search(str(parameters['url']))
         elif mode == 4:  # TVShows
             # xbmcgui.Dialog().ok('MODE=4','MODE')
             build_tv_shows(parameters)

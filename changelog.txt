@@ -1,3 +1,8 @@
+v2.0.6 (15/08/2016)
+- updated marking as watched
+- updated settings menu
+- code cleanups 
+
 v2.0.5 (12/08/2016)
 - Fix minor error in tag filtering. Fix #70. Massive search overhaul which includes name and tag searching
 
