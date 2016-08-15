@@ -1,3 +1,9 @@
+v2.0.7 (15/08/2016)
+- If you change menus while video is playing, it will refresh and possibly change selection (#149)
+- Play without changing status of watched (#146)
+- After watching movie series is marked as watched, manual mark make it part watched (#132)
+- '-continue-' not needed at Unsort (#120)
+
 v2.0.6 (15/08/2016)
 - updated marking as watched
 - updated settings menu
@@ -19,14 +25,14 @@ v2.0.2 (04/08/2016)
 - Fix title logic errors
 
 v2.0.1 (29/07/2016)
-- Nakamori 2.0.0 no longer shows Episodes, Specials #143
+- Nakamori 2.0.0 no longer shows Episodes, Specials (#143)
 
 v2.0.0 (18/07/2016)
 - add support for new file stream url (backwards compatible)
 - Fix titles for legacy 
 - Make 'Official' the default Title Type
-- Compatibility with JMMServer 3.5 #114 
-- Support gzip request/respond #115
+- Compatibility with JMMServer 3.5 (#114) 
+- Support gzip request/respond (#115)
 - Code cleaning
 - PEP8 code style applied
 
@@ -37,20 +43,20 @@ v1.3.9 (16/06/2016)
 - Yet another UTF-8 fix
 
 v1.3.8 (10/06/2016)
-- Setting to treat subgroups as seasons (use old style) #122
-- Use year as a fallback if there is no date #122
+- Setting to treat subgroups as seasons (use old style) (#122)
+- Use year as a fallback if there is no date (#122)
 
 v1.3.7 (31/05/2016)
-- Sort TV seasons by date #111 (da3dsoul)
-- Make errors actually log as errors #112 (da3dsoul)
+- Sort TV seasons by date (#111) (da3dsoul)
+- Make errors actually log as errors (#112) (da3dsoul)
 
 v1.3.6 (22/05/2016)
 - Main Title instead of Official Title Setting only applies at Series Level instead of group level #76 (da3dsoul)
 - Jumpy support #110 (by force_resolve)
 
 v1.3.5 (15/05/2016)
-- Changing name from 'nakamoriplugin' to 'nakamori' #103 
-- Fix atype's and videolist's #102 
+- Changing name from 'nakamoriplugin' to 'nakamori' (#103) 
+- Fix atype's and videolist's (#102)
 - Add More Info context menu option and some other little things non-functional #97 
 - Reformat whitespace, fix a merge oopsies, fix voting on series level, fix other minor errors #99
 

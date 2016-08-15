@@ -7,6 +7,7 @@
 		<setting label="32004" type="number" id="timeout" default="60"/>
 		<setting label="32011" type="lsep"/>
 		<setting label="32012" type="number" id="userid" default="1"/>
+        <setting label="32012" type="number" id="no_mark" default="0" visible="false"/>
     </category>
     <category label="32054">
         <setting label="32039" type="bool" id="show_continue" default="true"/>

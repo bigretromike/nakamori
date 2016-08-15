@@ -81,7 +81,7 @@ def xml(xml_string):
 
 
 def refresh(index=0):
-    index += 1
+    index = int(index) + 1
     # refresh
     xbmc.executebuiltin('Container.Refresh')
     # Allow time for the ui to reload (this may need to be tweaked, I am running on localhost)
@@ -246,14 +246,16 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 if extra_data.get('type', 'video').lower() == "video":
                     context = []
                     url_peep = sys.argv[2]
-                    # Always allow 'More Info' to be executed. Some places have more info than others
-                    context.append(('More Info', 'Action(Info)'))
                     if extra_data.get('source', 'none') == 'tvshows':
                         url_peep = url_peep + "&anime_id=" + extra_data.get('key') + "&cmd=voteSer"
+                        context.append(('More Info', 'Action(Info)'))
                         context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         url_peep = url_peep + "&anime_id=" + extra_data.get('parentKey') + "&ep_id=" \
                                    + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
+                        context.append(('Play (Do not mark as watched)', 'RunScript(plugin.video.nakamori, %s, '
+                                                                         '%s&cmd=no_mark)' % (sys.argv[1], url_peep)))
+                        context.append(('More Info', 'Action(Info)'))
                         context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
                             sys.argv[1], url_peep)))
                         context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
@@ -882,8 +884,8 @@ def build_tv_episodes(params):
                 episode_count += 1
 
             # Extended support END#
-                tempdir = []
-                tempwriter = []
+                temp_dir = []
+                temp_writer = []
                 view_offset = atype.get('viewOffset', 0)
                 # Check for empty duration from MediaInfo check fail and handle it properly
                 tmp_duration = atype.find('Media').get('duration', '1000')
@@ -906,8 +908,8 @@ def build_tv_episodes(params):
                     # According to the docs, this will auto fill castandrole
                     'CastAndRole': list_cast_and_role,
                     'Cast': list_cast,
-                    'director': " / ".join(tempdir),
-                    'writer': " / ".join(tempwriter),
+                    'director': " / ".join(temp_dir),
+                    'writer': " / ".join(temp_writer),
                     'genre': "..." if skip else temp_genre,
                     'duration': str(datetime.timedelta(seconds=duration)),
                     'mpaa': atype.get('contentRating', ''),
@@ -993,9 +995,10 @@ def build_tv_episodes(params):
 
             # add item to move to next not played item (not marked as watched)
             if addon.getSetting("show_continue") == "true":
-                util.addDir("-continue-", "&offset=" + str(next_episode), 7,
-                            "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-                                "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
+                if str(parent_title).lower() != "unsort":
+                    util.addDir("-continue-", "&offset=" + str(next_episode), 7,
+                                "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
+                                    "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
         except Exception as ex:
             error("Error during build_tv_episodes", str(ex))
     except Exception as ex:
@@ -1072,9 +1075,18 @@ def play_video(url, ep_id, index):
     except:
         pass
 
+    no_watch_status = False
+    if addon.getSetting('no_mark') != "0":
+        no_watch_status = True;
+        # reset no_mark so next file will mark watched status
+        addon.setSetting('no_mark', '0')
+
     if file_fin is True:
-        xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&ep_id=%s&ui_index=%s)' % (sys.argv[1],
-                            sys.argv[2], ep_id, index))
+        if no_watch_status is False:
+            xbmc.executebuiltin('RunScript(plugin.video.nakamori, %s, %s&cmd=watched&ep_id=%s&ui_index=%s)' %
+                                (sys.argv[1], sys.argv[2], ep_id, index))
+            # after toggle watch status another refresh restore original position of selected item in case of esc/tab
+            refresh(int(index)+2)
 
 
 # TODO: Not used maybe it should be added to '-continue-' that would add all episodes to list? or Drop it
@@ -1150,12 +1162,12 @@ def watched_mark(params):
         get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
             "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched), "")
 
-    refresh(int(params['ui_index']))
-
     box = addon.getSetting("watchedbox")
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
             'Watched status changed', 'Mark as ', watched_msg, addon.getAddonInfo('icon')))
+    # refresh restore original position in case menu movement
+    refresh(int(params['ui_index'])+2)
 
 
 # Script run from here
@@ -1196,6 +1208,9 @@ if valid_user() is True:
             watched_mark(parameters)
         elif cmd == "playlist":
             play_playlist(parameters)
+        elif cmd == "no_mark":
+            addon.setSetting('no_mark', '1')
+            xbmc.executebuiltin('Action(Select)')
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
