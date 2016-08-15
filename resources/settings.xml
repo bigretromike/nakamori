@@ -1,56 +1,56 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-    <category label="32001">
-        <setting label="32006" type="lsep"/>
-		<setting label="32002" type="text" id="ipaddress" default="127.0.0.1"/>
-		<setting label="32003" type="number" id="port" default="8111"/>
-		<setting label="32004" type="number" id="timeout" default="60"/>
-		<setting label="32011" type="lsep"/>
-		<setting label="32012" type="number" id="userid" default="1"/>
-        <setting label="32012" type="number" id="no_mark" default="0" visible="false"/>
+    <category label="30001">
+        <setting label="30006" type="lsep"/>
+		<setting label="30002" type="text" id="ipaddress" default="127.0.0.1"/>
+		<setting label="30003" type="number" id="port" default="8111"/>
+		<setting label="30004" type="number" id="timeout" default="60"/>
+		<setting label="30011" type="lsep"/>
+		<setting label="30012" type="number" id="userid" default="1"/>
+        <setting label="30012" type="number" id="no_mark" default="0" visible="false"/>
     </category>
-    <category label="32054">
-        <setting label="32039" type="bool" id="show_continue" default="true"/>
-        <setting label="32040" type="bool" id="local_total" default="false"/>
-        <setting label="32053" type="bool" id="use_server_sort" default="false" />
-        <setting label="32056" type="lsep"/>
-        <setting label="32052" type="bool" id="use_server_title" default="false" />
-        <setting label="32009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)"/>
-        <setting label="32010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)"/>
+    <category label="30054">
+        <setting label="30039" type="bool" id="show_continue" default="true"/>
+        <setting label="30040" type="bool" id="local_total" default="false"/>
+        <setting label="30053" type="bool" id="use_server_sort" default="false" />
+        <setting label="30056" type="lsep"/>
+        <setting label="30052" type="bool" id="use_server_title" default="false" />
+        <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)"/>
+        <setting label="30010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)"/>
     </category>
-	<category label="32023">
-		<setting label="32007" type="lsep"/>
-        <setting label="32025" type="bool" id="watchedbox" default="true"/>
-        <setting label="32024" type="number" id="watched_mark" default="80"/>
-        <setting label="32055" type="number" id="refresh_wait" default="1000"/>
-		<setting label="32005" type="bool" id="syncwatched" default="true"/>
-		<setting label="32026" type="lsep"/>
-		<setting label="32027" type="number" id="player_sleep" default="5000"/>
+	<category label="30023">
+		<setting label="30007" type="lsep"/>
+        <setting label="30025" type="bool" id="watchedbox" default="true"/>
+        <setting label="30024" type="number" id="watched_mark" default="80"/>
+        <setting label="30055" type="number" id="refresh_wait" default="1000"/>
+		<setting label="30005" type="bool" id="syncwatched" default="true"/>
+		<setting label="30026" type="lsep"/>
+		<setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
-	<category label="32021">
-		<setting label="32022" type="number" id="maxlimit" default="20"/>
-		<setting label="32033" type="number" id="maxlimit_tag" default="100"/>
+	<category label="30021">
+		<setting label="30022" type="number" id="maxlimit" default="20"/>
+		<setting label="30033" type="number" id="maxlimit_tag" default="100"/>
     </category>
-	<category label="32031">
-		<setting label="32032" type="bool" id="vote_always" default="false"/>
-		<setting label="32034" type="bool" id="vote_on_series" default="false"/>
-		<setting label="32038" type="lsep"/>
-		<setting label="32035" type="bool" id="trakt" default="false"/>
-		<setting label="32036" type="bool" id="trakt_scrobble" default="false"/>
-		<setting label="32037" type="bool" id="trakt_scrobble_notification" default="false"/>
+	<category label="30031">
+		<setting label="30032" type="bool" id="vote_always" default="false"/>
+		<setting label="30034" type="bool" id="vote_on_series" default="false"/>
+		<setting label="30038" type="lsep"/>
+		<setting label="30035" type="bool" id="trakt" default="false"/>
+		<setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
+		<setting label="30037" type="bool" id="trakt_scrobble_notification" default="false"/>
     </category>
-    <category label="32046">
-        <setting label="32045" type="bool" id="hideMiscTags" default="false"/>
-        <setting label="32047" type="bool" id="hideArtTags" default="false"/>
-        <setting label="32048" type="bool" id="hideSourceTags" default="false"/>
-        <setting label="32049" type="bool" id="hideUsefulMiscTags" default="false"/>
-        <setting label="32050" type="bool" id="hideSpoilerTags" default="false"/>
+    <category label="30046">
+        <setting label="30045" type="bool" id="hideMiscTags" default="false"/>
+        <setting label="30047" type="bool" id="hideArtTags" default="false"/>
+        <setting label="30048" type="bool" id="hideSourceTags" default="false"/>
+        <setting label="30049" type="bool" id="hideUsefulMiscTags" default="false"/>
+        <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
     </category>
-	<category label="32044">
-		<setting label="32041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
-		<setting label="32043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
-		<setting label="32042" type="bool" id="spamLog" default="false"/>
-		<setting label="32013" type="bool" id="use_gzip" default="true"/>
-        <setting label="32051" type="bool" id="useSeasons" default="false"/>
+	<category label="30044">
+		<setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
+		<setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
+		<setting label="30042" type="bool" id="spamLog" default="false"/>
+		<setting label="30013" type="bool" id="use_gzip" default="true"/>
+        <setting label="30051" type="bool" id="useSeasons" default="false"/>
 	</category>
 </settings>

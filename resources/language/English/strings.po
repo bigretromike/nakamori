@@ -12,186 +12,186 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "#32001"
+msgctxt "#30001"
 msgid "JMM Settings"
 msgstr ""
 
-msgctxt "#32002"
+msgctxt "#30002"
 msgid "IP Address or Hostname"
 msgstr ""
 
-msgctxt "#32003"
+msgctxt "#30003"
 msgid "Port"
 msgstr ""
 
-msgctxt "#32004"
+msgctxt "#30004"
 msgid "Query Timeout (s)"
 msgstr ""
 
-msgctxt "#32005"
+msgctxt "#30005"
 msgid "Sync 'Watched status' to JMM"
 msgstr ""
 
-msgctxt "#32006"
+msgctxt "#30006"
 msgid "JMM Server"
 msgstr ""
 
-msgctxt "#32007"
+msgctxt "#30007"
 msgid "Watched Status Settings"
 msgstr ""
 
-msgctxt "#32008"
+msgctxt "#30008"
 msgid "Language Display Priority"
 msgstr ""
 
-msgctxt "#32009"
+msgctxt "#30009"
 msgid "Language"
 msgstr ""
 
-msgctxt "#32010"
+msgctxt "#30010"
 msgid "Title Type"
 msgstr ""
 
-msgctxt "#32011"
+msgctxt "#30011"
 msgid "JMM User"
 msgstr ""
 
-msgctxt "#32012"
+msgctxt "#30012"
 msgid "User ID"
 msgstr ""
 
-msgctxt "#32013"
+msgctxt "#30013"
 msgid "Use gzip"
 msgstr ""
 
-msgctxt "#32021"
+msgctxt "#30021"
 msgid "Searching"
 msgstr ""
 
-msgctxt "#32022"
+msgctxt "#30022"
 msgid "Results Max Limit"
 msgstr ""
 
-msgctxt "#32023"
+msgctxt "#30023"
 msgid "Video settings"
 msgstr ""
 
-msgctxt "#32024"
+msgctxt "#30024"
 msgid "Percent to Play before Marking as Watched"
 msgstr ""
 
-msgctxt "#32025"
+msgctxt "#30025"
 msgid "Notification Window when Marked as Watched"
 msgstr ""
 
-msgctxt "#32026"
+msgctxt "#30026"
 msgid "Kodi Player Settings"
 msgstr ""
 
-msgctxt "#32027"
+msgctxt "#30027"
 msgid "Max time to wait for buffer (in ms)"
 msgstr ""
 
-msgctxt "#32031"
+msgctxt "#30031"
 msgid "Community"
 msgstr ""
 
-msgctxt "#32032"
+msgctxt "#30032"
 msgid "(WIP)Episode Vote after watching every episode"
 msgstr ""
 
-msgctxt "#32033"
+msgctxt "#30033"
 msgid "TAG results Max Limit"
 msgstr ""
 
-msgctxt "#32038"
+msgctxt "#30038"
 msgid "Trakt support"
 msgstr ""
 
-msgctxt "#32034"
+msgctxt "#30034"
 msgid "(WIP)Series Vote after completing it"
 msgstr ""
 
-msgctxt "#32035"
+msgctxt "#30035"
 msgid "(WIP)Enable voting for Trakt"
 msgstr ""
 
-msgctxt "#32036"
+msgctxt "#30036"
 msgid "(WIP)Trakt Scrobble (without Notification)"
 msgstr ""
 
-msgctxt "#32037"
+msgctxt "#30037"
 msgid "(WIP)Enable Trakt Scrobble Notification"
 msgstr ""
 
-msgctxt "#32039"
+msgctxt "#30039"
 msgid "Show -continue-"
 msgstr ""
 
-msgctxt "#32040"
+msgctxt "#30040"
 msgid "Use local file count for total episodes"
 msgstr ""
 
-msgctxt "#32041"
+msgctxt "#30041"
 msgid "Skip Extra Info on Long Series"
 msgstr ""
 
-msgctxt "#32042"
+msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
 msgstr ""
 
-msgctxt "#32043"
+msgctxt "#30043"
 msgid "Max episodes before data will be truncated"
 msgstr ""
 
-msgctxt "#32044"
+msgctxt "#30044"
 msgid "Advanced"
 msgstr ""
 
-msgctxt "#32045"
+msgctxt "#30045"
 msgid "Hide AniDB helper or otherwise useless tags"
 msgstr ""
 
-msgctxt "#32046"
+msgctxt "#30046"
 msgid "Tag Blacklist"
 msgstr ""
 
-msgctxt "#32047"
+msgctxt "#30047"
 msgid "Hide art style related tags"
 msgstr ""
 
-msgctxt "#32048"
+msgctxt "#30048"
 msgid "Hide source tags (Manga, original, etc)"
 msgstr ""
 
-msgctxt "#32049"
+msgctxt "#30049"
 msgid "Hide useful helper tags (mostly related to OP/ED style)"
 msgstr ""
 
-msgctxt "#32050"
+msgctxt "#30050"
 msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
 msgstr ""
 
-msgctxt "#32051"
+msgctxt "#30051"
 msgid "Treat Subgroups as 'Seasons'"
 msgstr ""
 
-msgctxt "#32052"
+msgctxt "#30052"
 msgid "Use Server Title"
 msgstr ""
 
-msgctxt "#32053"
+msgctxt "#30053"
 msgid "Use Server Sorting"
 msgstr ""
 
-msgctxt "#32054"
+msgctxt "#30054"
 msgid "Browsing"
 msgstr ""
 
-msgctxt "#32055"
+msgctxt "#30055"
 msgid "Time to wait for refresh to move selection (adjust for sync)"
 msgstr ""
 
-msgctxt "#32056"
+msgctxt "#30056"
 msgid "Title Settings"
 msgstr ""

@@ -1,3 +1,7 @@
+v2.0.8 (15/08/2016)
+- language string revert to proper numeration
+- changed zip structure inside repo
+
 v2.0.7 (15/08/2016)
 - If you change menus while video is playing, it will refresh and possibly change selection (#149)
 - Play without changing status of watched (#146)
