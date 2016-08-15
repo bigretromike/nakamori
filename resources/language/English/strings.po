@@ -25,7 +25,7 @@ msgid "Port"
 msgstr ""
 
 msgctxt "#32004"
-msgid "Query timeout (s)"
+msgid "Query Timeout (s)"
 msgstr ""
 
 msgctxt "#32005"
@@ -37,11 +37,11 @@ msgid "JMM Server"
 msgstr ""
 
 msgctxt "#32007"
-msgid "Sync settings"
+msgid "Watched Status Settings"
 msgstr ""
 
 msgctxt "#32008"
-msgid "Language display priority"
+msgid "Language Display Priority"
 msgstr ""
 
 msgctxt "#32009"
@@ -77,15 +77,15 @@ msgid "Video settings"
 msgstr ""
 
 msgctxt "#32024"
-msgid "Mark as Watched after hiting this %"
+msgid "Percent to Play before Marking as Watched"
 msgstr ""
 
 msgctxt "#32025"
-msgid "Notification window when marked as Watched"
+msgid "Notification Window when Marked as Watched"
 msgstr ""
 
 msgctxt "#32026"
-msgid "Kodi player settings"
+msgid "Kodi Player Settings"
 msgstr ""
 
 msgctxt "#32027"
@@ -190,4 +190,8 @@ msgstr ""
 
 msgctxt "#32055"
 msgid "Time to wait for refresh to move selection (adjust for sync)"
+msgstr ""
+
+msgctxt "#32056"
+msgid "Title Settings"
 msgstr ""
