@@ -87,13 +87,24 @@ def refresh():
 
 
 # use episode number for position
-def move_position_on_list(control_list, position=0):
+def move_position_on_list(position=0):
+    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+    ctl = win.getControl(win.getFocusId())
+
     if addon.getSetting('show_continue') == 'true':
         position = int(position + 1)
 
     # TODO find a way to read guisettings and retrieve filelists.showparentdiritems
     # hack to appease BigRetroMike: add 1 for parent dir
     position += 1
+
+    parentsetting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' + \
+                                    '{"setting": "filelists.showparentdiritems"}, "id": 1}')
+
+    xbmc.log(str(parentsetting), xbmc.LOGWARNING)
+    # I don't know how to parse json without string slicing, I'll let you do it
+    # my result from jsonrpc, I have it false, so I think it worked
+    # {"id":1,"jsonrpc":"2.0","result":{"value":false}}
 
     try:
         control_list.selectItem(position)
@@ -1193,12 +1204,10 @@ if valid_user() is True:
         elif cmd == "voteEp":
             vote_episode(parameters)
         elif cmd == "watched":
-            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-            cid = win.getFocusId()
-            ctl = win.getControl(cid)
-            move_position_on_list(ctl, int(parameters['ui_index'])+1)
             parameters['watched'] = True
             watched_mark(parameters)
+            # move after refresh
+            move_position_on_list(int(parameters['ui_index'])+1)
             voting = addon.getSetting("vote_always")
             if voting == "true":
                 vote_episode(parameters)
@@ -1213,13 +1222,11 @@ if valid_user() is True:
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
-            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-            ctl = win.getControl(win.getFocusId())
             if play_video(parameters['file'], parameters['ep_id']) != 0:
-                move_position_on_list(ctl, int(parameters['ui_index'])+1)
                 parameters['watched'] = True
                 watched_mark(parameters)
-            # play_playlist()
+                # move after refresh
+                move_position_on_list(int(parameters['ui_index'])+1)
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # SEARCH
