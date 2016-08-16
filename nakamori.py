@@ -86,7 +86,15 @@ def refresh():
     xbmc.sleep(int(addon.getSetting('refresh_wait')))
 
 
-def move_position_on_list(control_list, position):
+# use episode number for position
+def move_position_on_list(control_list, position=0):
+    if addon.getSetting('show_continue') == 'true':
+        position = int(position + 1)
+
+    # TODO find a way to read guisettings and retrieve filelists.showparentdiritems
+    # hack to appease BigRetroMike: add 1 for parent dir
+    position += 1
+
     try:
         control_list.selectItem(position)
     except:
@@ -1188,7 +1196,7 @@ if valid_user() is True:
             win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             cid = win.getFocusId()
             ctl = win.getControl(cid)
-            move_position_on_list(ctl, int(parameters['ui_index'])+3)
+            move_position_on_list(ctl, int(parameters['ui_index'])+1)
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("vote_always")
@@ -1208,7 +1216,7 @@ if valid_user() is True:
             win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             ctl = win.getControl(win.getFocusId())
             if play_video(parameters['file'], parameters['ep_id']) != 0:
-                move_position_on_list(ctl, int(parameters['ui_index'])+3)
+                move_position_on_list(ctl, int(parameters['ui_index'])+1)
                 parameters['watched'] = True
                 watched_mark(parameters)
             # play_playlist()
