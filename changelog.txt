@@ -1,3 +1,6 @@
+v2.0.9 (xx/08/2016)
+- Very slow to load series (#83)
+
 v2.0.8 (15/08/2016)
 - language string revert to proper numeration
 - changed zip structure inside repo
