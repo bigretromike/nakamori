@@ -1,5 +1,6 @@
-v2.0.9 (xx/08/2016)
+v2.0.9 (17/08/2016)
 - Very slow to load series (#83)
+- Fixed moving position onto next item when marking as watched
 
 v2.0.8 (15/08/2016)
 - language string revert to proper numeration
