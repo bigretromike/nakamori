@@ -488,10 +488,10 @@ def build_main_menu():
                 elif title == 'Unsort':
                     title = 'Unsorted'
                     use_mode = 6
-                    if key[-1] == '/':
-                        key = key[:-1]
+                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/1/0"
 
-                if not key.startswith("http"):
+                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if addon.getSetting("spamLog") == "true":
