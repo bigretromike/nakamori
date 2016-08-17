@@ -1228,8 +1228,6 @@ if valid_user() is True:
                 move_position_on_list(ctl, int(parameters['ui_index'])+1)
                 parameters['watched'] = True
                 watched_mark(parameters)
-                # move after refresh
-                move_position_on_list(int(parameters['ui_index'])+1)
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # SEARCH
