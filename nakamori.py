@@ -33,7 +33,7 @@ def get_html(url, referer):
             url = 'http://' + addon.getSetting("ipaddress") + url
 
     referer = urllib2.quote(unicode(referer, 'utf-8')).replace("%3A", ":").replace("%2f", "/")
-    req = urllib2.Request(unicode(url, 'utf-8'))
+    req = urllib2.Request(url) # by definition, urls cannot be unicode
     if len(referer) > 1:
         req.add_header('Referer', referer)
     use_gzip = addon.getSetting("use_gzip")
