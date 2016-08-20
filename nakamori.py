@@ -642,7 +642,7 @@ def build_tv_shows(params, extra_directories=None):
                     'mpaa': atype.get('contentRating', ''),
                     'plot': remove_html(encode(atype.get('summary', ''))),
                     # 'plotoutline'  : plotoutline,
-                    'originaltitle': encode(atype.get('original_title', ''), "utf-8"),
+                    'originaltitle': encode(atype.get('original_title', '')),
                     'sorttitle': title,
                     # 'Duration'     : duration,
                     # 'Studio'       : studio, < ---
