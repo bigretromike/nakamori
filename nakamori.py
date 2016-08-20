@@ -282,6 +282,15 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                             sys.argv[1], url_peep)))
                         context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
                                         (sys.argv[1], url_peep)))
+                    elif extra_data.get('source', 'none') == 'AnimeGroup':
+                        series_id = extra_data.get('key')[(my_len + 30):]
+                        if addon.getSetting('context_show_info') == 'true':
+                            context.append(('More Info', 'Action(Info)'))
+                        url_peep = url_peep_base + "&group_id=" + series_id
+                        context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
+                            sys.argv[1], url_peep)))
+                        context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                        (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&ep_id=" \
@@ -427,8 +436,9 @@ def get_title(data):
                         return encode(titleTag.find('Title').text)
             # fallback on language any title
             for titleTag in data.findall('AnimeTitle'):
-                if titleTag.find('Language').text.lower() == lang.lower():
-                    return encode(titleTag.find('Title').text)
+                if titleTag.find('Type').text.lower() != 'short':
+                    if titleTag.find('Language').text.lower() == lang.lower():
+                        return encode(titleTag.find('Title').text)
             # fallback on x-jat main title
             for titleTag in data.findall('AnimeTitle'):
                 if titleTag.find('Type').text.lower() == 'main':
@@ -1189,6 +1199,7 @@ def vote_episode(params):
 def watched_mark(params):
     episode_id = params.get('ep_id', '')
     anime_id = params.get('anime_id', '')
+    group_id = params.get('group_id', '')
     watched = bool(params['watched'])
     if watched is True:
         watched_msg = "watched"
@@ -1201,9 +1212,13 @@ def watched_mark(params):
     elif anime_id != '':
         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
                 "port") + "/jmmserverkodi/watchseries/" + addon.getSetting("userid") + "/" + anime_id + "/" + str(watched)
+    elif group_id != '':
+        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
+            "port") + "/jmmserverkodi/watchgroup/" + addon.getSetting("userid") + "/" + group_id + "/" + str(watched)
     if addon.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('anime_id: ' + str(anime_id))
+        xbmc.log('anime_id: ' + str(group_id))
         xbmc.log('key: ' + key)
 
     sync = addon.getSetting("syncwatched")
