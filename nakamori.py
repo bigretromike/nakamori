@@ -81,7 +81,11 @@ def xml(xml_string):
 
 
 def encode(i=''):
-    return i.decode('utf-8')
+    try:
+        return i.encode('utf-8')
+    except:
+        error("Unicode Error", error_type='Unicode Error')
+        return ''
 
 
 def refresh():
