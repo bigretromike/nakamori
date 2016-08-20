@@ -32,7 +32,7 @@ def get_html(url, referer):
         if url.lower().startswith(':' + addon.getSetting("port")):
             url = 'http://' + addon.getSetting("ipaddress") + url
 
-    referer = urllib2.quote(unicode(referer, 'utf-8')).replace("%3A", ":").replace("%2f", "/")
+    referer = urllib2.quote(encode(referer)).replace("%3A", ":").replace("%2f", "/")
     req = urllib2.Request(url) # by definition, urls cannot be unicode
     if len(referer) > 1:
         req.add_header('Referer', referer)
@@ -78,6 +78,10 @@ def xml(xml_string):
     if e.get('ErrorString', '') != '':
         error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
     return e
+
+
+def encode(i):
+    return unicode(i).decode()
 
 
 def refresh():
@@ -155,7 +159,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                 xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
                 for i in details:
                     temp_log = ""
-                    a = details.get(unicode(i, 'utf-8'))
+                    a = details.get(encode(i))
                     if a is None:
                         temp_log = "\'unset\'"
                     elif isinstance(a, list):
@@ -168,7 +172,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                 xbmc.log("add_gui_item - extra_data", xbmc.LOGWARNING)
                 for i in extra_data:
                     temp_log = ""
-                    a = extra_data.get(unicode(i, 'utf-8'))
+                    a = extra_data.get(encode(i))
                     if a is None:
                         temp_log = "\'unset\'"
                     elif isinstance(a, list):
@@ -369,7 +373,7 @@ def set_watch_flag(extra_data, details):
 def get_legacy_title(data):
     lang = addon.getSetting("displaylang")
     title_type = addon.getSetting("title_type")
-    temptitle = unicode(data.get('original_title', 'Unknown'))
+    temptitle = encode(data.get('original_title', 'Unknown'))
     titles = temptitle.split('|')
 
     try:
@@ -390,15 +394,15 @@ def get_legacy_title(data):
     except:
         pass
 
-    return unicode(data.get('title', 'Unknown'), 'utf-8')
+    return encode(data.get('title', 'Unknown'))
 
 
 def get_title(data):
     try:
         if addon.getSetting('use_server_title') == 'true':
-            return unicode(data.get('title', 'Unknown'), 'utf-8')
+            return encode(data.get('title', 'Unknown'))
         # xbmc.log(data.get('title', 'Unknown'))
-        title = unicode(data.get('title', '')).lower()
+        title = encode(data.get('title', '')).lower()
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
                 or title == 'special' or title == 'specials' \
@@ -406,7 +410,7 @@ def get_title(data):
                 or title == 'credit' or title == 'credits' \
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
-            return unicode(data.get('title', 'Error'), 'utf-8')
+            return encode(data.get('title', 'Error'))
         if data.get('original_title', '') != '':
             return get_legacy_title(data)
         lang = addon.getSetting("displaylang")
@@ -415,21 +419,21 @@ def get_title(data):
             for titleTag in data.findall('AnimeTitle'):
                 if titleTag.find('Type').text.lower() == title_type.lower():
                     if titleTag.find('Language').text.lower() == lang.lower():
-                        return unicode(titleTag.find('Title').text, 'utf-8')
+                        return encode(titleTag.find('Title').text)
             # fallback on language any title
             for titleTag in data.findall('AnimeTitle'):
                 if titleTag.find('Language').text.lower() == lang.lower():
-                    return unicode(titleTag.find('Title').text, 'utf-8')
+                    return encode(titleTag.find('Title').text)
             # fallback on x-jat main title
             for titleTag in data.findall('AnimeTitle'):
                 if titleTag.find('Type').text.lower() == 'main':
                     if titleTag.find('Language').text.lower() == 'x-jat':
-                        return unicode(titleTag.find('Title').text, 'utf-8')
+                        return encode(titleTag.find('Title').text)
             # fallback on directory title
-            return unicode(data.get('title', 'Unknown'), 'utf-8')
+            return encode(data.get('title', 'Unknown'))
         except Exception as ex:
             error('Error thrown on getting title', str(ex))
-            return unicode(data.get('title', 'Error'), 'utf-8')
+            return encode(data.get('title', 'Error'))
     except Exception as ex:
         error("get_title Exception", str(ex))
         return 'Error'
@@ -447,7 +451,7 @@ def get_legacy_tags(atype):
 
         for a in temp_genres:
             a = " ".join(w.capitalize() for w in a.split())
-            temp_genre = unicode(a, 'utf8') if temp_genre == "" else temp_genre + " | " + unicode(a, 'utf8')
+            temp_genre = encode(a, 'utf8') if temp_genre == "" else temp_genre + " | " + encode(a, 'utf8')
     return temp_genre
 
 
@@ -459,7 +463,7 @@ def get_tags(atype):
         temp_genres = []
         for tag in atype.findall("Genre"):
             if tag is not None:
-                temp_genre = unicode(tag.get('tag', ''), 'utf-8').strip()
+                temp_genre = encode(tag.get('tag', '')).strip()
                 temp_genres.append(temp_genre)
         temp_genres = TagFilter.processTags(addon, temp_genres)
         temp_genre = " | ".join(temp_genres)
@@ -618,7 +622,7 @@ def build_tv_shows(params, extra_directories=None):
                 title = get_title(atype)
                 details = {
                     'title': title,
-                    'parenttitle': unicode(parent_title, 'utf-8'),
+                    'parenttitle': encode(parent_title),
                     'genre': temp_genre,
                     'year': int(atype.get('year', 0)),
                     'episode': total,
@@ -636,9 +640,9 @@ def build_tv_shows(params, extra_directories=None):
                     # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
                     # director       : string (Dagur Kari,
                     'mpaa': atype.get('contentRating', ''),
-                    'plot': remove_html(unicode(atype.get('summary', ''), 'utf-8')),
+                    'plot': remove_html(encode(atype.get('summary', ''))),
                     # 'plotoutline'  : plotoutline,
-                    'originaltitle': unicode(atype.get('original_title', ''), "utf-8"),
+                    'originaltitle': encode(atype.get('original_title', ''), "utf-8"),
                     'sorttitle': title,
                     # 'Duration'     : duration,
                     # 'Studio'       : studio, < ---
@@ -760,7 +764,7 @@ def build_tv_seasons(params, extra_directories=None):
                     build_tv_episodes(u)
                     return
 
-                plot = remove_html(unicode(atype.get('summary', ''), 'utf-8'))
+                plot = remove_html(encode(atype.get('summary', '')))
 
                 temp_genre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
@@ -781,10 +785,10 @@ def build_tv_seasons(params, extra_directories=None):
                 title = get_title(atype)
                 details = {
                     'title': title,
-                    'parenttitle': unicode(parent_title, 'utf-8'),
+                    'parenttitle': encode(parent_title),
                     'tvshowname': title,
-                    'sorttitle': unicode(atype.get('titleSort', title), 'utf-8'),
-                    'studio': unicode(atype.get('studio', ''), 'utf-8'),
+                    'sorttitle': encode(atype.get('titleSort', title)),
+                    'studio': encode(atype.get('studio', '')),
                     'cast': list_cast,
                     'castandrole': list_cast_and_role,
                     'plot': plot,
@@ -918,8 +922,8 @@ def build_tv_episodes(params):
                         if not parent_key.startswith("http") and 'jmmserverkodi' not in parent_key.lower():
                             parent_key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                                         + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parent_key
-                        grandparent_title = unicode(atype.get('grandparentTitle',
-                                                      atype.get('grandparentTitle', '')), 'utf-8')
+                        grandparent_title = encode(atype.get('grandparentTitle',
+                                                      atype.get('grandparentTitle', '')))
             # Extended support
             for atype in video_list:
                 episode_count += 1
@@ -936,10 +940,10 @@ def build_tv_episodes(params):
                     duration = int(tmp_duration) / 1000
                 # Required listItem entries for XBMC
                 details = {
-                    'plot': "..." if skip else unicode(atype.get('summary', ''), 'utf-8'),
-                    'title': unicode(atype.get('title', 'Unknown'), 'utf-8'),
-                    'sorttitle': unicode(atype.get('titleSort', atype.get('title', 'Unknown')), 'utf-8'),
-                    'parenttitle': unicode(parent_title, 'utf-8'),
+                    'plot': "..." if skip else encode(atype.get('summary', '')),
+                    'title': encode(atype.get('title', 'Unknown')),
+                    'sorttitle': encode(atype.get('titleSort', atype.get('title', 'Unknown'))),
+                    'parenttitle': encode(parent_title),
                     'rating': float(atype.get('rating', 0)),
                     # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                     # This doesn't work, some gremlins be afoot in this code...
