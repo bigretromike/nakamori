@@ -5,7 +5,7 @@
 	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Nakamori enables you to browse your JMM collection within Kodi.</summary>
-		<description lang="en">Nakamori enables you to browse your JMM collection within Kodi without needing to re-import it in anyway. Thanks to this approach you are able to still manage your collection with JMM and use information you gathered there to pass them to Kodi. </description>
+		<description lang="en">Nakamori enables you to browse your JMM collection within Kodi without needing to re-import it, any way. Thanks to this approach, you are still able to manage your JMM collection and use its organized data in Kodi. </description>
 		<platform>all</platform>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
 		<language>en</language>
