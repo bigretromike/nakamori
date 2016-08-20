@@ -80,8 +80,8 @@ def xml(xml_string):
     return e
 
 
-def encode(i):
-    return unicode(i).decode()
+def encode(i=''):
+    return i.decode('utf-8')
 
 
 def refresh():
@@ -451,7 +451,7 @@ def get_legacy_tags(atype):
 
         for a in temp_genres:
             a = " ".join(w.capitalize() for w in a.split())
-            temp_genre = encode(a, 'utf8') if temp_genre == "" else temp_genre + " | " + encode(a, 'utf8')
+            temp_genre = encode(a) if temp_genre == "" else temp_genre + " | " + encode(a)
     return temp_genre
 
 
