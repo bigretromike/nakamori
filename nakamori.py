@@ -271,6 +271,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
 
                     if extra_data.get('source', 'none') == 'AnimeSerie':
                         series_id = extra_data.get('key')[(my_len + 30):]
+                        xbmc.log('series_id: ' + series_id, xbmc.LOGWARNING)
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
                         if addon.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
@@ -1199,9 +1200,10 @@ def watched_mark(params):
             "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched)
     elif anime_id != '':
         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-                "port") + "/jmmserverkodi/watchseries/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched)
+                "port") + "/jmmserverkodi/watchseries/" + addon.getSetting("userid") + "/" + anime_id + "/" + str(watched)
     if addon.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
+        xbmc.log('anime_id: ' + str(anime_id))
         xbmc.log('key: ' + key)
 
     sync = addon.getSetting("syncwatched")
