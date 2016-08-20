@@ -235,7 +235,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
             liz.setProperty('path', str(partemp.get('file', 'empty')))
 
         if extra_data and len(extra_data) > 0:
-            if extra_data.get('source') == 'tvshows' or extra_data.get('source') == 'tvseasons':
+            if extra_data.get('source') == 'AnimeGroup' or extra_data.get('source') == 'AnimeSerie':
                 # Then set the number of watched and unwatched, which will be displayed per season
                 liz.setProperty('TotalEpisodes', str(extra_data['TotalEpisodes']))
                 liz.setProperty('WatchedEpisodes', str(extra_data['WatchedEpisodes']))
@@ -261,7 +261,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                     my_len = len(
                             "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
 
-                    if extra_data.get('source', 'none') == 'tvshows':
+                    if extra_data.get('source', 'none') == 'AnimeSerie':
                         series_id = extra_data.get('key')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
                         if addon.getSetting('context_show_info') == 'true':
@@ -275,7 +275,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                                         (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
-                        url_peep = url_peep + "&anime_id=" + series_id + "&ep_id=" \
+                        url_peep = url_peep_base + "&anime_id=" + series_id + "&ep_id=" \
                                    + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
                         if addon.getSetting('context_show_play_no_watch') == 'true':
                             context.append(('Play (Do not Mark as Watched)', 'RunScript(plugin.video.nakamori, %s, '
@@ -676,9 +676,11 @@ def build_tv_shows(params, extra_directories=None):
                 # TODO: we really should fix banners. JMM doesn't send them...
                 banner = gen_image_url(e.get('banner', ''))
 
+                directory_type = atype.get('AnimeType', '')
+
                 extra_data = {
                     'type': 'video',
-                    'source': 'tvshows',
+                    'source': directory_type,
                     'UnWatchedEpisodes': int(details['episode']) - watched,
                     'WatchedEpisodes': watched,
                     'TotalEpisodes': details['episode'],
@@ -804,9 +806,11 @@ def build_tv_seasons(params, extra_directories=None):
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
 
+                directory_type = atype.get('AnimeType', '')
+
                 extra_data = {
                     'type': 'video',
-                    'source': 'tvseasons',
+                    'source': directory_type,
                     'TotalEpisodes': details['episode'],
                     'WatchedEpisodes': watched,
                     'UnWatchedEpisodes': details['episode'] - watched,
