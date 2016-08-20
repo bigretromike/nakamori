@@ -195,3 +195,27 @@ msgstr ""
 msgctxt "#30056"
 msgid "Title Settings"
 msgstr ""
+
+msgctxt "#30057"
+msgid "Context Menu Settings"
+msgstr ""
+
+msgctxt "#30058"
+msgid "More Info"
+msgstr ""
+
+msgctxt "#30059"
+msgid "Vote Episode"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Vote Series"
+msgstr ""
+
+msgctxt "#30061"
+msgid "Play (Do not Mark as Watched)"
+msgstr ""
+
+msgctxt "#30062"
+msgid "Use new Mark as Watched Style"
+msgstr ""

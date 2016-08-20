@@ -17,6 +17,12 @@
         <setting label="30052" type="bool" id="use_server_title" default="false" />
         <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)"/>
         <setting label="30010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)"/>
+        <setting label="30057" type="lsep"/>
+        <setting label="30058" type="bool" id="context_show_info" default="true" />
+        <setting label="30059" type="bool" id="context_show_vote_Episode" default="true" />
+        <setting label="30060" type="bool" id="context_show_vote_Series" default="true" />
+        <setting label="30061" type="bool" id="context_show_play_no_watch" default="true" />
+        <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
     </category>
 	<category label="30023">
 		<setting label="30007" type="lsep"/>
