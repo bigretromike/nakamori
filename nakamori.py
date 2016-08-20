@@ -1245,7 +1245,9 @@ if valid_user() is True:
         elif cmd == "watched":
             win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             ctl = win.getControl(win.getFocusId())
-            move_position_on_list(ctl, int(parameters['ui_index'])+1)
+            index = parameters.get('ui_index', '')
+            if index != '':
+                move_position_on_list(ctl, int(index)+1)
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("vote_always")
@@ -1265,7 +1267,9 @@ if valid_user() is True:
             win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             ctl = win.getControl(win.getFocusId())
             if play_video(parameters['file'], parameters['ep_id']) != 0:
-                move_position_on_list(ctl, int(parameters['ui_index'])+1)
+                index = parameters.get('ui_index', '')
+                if index != '':
+                    move_position_on_list(ctl, int(index) + 1)
                 parameters['watched'] = True
                 watched_mark(parameters)
         elif mode == 2:  # DIRECTORY
