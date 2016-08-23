@@ -1037,8 +1037,7 @@ def build_tv_episodes(params):
                 else:
                     details['playcount'] = 0
                     if next_episode == 1:
-                        next_episode = episode_count
-                        next_episode += 1
+                        next_episode = episode_count - 1
 
                 context = None
                 url = key
@@ -1059,27 +1058,27 @@ def build_tv_episodes(params):
                     util.addDir("-continue-", "&offset=" + str(next_episode), 7,
                                 "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
                                     "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
+
+            try:
+                parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+                                             '{"setting": "videolibrary.tvshowsselectfirstunwatcheditem"}, "id": 1}')
+                # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+
+                setting = json.loads(parent_setting)
+                if "result" in setting:
+                    if "value" in setting["result"]:
+                        if int(setting["result"]["value"]) > 0:
+                            xbmc.sleep(1000)
+                            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                            ctl = win.getControl(win.getFocusId())
+                            move_position_on_list(ctl, next_episode)
+            except Exception as ex:
+                error("jsonrpc_error: " + str(ex))
         except Exception as ex:
             error("Error during build_tv_episodes", str(ex))
     except Exception as ex:
         error("Invalid XML Received in build_tv_episodes", str(ex))
     xbmcplugin.endOfDirectory(handle)
-
-    try:
-        parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                                             '{"setting": "videolibrary.tvshowsselectfirstunwatcheditem"}, "id": 1}')
-        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
-
-        setting = json.loads(parent_setting)
-        if "result" in setting:
-            if "value" in setting["result"]:
-                if int(setting["result"]["value"]) > 0:
-                    xbmc.sleep(1000)
-                    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                    ctl = win.getControl(win.getFocusId())
-                    move_position_on_list(ctl, next_episode)
-    except Exception as ex:
-        error("jsonrpc_error: " + str(ex))
 
 
 def build_search(url=''):
@@ -1172,7 +1171,7 @@ def play_continue_item(data):
         wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         control_id = wind.getFocusId()
         control_list = wind.getControl(control_id)
-        control_list.selectItem(pos)
+        move_position_on_list(control_list, pos)
         xbmc.sleep(1000)
 
 
