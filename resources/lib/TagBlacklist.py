@@ -34,6 +34,7 @@ tagBlacklistAniDBHelpers=[
 
 tagBlackListSource=[
     "4-koma",
+    "game",
     "manga",
     "novel",
     "remake",
