@@ -1068,7 +1068,6 @@ def build_tv_episodes(params):
                 if "result" in setting:
                     if "value" in setting["result"]:
                         if int(setting["result"]["value"]) > 0:
-                            xbmc.sleep(1000)
                             win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                             ctl = win.getControl(win.getFocusId())
                             move_position_on_list(ctl, next_episode)
