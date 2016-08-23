@@ -981,7 +981,7 @@ def build_tv_episodes(params):
                     'votes': int(atype.get('votes', 0)),
                     'originaltitle': atype.get('original_title', ''),
                     'size': int(atype.find('Media').find('Part').get('size', 0)),
-                    'season': int(atype.get('season', 0))
+                    'season': int(atype.get('season', 1))
                 }
                 temp_date = str(details['aired']).split('-')
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
