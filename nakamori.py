@@ -1065,6 +1065,22 @@ def build_tv_episodes(params):
         error("Invalid XML Received in build_tv_episodes", str(ex))
     xbmcplugin.endOfDirectory(handle)
 
+    try:
+        parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+                                             '{"setting": "videolibrary.tvshowsselectfirstunwatcheditem"}, "id": 1}')
+        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+
+        setting = json.loads(parent_setting)
+        if "result" in setting:
+            if "value" in setting["result"]:
+                if setting["result"]["value"]:
+                    xbmc.sleep(1000)
+                    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                    ctl = win.getControl(win.getFocusId())
+                    move_position_on_list(ctl, next_episode)
+    except Exception as ex:
+        error("jsonrpc_error: " + str(ex))
+
 
 def build_search(url=''):
     try:
@@ -1218,7 +1234,7 @@ def watched_mark(params):
     if addon.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('anime_id: ' + str(anime_id))
-        xbmc.log('anime_id: ' + str(group_id))
+        xbmc.log('group_id: ' + str(group_id))
         xbmc.log('key: ' + key)
 
     sync = addon.getSetting("syncwatched")
