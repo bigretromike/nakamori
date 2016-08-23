@@ -1073,7 +1073,7 @@ def build_tv_episodes(params):
         setting = json.loads(parent_setting)
         if "result" in setting:
             if "value" in setting["result"]:
-                if setting["result"]["value"]:
+                if int(setting["result"]["value"]) > 0:
                     xbmc.sleep(1000)
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
