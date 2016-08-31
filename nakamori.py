@@ -19,7 +19,7 @@ import xbmcplugin
 from StringIO import StringIO
 import gzip
 import json
-import pydevd
+import resources.lib.pydevd.pydevd as pydevd
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')
