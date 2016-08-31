@@ -1053,8 +1053,7 @@ def build_tv_episodes(params):
                 else:
                     details['playcount'] = 0
                     if next_episode == 1:
-                        next_episode = episode_count
-                        next_episode += 1
+                        next_episode = episode_count - 1
 
                 context = None
                 url = key
@@ -1187,7 +1186,7 @@ def play_continue_item(data):
         wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         control_id = wind.getFocusId()
         control_list = wind.getControl(control_id)
-        control_list.selectItem(pos)
+        move_position_on_list(control_list, pos)
         xbmc.sleep(1000)
 
 
