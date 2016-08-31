@@ -988,6 +988,22 @@ def build_tv_episodes(params):
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 thumb = gen_image_url(atype.get('thumb', ''))
+
+                try:
+                    parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+                                                         '{"setting": "videolibrary.showunwatchedplots"}, "id": 1}')
+                    # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+
+                    setting = json.loads(parent_setting)
+                    if "result" in setting:
+                        if "value" in setting["result"]:
+                            if setting["result"]["value"] == False:
+                                details['plot'] = "Hidden due to user setting.\nCheck Show Plot for Unwatched Items in the Video Library Settings."
+                                thumb = None
+                                art = None
+                except Exception as ex:
+                    error("jsonrpc_error: " + str(ex))
+
                 key = atype.get('key', '')
                 if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
@@ -1037,7 +1053,8 @@ def build_tv_episodes(params):
                 else:
                     details['playcount'] = 0
                     if next_episode == 1:
-                        next_episode = episode_count - 1
+                        next_episode = episode_count
+                        next_episode += 1
 
                 context = None
                 url = key
@@ -1170,7 +1187,7 @@ def play_continue_item(data):
         wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         control_id = wind.getFocusId()
         control_list = wind.getControl(control_id)
-        move_position_on_list(control_list, pos)
+        control_list.selectItem(pos)
         xbmc.sleep(1000)
 
 
