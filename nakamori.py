@@ -44,14 +44,6 @@ def error(msg, error_msg="Generic", error_type='Error'):
     xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, addon.getAddonInfo('icon')))
 
 
-if addon.getSetting('remote_debug') == 'true':
-    # the port doesn't matter, as long as it matches the ide
-    if pydevd:
-        pydevd.settrace('15.129.1.132', port=5376, stdoutToServer=True, stderrToServer=True)
-    else:
-        error('Unable to start debugger')
-
-
 # Internal function
 def get_html(url, referer):
     # hacky fix for common url issues in 3.6, feel free to add to it
@@ -1276,6 +1268,13 @@ def watched_mark(params):
 
 
 # Script run from here
+if addon.getSetting('remote_debug') == 'true':
+    # the port doesn't matter, as long as it matches the ide
+    if pydevd:
+        pydevd.settrace('15.129.1.132', port=5376, stdoutToServer=True, stderrToServer=True)
+    else:
+        error('Unable to start debugger')
+
 if valid_user() is True:
     try:
         parameters = util.parseParameters()
