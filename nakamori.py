@@ -47,7 +47,7 @@ def error(msg, error_msg="Generic", error_type='Error'):
 if addon.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
     if pydevd:
-        pydevd.settrace('localhost', port=5376, stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace('15.129.1.132', port=5376, stdoutToServer=True, stderrToServer=True)
     else:
         error('Unable to start debugger')
 
