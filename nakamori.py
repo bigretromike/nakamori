@@ -1352,3 +1352,7 @@ if valid_user() is True:
             build_main_menu()
 else:
     error("Wrong UserID", "Please change UserID in Settings")
+
+if pydevd:
+    pydevd.stoptrace()
+    
