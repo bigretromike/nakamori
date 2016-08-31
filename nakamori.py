@@ -1271,7 +1271,8 @@ def watched_mark(params):
 if addon.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
     if pydevd:
-        pydevd.settrace('15.129.1.132', port=5376, stdoutToServer=True, stderrToServer=True)
+        pydevd.settrace(addon.getSetting('ide_ip'), port=int(addon.getSetting('ide_port')), stdoutToServer=True, \
+                        stderrToServer=True)
     else:
         error('Unable to start debugger')
 
@@ -1355,4 +1356,3 @@ else:
 
 if pydevd:
     pydevd.stoptrace()
-    

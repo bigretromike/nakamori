@@ -223,3 +223,11 @@ msgstr ""
 msgctxt "#30063"
 msgid "Enable remote debugging for an IDE"
 msgstr ""
+
+msgctxt "#30064"
+msgid "IP Address for IDE"
+msgstr ""
+
+msgctxt "#30065"
+msgid "Port for IDE"
+msgstr ""

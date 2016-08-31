@@ -59,5 +59,7 @@
 		<setting label="30042" type="bool" id="spamLog" default="false"/>
 		<setting label="30013" type="bool" id="use_gzip" default="true"/>
         <setting label="30063" type="bool" id="remote_debug" default="false"/>
+        <setting label="30064" type="text" id="ide_ip" default="localhost" visible="eq(-1,true)"/>
+        <setting label="30065" type="number" id="ide_port" default="5376" visible="eq(-2,true)"/>
 	</category>
 </settings>
