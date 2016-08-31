@@ -219,3 +219,7 @@ msgstr ""
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
 msgstr ""
+
+msgctxt "#30063"
+msgid "Enable remote debugging for an IDE"
+msgstr ""

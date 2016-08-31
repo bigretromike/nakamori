@@ -19,9 +19,14 @@ import xbmcplugin
 from StringIO import StringIO
 import gzip
 import json
+import pydevd
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')
+
+if addon.getSetting('remote_debug') == 'true':
+    # the port doesn't matter, as long as it matches the ide
+    pydevd.settrace('localhost', port=5376, stdoutToServer=True, stderrToServer=True)
 
 
 # Internal function

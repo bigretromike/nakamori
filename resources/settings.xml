@@ -12,6 +12,7 @@
     <category label="30054">
         <setting label="30039" type="bool" id="show_continue" default="true"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
+        <setting label="30051" type="bool" id="useSeasons" default="false"/>
         <setting label="30053" type="bool" id="use_server_sort" default="false" />
         <setting label="30056" type="lsep"/>
         <setting label="30052" type="bool" id="use_server_title" default="false" />
@@ -57,6 +58,6 @@
 		<setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
 		<setting label="30042" type="bool" id="spamLog" default="false"/>
 		<setting label="30013" type="bool" id="use_gzip" default="true"/>
-        <setting label="30051" type="bool" id="useSeasons" default="false"/>
+        <setting label="30063" type="bool" id="remote_debug" default="false"/>
 	</category>
 </settings>
