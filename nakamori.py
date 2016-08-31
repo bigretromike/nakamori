@@ -53,7 +53,7 @@ def get_html(url, referer):
                 f = gzip.GzipFile(fileobj=buf)
                 data = f.read()
             except Exception as e:
-                error('Decompresing gzip respond failed', str(e))
+                error('Decompressing gzip respond failed', str(e))
         else:
             data = response.read()
         response.close()
@@ -75,7 +75,7 @@ def error(msg, error_msg="Generic", error_type='Error'):
         xbmc.log("There error message: ", str(e))
         traceback.print_exc()
 
-    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (error_type, ' ', msg, addon.getAddonInfo('icon')))
+    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, addon.getAddonInfo('icon')))
 
 
 def xml(xml_string):
