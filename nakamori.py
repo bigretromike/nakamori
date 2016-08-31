@@ -19,11 +19,11 @@ import xbmcplugin
 from StringIO import StringIO
 import gzip
 import json
+
 try:
     import pydevd
 except ImportError:
     pass
-
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')
@@ -34,7 +34,7 @@ def error(msg, error_msg="Generic", error_type='Error'):
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+            os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
         traceback.print_exc()
     except Exception as e:
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
@@ -48,12 +48,12 @@ def error(msg, error_msg="Generic", error_type='Error'):
 def get_html(url, referer):
     # hacky fix for common url issues in 3.6, feel free to add to it
     if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":"
-                                  + addon.getSetting("port") + "/jmmserverkodi/"):
+                                          + addon.getSetting("port") + "/jmmserverkodi/"):
         if url.lower().startswith(':' + addon.getSetting("port")):
             url = 'http://' + addon.getSetting("ipaddress") + url
 
     referer = urllib2.quote(encode(referer)).replace("%3A", ":").replace("%2f", "/")
-    req = urllib2.Request(url) # by definition, urls cannot be unicode
+    req = urllib2.Request(url)  # by definition, urls cannot be unicode
     if len(referer) > 1:
         req.add_header('Referer', referer)
     use_gzip = addon.getSetting("use_gzip")
@@ -122,7 +122,7 @@ def move_position_on_list(control_list, position=0):
         control_list.selectItem(position)
     except:
         try:
-            control_list.selectItem(position-1)
+            control_list.selectItem(position - 1)
         except:
             error('Unable to reselect item')
             xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
@@ -149,7 +149,7 @@ def filter_gui_item_by_tag(title):
     return len(str1) > 0
 
 
-def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, series='false'):
+def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
     try:
         tbi = ""
         tp = 'Video'
@@ -159,7 +159,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
             if details.get('year', '') != '' and details['year'] != 0:
-                details['date'] = '01.01.'+str(details['year'])
+                details['date'] = '01.01.' + str(details['year'])
                 details['aired'] = details['date']
                 # details['aired'] = str(details['year'])+'-01-01'
 
@@ -272,7 +272,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                     context = []
                     url_peep_base = sys.argv[2]
                     my_len = len(
-                            "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + addon.getSetting("userid"))
+                        "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port")
+                        + addon.getSetting("userid"))
 
                     if extra_data.get('source', 'none') == 'AnimeSerie':
                         series_id = extra_data.get('key')[(my_len + 30):]
@@ -281,7 +282,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                         if addon.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         if addon.getSetting('context_show_vote_series') == 'true':
-                            context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
+                            context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' %
+                                            (sys.argv[1], url_peep)))
                         url_peep = url_peep_base + "&anime_id=" + series_id
                         context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
                             sys.argv[1], url_peep)))
@@ -299,31 +301,38 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0, s
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&ep_id=" \
-                                   + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
+                                        + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
                         if addon.getSetting('context_show_play_no_watch') == 'true':
-                            context.append(('Play (Do not Mark as Watched)', 'RunScript(plugin.video.nakamori, %s, '
-                                                                         '%s&cmd=no_mark)' % (sys.argv[1], url_peep)))
+                            context.append(('Play (Do not Mark as Watched)',
+                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
+                                            % (sys.argv[1], url_peep)))
                         if addon.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         if addon.getSetting('context_show_vote_series') == 'true':
-                            context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
-                                sys.argv[1], url_peep)))
+                            context.append(
+                                ('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
+                                    sys.argv[1], url_peep)))
                         if addon.getSetting('context_show_vote_episode') == 'true':
-                            context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
-                                sys.argv[1], url_peep)))
+                            context.append(
+                                ('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
+                                    sys.argv[1], url_peep)))
 
                         if addon.getSetting('context_krypton_watched') == 'true':
                             if details['playcount'] == 0:
-                                context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                                    sys.argv[1], url_peep)))
+                                context.append(
+                                    ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
+                                        sys.argv[1], url_peep)))
                             else:
-                                context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                    (sys.argv[1], url_peep)))
+                                context.append(
+                                    ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                     (sys.argv[1], url_peep)))
                         else:
-                            context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
+                            context.append(
+                                ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
                                     sys.argv[1], url_peep)))
-                            context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                    (sys.argv[1], url_peep)))
+                            context.append(
+                                ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                 (sys.argv[1], url_peep)))
                     liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
@@ -550,7 +559,7 @@ def build_main_menu():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/1/0"
 
-                if not key.startswith("http") and not 'jmmserverkodi' in key.lower():
+                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if addon.getSetting("spamLog") == "true":
@@ -713,7 +722,7 @@ def build_tv_shows(params, extra_directories=None):
                     'banner': banner,
                     'key': key,
                     'ratingKey': str(atype.get('ratingKey', 0))
-                    }
+                }
                 url = key
                 set_watch_flag(extra_data, details)
                 use_mode = 5
@@ -771,7 +780,7 @@ def build_tv_seasons(params, extra_directories=None):
                 if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     if key != '':
                         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                              + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                     else:
                         if 'serie' in atype.get('AnimeType').lower():
                             key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
@@ -819,7 +828,7 @@ def build_tv_seasons(params, extra_directories=None):
                     'rating': atype.get('rating'),
                     'aired': atype.get('originallyAvailableAt', ''),
                     'year': int(atype.get('year', 0))
-                    }
+                }
                 temp_date = str(details['aired']).split('-')
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
@@ -843,7 +852,7 @@ def build_tv_seasons(params, extra_directories=None):
                     'key': key,
                     'ratingKey': str(atype.get('ratingKey', 0)),  # TODO: Do we need ratingKey ?
                     'mode': str(6)
-                    }
+                }
 
                 if banner:
                     extra_data['banner'] = banner
@@ -941,14 +950,14 @@ def build_tv_episodes(params):
                         parent_key = atype.get('parentKey', '0')
                         if not parent_key.startswith("http") and 'jmmserverkodi' not in parent_key.lower():
                             parent_key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                        + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parent_key
+                                         + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parent_key
                         grandparent_title = encode(atype.get('grandparentTitle',
-                                                      atype.get('grandparentTitle', '')))
+                                                             atype.get('grandparentTitle', '')))
             # Extended support
             for atype in video_list:
                 episode_count += 1
 
-            # Extended support END#
+                # Extended support END#
                 temp_dir = []
                 temp_writer = []
                 view_offset = atype.get('viewOffset', 0)
@@ -995,15 +1004,18 @@ def build_tv_episodes(params):
                 thumb = gen_image_url(atype.get('thumb', ''))
 
                 try:
-                    parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                                                         '{"setting": "videolibrary.showunwatchedplots"}, "id": 1}')
+                    parent_setting = xbmc.executeJSONRPC(
+                        '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+                        '{"setting": "videolibrary.showunwatchedplots"}, "id": 1}')
                     # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
 
                     setting = json.loads(parent_setting)
                     if "result" in setting:
                         if "value" in setting["result"]:
-                            if setting["result"]["value"] == False:
-                                details['plot'] = "Hidden due to user setting.\nCheck Show Plot for Unwatched Items in the Video Library Settings."
+                            if not setting["result"]["value"]:
+                                details[
+                                    'plot'] = "Hidden due to user setting.\nCheck Show Plot" + \
+                                              " for Unwatched Items in the Video Library Settings."
                                 thumb = None
                                 art = None
                 except Exception as ex:
@@ -1068,10 +1080,10 @@ def build_tv_episodes(params):
                     key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
                 sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
-                               + extra_data.get('jmmepisodeid') + '&ui_index=' + str(int(episode_count-1))
+                               + extra_data.get('jmmepisodeid') + '&ui_index=' + str(int(episode_count - 1))
                 u = sys.argv[0]
 
-                add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count-1))
+                add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
 
             # add item to move to next not played item (not marked as watched)
             if addon.getSetting("show_continue") == "true":
@@ -1081,8 +1093,9 @@ def build_tv_episodes(params):
                                     "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
 
             try:
-                parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                                             '{"setting": "videolibrary.tvshowsselectfirstunwatcheditem"}, "id": 1}')
+                parent_setting = xbmc.executeJSONRPC(
+                    '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+                    '{"setting": "videolibrary.tvshowsselectfirstunwatcheditem"}, "id": 1}')
                 # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
 
                 setting = json.loads(parent_setting)
@@ -1135,7 +1148,7 @@ def play_video(url, ep_id):
         'originaltitle': xbmc.getInfoLabel('ListItem.OriginalTitle'),
         'size': xbmc.getInfoLabel('ListItem.Size'),
         'season': xbmc.getInfoLabel('ListItem.Season')
-        }
+    }
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
                             path=url)
     item.setInfo(type='Video', infoLabels=details)
@@ -1246,7 +1259,7 @@ def watched_mark(params):
             "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched)
     elif anime_id != '':
         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-                "port") + "/jmmserverkodi/watchseries/" + addon.getSetting("userid") + "/" + anime_id + "/" + str(watched)
+            "port") + "/jmmserverkodi/watchseries/" + addon.getSetting("userid") + "/" + anime_id + "/" + str(watched)
     elif group_id != '':
         key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
             "port") + "/jmmserverkodi/watchgroup/" + addon.getSetting("userid") + "/" + group_id + "/" + str(watched)
@@ -1271,7 +1284,7 @@ def watched_mark(params):
 if addon.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
     if pydevd:
-        pydevd.settrace(addon.getSetting('ide_ip'), port=int(addon.getSetting('ide_port')), stdoutToServer=True, \
+        pydevd.settrace(addon.getSetting('ide_ip'), port=int(addon.getSetting('ide_port')), stdoutToServer=True,
                         stderrToServer=True)
     else:
         error('Unable to start debugger')
@@ -1307,7 +1320,7 @@ if valid_user() is True:
             ctl = win.getControl(win.getFocusId())
             index = parameters.get('ui_index', '')
             if index != '':
-                move_position_on_list(ctl, int(index)+1)
+                move_position_on_list(ctl, int(index) + 1)
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("vote_always")
