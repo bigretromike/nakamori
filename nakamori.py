@@ -19,14 +19,37 @@ import xbmcplugin
 from StringIO import StringIO
 import gzip
 import json
-import resources.lib.pydevd.pydevd as pydevd
+try:
+    import pydevd
+except ImportError:
+    pass
+
 
 handle = int(sys.argv[1])
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
+
+def error(msg, error_msg="Generic", error_type='Error'):
+    xbmc.log('---' + msg + '---', xbmc.LOGERROR)
+    try:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+        traceback.print_exc()
+    except Exception as e:
+        xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
+        xbmc.log("There error message: ", str(e))
+        traceback.print_exc()
+
+    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, addon.getAddonInfo('icon')))
+
+
 if addon.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
-    pydevd.settrace('localhost', port=5376, stdoutToServer=True, stderrToServer=True)
+    if pydevd:
+        pydevd.settrace('localhost', port=5376, stdoutToServer=True, stderrToServer=True)
+    else:
+        error('Unable to start debugger')
 
 
 # Internal function
@@ -61,21 +84,6 @@ def get_html(url, referer):
         xbmc.log('There was an error retrieving url: ' + url)
         error('Connection Failed', str(e))
     return data
-
-
-def error(msg, error_msg="Generic", error_type='Error'):
-    xbmc.log('---' + msg + '---', xbmc.LOGERROR)
-    try:
-        exc_type, exc_obj, exc_tb = sys.exc_info()
-        xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
-        traceback.print_exc()
-    except Exception as e:
-        xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
-        xbmc.log("There error message: ", str(e))
-        traceback.print_exc()
-
-    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, addon.getAddonInfo('icon')))
 
 
 def xml(xml_string):
