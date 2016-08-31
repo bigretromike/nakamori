@@ -30,6 +30,13 @@ addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 
 
 def error(msg, error_msg="Generic", error_type='Error'):
+    """
+
+    Args:
+        msg:
+        error_msg:
+        error_type:
+    """
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -46,6 +53,15 @@ def error(msg, error_msg="Generic", error_type='Error'):
 
 # Internal function
 def get_html(url, referer):
+    """
+
+    Args:
+        url:
+        referer:
+
+    Returns:
+
+    """
     # hacky fix for common url issues in 3.6, feel free to add to it
     if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":"
                                           + addon.getSetting("port") + "/jmmserverkodi/"):
@@ -79,6 +95,14 @@ def get_html(url, referer):
 
 
 def xml(xml_string):
+    """
+
+    Args:
+        xml_string:
+
+    Returns:
+
+    """
     e = Tree.XML(xml_string)
     if e.get('ErrorString', '') != '':
         error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
@@ -86,6 +110,14 @@ def xml(xml_string):
 
 
 def encode(i=''):
+    """
+
+    Args:
+        i:
+
+    Returns:
+
+    """
     try:
         return i.encode('utf-8')
     except:
@@ -94,6 +126,9 @@ def encode(i=''):
 
 
 def refresh():
+    """
+
+    """
     # refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
     xbmc.executebuiltin('Container.Refresh')
     # Allow time for the ui to reload (this may need to be tweaked, I am running on localhost)
@@ -102,6 +137,12 @@ def refresh():
 
 # use episode number for position
 def move_position_on_list(control_list, position=0):
+    """
+
+    Args:
+        control_list:
+        position:
+    """
     if addon.getSetting('show_continue') == 'true':
         position = int(position + 1)
 
@@ -130,6 +171,11 @@ def move_position_on_list(control_list, position=0):
 
 
 def set_window_heading(var_tree):
+    """
+
+    Args:
+        var_tree:
+    """
     window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     try:
         window_obj.setProperty("heading", var_tree.get('title1'))
@@ -144,12 +190,30 @@ def set_window_heading(var_tree):
 
 
 def filter_gui_item_by_tag(title):
+    """
+
+    Args:
+        title:
+
+    Returns:
+
+    """
     str1 = [title]
     str1 = TagFilter.processTags(addon, str1)
     return len(str1) > 0
 
 
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
+    """
+    Adds an item to the menu and populates its info labels
+    :param url: str
+    :param details:
+    :param extra_data:
+    :param context:
+    :param folder: bool
+    :param index: int
+    :return:
+    """
     try:
         tbi = ""
         tp = 'Video'
@@ -340,6 +404,11 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
 
 def valid_user():
+    """
+
+    Returns:
+
+    """
     e = xml(
         get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
                  "/jmmserverkodi/getusers", ""))
@@ -352,6 +421,14 @@ def valid_user():
 
 
 def remove_html(data=""):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     # search for string with 1 to 3 letters and 1 to 7 numbers
     p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
     data2 = p.sub('', data)
@@ -361,6 +438,14 @@ def remove_html(data=""):
 
 
 def get_poster(data=""):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     if data is not None:
         result = data
         if len(data) > 0 and "getthumb" in data.lower():
@@ -375,6 +460,14 @@ def get_poster(data=""):
 
 
 def gen_image_url(data=""):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     if data is not None:
         if data.startswith("http"):
             return data
@@ -388,6 +481,12 @@ def gen_image_url(data=""):
 
 
 def set_watch_flag(extra_data, details):
+    """
+
+    Args:
+        extra_data:
+        details:
+    """
     # TODO: Real watch progress instead of 0,50,100%
     # Set up overlays for watched and unwatched episodes
     if extra_data['WatchedEpisodes'] == 0:
@@ -399,6 +498,14 @@ def set_watch_flag(extra_data, details):
 
 
 def get_legacy_title(data):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     lang = addon.getSetting("displaylang")
     title_type = addon.getSetting("title_type")
     temptitle = encode(data.get('original_title', 'Unknown'))
@@ -426,6 +533,14 @@ def get_legacy_title(data):
 
 
 def get_title(data):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     try:
         if addon.getSetting('use_server_title') == 'true':
             return encode(data.get('title', 'Unknown'))
@@ -469,6 +584,14 @@ def get_title(data):
 
 
 def get_legacy_tags(atype):
+    """
+
+    Args:
+        atype:
+
+    Returns:
+
+    """
     temp_genre = ""
     tag = atype.find("Tag")
 
@@ -485,6 +608,14 @@ def get_legacy_tags(atype):
 
 
 def get_tags(atype):
+    """
+
+    Args:
+        atype:
+
+    Returns:
+
+    """
     try:
         if atype.find('Tag') is not None:
             return get_legacy_tags(atype)
@@ -503,6 +634,14 @@ def get_tags(atype):
 
 
 def get_cast_and_role(data):
+    """
+
+    Args:
+        data:
+
+    Returns:
+
+    """
     if data is not None:
         result_list = []
         list_cast = []
@@ -539,6 +678,9 @@ def get_cast_and_role(data):
 
 # Adding items to list/menu:
 def build_main_menu():
+    """
+
+    """
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
@@ -596,6 +738,15 @@ def build_main_menu():
 
 
 def build_tv_shows(params, extra_directories=None):
+    """
+
+    Args:
+        params:
+        extra_directories:
+
+    Returns:
+
+    """
     # xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
     if addon.getSetting('use_server_sort') == 'false' and extra_directories is None:
@@ -741,6 +892,15 @@ def build_tv_shows(params, extra_directories=None):
 
 
 def build_tv_seasons(params, extra_directories=None):
+    """
+
+    Args:
+        params:
+        extra_directories:
+
+    Returns:
+
+    """
     # xbmcgui.Dialog().ok('MODE=5','IN')
     xbmcplugin.setContent(handle, 'seasons')
     try:
@@ -885,6 +1045,11 @@ def build_tv_seasons(params, extra_directories=None):
 
 def build_tv_episodes(params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
+    """
+
+    :param params:
+    :return:
+    """
     xbmcplugin.setContent(handle, 'episodes')
     try:
         html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
@@ -1115,6 +1280,11 @@ def build_tv_episodes(params):
 
 
 def build_search(url=''):
+    """
+
+    Args:
+        :param url:
+    """
     try:
         term = util.searchBox()
         term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
@@ -1132,6 +1302,15 @@ def build_search(url=''):
 
 # Other functions
 def play_video(url, ep_id):
+    """
+
+    Args:
+        url:
+        ep_id:
+
+    Returns:
+
+    """
     details = {
         'plot': xbmc.getInfoLabel('ListItem.Plot'),
         'title': xbmc.getInfoLabel('ListItem.Title'),
@@ -1196,6 +1375,11 @@ def play_video(url, ep_id):
 
 
 def play_continue_item(data):
+    """
+
+    Args:
+        data:
+    """
     offset = data['offset']
     pos = int(offset)
     if pos == 1:
@@ -1210,10 +1394,23 @@ def play_continue_item(data):
 
 # TODO: Trakt_Scrobble need work - JMM support it (for series not movies)
 def trakt_scrobble(data=""):
+    """
+
+    Args:
+        data:
+    """
     xbmcgui.Dialog().ok('WIP', str(data))
 
 
 def vote_series(params):
+    """
+
+    Args:
+        params:
+
+    Returns:
+
+    """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
     my_vote = xbmcgui.Dialog().select('my_vote', vote_list)
     if my_vote == -1:
@@ -1229,6 +1426,14 @@ def vote_series(params):
 
 
 def vote_episode(params):
+    """
+
+    Args:
+        params:
+
+    Returns:
+
+    """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
     my_vote = xbmcgui.Dialog().select('my_vote', vote_list)
     if my_vote == -1:
@@ -1245,6 +1450,11 @@ def vote_episode(params):
 
 
 def watched_mark(params):
+    """
+
+    Args:
+        params:
+    """
     episode_id = params.get('ep_id', '')
     anime_id = params.get('anime_id', '')
     group_id = params.get('group_id', '')
@@ -1285,7 +1495,7 @@ if addon.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
     if pydevd:
         pydevd.settrace(addon.getSetting('ide_ip'), port=int(addon.getSetting('ide_port')), stdoutToServer=True,
-                        stderrToServer=True)
+                        stderrToServer=True, suspend=False)
     else:
         error('Unable to start debugger')
 
