@@ -204,15 +204,21 @@ def filter_gui_item_by_tag(title):
 
 
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
-    """
-    Adds an item to the menu and populates its info labels
-    :param url: str
-    :param details:
-    :param extra_data:
-    :param context:
-    :param folder: bool
-    :param index: int
-    :return:
+    """Adds an item to the menu and populates its info labels
+    :param url:The URL of the menu or file this item links to
+    :param details:Data such as info labels
+    :param extra_data:Data such as stream info
+    :param context:The context menu
+    :param folder:Is it a folder or file
+    :param index:Index in the list
+    :type url:str
+    :type details:Union[str,object]
+    :type extra_data:Union[str,object]
+    :type context:
+    :type folder:bool
+    :type index:int
+    :rtype:bool
+    :return: Did the item successfully add
     """
     try:
         tbi = ""
@@ -226,7 +232,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 details['date'] = '01.01.' + str(details['year'])
                 details['aired'] = details['date']
                 # details['aired'] = str(details['year'])+'-01-01'
-
         if addon.getSetting("spamLog") == 'true':
             if details is not None:
                 xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
@@ -1280,11 +1285,7 @@ def build_tv_episodes(params):
 
 
 def build_search(url=''):
-    """
 
-    Args:
-        :param url:
-    """
     try:
         term = util.searchBox()
         term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
@@ -1526,11 +1527,14 @@ if valid_user() is True:
         elif cmd == "voteEp":
             vote_episode(parameters)
         elif cmd == "watched":
-            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-            ctl = win.getControl(win.getFocusId())
-            index = parameters.get('ui_index', '')
-            if index != '':
-                move_position_on_list(ctl, int(index) + 1)
+            try:
+                win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                ctl = win.getControl(win.getFocusId())
+                index = parameters.get('ui_index', '')
+                if index != '':
+                    move_position_on_list(ctl, int(index) + 1)
+            except Exception as ex:
+                pass
             parameters['watched'] = True
             watched_mark(parameters)
             voting = addon.getSetting("vote_always")
@@ -1547,14 +1551,17 @@ if valid_user() is True:
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
-            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-            ctl = win.getControl(win.getFocusId())
-            if play_video(parameters['file'], parameters['ep_id']) != 0:
-                index = parameters.get('ui_index', '')
-                if index != '':
-                    move_position_on_list(ctl, int(index) + 1)
-                parameters['watched'] = True
-                watched_mark(parameters)
+            try:
+                win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                ctl = win.getControl(win.getFocusId())
+                if play_video(parameters['file'], parameters['ep_id']) != 0:
+                    index = parameters.get('ui_index', '')
+                    if index != '':
+                        move_position_on_list(ctl, int(index) + 1)
+                    parameters['watched'] = True
+                    watched_mark(parameters)
+            except Exception as ex:
+                pass
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # SEARCH

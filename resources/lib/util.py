@@ -2,14 +2,15 @@ import sys, urllib, urllib2, re, gzip, StringIO
 import xbmc, xbmcgui, xbmcaddon, xbmcplugin
 
 # get addon info
-__addon__ = xbmcaddon.Addon(id='plugin.video.nakamori' )
+__addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
 
-ADDON_ID='plugin.video.nakamori' 
+ADDON_ID = 'plugin.video.nakamori'
 UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
+
 
 def post(url, data, headers={}):
     postdata = urllib.urlencode(data)
@@ -20,13 +21,14 @@ def post(url, data, headers={}):
     response.close()
     return data
 
+
 def getURL(url, header):
     try:
         req = urllib2.Request(url, headers=header)
         response = urllib2.urlopen(req)
         if response and response.getcode() == 200:
             if response.info().get('Content-Encoding') == 'gzip':
-                buf = StringIO.StringIO( response.read())
+                buf = StringIO.StringIO(response.read())
                 gzip_f = gzip.GzipFile(fileobj=buf)
                 content = gzip_f.read()
             else:
@@ -35,30 +37,38 @@ def getURL(url, header):
             return content
         return False
     except:
-        xbmc.log('Error Loading URL (Error: '+str(response.getcode())+' Encoding:'+response.info().get('Content-Encoding')+'): '+url, xbmc.LOGERROR)
-        xbmc.log('Content: '+response.read(), xbmc.LOGERROR)
+        xbmc.log('Error Loading URL (Error: ' + str(response.getcode()) + ' Encoding:' + response.info().get(
+            'Content-Encoding') + '): ' + url, xbmc.LOGERROR)
+        xbmc.log('Content: ' + response.read(), xbmc.LOGERROR)
         return False
 
+
 def safeName(name):
-    return re.sub(r'[^a-zA-Z0-9 ]','', name.lower()).replace(" ", "_")
-  
+    return re.sub(r'[^a-zA-Z0-9 ]', '', name.lower()).replace(" ", "_")
+
+
 def stripInvalid(name):
-    return re.sub(r'[^a-zA-Z0-9 ]',' ', name.lower())
-    
+    return re.sub(r'[^a-zA-Z0-9 ]', ' ', name.lower())
+
+
 def urlSafe(name):
-    return re.sub(r'[^a-zA-Z0-9 ]','', name.lower())
-    
+    return re.sub(r'[^a-zA-Z0-9 ]', '', name.lower())
+
+
 def alert(alertText):
     dialog = xbmcgui.Dialog()
     ret = dialog.ok(ADDON_ID, alertText)
-    
+
+
 def fakeError(alertText):
     dialog = xbmcgui.Dialog()
-    ret = dialog.ok(ADDON_ID+" [COLOR red]ERROR (1002)[/COLOR]", alertText)
-    
+    ret = dialog.ok(ADDON_ID + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
+
+
 def error(heading, message):
     dialog = xbmcgui.Dialog()
     dialog.notification(heading, message, xbmcgui.NOTIFICATION_ERROR, 5000)
+
 
 def progressStart(title, status):
     pDialog = xbmcgui.DialogProgress()
@@ -66,39 +76,50 @@ def progressStart(title, status):
     progressUpdate(pDialog, 1, status)
     return pDialog
 
+
 def progressStop(pDialog):
     pDialog.close
 
+
 def progressUpdate(pDialog, progress, status):
     pDialog.update(progress, status)
-    
+
+
 def relevanceCheck(title, animeList):
-    returnList=[]
+    returnList = []
     for anime in animeList:
         if title.lower() in anime.lower():
             returnList.append(anime)
     return returnList
 
-def searchBox() :
-    keyb=xbmc.Keyboard('', 'Enter search text')
-    keyb.doModal()
-    searchText=''
-    if (keyb.isConfirmed()) :
-        searchText = keyb.getText()
-    if searchText!='':
-        return searchText
-        
-def addDir(name,url,mode,iconimage,plot="",poster="DefaultVideo.png",filename="none"):
-        #u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
-        u=sys.argv[0]+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)+url
-        ok=True
-        liz=xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-        liz.setInfo( type="Video", infoLabels={ "Title": name,"Plot": plot} )
-        liz.setProperty("Poster_Image", iconimage)
-        ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
-        return ok
 
-def playMedia(title, thumbnail, link, mediaType='Video') :
+def searchBox():
+    """
+    Shows a keyboard, and returns the text entered
+    :return: the text that was entered
+    """
+    keyb = xbmc.Keyboard('', 'Enter search text')
+    keyb.doModal()
+    searchText = ''
+    if (keyb.isConfirmed()):
+        searchText = keyb.getText()
+    if searchText != '':
+        return searchText
+
+
+def addDir(name, url, mode, iconimage, plot="", poster="DefaultVideo.png", filename="none"):
+    # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
+    u = sys.argv[0] + "&mode=" + str(mode) + "&name=" + urllib.quote_plus(name) + "&poster_file=" + urllib.quote_plus(
+        poster) + "&filename=" + urllib.quote_plus(filename) + url
+    ok = True
+    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+    liz.setInfo(type="Video", infoLabels={"Title": name, "Plot": plot})
+    liz.setProperty("Poster_Image", iconimage)
+    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
+    return ok
+
+
+def playMedia(title, thumbnail, link, mediaType='Video'):
     """Plays a video
 
     Arguments:
@@ -109,11 +130,12 @@ def playMedia(title, thumbnail, link, mediaType='Video') :
     """
     try:
         li = xbmcgui.ListItem(label=title, iconImage=thumbnail, thumbnailImage=thumbnail, path=link)
-        li.setInfo(type=mediaType, infoLabels={ "Title": title })
+        li.setInfo(type=mediaType, infoLabels={"Title": title})
         xbmc.Player().play(item=link, listitem=li)
     except:
         alert("Unable to play stream.")
-        
+
+
 def parseParameters(inputString=sys.argv[2]):
     """Parses a parameter string starting at the first ? found in inputString
     
@@ -134,6 +156,7 @@ def parseParameters(inputString=sys.argv[2]):
                 parameters[key] = value
     return parameters
 
+
 def notify(addonId, message, timeShown=5000):
     """Displays a notification to the user
     
@@ -143,7 +166,8 @@ def notify(addonId, message, timeShown=5000):
     timeShown: the length of time for which the notification will be shown, in milliseconds, 5 seconds by default
     """
     addon = xbmcaddon.Addon(addonId)
-    xbmc.executebuiltin('Notification(%s, %s, %d, %s)' % (addon.getAddonInfo('name'), message, timeShown, addon.getAddonInfo('icon')))
+    xbmc.executebuiltin(
+        'Notification(%s, %s, %d, %s)' % (addon.getAddonInfo('name'), message, timeShown, addon.getAddonInfo('icon')))
 
 
 def showError(addonId, errorMessage):
@@ -156,6 +180,7 @@ def showError(addonId, errorMessage):
     """
     notify(addonId, errorMessage)
     xbmc.log(errorMessage, xbmc.LOGERROR)
+
 
 def extractAll(text, startText, endText):
     """
@@ -178,6 +203,7 @@ def extractAll(text, startText, endText):
         pos = text.find(startText, end)
     return result
 
+
 def extract(text, startText, endText):
     """
     Extract the first occurence of a string within text that start with startText and end with endText
@@ -197,6 +223,7 @@ def extract(text, startText, endText):
             return text[start:end]
     return None
 
+
 def request(url, headers={}):
     debug('request: %s' % url)
     req = urllib2.Request(url, headers=headers)
@@ -206,10 +233,12 @@ def request(url, headers={}):
     response.close()
     debug('len(data) %s' % len(data))
     return data
-    
+
+
 def debug(text):
     xbmc.log(str([text]), xbmc.LOGDEBUG)
-   
+
+
 def makeLink(params, baseUrl=sys.argv[0]):
     """
     Build a link with the specified base URL and parameters
@@ -218,7 +247,9 @@ def makeLink(params, baseUrl=sys.argv[0]):
     params: the params to be added to the URL
     BaseURL: the base URL, sys.argv[0] by default
     """
-    return baseUrl + '?' +urllib.urlencode(dict([k.encode('utf-8'),unicode(v).encode('utf-8')] for k,v in params.items()))
+    return baseUrl + '?' + urllib.urlencode(
+        dict([k.encode('utf-8'), unicode(v).encode('utf-8')] for k, v in params.items()))
+
 
 def addMenuItem(caption, link, icon=None, thumbnail=None, folder=False):
     """
@@ -234,8 +265,9 @@ def addMenuItem(caption, link, icon=None, thumbnail=None, folder=False):
     Returns True if the item is successfully added, False otherwise
     """
     listItem = xbmcgui.ListItem(unicode(caption), iconImage=icon, thumbnailImage=thumbnail)
-    listItem.setInfo(type="Video", infoLabels={ "Title": caption })
+    listItem.setInfo(type="Video", infoLabels={"Title": caption})
     return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=link, listitem=listItem, isFolder=folder)
+
 
 def endListing():
     """
@@ -243,50 +275,54 @@ def endListing():
     """
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
+
 def makeAscii(data):
-    #log(repr(data), 5)
-    #if sys.hexversion >= 0x02050000:
+    # log(repr(data), 5)
+    # if sys.hexversion >= 0x02050000:
     #        return data
 
     try:
         return data.encode('ascii', "ignore")
     except:
-        #log("Hit except on : " + repr(data))
+        # log("Hit except on : " + repr(data))
         s = u""
         for i in data:
             try:
                 i.encode("ascii", "ignore")
             except:
-                #log("Can't convert character", 4)
+                # log("Can't convert character", 4)
                 continue
             else:
                 s += i
 
-        #log(repr(s), 5)
+        # log(repr(s), 5)
         return s
+
 
 def replaceHTMLCodes(txt):
     return txt
 
+
 # This function handles stupid utf handling in python.
 def makeUTF8(data):
-    #log(repr(data), 5)
-    #return data
+    # log(repr(data), 5)
+    # return data
     try:
-        return data.decode('utf8', 'xmlcharrefreplace') # was 'ignore'
+        return data.decode('utf8', 'xmlcharrefreplace')  # was 'ignore'
     except:
-        #log("Hit except on : " + repr(data))
+        # log("Hit except on : " + repr(data))
         s = u""
         for i in data:
             try:
-                i.decode("utf8", "xmlcharrefreplace") 
+                i.decode("utf8", "xmlcharrefreplace")
             except:
-                #log("Can't convert character", 4)
+                # log("Can't convert character", 4)
                 continue
             else:
                 s += i
-        #log(repr(s), 5)
+        # log(repr(s), 5)
         return s
+
 
 ### Define dialogs
 def dialog_msg(action,
@@ -333,5 +369,3 @@ def dialog_msg(action,
             else:
                 msg = line1 + ': ' + line2
             xbmc.executebuiltin("XBMC.Notification(%s, %s, 7500, %s)" % (line0, msg, __icon__))
-
-
