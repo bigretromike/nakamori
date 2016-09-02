@@ -1003,6 +1003,7 @@ def build_tv_seasons(params, extra_directories=None):
 
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
+                banner = gen_image_url(atype.get('banner', ''))
 
                 directory_type = atype.get('AnimeType', '')
 
@@ -1014,13 +1015,10 @@ def build_tv_seasons(params, extra_directories=None):
                     'UnWatchedEpisodes': details['episode'] - watched,
                     'thumb': thumb,
                     'fanart_image': fanart,
+                    'banner': banner,
                     'key': key,
-                    'ratingKey': str(atype.get('ratingKey', 0)),  # TODO: Do we need ratingKey ?
                     'mode': str(6)
                 }
-
-                if banner:
-                    extra_data['banner'] = banner
 
                 if extra_data['fanart_image'] == "":
                     extra_data['fanart_image'] = section_art
@@ -1075,7 +1073,7 @@ def build_tv_episodes(params):
                 build_tv_seasons(params)
                 return
             # TODO: when banner is supported add it here also
-            # banner = gen_image_url(e.get('banner', ''))
+            banner = gen_image_url(e.get('banner', ''))
             art = gen_image_url(e.get('art', ''))
 
             # unused
