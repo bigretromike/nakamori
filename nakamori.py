@@ -310,8 +310,14 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     if extra_data.get('AudioLanguage'):
                         audio_codec['language'] = extra_data.get('AudioLanguage')
 
+                    subtitle = {}
+                    if extra_data.get('SubtitleLanguage'):
+                        subtitle['language'] = extra_data.get('SubtitleLanguage')
+
                     liz.addStreamInfo('video', video_codec)
                     liz.addStreamInfo('audio', audio_codec)
+                    liz.addStreamInfo('subtitle', subtitle)
+
             # UMS/PSM Jumpy plugin require 'path' to play video
             partemp = util.parseParameters(inputString=url)
             liz.setProperty('path', str(partemp.get('file', 'empty')))
@@ -328,8 +334,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     liz.setProperty('ResumeTime', '50')
                 if extra_data.get('fanart_image'):
                     liz.setArt({"fanart": extra_data.get('fanart_image', '')})
-                # TODO: We support this with JMM Patch or drop this (i prefer support)
-                # We probably don't use those (second is probably custom)
                 if extra_data.get('banner'):
                     liz.setArt({'banner': extra_data.get('banner', '')})
                 if extra_data.get('season_thumb'):
@@ -862,8 +866,7 @@ def build_tv_shows(params, extra_directories=None):
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
 
-                # TODO: we really should fix banners. JMM doesn't send them...
-                banner = gen_image_url(e.get('banner', ''))
+                banner = gen_image_url(atype.get('banner', ''))
 
                 directory_type = atype.get('AnimeType', '')
 
@@ -877,7 +880,6 @@ def build_tv_shows(params, extra_directories=None):
                     'fanart_image': fanart,
                     'banner': banner,
                     'key': key,
-                    'ratingKey': str(atype.get('ratingKey', 0))
                 }
                 url = key
                 set_watch_flag(extra_data, details)
@@ -936,7 +938,6 @@ def build_tv_seasons(params, extra_directories=None):
                 will_flatten = True
 
             section_art = gen_image_url(e.get('art', ''))
-            banner = gen_image_url(e.get('banner', ''))
 
             set_window_heading(e)
 
@@ -1003,7 +1004,7 @@ def build_tv_seasons(params, extra_directories=None):
 
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
-                banner = gen_image_url(atype.get('banner', ''))
+                banner = gen_image_url(atype.get('banner', e.get('banner', '')))
 
                 directory_type = atype.get('AnimeType', '')
 
@@ -1181,9 +1182,9 @@ def build_tv_episodes(params):
                     if "result" in setting:
                         if "value" in setting["result"]:
                             if not setting["result"]["value"]:
-                                details[
-                                    'plot'] = "Hidden due to user setting.\nCheck Show Plot" + \
-                                              " for Unwatched Items in the Video Library Settings."
+                                details['plot'] \
+                                    = "Hidden due to user setting.\nCheck Show Plot" + \
+                                    " for Unwatched Items in the Video Library Settings."
                                 thumb = None
                                 art = None
                 except Exception as ex:
@@ -1203,7 +1204,7 @@ def build_tv_episodes(params):
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
                               'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
                               'parentKey': parent_key, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId',
-                                                                                                           '0')),
+                              '0')), 'banner': banner,
                               'xVideoResolution': atype.find('Media').get('videoResolution', 0),
                               'xVideoCodec': atype.find('Media').get('audioCodec', ''),
                               'xVideoAspect': float(atype.find('Media').get('aspectRatio', 0)),
@@ -1225,12 +1226,10 @@ def build_tv_episodes(params):
                         extra_data['AudioChannels'] = int(vtype.get('channels'))
                     elif stream == 3:
                         # subtitle
-                        # TODO: we don't use this, but we have data so let's use it!
-                        # language = vtype.get('language', '')
-                        pass
+                        extra_data['SubtitleLanguage'] = vtype.get('language')
                     else:
                         # error
-                        error("Something went wrong!")
+                        error("Unknown Stream Type Received!")
 
                 # Determine what type of watched flag [overlay] to use
                 if int(atype.get('viewCount', 0)) > 0:
