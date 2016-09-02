@@ -391,7 +391,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                     sys.argv[1], url_peep)))
 
                         if addon.getSetting('context_krypton_watched') == 'true':
-                            if details['playcount'] == 0:
+                            if details.get('playcount', 0) == 0:
                                 context.append(
                                     ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
                                         sys.argv[1], url_peep)))
@@ -1234,8 +1234,10 @@ def build_tv_episodes(params):
                 # Determine what type of watched flag [overlay] to use
                 if int(atype.get('viewCount', 0)) > 0:
                     details['playcount'] = 1
+                    #details['overlay'] = 5
                 else:
                     details['playcount'] = 0
+                    #details['overlay'] = 0
                     if next_episode == 1:
                         next_episode = episode_count - 1
 
@@ -1580,6 +1582,6 @@ if valid_user() is True:
             build_main_menu()
 else:
     error("Wrong UserID", "Please change UserID in Settings")
-
-if pydevd:
-    pydevd.stoptrace()
+if addon.getSetting('remote_debug') == 'true':
+    if pydevd:
+        pydevd.stoptrace()
