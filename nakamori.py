@@ -953,10 +953,9 @@ def build_tv_seasons(params, extra_directories=None):
                                   + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + \
                                   atype.get('GenericId', '')
 
-                if will_flatten:
-                    url = key
-                    u = sys.argv[0] + "?url=" + url + "&mode=" + str(6)
-                    build_tv_episodes(u)
+                if will_flatten:                    
+                    new_params = {'url': key, 'mode': 6}
+                    build_tv_episodes(new_params)
                     return
 
                 plot = remove_html(encode(atype.get('summary', '')))
@@ -1517,7 +1516,6 @@ if valid_user() is True:
         cmd = parameters['cmd']
     except:
         cmd = None
-
     # xbmcgui.Dialog().ok("CMD", cmd)
     # xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
     if cmd is not None:

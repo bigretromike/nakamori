@@ -1,3 +1,13 @@
+v2.0.11 (03/09/2016)
+- some series throw error in tags (#159)
+- Wide Banners Not Being Used In Wide Displays (#92)
+- Respect Kodi setting to hide plot on unwatched episodes (#155)
+- Watched states don't persist (#148)
+- after long movie kodi crashed (#131)
+- Respect setting to automatically go to first unwatched episode (#153)
+- 'Mark as Watched' long 'working' message (#69)
+- Build unsorted URL from scratch (#151)
+
 v2.0.10 (17/08/2016)
 - fix watch mark error 
 
