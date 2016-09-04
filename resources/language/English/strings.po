@@ -231,3 +231,7 @@ msgstr ""
 msgctxt "#30065"
 msgid "Port for IDE"
 msgstr ""
+
+msgctxt "#30066"
+msgid "Request that the server not send cast"
+msgstr ""

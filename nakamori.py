@@ -354,7 +354,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
                         if addon.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
-                        if addon.getSetting('context_show_vote_series') == 'true':
+                        if addon.getSetting('context_show_vote_Series') == 'true':
                             context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' %
                                             (sys.argv[1], url_peep)))
                         url_peep = url_peep_base + "&anime_id=" + series_id
@@ -381,13 +381,15 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                             % (sys.argv[1], url_peep)))
                         if addon.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
-                        if addon.getSetting('context_show_vote_series') == 'true':
-                            context.append(
-                                ('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
+                        if addon.getSetting('context_show_vote_Series') == 'true':
+                            if series_id != '':
+                                context.append(
+                                    ('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
                                     sys.argv[1], url_peep)))
-                        if addon.getSetting('context_show_vote_episode') == 'true':
-                            context.append(
-                                ('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
+                        if addon.getSetting('context_show_vote_Episode') == 'true':
+                            if extra_data.get('jmmepisodeid') != '':
+                                context.append(
+                                    ('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
                                     sys.argv[1], url_peep)))
 
                         if addon.getSetting('context_krypton_watched') == 'true':
@@ -715,6 +717,9 @@ def build_main_menu():
                           + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
                 if addon.getSetting("spamLog") == "true":
                     xbmc.log("build_main_menu - key = " + key)
+
+                if addon.getSetting('request_nocast') == 'true' and title != 'Unsorted':
+                    key = key + '/nocast'
                 url = key
 
                 thumb = gen_image_url(atype.get('thumb'))
@@ -815,7 +820,7 @@ def build_tv_shows(params, extra_directories=None):
                     'genre': temp_genre,
                     'year': int(atype.get('year', 0)),
                     'episode': total,
-                    'season': int(atype.get('season', 0)),
+                    'season': int(atype.get('season', 1)),
                     # 'count'        : count,
                     # 'size'         : size,
                     # 'Date'         : date,
@@ -881,6 +886,9 @@ def build_tv_shows(params, extra_directories=None):
                     'banner': banner,
                     'key': key,
                 }
+                if addon.getSetting('request_nocast') == 'true':
+                    key = key + '/nocast'
+
                 url = key
                 set_watch_flag(extra_data, details)
                 use_mode = 5
@@ -987,7 +995,7 @@ def build_tv_seasons(params, extra_directories=None):
                     'castandrole': list_cast_and_role,
                     'plot': plot,
                     'genre': temp_genre,
-                    'season': int(atype.get('season', 0)),
+                    'season': int(atype.get('season', 1)),
                     'episode': total,
                     'mpaa': atype.get('contentRating', ''),
                     'rating': atype.get('rating'),
@@ -1025,7 +1033,11 @@ def build_tv_seasons(params, extra_directories=None):
 
                 set_watch_flag(extra_data, details)
 
-                url = sys.argv[0] + "?url=" + extra_data['key'] + "&mode=" + str(6)
+                key_append = ''
+                if addon.getSetting('request_nocast') == 'true':
+                    key_append = '/nocast'
+
+                url = sys.argv[0] + "?url=" + extra_data['key'] + key_append + "&mode=" + str(6)
                 context = None
 
                 # Build the screen directory listing
@@ -1072,7 +1084,6 @@ def build_tv_episodes(params):
                 params['url'] = params['url'].replace('&mode=6', '&mode=5')
                 build_tv_seasons(params)
                 return
-            # TODO: when banner is supported add it here also
             banner = gen_image_url(e.get('banner', ''))
             art = gen_image_url(e.get('art', ''))
 
