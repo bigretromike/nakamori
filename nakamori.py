@@ -392,22 +392,23 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                     ('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
                                     sys.argv[1], url_peep)))
 
-                        if addon.getSetting('context_krypton_watched') == 'true':
-                            if details.get('playcount', 0) == 0:
+                        if extra_data.get('jmmepisodeid') != '':
+                            if addon.getSetting('context_krypton_watched') == 'true':
+                                if details.get('playcount', 0) == 0:
+                                    context.append(
+                                        ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
+                                            sys.argv[1], url_peep)))
+                                else:
+                                    context.append(
+                                        ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                         (sys.argv[1], url_peep)))
+                            else:
                                 context.append(
                                     ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
                                         sys.argv[1], url_peep)))
-                            else:
                                 context.append(
                                     ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
                                      (sys.argv[1], url_peep)))
-                        else:
-                            context.append(
-                                ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                                    sys.argv[1], url_peep)))
-                            context.append(
-                                ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                 (sys.argv[1], url_peep)))
                     liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
@@ -887,7 +888,7 @@ def build_tv_shows(params, extra_directories=None):
                     'key': key,
                 }
                 if addon.getSetting('request_nocast') == 'true':
-                    key = key + '/nocast'
+                    key += '/nocast'
 
                 url = key
                 set_watch_flag(extra_data, details)
