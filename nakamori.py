@@ -26,6 +26,7 @@ except ImportError:
     pass
 
 handle = int(sys.argv[1])
+
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
@@ -432,6 +433,39 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
         error("Error during add_gui_item", str(e))
+
+
+def valid_user():
+    if __addon__.getSetting("apikey") != "":
+        return valid_userid()
+    else:
+        xbmc.log('-- apikey empty --')
+        # password can be empty as JMM Default account have blank password
+        try:
+            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
+                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
+                       '"device":"' + __addon__.getSetting("device") + '",' + \
+                       '"pass":"' + __addon__.getSetting("password") + '"}'
+                post = post_data("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                                 "/api/auth", body)
+                auth = json.loads(post)
+                if "apikey" in auth:
+                    xbmc.log('-- save apikey and reset user creditials --')
+                    __addon__.setSetting(id='apikey', value=auth["apikey"])
+                    __addon__.setSetting(id='login', value='')
+                    __addon__.setSetting(id='password', value='')
+                    uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
+                                              __addon__.getSetting("port") + "/api/myid"))
+                    if "userid" in uid:
+                        __addon__.setSetting(id='userid', value=uid['userid'])
+                else:
+                    raise Exception('Error Getting apikey')
+            else:
+                xbmc.log('-- Login and Device Empty --')
+                return False
+        except Exception as ex:
+            error('Error in Valid_User', str(ex))
+            return False
 
 
 def valid_userid():
@@ -1533,7 +1567,7 @@ if __addon__.getSetting('remote_debug') == 'true':
     else:
         error('Unable to start debugger')
 
-if valid_userid() is True:
+if valid_user() is True:
     try:
         parameters = util.parseParameters()
     except Exception as exp:
@@ -1617,7 +1651,7 @@ if valid_userid() is True:
         else:
             build_main_menu()
 else:
-    error("Wrong UserID", "Please change UserID in Settings")
+    error("Incorrect Credentials", "Please change in Settings")
 if __addon__.getSetting('remote_debug') == 'true':
     if pydevd:
         pydevd.stoptrace()

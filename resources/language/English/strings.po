@@ -64,6 +64,22 @@ msgctxt "#30013"
 msgid "Use gzip"
 msgstr ""
 
+msgctxt "#30015"
+msgid "Login"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Device name"
+msgstr ""
+
+msgctxt "#30018"
+msgid "API Key"
+msgstr ""
+
 msgctxt "#30021"
 msgid "Searching"
 msgstr ""

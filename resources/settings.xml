@@ -7,7 +7,11 @@
 		<setting label="30004" type="number" id="timeout" default="60"/>
 		<setting label="30011" type="lsep"/>
 		<setting label="30012" type="number" id="userid" default="1"/>
-        <setting label="30012" type="number" id="no_mark" default="0" visible="false"/>
+        <setting label="30015" type="text" id="login" default="Default"/>
+        <setting label="30016" type="text" id="password" options="hidden"/>
+        <setting label="30017" type="text" id="device" default="nakamori"/>
+        <setting label="30018" type="text" id="apikey" visible="true"/>
+        <setting type="number" id="no_mark" default="0" visible="false"/>
     </category>
     <category label="30054">
         <setting label="30039" type="bool" id="show_continue" default="true"/>
