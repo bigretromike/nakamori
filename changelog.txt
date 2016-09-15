@@ -1,8 +1,9 @@
-v2.0.12 (00/00/2016)
+v2.0.12 (15/09/2016)
 - Ongoing Kodi Compatibility Issue (#90)
 - Ongoing Android Compatibility issue (#104)
 - Main Title instead of Official Title Setting only applies at Series Level instead of group level (#76)
 - missing menus (#158)
+- Compatible with cloud+nancy jmmserver beta build (#164)
 
 v2.0.11 (03/09/2016)
 - some series throw error in tags (#159)

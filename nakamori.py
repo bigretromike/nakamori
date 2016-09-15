@@ -26,7 +26,9 @@ except ImportError:
     pass
 
 handle = int(sys.argv[1])
-addon = xbmcaddon.Addon(id='plugin.video.nakamori')
+__addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
+__addonversion__ = __addon__.getAddonInfo('version')
+__addonid__ = __addon__.getAddonInfo('id')
 
 
 def error(msg, error_msg="Generic", error_type='Error'):
@@ -37,6 +39,7 @@ def error(msg, error_msg="Generic", error_type='Error'):
         error_msg:
         error_type:
     """
+    xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__))
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
@@ -48,65 +51,66 @@ def error(msg, error_msg="Generic", error_type='Error'):
         xbmc.log("There error message: ", str(e))
         traceback.print_exc()
 
-    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, addon.getAddonInfo('icon')))
+    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
 
 
 # Internal function
-def get_html(url, referer):
-    """
+def get_json(url_in):
+    return get_data(url_in, None, "json")
 
-    Args:
-        url:
-        referer:
 
-    Returns:
+def get_xml(url_in):
+    return get_data(url_in, None, "xml")
 
-    """
-    # hacky fix for common url issues in 3.6, feel free to add to it
-    if not url.lower().startswith("http://" + addon.getSetting("ipaddress") + ":"
-                                          + addon.getSetting("port") + "/jmmserverkodi/"):
-        if url.lower().startswith(':' + addon.getSetting("port")):
-            url = 'http://' + addon.getSetting("ipaddress") + url
 
-    referer = urllib2.quote(encode(referer)).replace("%3A", ":").replace("%2f", "/")
-    req = urllib2.Request(url)  # by definition, urls cannot be unicode
-    if len(referer) > 1:
-        req.add_header('Referer', referer)
-    use_gzip = addon.getSetting("use_gzip")
-    if use_gzip == "true":
-        req.add_header('Accept-encoding', 'gzip')
-    data = None
+def get_data(url_in, referer, data_type):
     try:
-        response = urllib2.urlopen(req, timeout=int(addon.getSetting('timeout')))
-        if response.info().get('Content-Encoding') == 'gzip':
-            try:
-                buf = StringIO(response.read())
-                f = gzip.GzipFile(fileobj=buf)
-                data = f.read()
-            except Exception as e:
-                error('Decompressing gzip respond failed', str(e))
-        else:
-            data = response.read()
-        response.close()
-    except Exception as e:
-        xbmc.log('There was an error retrieving url: ' + url)
-        error('Connection Failed', str(e))
+        url = url_in + "." + data_type
+        req = urllib2.Request(url.encode('utf-8') + "?apikey=" + __addon__.getSetting("apikey"),
+                              headers={'Content-Type': 'application/'+data_type})
+        if referer is not None:
+            referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
+            if len(referer) > 1:
+                req.add_header('Referer', referer)
+        use_gzip = __addon__.getSetting("use_gzip")
+        if use_gzip == "true":
+            req.add_header('Accept-encoding', 'gzip')
+        data = None
+        try:
+            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            if response.info().get('Content-Encoding') == 'gzip':
+                try:
+                    buf = StringIO(response.read())
+                    f = gzip.GzipFile(fileobj=buf)
+                    data = f.read()
+                except Exception as ex:
+                    error('Decompresing gzip respond failed', str(ex))
+            else:
+                data = response.read()
+            response.close()
+        except Exception as ex:
+            error('Connection Failed', str(ex))
+            xbmc.log(str(url))
+            data = None
+    except Exception as ex:
+        error('Get_Data Error', str(ex))
+        data = None
     return data
 
 
-def xml(xml_string):
-    """
-
-    Args:
-        xml_string:
-
-    Returns:
-
-    """
-    e = Tree.XML(xml_string)
-    if e.get('ErrorString', '') != '':
-        error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
-    return e
+def post_data(url, data_in):
+    if data_in is not None:
+        req = urllib2.Request(url.encode('utf-8'), data_in, {'Content-Type': 'application/json'})
+        data_out = None
+        try:
+            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            data_out = response.read()
+            response.close()
+        except Exception as ex:
+            error('Connection Failed', str(ex))
+        return data_out
+    else:
+        return None
 
 
 def encode(i=''):
@@ -132,7 +136,7 @@ def refresh():
     # refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
     xbmc.executebuiltin('Container.Refresh')
     # Allow time for the ui to reload (this may need to be tweaked, I am running on localhost)
-    xbmc.sleep(int(addon.getSetting('refresh_wait')))
+    xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
 
 
 # use episode number for position
@@ -143,7 +147,7 @@ def move_position_on_list(control_list, position=0):
         control_list:
         position:
     """
-    if addon.getSetting('show_continue') == 'true':
+    if __addon__.getSetting('show_continue') == 'true':
         position = int(position + 1)
 
     try:
@@ -199,7 +203,7 @@ def filter_gui_item_by_tag(title):
 
     """
     str1 = [title]
-    str1 = TagFilter.processTags(addon, str1)
+    str1 = TagFilter.processTags(__addon__, str1)
     return len(str1) > 0
 
 
@@ -232,7 +236,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 details['date'] = '01.01.' + str(details['year'])
                 details['aired'] = details['date']
                 # details['aired'] = str(details['year'])+'-01-01'
-        if addon.getSetting("spamLog") == 'true':
+        if __addon__.getSetting("spamLog") == 'true':
             if details is not None:
                 xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
                 for i in details:
@@ -345,16 +349,16 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     context = []
                     url_peep_base = sys.argv[2]
                     my_len = len(
-                        "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port")
-                        + addon.getSetting("userid"))
+                        "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                        + __addon__.getSetting("userid"))
 
                     if extra_data.get('source', 'none') == 'AnimeSerie':
                         series_id = extra_data.get('key')[(my_len + 30):]
                         xbmc.log('series_id: ' + series_id, xbmc.LOGWARNING)
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
-                        if addon.getSetting('context_show_info') == 'true':
+                        if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
-                        if addon.getSetting('context_show_vote_Series') == 'true':
+                        if __addon__.getSetting('context_show_vote_Series') == 'true':
                             context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' %
                                             (sys.argv[1], url_peep)))
                         url_peep = url_peep_base + "&anime_id=" + series_id
@@ -364,7 +368,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                         (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'AnimeGroup':
                         series_id = extra_data.get('key')[(my_len + 30):]
-                        if addon.getSetting('context_show_info') == 'true':
+                        if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         url_peep = url_peep_base + "&group_id=" + series_id
                         context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
@@ -375,25 +379,25 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&ep_id=" \
                                         + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
-                        if addon.getSetting('context_show_play_no_watch') == 'true':
+                        if __addon__.getSetting('context_show_play_no_watch') == 'true':
                             context.append(('Play (Do not Mark as Watched)',
                                             'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
                                             % (sys.argv[1], url_peep)))
-                        if addon.getSetting('context_show_info') == 'true':
+                        if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
-                        if addon.getSetting('context_show_vote_Series') == 'true':
+                        if __addon__.getSetting('context_show_vote_Series') == 'true':
                             if series_id != '':
                                 context.append(
                                     ('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
                                     sys.argv[1], url_peep)))
-                        if addon.getSetting('context_show_vote_Episode') == 'true':
+                        if __addon__.getSetting('context_show_vote_Episode') == 'true':
                             if extra_data.get('jmmepisodeid') != '':
                                 context.append(
                                     ('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
                                     sys.argv[1], url_peep)))
 
                         if extra_data.get('jmmepisodeid') != '':
-                            if addon.getSetting('context_krypton_watched') == 'true':
+                            if __addon__.getSetting('context_krypton_watched') == 'true':
                                 if details.get('playcount', 0) == 0:
                                     context.append(
                                         ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
@@ -415,21 +419,22 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         error("Error during add_gui_item", str(e))
 
 
-def valid_user():
+def valid_userid():
     """
 
     Returns:
 
     """
-    e = xml(
-        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
-                 "/jmmserverkodi/getusers", ""))
-    valid = False
-    for atype in e.findall('User'):
-        user_id = atype.get('id')
-        if user_id == addon.getSetting("userid"):
-            valid = True
-    return valid
+    xml = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                  "/jmmserverkodi/getusers")
+    if xml is not None:
+        data = Tree.XML(xml)
+        for atype in data.findall('User'):
+            user_id = atype.get('id')
+            if user_id == __addon__.getSetting("userid"):
+                return True
+        return False
+    return False
 
 
 def remove_html(data=""):
@@ -484,10 +489,10 @@ def gen_image_url(data=""):
         if data.startswith("http"):
             return data
         if data.endswith("0.6667"):
-            return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+            return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                    + "/JMMServerREST/GetThumb/" + data
         else:
-            return "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+            return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                    + "/JMMServerREST/GetImage/" + data
     return data
 
@@ -518,8 +523,8 @@ def get_legacy_title(data):
     Returns:
 
     """
-    lang = addon.getSetting("displaylang")
-    title_type = addon.getSetting("title_type")
+    lang = __addon__.getSetting("displaylang")
+    title_type = __addon__.getSetting("title_type")
     temptitle = encode(data.get('original_title', 'Unknown'))
     titles = temptitle.split('|')
 
@@ -554,7 +559,7 @@ def get_title(data):
 
     """
     try:
-        if addon.getSetting('use_server_title') == 'true':
+        if __addon__.getSetting('use_server_title') == 'true':
             return encode(data.get('title', 'Unknown'))
         # xbmc.log(data.get('title', 'Unknown'))
         title = encode(data.get('title', '')).lower()
@@ -568,8 +573,8 @@ def get_title(data):
             return encode(data.get('title', 'Error'))
         if data.get('original_title', '') != '':
             return get_legacy_title(data)
-        lang = addon.getSetting("displaylang")
-        title_type = addon.getSetting("title_type")
+        lang = __addon__.getSetting("displaylang")
+        title_type = __addon__.getSetting("title_type")
         try:
             for titleTag in data.findall('AnimeTitle'):
                 if titleTag.find('Type').text.lower() == title_type.lower():
@@ -610,7 +615,7 @@ def get_legacy_tags(atype):
     if tag is not None:
         temp_genre = tag.get('tag', '')
         temp_genres = str.split(temp_genre, ",")
-        temp_genres = TagFilter.processTags(addon, temp_genres)
+        temp_genres = TagFilter.processTags(__addon__, temp_genres)
         temp_genre = ""
 
         for a in temp_genres:
@@ -637,7 +642,7 @@ def get_tags(atype):
             if tag is not None:
                 temp_genre = encode(tag.get('tag', '')).strip()
                 temp_genres.append(temp_genre)
-        temp_genres = TagFilter.processTags(addon, temp_genres)
+        temp_genres = TagFilter.processTags(__addon__, temp_genres)
         temp_genre = " | ".join(temp_genres)
         return temp_genre
     except Exception as ex:
@@ -696,8 +701,8 @@ def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
-        e = xml(get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") +
-                         "/jmmserverkodi/getfilters/" + addon.getSetting("userid"), ""))
+        e = Tree.XML(get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                     "/jmmserverkodi/getfilters/" + __addon__.getSetting("userid")))
         try:
             for atype in e.findall('Directory'):
                 title = atype.get('title')
@@ -710,16 +715,16 @@ def build_main_menu():
                 elif title == 'Unsort':
                     title = 'Unsorted'
                     use_mode = 6
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/1/0"
+                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                          + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/1/0"
 
                 if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                          + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
-                if addon.getSetting("spamLog") == "true":
+                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                          + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + key
+                if __addon__.getSetting("spamLog") == "true":
                     xbmc.log("build_main_menu - key = " + key)
 
-                if addon.getSetting('request_nocast') == 'true' and title != 'Unsorted':
+                if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
                     key = key + '/nocast'
                 url = key
 
@@ -738,10 +743,10 @@ def build_main_menu():
         error("Invalid XML Received in build_main_menu", str(e))
 
     # Start Add_Search
-    url = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-          + "/jmmserverkodi/search/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit") + "/"
+    url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+          + "/jmmserverkodi/search/" + __addon__.getSetting("userid") + "/" + __addon__.getSetting("maxlimit") + "/"
     title = "Search"
-    thumb = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
+    thumb = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
             + "/jmmserverkodi/GetSupportImage/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
@@ -764,7 +769,7 @@ def build_tv_shows(params, extra_directories=None):
     """
     # xbmcgui.Dialog().ok('MODE=4','IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    if addon.getSetting('use_server_sort') == 'false' and extra_directories is None:
+    if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
         xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
         xbmcplugin.addSortMethod(handle, 3)  # date
         xbmcplugin.addSortMethod(handle, 18)  # rating
@@ -772,11 +777,11 @@ def build_tv_shows(params, extra_directories=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
-        if addon.getSetting("spamLog") == "true":
+        html = get_xml(params['url']).decode('utf-8').encode('utf-8')
+        if __addon__.getSetting("spamLog") == "true":
             xbmc.log(params['url'])
             xbmc.log(html)
-        e = xml(html)
+        e = Tree.XML(html)
         set_window_heading(e)
         try:
             parent_title = ''
@@ -810,7 +815,7 @@ def build_tv_shows(params, extra_directories=None):
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
-                if addon.getSetting("local_total") == "true":
+                if __addon__.getSetting("local_total") == "true":
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
@@ -862,12 +867,12 @@ def build_tv_shows(params, extra_directories=None):
                 key = atype.get('key', '')
                 if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     if key != '':
-                        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                              + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + key
                     else:
                         if 'serie' in atype.get('AnimeType').lower():
-                            key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + \
+                            key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                                  + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/3/" + \
                                   atype.get('GenericId', '')
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
@@ -887,13 +892,13 @@ def build_tv_shows(params, extra_directories=None):
                     'banner': banner,
                     'key': key,
                 }
-                if addon.getSetting('request_nocast') == 'true':
+                if __addon__.getSetting('request_nocast') == 'true':
                     key += '/nocast'
 
                 url = key
                 set_watch_flag(extra_data, details)
                 use_mode = 5
-                if addon.getSetting("useSeasons") == "false":
+                if __addon__.getSetting("useSeasons") == "false":
                     # this will help when users is using grouping option in jmm which results in series in series
                     if "data/1/2/" in extra_data['key'].lower():
                         use_mode = 4
@@ -920,10 +925,10 @@ def build_tv_seasons(params, extra_directories=None):
     # xbmcgui.Dialog().ok('MODE=5','IN')
     xbmcplugin.setContent(handle, 'seasons')
     try:
-        html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
-        if addon.getSetting("spamLog") == "true":
+        html = get_xml(params['url']).decode('utf-8').encode('utf-8')
+        if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
-        e = xml(html)
+        e = Tree.XML(html)
         set_window_heading(e)
         try:
             parent_title = ''
@@ -954,12 +959,12 @@ def build_tv_seasons(params, extra_directories=None):
                 key = atype.get('key', '')
                 if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
                     if key != '':
-                        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                              + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + key
+                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + key
                     else:
                         if 'serie' in atype.get('AnimeType').lower():
-                            key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                  + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/3/" + \
+                            key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                                  + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/3/" + \
                                   atype.get('GenericId', '')
 
                 if will_flatten:                    
@@ -981,7 +986,7 @@ def build_tv_seasons(params, extra_directories=None):
                         list_cast_and_role = result_list[1]
 
                 # Create the basic data structures to pass up
-                if addon.getSetting("local_total") == "true":
+                if __addon__.getSetting("local_total") == "true":
                     total = int(atype.get('totalLocal', 0))
                 else:
                     total = int(atype.get('leafCount', 0))
@@ -1035,7 +1040,7 @@ def build_tv_seasons(params, extra_directories=None):
                 set_watch_flag(extra_data, details)
 
                 key_append = ''
-                if addon.getSetting('request_nocast') == 'true':
+                if __addon__.getSetting('request_nocast') == 'true':
                     key_append = '/nocast'
 
                 url = sys.argv[0] + "?url=" + extra_data['key'] + key_append + "&mode=" + str(6)
@@ -1044,7 +1049,7 @@ def build_tv_seasons(params, extra_directories=None):
                 # Build the screen directory listing
                 add_gui_item(url, details, extra_data, context)
 
-            if addon.getSetting('use_server_sort') == 'false' and extra_directories is None:
+            if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
                 # Apparently date sorting in Kodi has been broken for years
                 xbmcplugin.addSortMethod(handle, 17)  # year
                 xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -1068,9 +1073,9 @@ def build_tv_episodes(params):
     """
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        html = get_html(params['url'], '').decode('utf-8').encode('utf-8')
-        e = xml(html)
-        if addon.getSetting("spamLog") == "true":
+        html = get_xml(params['url']).decode('utf-8').encode('utf-8')
+        e = Tree.XML(html)
+        if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
         set_window_heading(e)
         try:
@@ -1091,7 +1096,7 @@ def build_tv_episodes(params):
             # unused
             # season_thumb = e.get('thumb', '')
 
-            if addon.getSetting('use_server_sort') == 'false':
+            if __addon__.getSetting('use_server_sort') == 'false':
                 # Set Sort Method
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
                 xbmcplugin.addSortMethod(handle, 3)  # date
@@ -1109,8 +1114,8 @@ def build_tv_episodes(params):
             video_list = e.findall('Video')
             if len(video_list) <= 0:
                 error("No episodes in list")
-            skip = addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(video_list) > int(
-                addon.getSetting("skipExtraInfoMaxEpisodes"))
+            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(video_list) > int(
+                __addon__.getSetting("skipExtraInfoMaxEpisodes"))
 
             # keep this init out of the loop, as we only provide this once
             list_cast = []
@@ -1129,8 +1134,8 @@ def build_tv_episodes(params):
                         temp_genre = get_tags(atype)
                         parent_key = atype.get('parentKey', '0')
                         if not parent_key.startswith("http") and 'jmmserverkodi' not in parent_key.lower():
-                            parent_key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-                                         + "/JMMServerKodi/GetMetadata/" + addon.getSetting("userid") + "/" + parent_key
+                            parent_key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                                         + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + parent_key
                         grandparent_title = encode(atype.get('grandparentTitle',
                                                              atype.get('grandparentTitle', '')))
             # Extended support
@@ -1203,7 +1208,7 @@ def build_tv_episodes(params):
 
                 key = atype.get('key', '')
                 if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
+                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
 
                 ext = atype.find('Media').find('Part').get('container', '')
@@ -1257,7 +1262,7 @@ def build_tv_episodes(params):
 
                 key = atype.find('Media').find('Part').get('key')
                 if not key.startswith("http") and 'videolocal' not in key.lower():
-                    key = "http://" + addon.getSetting("ipaddress") + ":" + str(int(addon.getSetting("port")) + 1) \
+                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
                 sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
                                + extra_data.get('jmmepisodeid') + '&ui_index=' + str(int(episode_count - 1))
@@ -1266,10 +1271,10 @@ def build_tv_episodes(params):
                 add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
 
             # add item to move to next not played item (not marked as watched)
-            if addon.getSetting("show_continue") == "true":
+            if __addon__.getSetting("show_continue") == "true":
                 if str(parent_title).lower() != "unsort":
                     util.addDir("-continue-", "&offset=" + str(next_episode), 7,
-                                "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
+                                "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting(
                                     "port") + "/jmmserverkodi/GetSupportImage/plex_others.png", "2", "3", "4")
 
             try:
@@ -1300,9 +1305,10 @@ def build_search(url=''):
         term = util.searchBox()
         term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
         to_send = {'url': url + term}
-        url2 = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") \
-               + "/jmmserverkodi/searchtag/" + addon.getSetting("userid") + "/" + addon.getSetting("maxlimit_tag") + "/"
-        e = xml(get_html(url2 + term, '').decode('utf-8').encode('utf-8'))
+        url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+               + "/jmmserverkodi/searchtag/" + __addon__.getSetting("userid") + "/" + \
+               __addon__.getSetting("maxlimit_tag") + "/"
+        e = Tree.XML(get_xml(url2 + term).decode('utf-8').encode('utf-8'))
         directories = e.findall('Directory')
         if len(directories) <= 0:
             directories = None
@@ -1352,11 +1358,11 @@ def play_video(url, ep_id):
         pass
     # wait for player (network issue etc)
     xbmc.sleep(1000)
-    mark = float(addon.getSetting("watched_mark"))
+    mark = float(__addon__.getSetting("watched_mark"))
     mark /= 100
     file_fin = False
     # hack for slow connection and buffering time
-    xbmc.sleep(int(addon.getSetting("player_sleep")))
+    xbmc.sleep(int(__addon__.getSetting("player_sleep")))
     try:
         while player.isPlaying():
             try:
@@ -1374,10 +1380,10 @@ def play_video(url, ep_id):
         pass
 
     no_watch_status = False
-    if addon.getSetting('no_mark') != "0":
+    if __addon__.getSetting('no_mark') != "0":
         no_watch_status = True
         # reset no_mark so next file will mark watched status
-        addon.setSetting('no_mark', '0')
+        __addon__.setSetting('no_mark', '0')
 
     if file_fin is True:
         if no_watch_status is False:
@@ -1430,10 +1436,11 @@ def vote_series(params):
         vote_value = str(vote_list[my_vote])
         vote_type = str(1)
         series_id = params['anime_id']
-        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting("port") + "/jmmserverkodi/vote/"
-                 + addon.getSetting("userid") + "/" + series_id + "/" + vote_value + "/" + vote_type, "")
+        get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                + "/jmmserverkodi/vote/" + __addon__.getSetting("userid") + "/" + series_id + "/" +
+                vote_value + "/" + vote_type)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-            'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
+            'Vote saved', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
 
 
 def vote_episode(params):
@@ -1453,11 +1460,11 @@ def vote_episode(params):
         vote_value = str(vote_list[my_vote])
         vote_type = str(4)
         ep_id = params['ep_id']
-        get_html("http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-            "port") + "/jmmserverkodi/vote/" + addon.getSetting(
-            "userid") + "/" + ep_id + "/" + vote_value + "/" + vote_type, "")
+        get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting(
+            "port") + "/jmmserverkodi/vote/" + __addon__.getSetting(
+            "userid") + "/" + ep_id + "/" + vote_value + "/" + vote_type)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-            'Vote saved', 'You voted', vote_value, addon.getAddonInfo('icon')))
+            'Vote saved', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
 
 
 def watched_mark(params):
@@ -1475,57 +1482,61 @@ def watched_mark(params):
     else:
         watched_msg = "unwatched"
 
+    key = ""
     if episode_id != '':
-        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-            "port") + "/jmmserverkodi/watch/" + addon.getSetting("userid") + "/" + episode_id + "/" + str(watched)
+        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+              + "/jmmserverkodi/watch/" + __addon__.getSetting("userid") + "/" + episode_id + "/" + str(watched)
     elif anime_id != '':
-        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-            "port") + "/jmmserverkodi/watchseries/" + addon.getSetting("userid") + "/" + anime_id + "/" + str(watched)
+        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+              + "/jmmserverkodi/watchseries/" + __addon__.getSetting("userid") + "/" + anime_id + "/" + str(watched)
     elif group_id != '':
-        key = "http://" + addon.getSetting("ipaddress") + ":" + addon.getSetting(
-            "port") + "/jmmserverkodi/watchgroup/" + addon.getSetting("userid") + "/" + group_id + "/" + str(watched)
-    if addon.getSetting('log_spam') == 'true':
+        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+              + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(watched)
+    if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('anime_id: ' + str(anime_id))
         xbmc.log('group_id: ' + str(group_id))
         xbmc.log('key: ' + key)
 
-    sync = addon.getSetting("syncwatched")
+    sync = __addon__.getSetting("syncwatched")
     if sync == "true":
-        get_html(key, "")
+        get_xml(key)
 
-    box = addon.getSetting("watchedbox")
+    box = __addon__.getSetting("watchedbox")
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
-            'Watched status changed', 'Mark as ', watched_msg, addon.getAddonInfo('icon')))
+            'Watched status changed', 'Mark as ', watched_msg, __addon__.getAddonInfo('icon')))
     refresh()
 
 
 # Script run from here
-if addon.getSetting('remote_debug') == 'true':
+if __addon__.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
     if pydevd:
-        pydevd.settrace(addon.getSetting('ide_ip'), port=int(addon.getSetting('ide_port')), stdoutToServer=True,
+        pydevd.settrace(__addon__.getSetting('ide_ip'), port=int(__addon__.getSetting('ide_port')), stdoutToServer=True,
                         stderrToServer=True, suspend=False)
     else:
         error('Unable to start debugger')
 
-if valid_user() is True:
+if valid_userid() is True:
     try:
         parameters = util.parseParameters()
     except Exception as exp:
-        error('valid_user parseParameters() error', str(exp))
+        error('valid_userid parseParameters() error', str(exp))
         parameters = {'mode': 2}
     if parameters:
         try:
             mode = int(parameters['mode'])
         except Exception as exp:
-            error('valid_user set \'mode\' error', str(exp) + " parameters: " + str(parameters))
+            error('valid_userid set \'mode\' error', str(exp) + " parameters: " + str(parameters))
             mode = None
     else:
         mode = None
     try:
-        cmd = parameters['cmd']
+        if 'cmd' in parameters:
+            cmd = parameters['cmd']
+        else:
+            cmd = None
     except:
         cmd = None
     # xbmcgui.Dialog().ok("CMD", cmd)
@@ -1546,7 +1557,7 @@ if valid_user() is True:
                 pass
             parameters['watched'] = True
             watched_mark(parameters)
-            voting = addon.getSetting("vote_always")
+            voting = __addon__.getSetting("vote_always")
             if voting == "true":
                 vote_episode(parameters)
         elif cmd == "unwatched":
@@ -1555,7 +1566,7 @@ if valid_user() is True:
         elif cmd == "playlist":
             play_continue_item(parameters)
         elif cmd == "no_mark":
-            addon.setSetting('no_mark', '1')
+            __addon__.setSetting('no_mark', '1')
             xbmc.executebuiltin('Action(Select)')
     else:
         if mode == 1:  # VIDEO
@@ -1592,6 +1603,6 @@ if valid_user() is True:
             build_main_menu()
 else:
     error("Wrong UserID", "Please change UserID in Settings")
-if addon.getSetting('remote_debug') == 'true':
+if __addon__.getSetting('remote_debug') == 'true':
     if pydevd:
         pydevd.stoptrace()
