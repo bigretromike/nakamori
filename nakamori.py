@@ -49,7 +49,7 @@ def error(msg, error_msg="Generic", error_type='Error'):
         traceback.print_exc()
     except Exception as e:
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
-        xbmc.log("There error message: ", str(e))
+        xbmc.log("The error message: " + str(e), xbmc.LOGERROR)
         traceback.print_exc()
 
     xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
@@ -455,7 +455,7 @@ def valid_user():
                     __addon__.setSetting(id='login', value='')
                     __addon__.setSetting(id='password', value='')
                     uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
-                                              __addon__.getSetting("port") + "/api/myid"))
+                                              __addon__.getSetting("port") + "/api/MyID"))
                     if "userid" in uid:
                         __addon__.setSetting(id='userid', value=uid['userid'])
                 else:
