@@ -113,6 +113,21 @@ def post_data(url, data_in):
         return None
 
 
+def xml(xml_string):
+    """
+
+    Args:
+        xml_string:
+
+    Returns:
+
+    """
+    e = Tree.XML(xml_string)
+    if e.get('ErrorString', '') != '':
+        error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
+    return e
+
+
 def encode(i=''):
     """
 
@@ -428,7 +443,7 @@ def valid_userid():
     xml = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
                   "/jmmserverkodi/getusers")
     if xml is not None:
-        data = Tree.XML(xml)
+        data = xml(xml)
         for atype in data.findall('User'):
             user_id = atype.get('id')
             if user_id == __addon__.getSetting("userid"):
@@ -701,7 +716,7 @@ def build_main_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
-        e = Tree.XML(get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+        e = xml(get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
                      "/jmmserverkodi/getfilters/" + __addon__.getSetting("userid")))
         try:
             for atype in e.findall('Directory'):
@@ -781,7 +796,7 @@ def build_tv_shows(params, extra_directories=None):
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(params['url'])
             xbmc.log(html)
-        e = Tree.XML(html)
+        e = xml(html)
         set_window_heading(e)
         try:
             parent_title = ''
@@ -928,7 +943,7 @@ def build_tv_seasons(params, extra_directories=None):
         html = get_xml(params['url']).decode('utf-8').encode('utf-8')
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
-        e = Tree.XML(html)
+        e = xml(html)
         set_window_heading(e)
         try:
             parent_title = ''
@@ -1074,7 +1089,7 @@ def build_tv_episodes(params):
     xbmcplugin.setContent(handle, 'episodes')
     try:
         html = get_xml(params['url']).decode('utf-8').encode('utf-8')
-        e = Tree.XML(html)
+        e = xml(html)
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
         set_window_heading(e)
@@ -1308,7 +1323,7 @@ def build_search(url=''):
         url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                + "/jmmserverkodi/searchtag/" + __addon__.getSetting("userid") + "/" + \
                __addon__.getSetting("maxlimit_tag") + "/"
-        e = Tree.XML(get_xml(url2 + term).decode('utf-8').encode('utf-8'))
+        e = xml(get_xml(url2 + term).decode('utf-8').encode('utf-8'))
         directories = e.findall('Directory')
         if len(directories) <= 0:
             directories = None
