@@ -44,9 +44,10 @@ def error(msg, error_msg="Generic", error_type='Error'):
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
-        xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-            os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
-        traceback.print_exc()
+        if exc_type is not None and exc_obj is not None and exc_tb is not None:
+            xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+            traceback.print_exc()
     except Exception as e:
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
         xbmc.log("The error message: " + str(e), xbmc.LOGERROR)
