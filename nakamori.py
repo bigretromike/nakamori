@@ -67,8 +67,9 @@ def get_xml(url_in):
 def get_data(url_in, referer, data_type):
     try:
         url = url_in + "." + data_type
-        req = urllib2.Request(url.encode('utf-8') + "?apikey=" + __addon__.getSetting("apikey"),
-                              headers={'Content-Type': 'application/'+data_type})
+        req = urllib2.Request(url.encode('utf-8'),
+                              headers={'Content-Type': 'application/'+data_type,
+                                       'apikey': __addon__.getSetting("apikey")})
         if referer is not None:
             referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
             if len(referer) > 1:
@@ -143,6 +144,57 @@ def encode(i=''):
     except:
         error("Unicode Error", error_type='Unicode Error')
         return ''
+
+
+def valid_user():
+    if __addon__.getSetting("apikey") != "":
+        return valid_userid()
+    else:
+        xbmc.log('-- apikey empty --')
+        # password can be empty as JMM Default account have blank password
+        try:
+            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
+                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
+                       '"device":"' + __addon__.getSetting("device") + '",' + \
+                       '"pass":"' + __addon__.getSetting("password") + '"}'
+                post = post_data("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                                 "/api/auth", body)
+                auth = json.loads(post)
+                if "apikey" in auth:
+                    xbmc.log('-- save apikey and reset user creditials --')
+                    __addon__.setSetting(id='apikey', value=auth["apikey"])
+                    __addon__.setSetting(id='login', value='')
+                    __addon__.setSetting(id='password', value='')
+                    uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
+                                              __addon__.getSetting("port") + "/api/myid/get"))
+                    if "userid" in uid:
+                        __addon__.setSetting(id='userid', value=uid['userid'])
+                else:
+                    raise Exception('Error Getting apikey')
+            else:
+                xbmc.log('-- Login and Device Empty --')
+                return False
+        except Exception as ex:
+            error('Error in Valid_User', str(ex))
+            return False
+
+
+def valid_userid():
+    """
+
+    Returns:
+
+    """
+    xml = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                  "/jmmserverkodi/getusers")
+    if xml is not None:
+        data = xml(xml)
+        for atype in data.findall('User'):
+            user_id = atype.get('id')
+            if user_id == __addon__.getSetting("userid"):
+                return True
+        return False
+    return False
 
 
 def refresh():
@@ -433,57 +485,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
         error("Error during add_gui_item", str(e))
-
-
-def valid_user():
-    if __addon__.getSetting("apikey") != "":
-        return valid_userid()
-    else:
-        xbmc.log('-- apikey empty --')
-        # password can be empty as JMM Default account have blank password
-        try:
-            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
-                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
-                       '"device":"' + __addon__.getSetting("device") + '",' + \
-                       '"pass":"' + __addon__.getSetting("password") + '"}'
-                post = post_data("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                                 "/api/auth", body)
-                auth = json.loads(post)
-                if "apikey" in auth:
-                    xbmc.log('-- save apikey and reset user creditials --')
-                    __addon__.setSetting(id='apikey', value=auth["apikey"])
-                    __addon__.setSetting(id='login', value='')
-                    __addon__.setSetting(id='password', value='')
-                    uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
-                                              __addon__.getSetting("port") + "/api/MyID"))
-                    if "userid" in uid:
-                        __addon__.setSetting(id='userid', value=uid['userid'])
-                else:
-                    raise Exception('Error Getting apikey')
-            else:
-                xbmc.log('-- Login and Device Empty --')
-                return False
-        except Exception as ex:
-            error('Error in Valid_User', str(ex))
-            return False
-
-
-def valid_userid():
-    """
-
-    Returns:
-
-    """
-    xml = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                  "/jmmserverkodi/getusers")
-    if xml is not None:
-        data = xml(xml)
-        for atype in data.findall('User'):
-            user_id = atype.get('id')
-            if user_id == __addon__.getSetting("userid"):
-                return True
-        return False
-    return False
 
 
 def remove_html(data=""):
