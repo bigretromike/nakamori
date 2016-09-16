@@ -66,6 +66,11 @@ def get_xml(url_in):
 
 def get_data(url_in, referer, data_type):
     try:
+        if not url_in.lower().startswith("http://" + addon.getSetting("ipaddress") + ":"
+                                              + addon.getSetting("port") + "/jmmserverkodi/"):
+            if url_in.lower().startswith(':' + addon.getSetting("port")):
+                url_in = 'http://' + addon.getSetting("ipaddress") + url_in
+        
         url = url_in + "." + data_type
         req = urllib2.Request(url.encode('utf-8'),
                               headers={'Content-Type': 'application/'+data_type,
