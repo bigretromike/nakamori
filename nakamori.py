@@ -1564,11 +1564,15 @@ def watched_mark(params):
 # Script run from here
 if __addon__.getSetting('remote_debug') == 'true':
     # the port doesn't matter, as long as it matches the ide
-    if pydevd:
-        pydevd.settrace(__addon__.getSetting('ide_ip'), port=int(__addon__.getSetting('ide_port')), stdoutToServer=True,
-                        stderrToServer=True, suspend=False)
-    else:
-        error('Unable to start debugger')
+    try:
+        if pydevd:
+            pydevd.settrace(__addon__.getSetting('ide_ip'), port=int(__addon__.getSetting('ide_port')),
+                            stdoutToServer=True, stderrToServer=True, suspend=False)
+        else:
+            error('Unable to start debugger')
+    except Exception as ex:
+        error('pydevd not found, disabling remote_debug', str(ex))
+        __addon__.setSetting('remote_debug', 'false')
 
 if valid_user() is True:
     try:
@@ -1656,5 +1660,8 @@ if valid_user() is True:
 else:
     error("Incorrect Credentials", "Please change in Settings")
 if __addon__.getSetting('remote_debug') == 'true':
-    if pydevd:
-        pydevd.stoptrace()
+    try:
+        if pydevd:
+            pydevd.stoptrace()
+    except:
+        pass
