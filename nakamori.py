@@ -109,9 +109,11 @@ def post_data(url, data_in):
             data_out = response.read()
             response.close()
         except Exception as ex:
-            error('Connection Failed', str(ex))
+            error('url:' + str(url))
+            error('Connection Failed in post_data', str(ex))
         return data_out
     else:
+        error('post_data body is None')
         return None
 
 
@@ -162,13 +164,13 @@ def valid_user():
                 auth = json.loads(post)
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user creditials --')
-                    __addon__.setSetting(id='apikey', value=auth["apikey"])
+                    __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
                     __addon__.setSetting(id='login', value='')
                     __addon__.setSetting(id='password', value='')
                     uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
                                               __addon__.getSetting("port") + "/api/myid/get"))
                     if "userid" in uid:
-                        __addon__.setSetting(id='userid', value=uid['userid'])
+                        __addon__.setSetting(id='userid', value=str(uid['userid']))
                 else:
                     raise Exception('Error Getting apikey')
             else:
@@ -185,10 +187,10 @@ def valid_userid():
     Returns:
 
     """
-    xml = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+    xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
                   "/jmmserverkodi/getusers")
-    if xml is not None:
-        data = xml(xml)
+    if xml_file is not None:
+        data = xml(xml_file)
         for atype in data.findall('User'):
             user_id = atype.get('id')
             if user_id == __addon__.getSetting("userid"):
