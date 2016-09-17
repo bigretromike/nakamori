@@ -56,6 +56,28 @@ def error(msg, error_msg="Generic", error_type='Error'):
     xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
 
 
+def parse_possible_error(data, data_type):
+    if data_type == 'json':
+        # TODO actually support this
+        pass
+    elif data_type == 'xml':
+        stream = xml(data)
+        if stream.get('Code', '') != '':
+            code = stream.get('Code')
+            if code != '200':
+                error_msg = code
+                if code == '500':
+                    error_msg = 'Server Error'
+                elif code == '404':
+                    error_msg = 'Invalid URL: Endpoint not Found in Server'
+                elif code == '503':
+                    error_msg = 'Service Unavailable: Check netsh http'
+                elif code == '401' or code == '403':
+                    error_msg = 'The was refused as unauthorized'
+                error(error_msg, error_type='Network Error: ' + code)
+                if stream.get('Message', '') != '':
+                    xbmc.log(encode(stream.get('Message')), xbmc.LOGERROR)
+
 # Internal function
 def get_json(url_in):
     return get_data(url_in, None, "json")
@@ -103,6 +125,9 @@ def get_data(url_in, referer, data_type):
     except Exception as ex:
         error('Get_Data Error', str(ex))
         data = None
+
+    if data is not None:
+        parse_possible_error(data, data_type)
     return data
 
 
@@ -1543,13 +1568,13 @@ def watched_mark(params):
     key = ""
     if episode_id != '':
         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-              + "/jmmserverkodi/watch/" + __addon__.getSetting("userid") + "/" + episode_id + "/" + str(watched)
+              + "/jmmserverkodi/watch/" + __addon__.getSetting("userid") + "/" + episode_id + "/" + str(watched).strip()
     elif anime_id != '':
         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-              + "/jmmserverkodi/watchseries/" + __addon__.getSetting("userid") + "/" + anime_id + "/" + str(watched)
+              + "/jmmserverkodi/watchseries/" + __addon__.getSetting("userid") + "/" + anime_id + "/" + str(watched).strip()
     elif group_id != '':
         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-              + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(watched)
+              + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(watched).strip()
     if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('anime_id: ' + str(anime_id))
