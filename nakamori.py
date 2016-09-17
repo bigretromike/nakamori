@@ -90,9 +90,10 @@ def get_xml(url_in):
 def get_data(url_in, referer, data_type):
     try:
         if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":"
-                                              + __addon__.getSetting("port") + "/jmmserverkodi/"):
-            if url_in.lower().startswith(':' + __addon__.getSetting("port")):
-                url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
+                                              + __addon__.getSetting("port")):
+            if url_in.lower().startswith('/jmmserverkodi'):
+                url_in = 'http://' + __addon__.getSetting("ipaddress")+ ":"\
+                         + __addon__.getSetting("port") + url_in
         
         url = url_in + "." + data_type
         req = urllib2.Request(url.encode('utf-8'),
@@ -330,6 +331,13 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         tp = 'Video'
         link_url = ""
 
+        #handle short urls to work with seriesid and epid
+        if extra_data.get('key', '') != '':
+            url_in = str(extra_data.get('key'))
+            if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")):
+                if url_in.lower().startswith('/jmmserverkodi'):
+                    extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + url_in
+
         # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
@@ -455,7 +463,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
                     if extra_data.get('source', 'none') == 'AnimeSerie':
                         series_id = extra_data.get('key')[(my_len + 30):]
-                        xbmc.log('series_id: ' + series_id, xbmc.LOGWARNING)
                         url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
                         if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
@@ -801,9 +808,6 @@ def build_main_menu():
                     key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                           + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/1/0"
 
-                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
-                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                          + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + key
                 if __addon__.getSetting("spamLog") == "true":
                     xbmc.log("build_main_menu - key = " + key)
 
@@ -948,15 +952,7 @@ def build_tv_shows(params, extra_directories=None):
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 key = atype.get('key', '')
-                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
-                    if key != '':
-                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + key
-                    else:
-                        if 'serie' in atype.get('AnimeType').lower():
-                            key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                                  + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/3/" + \
-                                  atype.get('GenericId', '')
+
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
 
@@ -1040,15 +1036,6 @@ def build_tv_seasons(params, extra_directories=None):
 
             for atype in e.findall('Directory'):
                 key = atype.get('key', '')
-                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
-                    if key != '':
-                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + key
-                    else:
-                        if 'serie' in atype.get('AnimeType').lower():
-                            key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                                  + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/3/" + \
-                                  atype.get('GenericId', '')
 
                 if will_flatten:                    
                     new_params = {'url': key, 'mode': 6}
@@ -1216,9 +1203,7 @@ def build_tv_episodes(params):
                             list_cast_and_role = result_list[1]
                         temp_genre = get_tags(atype)
                         parent_key = atype.get('parentKey', '0')
-                        if not parent_key.startswith("http") and 'jmmserverkodi' not in parent_key.lower():
-                            parent_key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                                         + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/" + parent_key
+
                         grandparent_title = encode(atype.get('grandparentTitle',
                                                              atype.get('grandparentTitle', '')))
             # Extended support
@@ -1290,9 +1275,6 @@ def build_tv_episodes(params):
                     error("jsonrpc_error: " + str(ex))
 
                 key = atype.get('key', '')
-                if not key.startswith("http") and 'jmmserverkodi' not in key.lower():
-                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
-                          + "/videolocal/0/" + key
 
                 ext = atype.find('Media').find('Part').get('container', '')
                 new_key = atype.find('Media').find('Part').get('key', '')
