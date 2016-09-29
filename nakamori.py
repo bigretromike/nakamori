@@ -546,11 +546,11 @@ def remove_html(data=""):
 
 def get_poster(data=""):
     """
-
+    Convert a thumb to a poster if needed and return
     Args:
-        data:
+        data: The url of the image
 
-    Returns:
+    Returns: the new url of the image
 
     """
     if data is not None:
@@ -568,19 +568,21 @@ def get_poster(data=""):
 
 def gen_image_url(data=""):
     """
-
+    Perform conversion of url if necessary
     Args:
-        data:
+        data: URL of the image
 
-    Returns:
+    Returns: the new URL of the image
 
     """
     if data is not None:
         if data.startswith("http"):
+            if data.endswith("0.6667"):
+                data.replace("0.6667", "1.7778")
             return data
         if data.endswith("0.6667"):
-            return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                   + "/JMMServerREST/GetThumb/" + data
+            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                   + "/JMMServerREST/GetThumb/" + data).replace("0.6667", "1.7778")
         else:
             return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                    + "/JMMServerREST/GetImage/" + data
@@ -589,10 +591,10 @@ def gen_image_url(data=""):
 
 def set_watch_flag(extra_data, details):
     """
-
+    Set the flag icon for the list item to the desired state based on watched episodes
     Args:
-        extra_data:
-        details:
+        extra_data: the extra_data dict
+        details: the details dict
     """
     # TODO: Real watch progress instead of 0,50,100%
     # Set up overlays for watched and unwatched episodes
@@ -606,11 +608,11 @@ def set_watch_flag(extra_data, details):
 
 def get_legacy_title(data):
     """
-
+    Get the legacy title format
     Args:
-        data:
+        data: the xml node containing the title
 
-    Returns:
+    Returns: string of the desired title
 
     """
     lang = __addon__.getSetting("displaylang")
@@ -641,11 +643,11 @@ def get_legacy_title(data):
 
 def get_title(data):
     """
-
+    Get the new title
     Args:
-        data:
+        data: the xml node containing the title
 
-    Returns:
+    Returns: string of the desired title
 
     """
     try:
