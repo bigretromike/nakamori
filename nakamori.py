@@ -385,7 +385,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
-            liz.setArt({'thumb': tbi})
+            liz.setArt({'thumb': get_poster(tbi)})
             liz.setArt({'poster': get_poster(tbi)})
 
         # Set the properties of the item, such as summary, name, season, etc
@@ -1285,7 +1285,7 @@ def build_tv_episodes(params):
 
                 # Extra data required to manage other properties
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
-                              'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
+                              'fanart_image': None if skip else thumb, 'key': key, 'resume': int(int(view_offset) / 1000),
                               'parentKey': parent_key, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId',
                               '0')), 'banner': banner,
                               'xVideoResolution': atype.find('Media').get('videoResolution', 0),
