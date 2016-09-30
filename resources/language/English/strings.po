@@ -251,3 +251,7 @@ msgstr ""
 msgctxt "#30066"
 msgid "Request that the server not send cast"
 msgstr ""
+
+msgctxt "#30067"
+msgid "Use the source thumbnail ratio instead of 16:9"
+msgstr ""

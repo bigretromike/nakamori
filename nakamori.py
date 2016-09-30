@@ -385,7 +385,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
-            liz.setArt({'thumb': get_poster(tbi)})
+            liz.setArt({'thumb': tbi})
             liz.setArt({'poster': get_poster(tbi)})
 
         # Set the properties of the item, such as summary, name, season, etc
@@ -575,14 +575,18 @@ def gen_image_url(data=""):
     Returns: the new URL of the image
 
     """
+    if addon.getSetting('useOriginalThumbnailRatio') == 'true':
+        ratio = '0'
+    else:
+        ratio = '1.7778'
     if data is not None:
         if data.startswith("http"):
             if data.endswith("0.6667"):
-                data.replace("0.6667", "1.7778")
+                data = data.replace("0.6667", ratio)
             return data
         if data.endswith("0.6667"):
             return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                   + "/JMMServerREST/GetThumb/" + data).replace("0.6667", "1.7778")
+                   + "/JMMServerREST/GetThumb/" + data).replace("0.6667", ratio)
         else:
             return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                    + "/JMMServerREST/GetImage/" + data
@@ -1285,7 +1289,7 @@ def build_tv_episodes(params):
 
                 # Extra data required to manage other properties
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
-                              'fanart_image': None if skip else thumb, 'key': key, 'resume': int(int(view_offset) / 1000),
+                              'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
                               'parentKey': parent_key, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId',
                               '0')), 'banner': banner,
                               'xVideoResolution': atype.find('Media').get('videoResolution', 0),
