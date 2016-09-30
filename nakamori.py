@@ -32,13 +32,12 @@ __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 
 
-def error(msg, error_msg="Generic", error_type='Error'):
+def error(msg, error_type='Error'):
     """
-
+    Log and notify the user of an error
     Args:
-        msg:
-        error_msg:
-        error_type:
+        msg: the message to print to log and user notification
+        error_type: Type of Error
     """
     xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__))
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
@@ -46,7 +45,7 @@ def error(msg, error_msg="Generic", error_type='Error'):
         exc_type, exc_obj, exc_tb = sys.exc_info()
         if exc_type is not None and exc_obj is not None and exc_tb is not None:
             xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
-                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]) + " : " + str(error_msg), xbmc.LOGERROR)
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]), xbmc.LOGERROR)
             traceback.print_exc()
     except Exception as e:
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
@@ -133,6 +132,14 @@ def get_data(url_in, referer, data_type):
 
 
 def post_data(url, data_in):
+    """
+    Send a message to the server and wait for a response
+    Args:
+        url: the URL to send the data to
+        data_in: the message to send (in json)
+
+    Returns: The response from the server
+    """
     if data_in is not None:
         req = urllib2.Request(url.encode('utf-8'), data_in, {'Content-Type': 'application/json'})
         data_out = None
@@ -151,26 +158,26 @@ def post_data(url, data_in):
 
 def xml(xml_string):
     """
-
+    return an xml tree from string with error catching
     Args:
-        xml_string:
+        xml_string: the string containing the xml data
 
-    Returns:
+    Returns: ElementTree equivalentof Tree.XML()
 
     """
     e = Tree.XML(xml_string)
     if e.get('ErrorString', '') != '':
-        error(e.get('ErrorString'), 'JMM Error', 'JMM Error')
+        error(e.get('ErrorString'), 'JMM Error')
     return e
 
 
 def encode(i=''):
     """
-
+    encode a string in UTF-8
     Args:
-        i:
+        i: string to encode
 
-    Returns:
+    Returns: encoded string
 
     """
     try:
@@ -181,6 +188,10 @@ def encode(i=''):
 
 
 def valid_user():
+    """
+    Logs into the server and stores the apikey, then checks if the userid is valid
+    :return: bool True if all completes successfully
+    """
     if __addon__.getSetting("apikey") != "":
         return valid_userid()
     else:
@@ -203,6 +214,7 @@ def valid_user():
                                               __addon__.getSetting("port") + "/api/myid/get"))
                     if "userid" in uid:
                         __addon__.setSetting(id='userid', value=str(uid['userid']))
+                        return valid_userid()
                 else:
                     raise Exception('Error Getting apikey')
             else:
@@ -211,12 +223,13 @@ def valid_user():
         except Exception as ex:
             error('Error in Valid_User', str(ex))
             return False
+        return False
 
 
 def valid_userid():
     """
-
-    Returns:
+    Checks if the set userid is valid
+    Returns: bool True if valid
 
     """
     xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
@@ -233,7 +246,7 @@ def valid_userid():
 
 def refresh():
     """
-
+    Refresh and re-request data from server
     """
     # refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
     xbmc.executebuiltin('Container.Refresh')
@@ -244,10 +257,10 @@ def refresh():
 # use episode number for position
 def move_position_on_list(control_list, position=0):
     """
-
+    Move to the position in a list
     Args:
-        control_list:
-        position:
+        control_list: the list control
+        position: the index of the item not including settings
     """
     if __addon__.getSetting('show_continue') == 'true':
         position = int(position + 1)
@@ -278,9 +291,9 @@ def move_position_on_list(control_list, position=0):
 
 def set_window_heading(var_tree):
     """
-
+    Sets the window titles
     Args:
-        var_tree:
+        var_tree: details dict
     """
     window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     try:
@@ -297,12 +310,12 @@ def set_window_heading(var_tree):
 
 def filter_gui_item_by_tag(title):
     """
-
+    Remove list items from the tag group filter by the tag blacklist in settings
     Args:
-        title:
+        title: the title of the list item
 
-    Returns:
-
+    Returns: Whether or not to remove it (true is yes)
+    :rtype: bool
     """
     str1 = [title]
     str1 = TagFilter.processTags(__addon__, str1)
@@ -529,11 +542,11 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
 def remove_html(data=""):
     """
-
+    Remove anidb links from descriptions
     Args:
-        data:
+        data: the strong to remove links from
 
-    Returns:
+    Returns: new string without links
 
     """
     # search for string with 1 to 3 letters and 1 to 7 numbers
@@ -575,7 +588,7 @@ def gen_image_url(data=""):
     Returns: the new URL of the image
 
     """
-    if addon.getSetting('useOriginalThumbnailRatio') == 'true':
+    if __addon__.getSetting('useOriginalThumbnailRatio') == 'true':
         ratio = '0'
     else:
         ratio = '1.7778'
@@ -703,11 +716,11 @@ def get_title(data):
 
 def get_legacy_tags(atype):
     """
-
+    Get the tags from the legacy style
     Args:
-        atype:
+        atype: the xml node containing the tags
 
-    Returns:
+    Returns: a string of all of the tags formatted
 
     """
     temp_genre = ""
@@ -727,11 +740,11 @@ def get_legacy_tags(atype):
 
 def get_tags(atype):
     """
-
+    Get the tags from the new style
     Args:
-        atype:
+        atype: the xml node containing the tags
 
-    Returns:
+    Returns: a string of all of the tags formatted
 
     """
     try:
@@ -753,11 +766,11 @@ def get_tags(atype):
 
 def get_cast_and_role(data):
     """
-
+    Get cast from the xml
     Args:
-        data:
+        data: xml node containing the cast
 
-    Returns:
+    Returns: a list of the cast
 
     """
     if data is not None:
