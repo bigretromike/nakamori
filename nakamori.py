@@ -583,10 +583,15 @@ def gen_image_url(data=""):
         if data.startswith("http"):
             if data.endswith("0.6667"):
                 data = data.replace("0.6667", ratio)
+            elif data.endswith("0,6667"):
+                data = data.replace("0,6667", ratio)
             return data
         if data.endswith("0.6667"):
             return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                    + "/JMMServerREST/GetThumb/" + data).replace("0.6667", ratio)
+        elif data.endswith("0,6667"):
+            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                    + "/JMMServerREST/GetThumb/" + data).replace("0,6667", ratio)
         else:
             return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                    + "/JMMServerREST/GetImage/" + data
