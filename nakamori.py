@@ -93,8 +93,8 @@ def get_data(url_in, referer, data_type):
             if url_in.lower().startswith('/jmmserverkodi'):
                 url_in = 'http://' + __addon__.getSetting("ipaddress")+ ":"\
                          + __addon__.getSetting("port") + url_in
-                if url_in.lower().startswith(':'):
-                    url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
+            if url_in.lower().startswith(':'):
+                url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
         
         url = url_in + "." + data_type
         req = urllib2.Request(url.encode('utf-8'),
