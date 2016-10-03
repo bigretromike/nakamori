@@ -93,6 +93,8 @@ def get_data(url_in, referer, data_type):
             if url_in.lower().startswith('/jmmserverkodi'):
                 url_in = 'http://' + __addon__.getSetting("ipaddress")+ ":"\
                          + __addon__.getSetting("port") + url_in
+                if url_in.lower().startswith(':'):
+                    url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
         
         url = url_in + "." + data_type
         req = urllib2.Request(url.encode('utf-8'),
@@ -598,6 +600,9 @@ def gen_image_url(data=""):
                 data = data.replace("0.6667", ratio)
             elif data.endswith("0,6667"):
                 data = data.replace("0,6667", ratio)
+            if 'getsupportimage' in data.lower():
+                data = data.replace("/0.6667", '')
+                data = data.replace("/0,6667", '')
             return data
         if data.endswith("0.6667"):
             return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
@@ -1376,9 +1381,12 @@ def build_tv_episodes(params):
                 if "result" in setting:
                     if "value" in setting["result"]:
                         if int(setting["result"]["value"]) > 0:
-                            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                            ctl = win.getControl(win.getFocusId())
-                            move_position_on_list(ctl, next_episode)
+                            try:
+                                win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                                ctl = win.getControl(win.getFocusId())
+                                move_position_on_list(ctl, next_episode)
+                            except:
+                                pass
             except Exception as ex:
                 error("jsonrpc_error: " + str(ex))
         except Exception as ex:
