@@ -216,7 +216,7 @@ def valid_user():
         version = data.get('Message')
         if version == "3.6.1.0":
             return valid_userid()
-        
+
     if __addon__.getSetting("apikey") != "":
         return valid_userid()
     else:
@@ -507,28 +507,32 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         if __addon__.getSetting('context_show_vote_Series') == 'true':
-                            context.append(('Vote', 'RunScript(plugin.video.nakamori, %s, %s)' %
+                            context.append(('Vote (JMM)', 'RunScript(plugin.video.nakamori, %s, %s)' %
                                             (sys.argv[1], url_peep)))
                         url_peep = url_peep_base + "&anime_id=" + series_id
-                        context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                            sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                        (sys.argv[1], url_peep)))
+                        context.append(('Mark as Watched (JMM)',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                        % (sys.argv[1], url_peep)))
+                        context.append(('Mark as Unwatched (JMM)',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                        % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'AnimeGroup':
                         series_id = extra_data.get('key')[(my_len + 30):]
                         if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         url_peep = url_peep_base + "&group_id=" + series_id
-                        context.append(('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                            sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                        (sys.argv[1], url_peep)))
+                        context.append(('Mark as Watched (JMM)',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                        % (sys.argv[1], url_peep)))
+                        context.append(('Mark as Unwatched (JMM)',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                        % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id \
                                    + "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
                         if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                            context.append(('Play (Do not Mark as Watched)',
+                            context.append(('Play (Do not Mark as Watched (JMM))',
                                             'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
                                             % (sys.argv[1], url_peep)))
                         if __addon__.getSetting('context_show_info') == 'true':
@@ -536,31 +540,37 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         if __addon__.getSetting('context_show_vote_Series') == 'true':
                             if series_id != '':
                                 context.append(
-                                    ('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (
-                                    sys.argv[1], url_peep)))
+                                    ('Vote for Series (JMM)',
+                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)'
+                                     % (sys.argv[1], url_peep)))
                         if __addon__.getSetting('context_show_vote_Episode') == 'true':
                             if extra_data.get('jmmepisodeid') != '':
                                 context.append(
-                                    ('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (
-                                    sys.argv[1], url_peep)))
+                                    ('Vote for Episode (JMM)',
+                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)'
+                                     % (sys.argv[1], url_peep)))
 
                         if extra_data.get('jmmepisodeid') != '':
                             if __addon__.getSetting('context_krypton_watched') == 'true':
                                 if details.get('playcount', 0) == 0:
                                     context.append(
-                                        ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                                            sys.argv[1], url_peep)))
+                                        ('Mark as Watched (JMM)',
+                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                         % (sys.argv[1], url_peep)))
                                 else:
                                     context.append(
-                                        ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                         (sys.argv[1], url_peep)))
+                                        ('Mark as Unwatched (JMM)',
+                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                         % (sys.argv[1], url_peep)))
                             else:
                                 context.append(
-                                    ('Mark as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (
-                                        sys.argv[1], url_peep)))
+                                    ('Mark as Watched (JMM)',
+                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                     % (sys.argv[1], url_peep)))
                                 context.append(
-                                    ('Mark as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                     (sys.argv[1], url_peep)))
+                                    ('Mark as Unwatched (JMM)',
+                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                     % (sys.argv[1], url_peep)))
                     liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
