@@ -6,11 +6,11 @@
 		<setting label="30003" type="number" id="port" default="8111"/>
 		<setting label="30004" type="number" id="timeout" default="60"/>
 		<setting label="30011" type="lsep"/>
-		<setting label="30012" type="number" id="userid" default="1" visible="false"/>
+		<setting label="30012" type="number" id="userid" default="1" visible="true"/>
         <setting label="30015" type="text" id="login" default="Default"/>
         <setting label="30016" type="text" id="password" options="hidden"/>
         <setting label="30017" type="text" id="device" default="nakamori"/>
-        <setting label="30018" type="text" id="apikey" visible="true"/>
+        <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
     </category>
     <category label="30054">

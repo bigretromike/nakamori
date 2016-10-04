@@ -217,7 +217,10 @@ def valid_user():
         if version == "3.6.1.0":
             return valid_userid()
 
-    if __addon__.getSetting("apikey") != "":
+    # reset apikey if user enters new login info
+    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
+        # ignore what we put in for userid, the api sets it
+        set_userid()
         return valid_userid()
     else:
         xbmc.log('-- apikey empty --')
@@ -235,11 +238,8 @@ def valid_user():
                     __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
                     __addon__.setSetting(id='login', value='')
                     __addon__.setSetting(id='password', value='')
-                    uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
-                                              __addon__.getSetting("port") + "/api/myid/get"))
-                    if "userid" in uid:
-                        __addon__.setSetting(id='userid', value=str(uid['userid']))
-                        return valid_userid()
+                    set_userid()
+                    return valid_userid()
                 else:
                     raise Exception('Error Getting apikey')
             else:
@@ -249,6 +249,13 @@ def valid_user():
             error('Error in Valid_User', str(ex))
             return False
         return False
+
+
+def set_userid():
+    uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
+                              __addon__.getSetting("port") + "/api/myid/get"))
+    if "userid" in uid:
+        __addon__.setSetting(id='userid', value=str(uid['userid']))
 
 
 def valid_userid():
