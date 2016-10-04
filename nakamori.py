@@ -77,28 +77,44 @@ def parse_possible_error(data, data_type):
                 if stream.get('Message', '') != '':
                     xbmc.log(encode(stream.get('Message')), xbmc.LOGERROR)
 
+
 # Internal function
 def get_json(url_in):
     return get_data(url_in, None, "json")
 
 
 def get_xml(url_in):
-    return get_data(url_in, None, "xml")
+    # return get_data(url_in, None, "xml")
+    return get_data(url_in, None, "")
 
 
 def get_data(url_in, referer, data_type):
+    """
+    Send a message to the server and wait for a response
+    Args:
+        url_in: the URL to get data from
+        referer: currently not used always should be None
+        data_type: extension for url (.json or .xml) to force return type
+
+    Returns: The response from the server in forced type (.json or .xml)
+    """
     try:
         if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":"
-                                              + __addon__.getSetting("port")):
+                                         + __addon__.getSetting("port")):
             if url_in.lower().startswith('/jmmserverkodi'):
-                url_in = 'http://' + __addon__.getSetting("ipaddress")+ ":"\
+                url_in = 'http://' + __addon__.getSetting("ipaddress") + ":"\
                          + __addon__.getSetting("port") + url_in
             if url_in.lower().startswith(':'):
                 url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
-        
-        url = url_in + "." + data_type
+
+        # TODO: Remove with get_legacy
+        if len(data_type) > 1:
+            url = url_in + "." + data_type
+        else:
+            url = url_in
+            data_type = "xml"
         req = urllib2.Request(url.encode('utf-8'),
-                              headers={'Content-Type': 'application/'+data_type,
+                              headers={'Content-Type': 'application/' + data_type,
                                        'apikey': __addon__.getSetting("apikey")})
         if referer is not None:
             referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
@@ -235,7 +251,7 @@ def valid_userid():
 
     """
     xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                  "/jmmserverkodi/getusers")
+                       "/jmmserverkodi/getusers")
     if xml_file is not None:
         data = xml(xml_file)
         for atype in data.findall('User'):
@@ -346,12 +362,14 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         tp = 'Video'
         link_url = ""
 
-        #handle short urls to work with seriesid and epid
+        # handle short urls to work with seriesid and epid
         if extra_data.get('key', '') != '':
             url_in = str(extra_data.get('key'))
-            if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")):
+            if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" +
+                                             __addon__.getSetting("port")):
                 if url_in.lower().startswith('/jmmserverkodi'):
-                    extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + url_in
+                    extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + \
+                                        __addon__.getSetting("port") + url_in
 
         # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
@@ -500,8 +518,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                         (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
-                        url_peep = url_peep_base + "&anime_id=" + series_id + "&ep_id=" \
-                                        + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
+                        url_peep = url_peep_base + "&anime_id=" + series_id \
+                                   + "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
                         if __addon__.getSetting('context_show_play_no_watch') == 'true':
                             context.append(('Play (Do not Mark as Watched)',
                                             'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
@@ -605,10 +623,10 @@ def gen_image_url(data=""):
                 data = data.replace("/0,6667", '')
             return data
         if data.endswith("0.6667"):
-            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                   + "/JMMServerREST/GetThumb/" + data).replace("0.6667", ratio)
+            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                    + "/JMMServerREST/GetThumb/" + data).replace("0.6667", ratio)
         elif data.endswith("0,6667"):
-            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
                     + "/JMMServerREST/GetThumb/" + data).replace("0,6667", ratio)
         else:
             return "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \

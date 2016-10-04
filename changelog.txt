@@ -1,3 +1,11 @@
+v2.0.13 (04/10/2016)
+- current master is not compatible with jmm 3.6.1.0 (#165)
+- Manual mark as watched/unwatched doesn't work (#157)
+- Hacky fix for avael's 3.6.1.0 image issues
+- Support those silly foreigners and their commas in numbers
+- Option to use original thumb aspect instead of 16:9 or anything else
+- Fix an error in error handling. We throw errors on purpose, so there is not always a stacktrace
+
 v2.0.12 (15/09/2016)
 - Ongoing Kodi Compatibility Issue (#90)
 - Ongoing Android Compatibility issue (#104)
