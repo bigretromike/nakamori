@@ -114,7 +114,7 @@ def get_data(url_in, referer, data_type):
             url = url_in
             data_type = "xml"
         req = urllib2.Request(url.encode('utf-8'),
-                              headers={'Content-Type': 'application/' + data_type,
+                              headers={'Accept': 'application/' + data_type,
                                        'apikey': __addon__.getSetting("apikey")})
         if referer is not None:
             referer = urllib2.quote(referer.encode('utf-8')).replace("%3A", ":")
