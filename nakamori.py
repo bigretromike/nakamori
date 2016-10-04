@@ -210,6 +210,13 @@ def valid_user():
     Logs into the server and stores the apikey, then checks if the userid is valid
     :return: bool True if all completes successfully
     """
+    xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/jmmserverkodi/getversion")
+    if xml_file is not None:
+        data = xml(xml_file)
+        version = data.get('Message')
+        if version == "3.6.1.0":
+            return valid_userid()
+        
     if __addon__.getSetting("apikey") != "":
         return valid_userid()
     else:
