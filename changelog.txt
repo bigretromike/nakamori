@@ -1,3 +1,6 @@
+v2.0.16 (06/10/2016)
+- Comma and Dot in rating issue (#167)
+
 v2.0.15 (05/10/2016)
 - Wipe and re-auth if login info is provided again. Hide apikey setting. Unhide userid setting (for 3.6.1.0). If on 3.7, ignore userid setting and reset it from api (just in case it was modified).
 - Fix Accept Header for 3.7 
