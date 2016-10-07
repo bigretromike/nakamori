@@ -988,7 +988,7 @@ def build_tv_shows(params, extra_directories=None):
                     # 'count'        : count,
                     # 'size'         : size,
                     # 'Date'         : date,
-                    'rating': float(str(atype.get('rating', 0))),
+                    'rating': float(str(atype.get('rating', 0.0)).replace(',', '.')),
                     # 'playcount'    : int(atype.get('viewedLeafCount')),
                     # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
                     'cast': list_cast,  # cast : list (Michal C. Hall,
@@ -1145,7 +1145,7 @@ def build_tv_seasons(params, extra_directories=None):
                     'season': int(atype.get('season', 1)),
                     'episode': total,
                     'mpaa': atype.get('contentRating', ''),
-                    'rating': atype.get('rating'),
+                    'rating': float(str(atype.get('rating', 0.0)).replace(',', '.')),
                     'aired': atype.get('originallyAvailableAt', ''),
                     'year': int(atype.get('year', 0))
                 }
@@ -1297,7 +1297,7 @@ def build_tv_episodes(params):
                     'title': encode(atype.get('title', 'Unknown')),
                     'sorttitle': encode(atype.get('titleSort', atype.get('title', 'Unknown'))),
                     'parenttitle': encode(parent_title),
-                    'rating': float(atype.get('rating', 0)),
+                    'rating': float(str(atype.get('rating', 0.0)).replace(',', '.')),
                     # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                     # This doesn't work, some gremlins be afoot in this code...
                     # it's probably just that it only applies at series level
