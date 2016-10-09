@@ -1327,24 +1327,6 @@ def build_tv_episodes(params):
 
                 thumb = gen_image_url(atype.get('thumb', ''))
 
-                try:
-                    parent_setting = xbmc.executeJSONRPC(
-                        '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                        '{"setting": "videolibrary.showunwatchedplots"}, "id": 1}')
-                    # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
-
-                    setting = json.loads(parent_setting)
-                    if "result" in setting:
-                        if "value" in setting["result"]:
-                            if not setting["result"]["value"]:
-                                details['plot'] \
-                                    = "Hidden due to user setting.\nCheck Show Plot" + \
-                                    " for Unwatched Items in the Video Library Settings."
-                                thumb = None
-                                art = None
-                except Exception as ex:
-                    error("jsonrpc_error: " + str(ex))
-
                 key = atype.get('key', '')
 
                 ext = atype.find('Media').find('Part').get('container', '')
@@ -1392,6 +1374,26 @@ def build_tv_episodes(params):
                     #details['overlay'] = 0
                     if next_episode == 1:
                         next_episode = episode_count - 1
+
+                if details['playcount'] == 0:
+                    # Hide plot and thumb for unwatched by kodi setting
+                    try:
+                        parent_setting = xbmc.executeJSONRPC(
+                            '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+                            '{"setting": "videolibrary.showunwatchedplots"}, "id": 1}')
+                        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+
+                        setting = json.loads(parent_setting)
+                        if "result" in setting:
+                            if "value" in setting["result"]:
+                                if not setting["result"]["value"]:
+                                    details['plot'] \
+                                        = "Hidden due to user setting.\nCheck Show Plot" + \
+                                          " for Unwatched Items in the Video Library Settings."
+                                    thumb = None
+                                    art = None
+                    except Exception as ex:
+                        error("jsonrpc_error: " + str(ex))
 
                 context = None
                 url = key
