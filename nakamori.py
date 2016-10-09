@@ -1390,8 +1390,8 @@ def build_tv_episodes(params):
                                     details['plot'] \
                                         = "Hidden due to user setting.\nCheck Show Plot" + \
                                           " for Unwatched Items in the Video Library Settings."
-                                    thumb = None
-                                    art = None
+                                    extra_data['thumb'] = None
+                                    extra_data['fanart_image'] = None
                     except Exception as ex:
                         error("jsonrpc_error: " + str(ex))
 
