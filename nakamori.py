@@ -137,8 +137,8 @@ def get_data(url_in, referer, data_type):
                 data = response.read()
             response.close()
         except Exception as ex:
+            xbmc.log("url: " + str(url))
             error('Connection Failed', str(ex))
-            xbmc.log(str(url))
             data = None
     except Exception as ex:
         error('Get_Data Error', str(ex))
@@ -1444,6 +1444,8 @@ def build_search(url=''):
 
     try:
         term = util.searchBox()
+        if term is None or term == "":
+            term = "Something that will never ever match anything hopefully 12"
         term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
         to_send = {'url': url + term}
         url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
