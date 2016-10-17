@@ -1441,23 +1441,32 @@ def build_tv_episodes(params):
 
 
 def build_search(url=''):
+    """
+    Build directory list of series containing searched query
+    Args:
+        url: url pointing to search api
 
+    Returns: build_tv_shows out of search query
+
+    """
     try:
         term = util.searchBox()
-        if term is None or term == "":
-            term = "Something that will never ever match anything hopefully 12"
-        term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
-        to_send = {'url': url + term}
-        url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-               + "/jmmserverkodi/searchtag/" + __addon__.getSetting("userid") + "/" + \
-               __addon__.getSetting("maxlimit_tag") + "/"
-        e = xml(get_xml(url2 + term).decode('utf-8').encode('utf-8'))
-        directories = e.findall('Directory')
-        if len(directories) <= 0:
-            directories = None
-        build_tv_shows(to_send, directories)
+        if term is not None and term != "":
+            try:
+                term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
+                to_send = {'url': url + term}
+                url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                       + "/jmmserverkodi/searchtag/" + __addon__.getSetting("userid") + "/" + \
+                       __addon__.getSetting("maxlimit_tag") + "/"
+                e = xml(get_xml(url2 + term).decode('utf-8').encode('utf-8'))
+                directories = e.findall('Directory')
+                if len(directories) <= 0:
+                    directories = None
+                build_tv_shows(to_send, directories)
+            except Exception as ex:
+                error("Error during build_search", str(ex))
     except Exception as ex:
-        error("Error during build_search", str(ex))
+        error("Error during searchBox", str(ex))
 
 
 # Other functions
