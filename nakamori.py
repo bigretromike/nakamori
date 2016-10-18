@@ -19,6 +19,7 @@ import xbmcplugin
 from StringIO import StringIO
 import gzip
 import json
+from resources.lib.util import set_parameter
 
 try:
     import pydevd
@@ -269,7 +270,7 @@ def valid_userid():
     if xml_file is not None:
         data = xml(xml_file)
         for atype in data.findall('User'):
-            user_id = atype.get('id')
+            user_id = atype.get('id', '')
             if user_id == __addon__.getSetting("userid"):
                 return True
         return False
@@ -379,11 +380,12 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         # handle short urls to work with seriesid and epid
         if extra_data.get('key', '') != '':
             url_in = str(extra_data.get('key'))
-            if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" +
-                                             __addon__.getSetting("port")):
-                if url_in.lower().startswith('/jmmserverkodi'):
-                    extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + \
-                                        __addon__.getSetting("port") + url_in
+            if folder:
+                if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" +
+                                                 __addon__.getSetting("port")):
+                    if url_in.lower().startswith('/jmmserverkodi'):
+                        extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + \
+                                            __addon__.getSetting("port") + url_in
 
         # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
@@ -393,6 +395,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 details['aired'] = details['date']
                 # details['aired'] = str(details['year'])+'-01-01'
         if __addon__.getSetting("spamLog") == 'true':
+            xbmc.log("add_gui_item - url: " + url, xbmc.LOGWARNING)
             if details is not None:
                 xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
                 for i in details:
@@ -889,7 +892,11 @@ def build_main_menu():
                 thumb = gen_image_url(atype.get('thumb'))
                 fanart = gen_image_url(atype.get('art', thumb))
 
-                u = sys.argv[0] + "?url=" + url + "&mode=" + str(use_mode) + "&name=" + urllib.quote_plus(title)
+                u = sys.argv[0]
+                u = set_parameter(u, 'url', url)
+                u = set_parameter(u, 'mode', str(use_mode))
+                u = set_parameter(u, 'name', urllib.quote_plus(title))
+
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
                 liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
@@ -909,7 +916,11 @@ def build_main_menu():
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-    u = sys.argv[0] + "?url=" + url + "&mode=" + str(3) + "&name=" + urllib.quote_plus(title)
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'mode', str(3))
+    u = set_parameter(u, 'name', urllib.quote_plus(title))
+
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
     # End Add_Search
     xbmcplugin.endOfDirectory(handle, True, False, False)
@@ -1052,7 +1063,9 @@ def build_tv_shows(params, extra_directories=None):
                     # this will help when users is using grouping option in jmm which results in series in series
                     if "data/1/2/" in extra_data['key'].lower():
                         use_mode = 4
-                u = sys.argv[0] + "?url=" + url + "&mode=" + str(use_mode)
+                u = sys.argv[0]
+                u = set_parameter(u, 'url', url)
+                u = set_parameter(u, 'mode', str(use_mode))
                 context = None
                 add_gui_item(u, details, extra_data, context)
         except Exception as e:
@@ -1184,7 +1197,10 @@ def build_tv_seasons(params, extra_directories=None):
                 if __addon__.getSetting('request_nocast') == 'true':
                     key_append = '/nocast'
 
-                url = sys.argv[0] + "?url=" + extra_data['key'] + key_append + "&mode=" + str(6)
+                url = sys.argv[0]
+                url = set_parameter(url, 'url', extra_data['key'] + key_append)
+                url = set_parameter(url, 'mode', str(6))
+
                 context = None
 
                 # Build the screen directory listing
@@ -1334,6 +1350,11 @@ def build_tv_episodes(params):
                 if 'videolocal' not in key:
                     key = new_key + '.' + ext
 
+                newerkey = str(atype.find('Media').find('Part').get('local_key', ''))
+                newerkey = newerkey.replace('\\', '\\\\')
+                if newerkey != '' and os.path.isfile(newerkey):
+                    key = newerkey
+
                 # Extra data required to manage other properties
                 extra_data = {'type': "Video", 'source': 'tvepisodes', 'thumb': None if skip else thumb,
                               'fanart_image': None if skip else art, 'key': key, 'resume': int(int(view_offset) / 1000),
@@ -1402,9 +1423,18 @@ def build_tv_episodes(params):
                 if not key.startswith("http") and 'videolocal' not in key.lower():
                     key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
-                sys.argv[0] += "?url=" + url + "&mode=" + str(1) + "&file=" + key + "&ep_id=" \
-                               + extra_data.get('jmmepisodeid') + '&ui_index=' + str(int(episode_count - 1))
+
+                newerkey = str(atype.find('Media').find('Part').get('local_key', ''))
+                newerkey = newerkey.replace('\\', '\\\\')
+                if newerkey != '' and os.path.isfile(newerkey):
+                    key = newerkey
+
                 u = sys.argv[0]
+                u = set_parameter(u, 'url', url)
+                u = set_parameter(u, 'mode', '1')
+                u = set_parameter(u, 'file', key)
+                u = set_parameter(u, 'ep_id', extra_data.get('jmmepisodeid'))
+                u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
                 add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
 

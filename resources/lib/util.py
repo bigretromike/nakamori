@@ -93,6 +93,25 @@ def relevanceCheck(title, animeList):
     return returnList
 
 
+def set_parameter(url, parameter, value):
+    if '?' not in url:
+        return url + '?' + parameter + '=' + value
+
+    array1 = url.split('?')
+    if parameter not in array1[1]:
+        return url + "&" + parameter + '=' + value
+
+    url = array1[0] + '?'
+    array2 = array1[1].split('&')
+    for key in array2:
+        if key == parameter:
+            array2[key] = value
+        url += key + '=' + array2[key] + '&'
+    return url[:-1]
+
+
+#plugin://plugin.video.nakamori/?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&ep_id=13500&ui_index=0?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&ep_id=13499&ui_index=1
+
 def searchBox():
     """
     Shows a keyboard, and returns the text entered
