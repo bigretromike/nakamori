@@ -20,6 +20,7 @@ from StringIO import StringIO
 import gzip
 import json
 from resources.lib.util import set_parameter
+from collections import defaultdict
 
 try:
     import pydevd
@@ -462,24 +463,20 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         video_codec['height'] = int(extra_data.get('height'))
                     if extra_data.get('width'):
                         video_codec['width'] = int(extra_data.get('width'))
+                    if extra_data.get('xVideoAspect'):
+                        video_codec['aspect'] = float(extra_data.get('xVideoAspect'))
                     if extra_data.get('duration'):
                         video_codec['duration'] = extra_data.get('duration')
 
-                    audio_codec = {}
-                    if extra_data.get('AudioCodec'):
-                        audio_codec['codec'] = extra_data.get('AudioCodec')
-                    if extra_data.get('AudioChannels'):
-                        audio_codec['channels'] = int(extra_data.get('AudioChannels'))
-                    if extra_data.get('AudioLanguage'):
-                        audio_codec['language'] = extra_data.get('AudioLanguage')
-
-                    subtitle = {}
-                    if extra_data.get('SubtitleLanguage'):
-                        subtitle['language'] = extra_data.get('SubtitleLanguage')
-
                     liz.addStreamInfo('video', video_codec)
-                    liz.addStreamInfo('audio', audio_codec)
-                    liz.addStreamInfo('subtitle', subtitle)
+
+                    if extra_data.get('AudioStreams'):
+                        for stream in extra_data['AudioStreams']:
+                            liz.setProperty('AudioCodec.' + str(stream), str(extra_data['AudioStreams'][stream]['AudioCodec']))
+                            liz.setProperty('AudioChannels.' + str(stream), str(extra_data['AudioStreams'][stream]['AudioChannels']))
+                    if extra_data.get('SubStreams'):
+                        for stream2 in extra_data['SubStreams']:
+                            liz.setProperty('SubtitleLanguage.' + str(stream2), str(extra_data['SubStreams'][stream2]['SubtitleLanguage']))
 
             # UMS/PSM Jumpy plugin require 'path' to play video
             partemp = util.parseParameters(inputString=url)
@@ -1361,27 +1358,36 @@ def build_tv_episodes(params):
                               'parentKey': parent_key, 'jmmepisodeid': atype.get('JMMEpisodeId', atype.get('GenericId',
                               '0')), 'banner': banner,
                               'xVideoResolution': atype.find('Media').get('videoResolution', 0),
-                              'xVideoCodec': atype.find('Media').get('audioCodec', ''),
+                              'xVideoCodec': atype.find('Media').get('videoCodec', ''),
                               'xVideoAspect': float(atype.find('Media').get('aspectRatio', 0)),
-                              'xAudioCodec': atype.find('Media').get('videoCodec', ''),
+                              'xAudioCodec': atype.find('Media').get('audioCodec', ''),
                               'xAudioChannels': int(atype.find('Media').get('audioChannels', 0))}
 
                 # Information about streams inside video file
-
+                extra_data['AudioStreams'] = defaultdict(dict)
+                extra_data['SubStreams'] = defaultdict(dict)
                 for vtype in atype.find('Media').find('Part').findall('Stream'):
                     stream = int(vtype.get('streamType'))
                     if stream == 1:
+                        # Video
                         extra_data['VideoCodec'] = vtype.get('codec', '')
                         extra_data['width'] = int(vtype.get('width', 0))
                         extra_data['height'] = int(vtype.get('height', 0))
                         extra_data['duration'] = duration
                     elif stream == 2:
-                        extra_data['AudioCodec'] = vtype.get('codec')
-                        extra_data['AudioLanguage'] = vtype.get('language')
-                        extra_data['AudioChannels'] = int(vtype.get('channels'))
+                        # Audio
+                        streams = extra_data.get('AudioStreams')
+                        streamid = int(vtype.get('index'))
+                        streams[streamid]['AudioCodec'] = vtype.get('codec')
+                        streams[streamid]['AudioLanguage'] = vtype.get('languageCode')
+                        streams[streamid]['AudioChannels'] = int(vtype.get('channels'))
+                        extra_data['AudioStreams'] = streams
                     elif stream == 3:
-                        # subtitle
-                        extra_data['SubtitleLanguage'] = vtype.get('language')
+                        # Subtitle
+                        streams = extra_data.get('SubStreams')
+                        streamid = int(vtype.get('index'))
+                        streams[streamid]['SubtitleLanguage'] = vtype.get('languageCode')
+                        extra_data['SubStreams'] = streams
                     else:
                         # error
                         error("Unknown Stream Type Received!")
