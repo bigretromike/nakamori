@@ -468,15 +468,30 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     if extra_data.get('duration'):
                         video_codec['duration'] = extra_data.get('duration')
 
+
+                    if extra_data.get('xAudioCodec'):
+                        audio_codec['codec'] = extra_data.get('xAudioCodec')
+                    if extra_data.get('xAudioChannels'):
+                        audio_codec['channels'] = int(extra_data.get('xAudioChannels'))
+
                     liz.addStreamInfo('video', video_codec)
+
 
                     if extra_data.get('AudioStreams'):
                         for stream in extra_data['AudioStreams']:
                             liz.setProperty('AudioCodec.' + str(stream), str(extra_data['AudioStreams'][stream]['AudioCodec']))
                             liz.setProperty('AudioChannels.' + str(stream), str(extra_data['AudioStreams'][stream]['AudioChannels']))
+                            audio_codec = {}
+                            audio_codec['codec'] = str(extra_data['AudioStreams'][stream]['AudioCodec'])
+                            audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
+                            audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
+                            liz.addStreamInfo('audio', audio_codec)
                     if extra_data.get('SubStreams'):
                         for stream2 in extra_data['SubStreams']:
                             liz.setProperty('SubtitleLanguage.' + str(stream2), str(extra_data['SubStreams'][stream2]['SubtitleLanguage']))
+                            subtitle_codec = {}
+                            subtitle_codec['language'] = str(extra_data['SubStreams'][stream2]['SubtitleLanguage'])
+                            liz.addStreamInfo('subtitle', subtitle_codec)
 
             # UMS/PSM Jumpy plugin require 'path' to play video
             partemp = util.parseParameters(inputString=url)
