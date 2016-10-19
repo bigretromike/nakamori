@@ -468,14 +468,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     if extra_data.get('duration'):
                         video_codec['duration'] = extra_data.get('duration')
 
-
-                    if extra_data.get('xAudioCodec'):
-                        audio_codec['codec'] = extra_data.get('xAudioCodec')
-                    if extra_data.get('xAudioChannels'):
-                        audio_codec['channels'] = int(extra_data.get('xAudioChannels'))
-
                     liz.addStreamInfo('video', video_codec)
-
 
                     if extra_data.get('AudioStreams'):
                         for stream in extra_data['AudioStreams']:
