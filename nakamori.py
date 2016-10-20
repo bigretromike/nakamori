@@ -404,7 +404,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     a = details.get(encode(i))
                     if a is None:
                         temp_log = "\'unset\'"
-                    elif isinstance(a, list):
+                    elif isinstance(a, list) or isinstance(a, dict):
                         for b in a:
                             temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
                     else:
@@ -417,7 +417,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     a = extra_data.get(encode(i))
                     if a is None:
                         temp_log = "\'unset\'"
-                    elif isinstance(a, list):
+                    elif isinstance(a, list) or isinstance(a, dict):
                         for b in a:
                             temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
                     else:
@@ -468,6 +468,19 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     if extra_data.get('duration'):
                         video_codec['duration'] = extra_data.get('duration')
 
+                    if __addon__.getSetting("spamLog") == 'true':
+                        xbmc.log("add_gui_item - videocodec", xbmc.LOGWARNING)
+                        for i in video_codec:
+                            temp_log = ""
+                            a = video_codec.get(encode(i))
+                            if a is None:
+                                temp_log = "\'unset\'"
+                            elif isinstance(a, list):
+                                for b in a:
+                                    temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
+                            else:
+                                temp_log = str(a)
+                            xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
                     liz.addStreamInfo('video', video_codec)
 
                     if extra_data.get('AudioStreams'):
@@ -478,6 +491,19 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                             audio_codec['codec'] = str(extra_data['AudioStreams'][stream]['AudioCodec'])
                             audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
                             audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
+                            if __addon__.getSetting("spamLog") == 'true':
+                                xbmc.log("add_gui_item - audiocodec", xbmc.LOGWARNING)
+                                for i in audio_codec:
+                                    temp_log = ""
+                                    a = audio_codec.get(encode(i))
+                                    if a is None:
+                                        temp_log = "\'unset\'"
+                                    elif isinstance(a, list):
+                                        for b in a:
+                                            temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
+                                    else:
+                                        temp_log = str(a)
+                                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
                             liz.addStreamInfo('audio', audio_codec)
                     if extra_data.get('SubStreams'):
                         for stream2 in extra_data['SubStreams']:
@@ -1303,8 +1329,8 @@ def build_tv_episodes(params):
                 episode_count += 1
 
                 # Extended support END#
-                temp_dir = []
-                temp_writer = []
+                #temp_dir = []
+                #temp_writer = []
                 view_offset = atype.get('viewOffset', 0)
                 # Check for empty duration from MediaInfo check fail and handle it properly
                 tmp_duration = atype.find('Media').get('duration', '1000')
@@ -1327,8 +1353,8 @@ def build_tv_episodes(params):
                     # According to the docs, this will auto fill castandrole
                     'CastAndRole': list_cast_and_role,
                     'Cast': list_cast,
-                    'director': " / ".join(temp_dir),
-                    'writer': " / ".join(temp_writer),
+                    #'director': " / ".join(temp_dir),
+                    #'writer': " / ".join(temp_writer),
                     'genre': "..." if skip else temp_genre,
                     'duration': str(datetime.timedelta(seconds=duration)),
                     'mpaa': atype.get('contentRating', ''),
@@ -1541,10 +1567,57 @@ def play_video(url, ep_id):
         'size': xbmc.getInfoLabel('ListItem.Size'),
         'season': xbmc.getInfoLabel('ListItem.Season')
     }
+
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
                             path=url)
     item.setInfo(type='Video', infoLabels=details)
     item.setProperty('IsPlayable', 'true')
+    try:
+        # jmmserverkodi/getmetadata/userid/type (5 is episode)/ep_id
+        episode_xml_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
+                          "/jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/5/" + str(ep_id)
+        html = get_xml(episode_xml_url).decode('utf-8').encode('utf-8')
+        e = xml(html)
+        video_list = e.findall('Video')
+        for atype in video_list:
+            tmp_duration = atype.find('Media').get('duration', '1000')
+            if not tmp_duration:
+                duration = 1
+            else:
+                duration = int(tmp_duration) / 1000
+            # Information about streams inside video file
+            for vtype in atype.find('Media').find('Part').findall('Stream'):
+                stream = int(vtype.get('streamType'))
+                if stream == 1:
+                    # Video
+                    video_codec = {}
+                    video_codec['codec'] = vtype.get('codec', '')
+                    video_codec['width'] = int(vtype.get('width', 0))
+                    video_codec['height'] = int(vtype.get('height', 0))
+                    video_codec['duration'] = duration
+                    item.addStreamInfo('video', video_codec)
+                elif stream == 2:
+                    # Audio
+                    audio_codec = {}
+                    audio_codec['codec'] = vtype.get('codec')
+                    audio_codec['language'] = vtype.get('languageCode')
+                    audio_codec['channels'] = int(vtype.get('channels'))
+                    item.addStreamInfo('audio', audio_codec)
+                elif stream == 3:
+                    # Subtitle
+                    subtitle_codec = {}
+                    subtitle_codec['language'] = vtype.get('languageCode')
+                    item.addStreamInfo('subtitle', subtitle_codec)
+                else:
+                    # error
+                    error("Unknown Stream Type Received!")
+
+    except:
+        error('Error getting episode info')
+
+    if __addon__.getSetting("spamLog") == "true":
+        xbmc.log(html)
+
     player = xbmc.Player()
 
     try:
