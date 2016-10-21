@@ -104,9 +104,10 @@ def set_parameter(url, parameter, value):
     url = array1[0] + '?'
     array2 = array1[1].split('&')
     for key in array2:
-        if key == parameter:
-            array2[key] = value
-        url += key + '=' + array2[key] + '&'
+        array3 = key.split('=')
+        if array3[0] == parameter:
+            array3[1] = value
+        url += array3[0] + '=' + array3[1] + '&'
     return url[:-1]
 
 

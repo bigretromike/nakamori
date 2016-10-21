@@ -191,9 +191,28 @@ def xml(xml_string):
     return e
 
 
+def decode(i=''):
+    """
+    decode a string to UTF-8
+    Args:
+        i: string to decode
+
+    Returns: decoded string
+
+    """
+    try:
+        if isinstance(i, str):
+            return i.decode('utf-8')
+        elif isinstance(i, unicode):
+            return i
+    except:
+        error("Unicode Error", error_type='Unicode Error')
+        return ''
+
+
 def encode(i=''):
     """
-    encode a string in UTF-8
+    encode a string from UTF-8
     Args:
         i: string to encode
 
@@ -201,7 +220,10 @@ def encode(i=''):
 
     """
     try:
-        return i.encode('utf-8')
+        if isinstance(i, str):
+            return i
+        elif isinstance(i, unicode):
+            return i.encode('utf-8')
     except:
         error("Unicode Error", error_type='Unicode Error')
         return ''
@@ -1381,7 +1403,7 @@ def build_tv_episodes(params):
                 if 'videolocal' not in key:
                     key = new_key + '.' + ext
 
-                newerkey = str(atype.find('Media').find('Part').get('local_key', ''))
+                newerkey = encode(atype.find('Media').find('Part').get('local_key', ''))
                 newerkey = newerkey.replace('\\', '\\\\')
                 if newerkey != '' and os.path.isfile(newerkey):
                     key = newerkey
@@ -1464,7 +1486,7 @@ def build_tv_episodes(params):
                     key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
                           + "/videolocal/0/" + key
 
-                newerkey = str(atype.find('Media').find('Part').get('local_key', ''))
+                newerkey = encode(atype.find('Media').find('Part').get('local_key', ''))
                 newerkey = newerkey.replace('\\', '\\\\')
                 if newerkey != '' and os.path.isfile(newerkey):
                     key = newerkey
