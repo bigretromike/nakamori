@@ -1,8 +1,15 @@
-import sys, urllib, urllib2, re, gzip, StringIO
+import os
+import sys, urllib, urllib2, re, gzip
+import traceback
+
 import xbmc, xbmcgui, xbmcaddon, xbmcplugin
+from StringIO import StringIO
+import xml.etree.ElementTree as Tree
 
 # get addon info
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
+__addonversion__ = __addon__.getAddonInfo('version')
+__addonid__ = __addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
@@ -10,6 +17,201 @@ __localize__ = __addon__.getLocalizedString
 ADDON_ID = 'plugin.video.nakamori'
 UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
+
+
+def error(msg, error_type='Error'):
+    """
+    Log and notify the user of an error
+    Args:
+        msg: the message to print to log and user notification
+        error_type: Type of Error
+    """
+    xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__))
+    xbmc.log('---' + msg + '---', xbmc.LOGERROR)
+    try:
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        if exc_type is not None and exc_obj is not None and exc_tb is not None:
+            xbmc.log(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
+                os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]), xbmc.LOGERROR)
+            traceback.print_exc()
+    except Exception as e:
+        xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
+        xbmc.log("The error message: " + str(e), xbmc.LOGERROR)
+        traceback.print_exc()
+
+    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
+
+
+def parse_possible_error(data, data_type):
+    if data_type == 'json':
+        # TODO actually support this
+        pass
+    elif data_type == 'xml':
+        stream = xml(data)
+        if stream.get('Code', '') != '':
+            code = stream.get('Code')
+            if code != '200':
+                error_msg = code
+                if code == '500':
+                    error_msg = 'Server Error'
+                elif code == '404':
+                    error_msg = 'Invalid URL: Endpoint not Found in Server'
+                elif code == '503':
+                    error_msg = 'Service Unavailable: Check netsh http'
+                elif code == '401' or code == '403':
+                    error_msg = 'The was refused as unauthorized'
+                error(error_msg, error_type='Network Error: ' + code)
+                if stream.get('Message', '') != '':
+                    xbmc.log(encode(stream.get('Message')), xbmc.LOGERROR)
+
+
+# Internal function
+def get_json(url_in):
+    return get_data(url_in, None, "json")
+
+
+def get_xml(url_in):
+    # return get_data(url_in, None, "xml")
+    return get_data(url_in, None, "")
+
+
+def get_data(url_in, referer, data_type):
+    """
+    Send a message to the server and wait for a response
+    Args:
+        url_in: the URL to get data from
+        referer: currently not used always should be None
+        data_type: extension for url (.json or .xml) to force return type
+
+    Returns: The response from the server in forced type (.json or .xml)
+    """
+    try:
+        if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":"
+                                                 + __addon__.getSetting("port")):
+            if url_in.lower().startswith('/jmmserverkodi'):
+                url_in = 'http://' + __addon__.getSetting("ipaddress") + ":" \
+                         + __addon__.getSetting("port") + url_in
+            if url_in.lower().startswith(':'):
+                url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
+
+        # TODO: Remove with get_legacy
+        if len(data_type) > 1:
+            url = url_in + "." + data_type
+        else:
+            url = url_in
+            data_type = "xml"
+        req = urllib2.Request(encode(url),
+                              headers={'Accept': 'application/' + data_type,
+                                       'apikey': __addon__.getSetting("apikey")})
+        if referer is not None:
+            referer = urllib2.quote(encode(referer)).replace("%3A", ":")
+            if len(referer) > 1:
+                req.add_header('Referer', referer)
+        use_gzip = __addon__.getSetting("use_gzip")
+        if use_gzip == "true":
+            req.add_header('Accept-encoding', 'gzip')
+        data = None
+        try:
+            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            if response.info().get('Content-Encoding') == 'gzip':
+                try:
+                    buf = StringIO(response.read())
+                    f = gzip.GzipFile(fileobj=buf)
+                    data = f.read()
+                except Exception as ex:
+                    error('Decompresing gzip respond failed', str(ex))
+            else:
+                data = response.read()
+            response.close()
+        except Exception as ex:
+            xbmc.log("url: " + str(url))
+            error('Connection Failed', str(ex))
+            data = None
+    except Exception as ex:
+        error('Get_Data Error', str(ex))
+        data = None
+
+    if data is not None:
+        parse_possible_error(data, data_type)
+    return data
+
+
+def post_data(url, data_in):
+    """
+    Send a message to the server and wait for a response
+    Args:
+        url: the URL to send the data to
+        data_in: the message to send (in json)
+
+    Returns: The response from the server
+    """
+    if data_in is not None:
+        req = urllib2.Request(encode(url), data_in, {'Content-Type': 'application/json'})
+        data_out = None
+        try:
+            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            data_out = response.read()
+            response.close()
+        except Exception as ex:
+            error('url:' + str(url))
+            error('Connection Failed in post_data', str(ex))
+        return data_out
+    else:
+        error('post_data body is None')
+        return None
+
+
+def xml(xml_string):
+    """
+    return an xml tree from string with error catching
+    Args:
+        xml_string: the string containing the xml data
+
+    Returns: ElementTree equivalentof Tree.XML()
+
+    """
+    e = Tree.XML(xml_string)
+    if e.get('ErrorString', '') != '':
+        error(e.get('ErrorString'), 'JMM Error')
+    return e
+
+
+def decode(i=''):
+    """
+    decode a string to UTF-8
+    Args:
+        i: string to decode
+
+    Returns: decoded string
+
+    """
+    try:
+        if isinstance(i, str):
+            return i.decode('utf-8')
+        elif isinstance(i, unicode):
+            return i
+    except:
+        error("Unicode Error", error_type='Unicode Error')
+        return ''
+
+
+def encode(i=''):
+    """
+    encode a string from UTF-8
+    Args:
+        i: string to encode
+
+    Returns: encoded string
+
+    """
+    try:
+        if isinstance(i, str):
+            return i
+        elif isinstance(i, unicode):
+            return i.encode('utf-8')
+    except:
+        error("Unicode Error", error_type='Unicode Error')
+        return ''
 
 
 def post(url, data, headers={}):
@@ -173,7 +375,7 @@ def parseParameters(inputString=sys.argv[2]):
             if (len(nameValuePair) > 0):
                 pair = nameValuePair.split('=')
                 key = pair[0]
-                value = urllib.unquote_plus(pair[1]).decode('utf-8')
+                value = decode(urllib.unquote_plus(pair[1]))
                 parameters[key] = value
     return parameters
 
@@ -269,7 +471,7 @@ def makeLink(params, baseUrl=sys.argv[0]):
     BaseURL: the base URL, sys.argv[0] by default
     """
     return baseUrl + '?' + urllib.urlencode(
-        dict([k.encode('utf-8'), unicode(v).encode('utf-8')] for k, v in params.items()))
+        dict([encode(k), encode(decode(v))] for k, v in params.items()))
 
 
 def addMenuItem(caption, link, icon=None, thumbnail=None, folder=False):
