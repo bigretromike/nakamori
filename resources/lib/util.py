@@ -302,7 +302,7 @@ def set_parameter(url, parameter, value):
 
     array1 = url.split('?')
     if (parameter+'=') not in array1[1]:
-        return url + array1[1] + "&" + parameter + '=' + value
+        return url + "&" + parameter + '=' + value
 
     url = array1[0] + '?'
     array2 = array1[1].split('&')
