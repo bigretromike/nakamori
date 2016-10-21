@@ -94,6 +94,7 @@ def relevanceCheck(title, animeList):
 
 
 def set_parameter(url, parameter, value):
+    value = urllib.quote_plus(value)
     if '?' not in url:
         return url + '?' + parameter + '=' + value
 
@@ -172,7 +173,7 @@ def parseParameters(inputString=sys.argv[2]):
             if (len(nameValuePair) > 0):
                 pair = nameValuePair.split('=')
                 key = pair[0]
-                value = urllib.unquote(urllib.unquote_plus(pair[1])).decode('utf-8')
+                value = urllib.unquote_plus(pair[1]).decode('utf-8')
                 parameters[key] = value
     return parameters
 
