@@ -333,7 +333,7 @@ def searchBox():
 def addDir(name, url, mode, iconimage, plot="", poster="DefaultVideo.png", filename="none"):
     # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
     u = sys.argv[0]
-    u = set_parameter('mode', str(mode))
+    u = set_parameter(u, 'mode', str(mode))
     u = set_parameter(u, 'name', urllib.quote_plus(name))
     u = set_parameter(u, 'poster_file', urllib.quote_plus(poster))
     u = set_parameter(u, 'filename', urllib.quote_plus(filename))
