@@ -314,7 +314,7 @@ def set_parameter(url, parameter, value):
     return url[:-1]
 
 
-#plugin://plugin.video.nakamori/?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&ep_id=13500&ui_index=0?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&ep_id=13499&ui_index=1
+# plugin://plugin.video.nakamori/?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&ep_id=13500&ui_index=0?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&ep_id=13499&ui_index=1
 
 def searchBox():
     """
@@ -330,13 +330,15 @@ def searchBox():
         return searchText
 
 
-def addDir(name, url, mode, iconimage, plot="", poster="DefaultVideo.png", filename="none"):
+def addDir(name, url, mode, iconimage, plot="", poster="DefaultVideo.png", filename="none", offset=''):
     # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
     u = sys.argv[0]
     u = set_parameter(u, 'mode', str(mode))
     u = set_parameter(u, 'name', urllib.quote_plus(name))
     u = set_parameter(u, 'poster_file', urllib.quote_plus(poster))
     u = set_parameter(u, 'filename', urllib.quote_plus(filename))
+    if offset is not '':
+        u = set_parameter(u, 'offset', offset)
     u = set_parameter(u, 'url', url)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -549,50 +551,3 @@ def makeUTF8(data):
                 s += i
         # log(repr(s), 5)
         return s
-
-
-### Define dialogs
-def dialog_msg(action,
-               percentage=0,
-               line0='',
-               line1='',
-               line2='',
-               line3='',
-               background=False,
-               nolabel="no",
-               yeslabel="tak_nie"):
-    # Fix possible unicode errors
-    line0 = line0.encode('utf-8', 'ignore')
-    line1 = line1.encode('utf-8', 'ignore')
-    line2 = line2.encode('utf-8', 'ignore')
-    line3 = line3.encode('utf-8', 'ignore')
-
-    # Dialog logic
-    __addonname__ = "XYZ"
-    if not line0 == '':
-        line0 = __addonname__ + line0
-    else:
-        line0 = __addonname__
-    if not background:
-        if action == 'create':
-            dialog.create(__addonname__, line1, line2, line3)
-        if action == 'update':
-            dialog.update(percentage, line1, line2, line3)
-        if action == 'close':
-            dialog.close()
-        if action == 'iscanceled':
-            if dialog.iscanceled():
-                return True
-            else:
-                return False
-        if action == 'okdialog':
-            xbmcgui.Dialog().ok(line0, line1, line2, line3)
-        if action == 'yesno':
-            return xbmcgui.Dialog().yesno(line0, line1, line2, line3, nolabel, yeslabel)
-    if background:
-        if (action == 'create' or action == 'okdialog'):
-            if line2 == '':
-                msg = line1
-            else:
-                msg = line1 + ': ' + line2
-            xbmc.executebuiltin("XBMC.Notification(%s, %s, 7500, %s)" % (line0, msg, __icon__))

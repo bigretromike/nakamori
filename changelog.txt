@@ -9,7 +9,7 @@ v2.0.17 (22/10/2016)
 - refactor helper functions into util. clean up imports. migrate other non-specialized calls to encode and decode
 - Unable to play files after @76f14b7 commit
 - fix an error in spam log. slim down key generation for episodes
-- it's noon. better logic for set_parameter checking existing key 
+- it's noon. better logic for set_parameter checking existing key
 
 v2.0.16 (06/10/2016)
 - Comma and Dot in rating issue (#167)
