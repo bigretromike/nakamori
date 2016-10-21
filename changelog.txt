@@ -1,3 +1,16 @@
+v2.0.17 (22/10/2016)
+- Some cleanup, prevent a crash on userid, provide local file path to player if it is available, use set_parameters from now on to avoid duplicates and other url weirdness
+- Rewrite stream info
+- Also provide stream info via addStreamInfo (this writes directly to the stream data in Kodi, by not providing it, Kodi may try to generate it, but it seems to fail)
+- rescrape stream details on play and provide them. Also, FIXED DSPLAYER!!!!
+- fix a few errors (unicode in filenames for newer_key and set_parameter)
+- refactor remove_html to remove_anidb_links. also apply the filter in episodes
+- some more cleanup. urllib.quote the value in set_parameter
+- refactor helper functions into util. clean up imports. migrate other non-specialized calls to encode and decode
+- Unable to play files after @76f14b7 commit
+- fix an error in spam log. slim down key generation for episodes
+- it's noon. better logic for set_parameter checking existing key 
+
 v2.0.16 (06/10/2016)
 - Comma and Dot in rating issue (#167)
 
