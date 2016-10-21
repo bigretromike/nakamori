@@ -1194,8 +1194,10 @@ def build_tv_episodes(params):
 
                 ext = atype.find('Media').find('Part').get('container', '')
                 new_key = atype.find('Media').find('Part').get('key', '')
-                if 'videolocal' not in key:
-                    key = new_key + '.' + ext
+                if 'videolocal' not in key.lower():
+                    key = new_key
+                    if '.' + ext.lower() not in key.lower():
+                        key += '.'+ext.lower()
 
                 newerkey = encode(atype.find('Media').find('Part').get('local_key', ''))
                 newerkey = newerkey.replace('\\', '\\\\')
