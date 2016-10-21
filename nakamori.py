@@ -1195,7 +1195,7 @@ def build_tv_episodes(params):
                 ext = atype.find('Media').find('Part').get('container', '')
                 new_key = atype.find('Media').find('Part').get('key', '')
 
-                if not key.startswith("http") and 'videolocal' not in key.lower():
+                if not key.lower().startswith("http") or 'videolocal' not in key.lower():
                     key = new_key
                     if not key.startswith("http") and 'videolocal' not in key.lower():
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
