@@ -1194,8 +1194,12 @@ def build_tv_episodes(params):
 
                 ext = atype.find('Media').find('Part').get('container', '')
                 new_key = atype.find('Media').find('Part').get('key', '')
-                if 'videolocal' not in key.lower():
+
+                if not key.startswith("http") and 'videolocal' not in key.lower():
                     key = new_key
+                    if not key.startswith("http") and 'videolocal' not in key.lower():
+                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
+                              + "/videolocal/0/" + key
                     if '.' + ext.lower() not in key.lower():
                         key += '.'+ext.lower()
 
@@ -1276,16 +1280,6 @@ def build_tv_episodes(params):
 
                 context = None
                 url = key
-
-                key = atype.find('Media').find('Part').get('key')
-                if not key.startswith("http") and 'videolocal' not in key.lower():
-                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + str(int(__addon__.getSetting("port")) + 1) \
-                          + "/videolocal/0/" + key
-
-                newerkey = encode(atype.find('Media').find('Part').get('local_key', ''))
-                newerkey = newerkey.replace('\\', '\\\\')
-                if newerkey != '' and os.path.isfile(newerkey):
-                    key = newerkey
 
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
@@ -1395,6 +1389,8 @@ def play_video(url, ep_id):
         episode_xml_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
                           "/jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/5/" + str(ep_id)
         html = get_xml(encode(episode_xml_url))
+        if __addon__.getSetting("spamLog") == "true":
+            xbmc.log(html)
         e = xml(html)
         video_list = e.findall('Video')
         for atype in video_list:
@@ -1432,9 +1428,6 @@ def play_video(url, ep_id):
 
     except:
         error('Error getting episode info')
-
-    if __addon__.getSetting("spamLog") == "true":
-        xbmc.log(html)
 
     player = xbmc.Player()
 
