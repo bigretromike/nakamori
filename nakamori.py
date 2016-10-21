@@ -640,7 +640,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         error("Error during add_gui_item", str(e))
 
 
-def remove_html(data=""):
+def remove_anidb_links(data=""):
     """
     Remove anidb links from descriptions
     Args:
@@ -1062,7 +1062,7 @@ def build_tv_shows(params, extra_directories=None):
                     # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
                     # director       : string (Dagur Kari,
                     'mpaa': atype.get('contentRating', ''),
-                    'plot': remove_html(encode(atype.get('summary', ''))),
+                    'plot': remove_anidb_links(encode(atype.get('summary', ''))),
                     # 'plotoutline'  : plotoutline,
                     'originaltitle': encode(atype.get('original_title', '')),
                     'sorttitle': title,
@@ -1179,7 +1179,7 @@ def build_tv_seasons(params, extra_directories=None):
                     build_tv_episodes(new_params)
                     return
 
-                plot = remove_html(encode(atype.get('summary', '')))
+                plot = remove_anidb_links(encode(atype.get('summary', '')))
 
                 temp_genre = get_tags(atype)
                 watched = int(atype.get('viewedLeafCount', 0))
@@ -1362,7 +1362,7 @@ def build_tv_episodes(params):
                     duration = int(tmp_duration) / 1000
                 # Required listItem entries for XBMC
                 details = {
-                    'plot': "..." if skip else encode(atype.get('summary', '')),
+                    'plot': "..." if skip else remove_anidb_links(encode(atype.get('summary', ''))),
                     'title': encode(atype.get('title', 'Unknown')),
                     'sorttitle': encode(atype.get('titleSort', atype.get('title', 'Unknown'))),
                     'parenttitle': encode(parent_title),
