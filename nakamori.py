@@ -1157,8 +1157,7 @@ def build_tv_episodes(params):
                         temp_genre = get_tags(video)
                         parent_key = video.get('parentKey', '0')
 
-                        grandparent_title = encode(video.get('grandparentTitle',
-                                                             video.get('grandparentTitle', '')))
+                        grandparent_title = encode(video.get('grandparentTitle', video.get('grandparentTitle', '')))
             for video in video_list:
                 episode_count += 1
 

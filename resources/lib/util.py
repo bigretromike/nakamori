@@ -338,21 +338,33 @@ def searchBox():
         return searchText
 
 
-def addDir(name, url, mode, iconimage, plot="", poster="DefaultVideo.png", filename="none", offset=''):
+def addDir(name, url, mode, iconimage='DefaultTVShows.png', plot="", poster="DefaultVideo.png", filename="none",
+           offset=''):
     # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
     u = sys.argv[0]
-    u = set_parameter(u, 'mode', str(mode))
-    u = set_parameter(u, 'name', urllib.quote_plus(name))
+    if mode is not '':
+        u = set_parameter(u, 'mode', str(mode))
+    if name is not '':
+        u = set_parameter(u, 'name', urllib.quote_plus(name))
     u = set_parameter(u, 'poster_file', urllib.quote_plus(poster))
     u = set_parameter(u, 'filename', urllib.quote_plus(filename))
     if offset is not '':
         u = set_parameter(u, 'offset', offset)
-    u = set_parameter(u, 'url', url)
+    if url is not '':
+        u = set_parameter(u, 'url', url)
     ok = True
     liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
     liz.setInfo(type="Video", infoLabels={"Title": name, "Plot": plot})
     liz.setProperty("Poster_Image", iconimage)
-    ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
+    if mode is not '':
+        if mode == 7:
+            xbmc.log('setting addDir as playable')
+            ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
+        else:
+            ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
+    else:
+        # should this even possible ? as failsafe I leave it.
+        ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     return ok
 
 
