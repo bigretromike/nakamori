@@ -1,8 +1,16 @@
 import os
-import sys, urllib, urllib2, re, gzip
+import sys
+import urllib
+import urllib2
+import re
+import gzip
 import traceback
 
-import xbmc, xbmcgui, xbmcaddon, xbmcplugin
+import xbmc
+import xbmcgui
+import xbmcaddon
+import xbmcplugin
+
 from StringIO import StringIO
 import xml.etree.ElementTree as Tree
 
@@ -365,21 +373,22 @@ def playMedia(title, thumbnail, link, mediaType='Video'):
         alert("Unable to play stream.")
 
 
-def parseParameters(inputString=sys.argv[2]):
+def parseParameters(input_string=sys.argv[2]):
     """Parses a parameter string starting at the first ? found in inputString
     
     Argument:
-    inputString: the string to be parsed, sys.argv[2] by default
+    input_string: the string to be parsed, sys.argv[2] by default
     
     Returns a dictionary with parameter names as keys and parameter values as values
     """
     parameters = {}
-    p1 = inputString.find('?')
+    p1 = input_string.find('?')
     if p1 >= 0:
-        splitParameters = inputString[p1 + 1:].split('&')
-        for nameValuePair in splitParameters:
-            if (len(nameValuePair) > 0):
-                pair = nameValuePair.split('=')
+        split_parameters = input_string[p1 + 1:].split('&')
+        for name_value_pair in split_parameters:
+            # xbmc.log("parseParameter detected Value: " + str(name_value_pair))
+            if (len(name_value_pair) > 0) & ("=" in name_value_pair):
+                pair = name_value_pair.split('=')
                 key = pair[0]
                 value = decode(urllib.unquote_plus(pair[1]))
                 parameters[key] = value

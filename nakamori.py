@@ -348,7 +348,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                             liz.addStreamInfo('subtitle', subtitle_codec)
 
             # UMS/PSM Jumpy plugin require 'path' to play video
-            partemp = util.parseParameters(inputString=url)
+            partemp = util.parseParameters(input_string=url)
             liz.setProperty('path', str(partemp.get('file', 'empty')))
 
         if extra_data and len(extra_data) > 0:
@@ -1491,22 +1491,25 @@ def play_video(url, ep_id):
     return 0
 
 
-def play_continue_item(data):
+def play_continue_item():
     """
-
-    Args:
-        data:
+    Move to next item that was not marked as watched
+    Essential information are query from Parameters via util lib
     """
-    offset = data['offset']
-    pos = int(offset)
-    if pos == 1:
-        xbmcgui.Dialog().ok('Finished', 'You already finished this')
+    params = util.parseParameters()
+    if 'offset' in params:
+        offset = params['offset']
+        pos = int(offset)
+        if pos == 1:
+            xbmcgui.Dialog().ok('Finished', 'You already finished this')
+        else:
+            wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            control_id = wind.getFocusId()
+            control_list = wind.getControl(control_id)
+            move_position_on_list(control_list, pos)
+            xbmc.sleep(1000)
     else:
-        wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-        control_id = wind.getFocusId()
-        control_list = wind.getControl(control_id)
-        move_position_on_list(control_list, pos)
-        xbmc.sleep(1000)
+        pass
 
 
 # TODO: Trakt_Scrobble need work - JMM support it (for series not movies)
@@ -1624,7 +1627,9 @@ if __addon__.getSetting('remote_debug') == 'true':
 # Script run from here
 if valid_user() is True:
     try:
+        # xbmc.log('before', str(sys.argv[2]))
         parameters = util.parseParameters()
+        # xbmc.log('after', str(parameters))
     except Exception as exp:
         error('valid_userid parseParameters() error', str(exp))
         parameters = {'mode': 2}
@@ -1669,7 +1674,7 @@ if valid_user() is True:
             parameters['watched'] = False
             watched_mark(parameters)
         elif cmd == "playlist":
-            play_continue_item(parameters)
+            play_continue_item()
         elif cmd == "no_mark":
             __addon__.setSetting('no_mark', '1')
             xbmc.executebuiltin('Action(Select)')
@@ -1704,7 +1709,7 @@ if valid_user() is True:
             build_tv_episodes(parameters)
         elif mode == 7:  # Playlist -continue-
             # xbmcgui.Dialog().ok('MODE=7','MODE')
-            play_continue_item(parameters)
+            play_continue_item()
         else:
             build_main_menu()
 else:
