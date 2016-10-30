@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import datetime
-import os
-import re
-import sys
-import urllib
 import json
 
 import resources.lib.TagBlacklist as TagFilter
@@ -15,8 +11,7 @@ import xbmcaddon
 import xbmcgui
 import xbmcplugin
 
-from resources.lib.util import set_parameter, error, get_xml,\
-    get_json, xml, post_data, encode, decode
+from resources.lib.util import *
 
 from collections import defaultdict
 
@@ -407,26 +402,27 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id + \
                                    "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
-                        if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                            context.append(('Play (Do not Mark as Watched (JMM))',
-                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
-                                            % (sys.argv[1], url_peep)))
+                        if not extra_data.get('unsorted', False):
+                            if __addon__.getSetting('context_show_play_no_watch') == 'true':
+                                context.append(('Play (Do not Mark as Watched (JMM))',
+                                                'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
+                                                % (sys.argv[1], url_peep)))
                         if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
-                        if __addon__.getSetting('context_show_vote_Series') == 'true':
+                        if __addon__.getSetting('context_show_vote_Series') == 'true' and not extra_data.get('unsorted', False):
                             if series_id != '':
                                 context.append(
                                     ('Vote for Series (JMM)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)'
                                      % (sys.argv[1], url_peep)))
-                        if __addon__.getSetting('context_show_vote_Episode') == 'true':
+                        if __addon__.getSetting('context_show_vote_Episode') == 'true' and not extra_data.get('unsorted', False):
                             if extra_data.get('jmmepisodeid') != '':
                                 context.append(
                                     ('Vote for Episode (JMM)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)'
                                      % (sys.argv[1], url_peep)))
 
-                        if extra_data.get('jmmepisodeid') != '':
+                        if extra_data.get('jmmepisodeid') != '' and not extra_data.get('unsorted', False):
                             if __addon__.getSetting('context_krypton_watched') == 'true':
                                 if details.get('playcount', 0) == 0:
                                     context.append(
@@ -447,6 +443,16 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                     ('Mark as Unwatched (JMM)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                      % (sys.argv[1], url_peep)))
+
+                        if extra_data.get('unsorted', False):
+                            context.append(
+                                ('Rescan File',
+                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)'
+                                 % (sys.argv[1], url_peep)))
+                            context.append(
+                                ('Rehash File',
+                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)'
+                                 % (sys.argv[1], url_peep)))
                     liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
@@ -1226,6 +1232,7 @@ def build_tv_episodes(params):
                 extra_data = dict()
                 extra_data['type'] = "Video"
                 extra_data['source'] = "tvepisodes"
+                extra_data['unsorted'] = 'animefile' in video.get('AnimeType', '').lower()
                 extra_data['thumb'] = None if skip else thumb
                 extra_data['fanart_image'] = None if skip else art
                 extra_data['key'] = key
@@ -1374,10 +1381,10 @@ def build_search(url=''):
 # Other functions
 def play_video(url, ep_id):
     """
-
+    Plays a file or episode
     Args:
-        url:
-        ep_id:
+        url: location of the file
+        ep_id: episode id, if applicable for watched status and stream details
 
     Returns:
 
@@ -1523,11 +1530,9 @@ def trakt_scrobble(data=""):
 
 def vote_series(params):
     """
-
+    Marks a rating for a series
     Args:
         params: must contain anime_id
-
-    Returns:
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
@@ -1547,11 +1552,9 @@ def vote_series(params):
 
 def vote_episode(params):
     """
-
+    Marks a rating for an episode
     Args:
-        params:
-
-    Returns:
+        params: must contain ep_id
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
@@ -1571,9 +1574,9 @@ def vote_episode(params):
 
 def watched_mark(params):
     """
-
+    Marks an epsiode, series, or group as either watched or unwatched
     Args:
-        params:
+        params: must contain either an episode, series, or group id, and a watched value to mark
     """
     episode_id = params.get('ep_id', '')
     anime_id = params.get('anime_id', '')
@@ -1608,6 +1611,34 @@ def watched_mark(params):
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
             'Watched status changed', 'Mark as ', watched_msg, __addon__.getAddonInfo('icon')))
+    refresh()
+
+
+def rescan_file(params, rescan):
+    """
+    Rescans or rehashes a file
+    Args:
+        params:
+        rescan: True to rescan, False to rehash
+    """
+    episode_id = params.get('ep_id', '')
+    command = 'rehash/'
+    if rescan:
+        command = 'rescan/'
+
+    key = ""
+    if episode_id != '':
+        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+              + "/jmmserverkodi/" + command + episode_id
+    if __addon__.getSetting('log_spam') == 'true':
+        xbmc.log('vlid: ' + str(episode_id))
+        xbmc.log('key: ' + key)
+
+    get_xml(key)
+
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
+        'Queued file for ' + ('Rescan' if rescan else 'Rehash'), 'Refreshing in 10 seconds', __addon__.getAddonInfo('icon')))
+    xbmc.sleep(10000)
     refresh()
 
 
@@ -1677,6 +1708,10 @@ if valid_user() is True:
         elif cmd == "no_mark":
             __addon__.setSetting('no_mark', '1')
             xbmc.executebuiltin('Action(Select)')
+        elif cmd == 'rescan':
+            rescan_file(parameters, True)
+        elif cmd == 'rehash':
+            rescan_file(parameters, False)
     else:
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')

@@ -275,11 +275,6 @@ def fakeError(alertText):
     ret = dialog.ok(ADDON_ID + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
 
 
-def error(heading, message):
-    dialog = xbmcgui.Dialog()
-    dialog.notification(heading, message, xbmcgui.NOTIFICATION_ERROR, 5000)
-
-
 def progressStart(title, status):
     pDialog = xbmcgui.DialogProgress()
     ret = pDialog.create(title, status)
