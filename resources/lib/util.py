@@ -139,7 +139,7 @@ def get_data(url_in, referer, data_type):
         error('Get_Data Error', str(ex))
         data = None
 
-    if data is not None:
+    if data is not None and data != '':
         parse_possible_error(data, data_type)
     return data
 

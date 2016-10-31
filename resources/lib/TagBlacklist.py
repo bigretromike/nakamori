@@ -36,6 +36,8 @@ tagBlackListSource=[
     "4-koma",
     "game",
     "manga",
+    "manhua",
+    "manhwa",
     "novel",
     "remake",
     "visual novel"
