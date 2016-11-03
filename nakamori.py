@@ -1057,7 +1057,7 @@ def build_tv_seasons(params, extra_directories=None):
                 if get_version() > LooseVersion('3.6.1.0'):
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                                     + "jmmserverkodi/getmetadata/") + 1
+                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                               + "/api/metadata/" + key + '/' + params['filterid']
