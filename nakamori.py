@@ -765,8 +765,7 @@ def build_main_menu():
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
-                if atype.get('GenericId', '') != '':
-                    u = set_parameter(u, 'filter', atype.get('GenericId'))
+                u = set_parameter(u, 'filterid', atype.get('GenericId', ''))
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
@@ -907,14 +906,13 @@ def build_tv_shows(params, extra_directories=None):
                 key = directory.get('key', '')
                 if get_version() > LooseVersion('3.6.1.0'):
                     xbmc.log("version passed")
-                    if params.get('filter', '') != '':
-                        xbmc.log("filter passed")
+                    if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/")
                         key = key[length:]
                         xbmc.log("key = " + key)
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/api/metadata/" + key + '/' + params['filter']
+                              + "/api/metadata/" + key + '/' + params['filterid']
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -947,8 +945,8 @@ def build_tv_shows(params, extra_directories=None):
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
-                if params.get('filter', '') != '':
-                    u = set_parameter(u, 'filter', params['filter'])
+                if params.get('filterid', '') != '':
+                    u = set_parameter(u, 'filterid', params['filterid'])
                 context = None
                 add_gui_item(u, details, extra_data, context)
         except Exception as e:
@@ -1059,12 +1057,12 @@ def build_tv_seasons(params, extra_directories=None):
                 directory_type = atype.get('AnimeType', '')
 
                 if get_version() > LooseVersion('3.6.1.0'):
-                    if params.get('filter', '') != '':
+                    if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/")
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/api/metadata/" + key + '/' + params['filter']
+                              + "/api/metadata/" + key + '/' + params['filterid']
 
                 extra_data = {
                     'type': 'video',
@@ -1091,8 +1089,8 @@ def build_tv_seasons(params, extra_directories=None):
                 url = sys.argv[0]
                 url = set_parameter(url, 'url', extra_data['key'] + key_append)
                 url = set_parameter(url, 'mode', str(6))
-                if params.get('filter', '') != '':
-                    url = set_parameter(url, 'filter', params['filter'])
+                if params.get('filterid', '') != '':
+                    url = set_parameter(url, 'filterid', params['filterid'])
 
                 context = None
 

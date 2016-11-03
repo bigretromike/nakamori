@@ -316,7 +316,8 @@ def relevanceCheck(title, animeList):
 
 
 def set_parameter(url, parameter, value):
-    if value == '': return url
+    if value == '':
+        return url
     value = urllib.quote_plus(value)
     if '?' not in url:
         return url + '?' + parameter + '=' + value
