@@ -905,12 +905,10 @@ def build_tv_shows(params, extra_directories=None):
 
                 key = directory.get('key', '')
                 if get_version() > LooseVersion('3.6.1.0'):
-                    xbmc.log("version passed")
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/")
+                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
-                        xbmc.log("key = " + key)
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                               + "/api/metadata/" + key + '/' + params['filterid']
 
@@ -1059,7 +1057,7 @@ def build_tv_seasons(params, extra_directories=None):
                 if get_version() > LooseVersion('3.6.1.0'):
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                                     + "jmmserverkodi/getmetadata/")
+                                     + "jmmserverkodi/getmetadata/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                               + "/api/metadata/" + key + '/' + params['filterid']
