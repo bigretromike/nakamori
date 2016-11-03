@@ -5,6 +5,7 @@ import urllib2
 import re
 import gzip
 import traceback
+from distutils.version import LooseVersion
 
 import xbmc
 import xbmcgui
@@ -232,6 +233,22 @@ def post(url, data, headers={}):
     return data
 
 
+def get_version():
+    legacy = LooseVersion('0.0')
+    xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                       "/jmmserverkodi/getversion")
+    if xml_file is None:
+        return legacy
+    data = None
+    try:
+        data = xml(xml_file)
+    except:
+        return legacy
+    version = data.get('Message', '')
+    if version != '': return LooseVersion(version)
+    return legacy
+
+
 def getURL(url, header):
     try:
         req = urllib2.Request(url, headers=header)
@@ -299,6 +316,7 @@ def relevanceCheck(title, animeList):
 
 
 def set_parameter(url, parameter, value):
+    if value == '': return url
     value = urllib.quote_plus(value)
     if '?' not in url:
         return url + '?' + parameter + '=' + value

@@ -14,6 +14,7 @@ import xbmcplugin
 from resources.lib.util import *
 
 from collections import defaultdict
+from distutils.version import LooseVersion
 
 try:
     import pydevd
@@ -32,13 +33,9 @@ def valid_user():
     Logs into the server and stores the apikey, then checks if the userid is valid
     :return: bool True if all completes successfully
     """
-    xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                       "/jmmserverkodi/getversion")
-    if xml_file is not None:
-        data = xml(xml_file)
-        version = data.get('Message')
-        if version == "3.6.1.0":
-            return valid_userid()
+    version = get_version()
+    if version == 'legacy' or version == '3.6.1.0':
+        return valid_userid()
 
     # reset apikey if user enters new login info
     if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
@@ -768,6 +765,8 @@ def build_main_menu():
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
+                if atype.get('GenericId', '') != '':
+                    u = set_parameter(u, 'filter', atype.get('GenericId'))
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': get_poster(thumb), 'icon': 'DefaultVideo.png'})
@@ -906,6 +905,16 @@ def build_tv_shows(params, extra_directories=None):
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 key = directory.get('key', '')
+                if get_version() > LooseVersion('3.6.1.0'):
+                    xbmc.log("version passed")
+                    if params.get('filter', '') != '':
+                        xbmc.log("filter passed")
+                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/")
+                        key = key[length:]
+                        xbmc.log("key = " + key)
+                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                              + "/api/metadata/" + key + '/' + params['filter']
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -938,6 +947,8 @@ def build_tv_shows(params, extra_directories=None):
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
+                if params.get('filter', '') != '':
+                    u = set_parameter(u, 'filter', params['filter'])
                 context = None
                 add_gui_item(u, details, extra_data, context)
         except Exception as e:
@@ -1047,6 +1058,14 @@ def build_tv_seasons(params, extra_directories=None):
 
                 directory_type = atype.get('AnimeType', '')
 
+                if get_version() > LooseVersion('3.6.1.0'):
+                    if params.get('filter', '') != '':
+                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                                     + "jmmserverkodi/getmetadata/")
+                        key = key[length:]
+                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                              + "/api/metadata/" + key + '/' + params['filter']
+
                 extra_data = {
                     'type': 'video',
                     'source': directory_type,
@@ -1072,6 +1091,8 @@ def build_tv_seasons(params, extra_directories=None):
                 url = sys.argv[0]
                 url = set_parameter(url, 'url', extra_data['key'] + key_append)
                 url = set_parameter(url, 'mode', str(6))
+                if params.get('filter', '') != '':
+                    url = set_parameter(url, 'filter', params['filter'])
 
                 context = None
 
