@@ -904,7 +904,7 @@ def build_tv_shows(params, extra_directories=None):
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
                 key = directory.get('key', '')
-                if get_version() > LooseVersion('3.6.1.0'):
+                if get_version() > LooseVersion('3.6.1.0') and directory.get('AnimeType', '') != 'AnimeType':
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
@@ -1054,7 +1054,7 @@ def build_tv_seasons(params, extra_directories=None):
 
                 directory_type = atype.get('AnimeType', '')
 
-                if get_version() > LooseVersion('3.6.1.0'):
+                if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType':
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
