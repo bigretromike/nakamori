@@ -38,7 +38,7 @@ def error(msg, error_type='Error'):
     xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__))
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     key = sys.argv[0]
-    if sys.argv.get(2, '') != '':
+    if len(sys.argv) > 2 and sys.argv[2] != '':
         key += sys.argv[2]
     xbmc.log('On url: ' + urllib.unquote(key), xbmc.LOGERROR)
     try:
