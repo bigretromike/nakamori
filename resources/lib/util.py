@@ -37,6 +37,10 @@ def error(msg, error_type='Error'):
     """
     xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__))
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
+    key = sys.argv[0]
+    if sys.argv.get(2, '') != '':
+        key += sys.argv[2]
+    xbmc.log('On url: ' + urllib.unquote(key), xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         if exc_type is not None and exc_obj is not None and exc_tb is not None:
