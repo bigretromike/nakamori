@@ -123,18 +123,9 @@ def move_position_on_list(control_list, position=0):
     if __addon__.getSetting('show_continue') == 'true':
         position = int(position + 1)
 
-    try:
-        parent_setting = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                                             '{"setting": "filelists.showparentdiritems"}, "id": 1}')
-        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+    if get_kodi_setting_bool("filelists.showparentdiritems"):
+        position = int(position + 1)
 
-        setting = json.loads(parent_setting)
-        if "result" in setting:
-            if "value" in setting["result"]:
-                if setting["result"]["value"]:
-                    position = int(position + 1)
-    except Exception as ex:
-        error("jsonrpc_error: " + str(ex))
 
     try:
         control_list.selectItem(position)
@@ -1304,23 +1295,12 @@ def build_tv_episodes(params):
 
                 if details['playcount'] == 0:
                     # Hide plot and thumb for unwatched by kodi setting
-                    try:
-                        parent_setting = xbmc.executeJSONRPC(
-                            '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                            '{"setting": "videolibrary.showunwatchedplots"}, "id": 1}')
-                        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
-
-                        setting = json.loads(parent_setting)
-                        if "result" in setting:
-                            if "value" in setting["result"]:
-                                if not setting["result"]["value"]:
-                                    details['plot'] \
-                                        = "Hidden due to user setting.\nCheck Show Plot" + \
-                                          " for Unwatched Items in the Video Library Settings."
-                                    extra_data['thumb'] = None
-                                    extra_data['fanart_image'] = None
-                    except Exception as exc:
-                        error("jsonrpc_error: " + str(exc))
+                    if not get_kodi_setting_bool("videolibrary.showunwatchedplots"):
+                        details['plot'] \
+                            = "Hidden due to user setting.\nCheck Show Plot" + \
+                              " for Unwatched Items in the Video Library Settings."
+                        extra_data['thumb'] = None
+                        extra_data['fanart_image'] = None
 
                 context = None
                 url = key
@@ -1341,24 +1321,15 @@ def build_tv_episodes(params):
                                 + __addon__.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png",
                                 "2", "3", "4", str(next_episode))
 
-            try:
-                parent_setting = xbmc.executeJSONRPC(
-                    '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-                    '{"setting": "videolibrary.tvshowsselectfirstunwatcheditem"}, "id": 1}')
-                # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
 
-                setting = json.loads(parent_setting)
-                if "result" in setting:
-                    if "value" in setting["result"]:
-                        if int(setting["result"]["value"]) > 0:
-                            try:
-                                new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                                new_control = new_window.getControl(new_window.getFocusId())
-                                move_position_on_list(new_control, next_episode)
-                            except:
-                                pass
-            except Exception as exc:
-                error("jsonrpc_error: " + str(exc))
+            if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
+                try:
+                    new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                    new_control = new_window.getControl(new_window.getFocusId())
+                    move_position_on_list(new_control, next_episode)
+                except:
+                    pass
+
         except Exception as exc:
             error("Error during build_tv_episodes", str(exc))
     except Exception as exc:
@@ -1703,15 +1674,16 @@ if valid_user() is True:
         elif cmd == "voteEp":
             vote_episode(parameters)
         elif cmd == "watched":
-            try:
-                win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                ctl = win.getControl(win.getFocusId())
-                ui_index = parameters.get('ui_index', '')
-                if ui_index != '':
-                    move_position_on_list(ctl, int(ui_index) + 1)
-            except Exception as exp:
-                xbmc.log(str(exp))
-                pass
+            if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0:
+                try:
+                    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                    ctl = win.getControl(win.getFocusId())
+                    ui_index = parameters.get('ui_index', '')
+                    if ui_index != '':
+                        move_position_on_list(ctl, int(ui_index) + 1)
+                except Exception as exp:
+                    xbmc.log(str(exp))
+                    pass
             parameters['watched'] = True
             watched_mark(parameters)
             voting = __addon__.getSetting("vote_always")

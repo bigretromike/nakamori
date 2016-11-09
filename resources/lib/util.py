@@ -1,10 +1,4 @@
-import os
-import sys
-import urllib
-import urllib2
-import re
-import gzip
-import traceback
+import os, sys, urllib, urllib2, re, gzip, traceback, json
 from distutils.version import LooseVersion
 
 import xbmc
@@ -272,6 +266,38 @@ def getURL(url, header):
             'Content-Encoding') + '): ' + url, xbmc.LOGERROR)
         xbmc.log('Content: ' + response.read(), xbmc.LOGERROR)
         return False
+
+
+def get_kodi_setting_int(setting):
+    try:
+        parent_setting = xbmc.executeJSONRPC(
+            '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+            '{"setting": "' + setting + '"}, "id": 1}')
+        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+
+        result = json.loads(parent_setting)
+        if "result" in result:
+            if "value" in result["result"]:
+                return int(result["result"]["value"])
+    except Exception as exc:
+        error("jsonrpc_error: " + str(exc))
+    return -1
+
+
+def get_kodi_setting_bool(setting):
+    try:
+        parent_setting = xbmc.executeJSONRPC(
+            '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
+            '{"setting": "' + setting + '"}, "id": 1}')
+        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
+
+        result = json.loads(parent_setting)
+        if "result" in result:
+            if "value" in result["result"]:
+                return result["result"]["value"]
+    except Exception as exc:
+        error("jsonrpc_error: " + str(exc))
+    return False
 
 
 def safeName(name):
