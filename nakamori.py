@@ -120,6 +120,8 @@ def move_position_on_list(control_list, position=0):
         control_list: the list control
         position: the index of the item not including settings
     """
+    if position < 0:
+        position = 0
     if __addon__.getSetting('show_continue') == 'true':
         position = int(position + 1)
 
@@ -1145,7 +1147,7 @@ def build_tv_episodes(params):
                 xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
             # value to hold position of not seen episode
-            next_episode = 1
+            next_episode = -1
             episode_count = 0
 
             video_list = e.findall('Video')
@@ -1290,7 +1292,7 @@ def build_tv_episodes(params):
                 else:
                     details['playcount'] = 0
                     # details['overlay'] = 0
-                    if next_episode == 1:
+                    if next_episode == -1:
                         next_episode = episode_count - 1
 
                 if details['playcount'] == 0:
