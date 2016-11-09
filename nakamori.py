@@ -722,7 +722,7 @@ def get_cast_and_role(data):
 # Adding items to list/menu:
 def build_main_menu():
     """
-
+    Builds the list of items in the Main Menu
     """
     xbmcplugin.setContent(handle, content='tvshows')
     try:
@@ -791,7 +791,7 @@ def build_main_menu():
 
 def build_tv_shows(params, extra_directories=None):
     """
-
+    Builds the list of items for Filters and Groups
     Args:
         params:
         extra_directories:
@@ -949,7 +949,7 @@ def build_tv_shows(params, extra_directories=None):
 
 def build_tv_seasons(params, extra_directories=None):
     """
-
+    Builds list items for The Types Menu, or optionally subgroups
     Args:
         params:
         extra_directories:
