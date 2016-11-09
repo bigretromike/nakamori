@@ -903,8 +903,10 @@ def build_tv_shows(params, extra_directories=None):
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
+                directory_type = directory.get('AnimeType', '')
+
                 key = directory.get('key', '')
-                if get_version() > LooseVersion('3.6.1.0') and directory.get('AnimeType', '') != 'AnimeType':
+                if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
@@ -916,8 +918,6 @@ def build_tv_shows(params, extra_directories=None):
                 fanart = gen_image_url(directory.get('art', thumb))
 
                 banner = gen_image_url(directory.get('banner', ''))
-
-                directory_type = directory.get('AnimeType', '')
 
                 extra_data = {
                     'type': 'video',
@@ -1054,7 +1054,7 @@ def build_tv_seasons(params, extra_directories=None):
 
                 directory_type = atype.get('AnimeType', '')
 
-                if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType':
+                if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
                     if params.get('filterid', '') != '':
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
