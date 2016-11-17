@@ -1,5 +1,5 @@
 ---------------------------------------------------------
-Nakamori (https://shokunin.monogatari.pl/nakamori)
+Nakamori
 ---------------------------------------------------------
 
 Nakamori addon is design for Kodi (initial version was released for 15.2 Isengard, but works great on 16.1 Jarvis).
