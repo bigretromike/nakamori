@@ -13,7 +13,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "#30001"
-msgid "JMM Settings"
+msgid "Shoko Settings"
 msgstr ""
 
 msgctxt "#30002"
@@ -29,11 +29,11 @@ msgid "Query Timeout (s)"
 msgstr ""
 
 msgctxt "#30005"
-msgid "Sync 'Watched status' to JMM"
+msgid "Sync 'Watched status' to Shoko"
 msgstr ""
 
 msgctxt "#30006"
-msgid "JMM Server"
+msgid "Shoko Server"
 msgstr ""
 
 msgctxt "#30007"
@@ -53,7 +53,7 @@ msgid "Title Type"
 msgstr ""
 
 msgctxt "#30011"
-msgid "JMM User"
+msgid "Shoko User"
 msgstr ""
 
 msgctxt "#30012"

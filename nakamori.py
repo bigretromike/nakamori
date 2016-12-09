@@ -368,13 +368,13 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         if __addon__.getSetting('context_show_vote_Series') == 'true':
-                            context.append(('Vote (JMM)', 'RunScript(plugin.video.nakamori, %s, %s)' %
+                            context.append(('Vote (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s)' %
                                             (sys.argv[1], url_peep)))
                         url_peep = url_peep_base + "&anime_id=" + series_id
-                        context.append(('Mark as Watched (JMM)',
+                        context.append(('Mark as Watched (Shoko)',
                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
                                         % (sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched (JMM)',
+                        context.append(('Mark as Unwatched (Shoko)',
                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                         % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'AnimeGroup':
@@ -382,10 +382,10 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         if __addon__.getSetting('context_show_info') == 'true':
                             context.append(('More Info', 'Action(Info)'))
                         url_peep = url_peep_base + "&group_id=" + series_id
-                        context.append(('Mark as Watched (JMM)',
+                        context.append(('Mark as Watched (Shoko)',
                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
                                         % (sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched (JMM)',
+                        context.append(('Mark as Unwatched (Shoko)',
                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                         % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
@@ -394,7 +394,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                    "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
                         if not extra_data.get('unsorted', False):
                             if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                                context.append(('Play (Do not Mark as Watched (JMM))',
+                                context.append(('Play (Do not Mark as Watched (Shoko))',
                                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
                                                 % (sys.argv[1], url_peep)))
                         if __addon__.getSetting('context_show_info') == 'true':
@@ -402,13 +402,13 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         if __addon__.getSetting('context_show_vote_Series') == 'true' and not extra_data.get('unsorted', False):
                             if series_id != '':
                                 context.append(
-                                    ('Vote for Series (JMM)',
+                                    ('Vote for Series (Shoko)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)'
                                      % (sys.argv[1], url_peep)))
                         if __addon__.getSetting('context_show_vote_Episode') == 'true' and not extra_data.get('unsorted', False):
                             if extra_data.get('jmmepisodeid') != '':
                                 context.append(
-                                    ('Vote for Episode (JMM)',
+                                    ('Vote for Episode (Shoko)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)'
                                      % (sys.argv[1], url_peep)))
 
@@ -416,21 +416,21 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                             if __addon__.getSetting('context_krypton_watched') == 'true':
                                 if details.get('playcount', 0) == 0:
                                     context.append(
-                                        ('Mark as Watched (JMM)',
+                                        ('Mark as Watched (Shoko)',
                                          'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
                                          % (sys.argv[1], url_peep)))
                                 else:
                                     context.append(
-                                        ('Mark as Unwatched (JMM)',
+                                        ('Mark as Unwatched (Shoko)',
                                          'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                          % (sys.argv[1], url_peep)))
                             else:
                                 context.append(
-                                    ('Mark as Watched (JMM)',
+                                    ('Mark as Watched (Shoko)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
                                      % (sys.argv[1], url_peep)))
                                 context.append(
-                                    ('Mark as Unwatched (JMM)',
+                                    ('Mark as Unwatched (Shoko)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                      % (sys.argv[1], url_peep)))
 
@@ -906,6 +906,8 @@ def build_tv_shows(params, extra_directories=None):
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                               + "/api/metadata/" + key + '/' + params['filterid']
+                else:
+                    params.pop('filterid', None)
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -938,6 +940,9 @@ def build_tv_shows(params, extra_directories=None):
                 u = set_parameter(u, 'mode', str(use_mode))
                 if params.get('filterid', '') != '':
                     u = set_parameter(u, 'filterid', params['filterid'])
+                else:
+                    u = set_parameter(u, 'filterid', None)
+
                 context = None
                 add_gui_item(u, details, extra_data, context)
         except Exception as e:
@@ -1054,6 +1059,8 @@ def build_tv_seasons(params, extra_directories=None):
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                               + "/api/metadata/" + key + '/' + params['filterid']
+                else:
+                    params.pop('filterid', None)
 
                 extra_data = {
                     'type': 'video',
@@ -1082,6 +1089,8 @@ def build_tv_seasons(params, extra_directories=None):
                 url = set_parameter(url, 'mode', str(6))
                 if params.get('filterid', '') != '':
                     url = set_parameter(url, 'filterid', params['filterid'])
+                else:
+                    url = set_parameter(url, 'filterid', None)
 
                 context = None
 
