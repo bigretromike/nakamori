@@ -899,15 +899,17 @@ def build_tv_shows(params, extra_directories=None):
                 directory_type = directory.get('AnimeType', '')
 
                 key = directory.get('key', '')
+                filterid = ''
                 if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
                     if params.get('filterid', '') != '':
+                        filterid = params.get('filterid', '')
+                        if directory_type == 'GroupFilter':
+                            filterid = directory.get('GenericId', '')
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/api/metadata/" + key + '/' + params['filterid']
-                else:
-                    params.pop('filterid', None)
+                              + "/api/metadata/" + key + '/' + filterid
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -938,8 +940,8 @@ def build_tv_shows(params, extra_directories=None):
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
-                if params.get('filterid', '') != '':
-                    u = set_parameter(u, 'filterid', params['filterid'])
+                if filterid != '':
+                    u = set_parameter(u, 'filterid', filterid)
                 else:
                     u = set_parameter(u, 'filterid', None)
 
@@ -1052,15 +1054,17 @@ def build_tv_seasons(params, extra_directories=None):
 
                 directory_type = atype.get('AnimeType', '')
 
+                filterid = ''
                 if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
                     if params.get('filterid', '') != '':
+                        filterid = params.get('filterid', '')
+                        if directory_type == 'GroupFilter':
+                            filterid = atype.get('GenericId', '')
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/api/metadata/" + key + '/' + params['filterid']
-                else:
-                    params.pop('filterid', None)
+                              + "/api/metadata/" + key + '/' + filterid
 
                 extra_data = {
                     'type': 'video',
@@ -1087,8 +1091,8 @@ def build_tv_seasons(params, extra_directories=None):
                 url = sys.argv[0]
                 url = set_parameter(url, 'url', extra_data['key'] + key_append)
                 url = set_parameter(url, 'mode', str(6))
-                if params.get('filterid', '') != '':
-                    url = set_parameter(url, 'filterid', params['filterid'])
+                if filterid != '':
+                    url = set_parameter(url, 'filterid', filterid)
                 else:
                     url = set_parameter(url, 'filterid', None)
 
@@ -1331,7 +1335,6 @@ def build_tv_episodes(params):
                     util.addDir("-continue-", '', '7', "http://" + __addon__.getSetting("ipaddress") + ":"
                                 + __addon__.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png",
                                 "2", "3", "4", str(next_episode))
-
 
             if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
                 try:
