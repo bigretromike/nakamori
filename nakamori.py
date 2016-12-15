@@ -1649,7 +1649,7 @@ if __addon__.getSetting('remote_debug') == 'true':
     try:
         if pydevd:
             pydevd.settrace(__addon__.getSetting('ide_ip'), port=int(__addon__.getSetting('ide_port')),
-                            stdoutToServer=True, stderrToServer=True, suspend=False)
+                            stdoutToServer=False, stderrToServer=False, suspend=False)
         else:
             error('Unable to start debugger')
     except Exception as ex:
