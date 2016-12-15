@@ -903,7 +903,7 @@ def build_tv_shows(params, extra_directories=None):
                 if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
                     if params.get('filterid', '') != '':
                         filterid = params.get('filterid', '')
-                        if directory_type == 'GroupFilter':
+                        if directory_type == 'AnimeGroupFilter':
                             filterid = directory.get('GenericId', '')
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
@@ -1058,7 +1058,7 @@ def build_tv_seasons(params, extra_directories=None):
                 if get_version() > LooseVersion('3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
                     if params.get('filterid', '') != '':
                         filterid = params.get('filterid', '')
-                        if directory_type == 'GroupFilter':
+                        if directory_type == 'AnimeGroupFilter':
                             filterid = atype.get('GenericId', '')
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
