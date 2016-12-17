@@ -241,7 +241,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         temp_log = str(a)
                     xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
 
-        if extra_data is not None:
+        if extra_data is not None and len(extra_data) > 0:
             if extra_data.get('parameters'):
                 for argument, value in extra_data.get('parameters').items():
                     link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
@@ -256,6 +256,16 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             liz.setArt({'thumb': tbi})
             liz.setArt({'poster': get_poster(tbi)})
 
+        if extra_data is not None and len(extra_data) > 0:
+            actors = extra_data.get('actors', None)
+            if actors is not None:
+                if len(actors) > 0:
+                    try:
+                        liz.setCast(actors)
+                        details.pop('cast', None)
+                        details.pop('castandrole', None)
+                    except Exception as w:
+                        error('error', str(w))
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
 
@@ -678,6 +688,62 @@ def get_tags(tag_xml):
 
 def get_cast_and_role(data):
     """
+    Get cast from the xml and arrange in the new setCast format
+    Args:
+        data: xml node containing the cast
+
+    Returns: a list of dictionaries for the cast
+    """
+    result_list = []
+    if data is not None:
+        character_tag = 'Role'
+        if data.find('Characters') is not None:
+            data = data.find('Characters')
+            character_tag = 'Character'
+        for char in data.findall(character_tag):
+            # Don't init any variables we don't need right now
+            # char_id = char.get('charID')
+            if character_tag == 'Role':
+                char_charname = char.get('role', '')
+                char_seiyuuname = char.get('tag', 'Unknown')
+                char_seiyuupic = char.get('rolePicture', 'err404')
+            else:
+                char_charname = char.get('charname', '')
+            # char_desc=char.get('description','')
+                char_seiyuuname = char.get('tag', 'Unknown')
+                char_seiyuupic=char.get('seiyuupic', 'err404')
+            # only add it if it has data
+            # reorder these to match the convention (Actor is cast, character is role, in that order)
+            if len(char_charname) != 0:
+                actor = {
+                    'name': char_seiyuuname,
+                    'role': char_charname,
+                    'thumbnail': char_seiyuupic
+                }
+                result_list.append(actor)
+    if len(result_list) == 0: return None
+    return result_list
+
+
+def convert_cast_and_role_to_legacy(list_of_dicts):
+    result_list = []
+    list_cast = []
+    list_cast_and_role = []
+    if len(list_of_dicts) > 0:
+        for actor in list_of_dicts:
+            seiyuu = actor.get('name', '')
+            role = actor.get('role', '')
+            if len(role) != 0:
+                list_cast.append(role)
+                if len(seiyuu) != 0:
+                    list_cast_and_role.append((seiyuu, role))
+        result_list.append(list_cast)
+        result_list.append(list_cast_and_role)
+    return result_list
+
+
+def get_cast_and_role_legacy(data):
+    """
     Get cast from the xml
     Args:
         data: xml node containing the cast
@@ -841,9 +907,12 @@ def build_tv_shows(params, extra_directories=None):
                 # but we will leave this here to future support if we shrink the data flow
                 list_cast = []
                 list_cast_and_role = []
+                actors = []
                 if len(list_cast) == 0:
                     result_list = get_cast_and_role(directory)
+                    actors = result_list
                     if result_list is not None:
+                        result_list = convert_cast_and_role_to_legacy(result_list)
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
@@ -926,6 +995,7 @@ def build_tv_shows(params, extra_directories=None):
                     'fanart_image': fanart,
                     'banner': banner,
                     'key': key,
+                    'actors': actors,
                 }
                 if __addon__.getSetting('request_nocast') == 'true':
                     key += '/nocast'
@@ -1012,9 +1082,12 @@ def build_tv_seasons(params, extra_directories=None):
 
                 list_cast = []
                 list_cast_and_role = []
+                actors = []
                 if len(list_cast) == 0:
                     result_list = get_cast_and_role(atype)
+                    actors = result_list
                     if result_list is not None:
+                        result_list = convert_cast_and_role_to_legacy(result_list)
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
@@ -1076,7 +1149,8 @@ def build_tv_seasons(params, extra_directories=None):
                     'fanart_image': fanart,
                     'banner': banner,
                     'key': key,
-                    'mode': str(6)
+                    'mode': str(6),
+                    'actors': actors,
                 }
 
                 if extra_data['fanart_image'] == "":
@@ -1172,6 +1246,7 @@ def build_tv_episodes(params):
             # keep this init out of the loop, as we only provide this once
             list_cast = []
             list_cast_and_role = []
+            actors = []
             temp_genre = ""
             parent_key = ""
             grandparent_title = ""
@@ -1181,6 +1256,8 @@ def build_tv_episodes(params):
                     if len(list_cast) == 0:
                         result_list = get_cast_and_role(video)
                         if result_list is not None:
+                            actors = result_list
+                            result_list = convert_cast_and_role_to_legacy(result_list)
                             list_cast = result_list[0]
                             list_cast_and_role = result_list[1]
                         temp_genre = get_tags(video)
@@ -1268,6 +1345,7 @@ def build_tv_episodes(params):
                 extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
                 extra_data['xAudioCodec'] = video.find('Media').get('audioCodec', '')
                 extra_data['xAudioChannels'] = int(video.find('Media').get('audioChannels', 0))
+                extra_data['actors'] = actors
 
                 # Information about streams inside video file
                 extra_data['AudioStreams'] = defaultdict(dict)
