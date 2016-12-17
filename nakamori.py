@@ -265,7 +265,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         details.pop('cast', None)
                         details.pop('castandrole', None)
                     except Exception as w:
-                        error('error', str(w))
+                        pass
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
 
