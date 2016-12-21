@@ -1,3 +1,11 @@
+v2.0.18 (21/12/2016)
+- PEP8 Clean up
+- Update setCast for Kodi 17 (beta 6 or higher)
+- Debug log to pycharm
+- Fix typo in GroupFilter
+- More work with series level and accept subfilters
+- Allow wiping parameters by passing None to set_parameter. Change JMM to Shoko. Make menu loading more reliable for apply at series level groups
+
 v2.0.17 (22/10/2016)
 - Some cleanup, prevent a crash on userid, provide local file path to player if it is available, use set_parameters from now on to avoid duplicates and other url weirdness
 - Rewrite stream info

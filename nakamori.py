@@ -50,9 +50,9 @@ def valid_user():
                 body = '{"user":"' + __addon__.getSetting("login") + '",' + \
                        '"device":"' + __addon__.getSetting("device") + '",' + \
                        '"pass":"' + __addon__.getSetting("password") + '"}'
-                post = post_data("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                                 "/api/auth", body)
-                auth = json.loads(post)
+                postd = post_data("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                                  "/api/auth", body)
+                auth = json.loads(postd)
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user credentials --')
                     __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
@@ -133,8 +133,8 @@ def move_position_on_list(control_list, position=0):
     except:
         try:
             control_list.selectItem(position - 1)
-        except:
-            error('Unable to reselect item')
+        except Exception as e:
+            error('Unable to reselect item', str(e))
             xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
             xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
 
@@ -199,7 +199,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             url_in = str(extra_data.get('key'))
             if folder:
                 if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" +
-                                                         __addon__.getSetting("port")):
+                                                 __addon__.getSetting("port")):
                     if url_in.lower().startswith('/jmmserverkodi'):
                         extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + \
                                             __addon__.getSetting("port") + url_in
@@ -263,7 +263,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         liz.setCast(actors)
                         details.pop('cast', None)
                         details.pop('castandrole', None)
-                    except Exception as w:
+                    except:
                         pass
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
@@ -400,7 +400,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     elif extra_data.get('source', 'none') == 'tvepisodes':
                         series_id = extra_data.get('parentKey')[(my_len + 30):]
                         url_peep = url_peep_base + "&anime_id=" + series_id + \
-                                   "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
+                            "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
                         if not extra_data.get('unsorted', False):
                             if __addon__.getSetting('context_show_play_no_watch') == 'true':
                                 context.append(('Play (Do not Mark as Watched (Shoko))',
@@ -629,11 +629,11 @@ def get_title(data):
                         return encode(titleTag.find('Title').text)
             # fallback on directory title
             return encode(data.get('title', 'Unknown'))
-        except Exception as ex:
-            error('Error thrown on getting title', str(ex))
+        except Exception as expc:
+            error('Error thrown on getting title', str(expc))
             return encode(data.get('title', 'Error'))
-    except Exception as ex:
-        error("get_title Exception", str(ex))
+    except Exception as exw:
+        error("get_title Exception", str(exw))
         return 'Error'
 
 
@@ -717,12 +717,13 @@ def get_cast_and_role(data):
             # reorder these to match the convention (Actor is cast, character is role, in that order)
             if len(char_charname) != 0:
                 actor = {
-                    'name'     : char_seiyuuname,
-                    'role'     : char_charname,
-                    'thumbnail': char_seiyuupic
+                    'name':         char_seiyuuname,
+                    'role':         char_charname,
+                    'thumbnail':    char_seiyuupic
                 }
                 result_list.append(actor)
-    if len(result_list) == 0: return None
+    if len(result_list) == 0:
+        return None
     return result_list
 
 
@@ -923,44 +924,44 @@ def build_tv_shows(params, extra_directories=None):
                     total = int(directory.get('leafCount', 0))
                 title = get_title(directory)
                 details = {
-                    'title'        : title,
-                    'parenttitle'  : encode(parent_title),
-                    'genre'        : temp_genre,
-                    'year'         : int(directory.get('year', 0)),
-                    'episode'      : total,
-                    'season'       : int(directory.get('season', 1)),
+                    'title':            title,
+                    'parenttitle':      encode(parent_title),
+                    'genre':            temp_genre,
+                    'year':             int(directory.get('year', 0)),
+                    'episode':          total,
+                    'season':           int(directory.get('season', 1)),
                     # 'count'        : count,
                     # 'size'         : size,
                     # 'Date'         : date,
-                    'rating'       : float(str(directory.get('rating', 0.0)).replace(',', '.')),
+                    'rating':           float(str(directory.get('rating', 0.0)).replace(',', '.')),
                     # 'playcount'    : int(atype.get('viewedLeafCount')),
                     # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
-                    'cast'         : list_cast,  # cast : list (Michal C. Hall,
-                    'castandrole'  : list_cast_and_role,
+                    'cast':             list_cast,  # cast : list (Michal C. Hall,
+                    'castandrole':      list_cast_and_role,
                     # This also does nothing. Those gremlins.
                     # 'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
                     # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
                     # director       : string (Dagur Kari,
-                    'mpaa'         : directory.get('contentRating', ''),
-                    'plot'         : remove_anidb_links(encode(directory.get('summary', ''))),
+                    'mpaa':             directory.get('contentRating', ''),
+                    'plot':             remove_anidb_links(encode(directory.get('summary', ''))),
                     # 'plotoutline'  : plotoutline,
-                    'originaltitle': encode(directory.get('original_title', '')),
-                    'sorttitle'    : title,
+                    'originaltitle':    encode(directory.get('original_title', '')),
+                    'sorttitle':        title,
                     # 'Duration'     : duration,
                     # 'Studio'       : studio, < ---
                     # 'Tagline'      : tagline,
                     # 'Writer'       : writer,
                     # 'tvshowtitle'  : tvshowtitle,
-                    'tvshowname'   : title,
+                    'tvshowname':       title,
                     # 'premiered'    : premiered,
                     # 'Status'       : status,
                     # code           : string (tt0110293, - IMDb code
-                    'aired'        : directory.get('originallyAvailableAt', ''),
+                    'aired':            directory.get('originallyAvailableAt', ''),
                     # credits        : string (Andy Kaufman, - writing credits
                     # 'Lastplayed'   : lastplayed,
-                    'votes'        : directory.get('votes'),
+                    'votes':            directory.get('votes'),
                     # trailer        : string (/home/user/trailer.avi,
-                    'dateadded'    : directory.get('addedAt')
+                    'dateadded':        directory.get('addedAt')
                 }
                 temp_date = str(details['aired']).split('-')
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
@@ -976,7 +977,7 @@ def build_tv_shows(params, extra_directories=None):
                         filterid = params.get('filterid', '')
                         if directory_type == 'AnimeGroupFilter':
                             filterid = directory.get('GenericId', '')
-                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
@@ -988,16 +989,16 @@ def build_tv_shows(params, extra_directories=None):
                 banner = gen_image_url(directory.get('banner', ''))
 
                 extra_data = {
-                    'type'             : 'video',
-                    'source'           : directory_type,
-                    'UnWatchedEpisodes': int(details['episode']) - watched,
-                    'WatchedEpisodes'  : watched,
-                    'TotalEpisodes'    : details['episode'],
-                    'thumb'            : thumb,
-                    'fanart_image'     : fanart,
-                    'banner'           : banner,
-                    'key'              : key,
-                    'actors'           : actors,
+                    'type':                 'video',
+                    'source':               directory_type,
+                    'UnWatchedEpisodes':    int(details['episode']) - watched,
+                    'WatchedEpisodes':      watched,
+                    'TotalEpisodes':        details['episode'],
+                    'thumb':                thumb,
+                    'fanart_image':         fanart,
+                    'banner':               banner,
+                    'key':                  key,
+                    'actors':               actors
                 }
                 if __addon__.getSetting('request_nocast') == 'true':
                     key += '/nocast'
@@ -1100,21 +1101,21 @@ def build_tv_seasons(params, extra_directories=None):
                     total = int(atype.get('leafCount', 0))
                 title = get_title(atype)
                 details = {
-                    'title'      : title,
-                    'parenttitle': encode(parent_title),
-                    'tvshowname' : title,
-                    'sorttitle'  : encode(atype.get('titleSort', title)),
-                    'studio'     : encode(atype.get('studio', '')),
-                    'cast'       : list_cast,
-                    'castandrole': list_cast_and_role,
-                    'plot'       : plot,
-                    'genre'      : temp_genre,
-                    'season'     : int(atype.get('season', 1)),
-                    'episode'    : total,
-                    'mpaa'       : atype.get('contentRating', ''),
-                    'rating'     : float(str(atype.get('rating', 0.0)).replace(',', '.')),
-                    'aired'      : atype.get('originallyAvailableAt', ''),
-                    'year'       : int(atype.get('year', 0))
+                    'title':        title,
+                    'parenttitle':  encode(parent_title),
+                    'tvshowname':   title,
+                    'sorttitle':    encode(atype.get('titleSort', title)),
+                    'studio':       encode(atype.get('studio', '')),
+                    'cast':         list_cast,
+                    'castandrole':  list_cast_and_role,
+                    'plot':         plot,
+                    'genre':        temp_genre,
+                    'season':       int(atype.get('season', 1)),
+                    'episode':      total,
+                    'mpaa':         atype.get('contentRating', ''),
+                    'rating':       float(str(atype.get('rating', 0.0)).replace(',', '.')),
+                    'aired':        atype.get('originallyAvailableAt', ''),
+                    'year':         int(atype.get('year', 0))
                 }
                 temp_date = str(details['aired']).split('-')
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
@@ -1136,24 +1137,24 @@ def build_tv_seasons(params, extra_directories=None):
                         filterid = params.get('filterid', '')
                         if directory_type == 'AnimeGroupFilter':
                             filterid = atype.get('GenericId', '')
-                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
                               + "/api/metadata/" + key + '/' + filterid
 
                 extra_data = {
-                    'type'             : 'video',
-                    'source'           : directory_type,
-                    'TotalEpisodes'    : details['episode'],
-                    'WatchedEpisodes'  : watched,
-                    'UnWatchedEpisodes': details['episode'] - watched,
-                    'thumb'            : thumb,
-                    'fanart_image'     : fanart,
-                    'banner'           : banner,
-                    'key'              : key,
-                    'mode'             : str(6),
-                    'actors'           : actors,
+                    'type':                 'video',
+                    'source':               directory_type,
+                    'TotalEpisodes':        details['episode'],
+                    'WatchedEpisodes':      watched,
+                    'UnWatchedEpisodes':    details['episode'] - watched,
+                    'thumb':                thumb,
+                    'fanart_image':         fanart,
+                    'banner':               banner,
+                    'key':                  key,
+                    'mode':                 str(6),
+                    'actors':               actors
                 }
 
                 if extra_data['fanart_image'] == "":
@@ -1279,33 +1280,33 @@ def build_tv_episodes(params):
                     duration = int(tmp_duration) / 1000
                 # Required listItem entries for XBMC
                 details = {
-                    'plot'         : "..." if skip else remove_anidb_links(encode(video.get('summary', ''))),
-                    'title'        : encode(video.get('title', 'Unknown')),
-                    'sorttitle'    : encode(video.get('titleSort', video.get('title', 'Unknown'))),
-                    'parenttitle'  : encode(parent_title),
-                    'rating'       : float(str(video.get('rating', 0.0)).replace(',', '.')),
+                    'plot':          "..." if skip else remove_anidb_links(encode(video.get('summary', ''))),
+                    'title':         encode(video.get('title', 'Unknown')),
+                    'sorttitle':     encode(video.get('titleSort', video.get('title', 'Unknown'))),
+                    'parenttitle':   encode(parent_title),
+                    'rating':        float(str(video.get('rating', 0.0)).replace(',', '.')),
                     # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                     # This doesn't work, some gremlins be afoot in this code...
                     # it's probably just that it only applies at series level
                     # 'cast'        : list(['Actor1','Actor2']),
                     # 'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
                     # According to the docs, this will auto fill castandrole
-                    'CastAndRole'  : list_cast_and_role,
-                    'Cast'         : list_cast,
+                    'CastAndRole':   list_cast_and_role,
+                    'Cast':          list_cast,
                     # 'director': " / ".join(temp_dir),
                     # 'writer': " / ".join(temp_writer),
-                    'genre'        : "..." if skip else temp_genre,
-                    'duration'     : str(datetime.timedelta(seconds=duration)),
-                    'mpaa'         : video.get('contentRating', ''),
-                    'year'         : int(video.get('year', 0)),
-                    'tagline'      : "..." if skip else temp_genre,
-                    'episode'      : int(video.get('index', 0)),
-                    'aired'        : video.get('originallyAvailableAt', ''),
-                    'tvshowtitle'  : grandparent_title,
-                    'votes'        : int(video.get('votes', 0)),
+                    'genre':        "..." if skip else temp_genre,
+                    'duration':      str(datetime.timedelta(seconds=duration)),
+                    'mpaa':          video.get('contentRating', ''),
+                    'year':          int(video.get('year', 0)),
+                    'tagline':       "..." if skip else temp_genre,
+                    'episode':       int(video.get('index', 0)),
+                    'aired':         video.get('originallyAvailableAt', ''),
+                    'tvshowtitle':   grandparent_title,
+                    'votes':         int(video.get('votes', 0)),
                     'originaltitle': video.get('original_title', ''),
-                    'size'         : int(video.find('Media').find('Part').get('size', 0)),
-                    'season'       : int(video.get('season', 1))
+                    'size':          int(video.find('Media').find('Part').get('size', 0)),
+                    'season':        int(video.get('season', 1))
                 }
                 temp_date = str(details['aired']).split('-')
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
@@ -1333,24 +1334,24 @@ def build_tv_episodes(params):
 
                 # Extra data required to manage other properties
                 extra_data = {
-                    'type'             : "Video",
-                    'source'           : "tvepisodes",
-                    'unsorted'         : 'animefile' in video.get('AnimeType', '').lower(),
-                    'thumb'            : None if skip else thumb,
-                    'fanart_image'     : None if skip else art,
-                    'key'              : key,
-                    'resume'           : int(int(view_offset) / 1000),
-                    'parentKey'        : parent_key,
-                    'jmmepisodeid'     : video.get('JMMEpisodeId', video.get('GenericId', '0')),
-                    'banner'           : banner,
-                    'xVideoResolution' : video.find('Media').get('videoResolution', 0),
-                    'xVideoCodec'      : video.find('Media').get('videoCodec', ''),
-                    'xVideoAspect'     : float(video.find('Media').get('aspectRatio', 0)),
-                    'xAudioCodec'      : video.find('Media').get('audioCodec', ''),
-                    'xAudioChannels'   : int(video.find('Media').get('audioChannels', 0)),
-                    'actors'           : actors,
-                    'AudioStreams'     : defaultdict(dict),
-                    'SubStreams'       : defaultdict(dict)
+                    'type':             "Video",
+                    'source':           "tvepisodes",
+                    'unsorted':         'animefile' in video.get('AnimeType', '').lower(),
+                    'thumb':            None if skip else thumb,
+                    'fanart_image':     None if skip else art,
+                    'key':              key,
+                    'resume':           int(int(view_offset) / 1000),
+                    'parentKey':        parent_key,
+                    'jmmepisodeid':     video.get('JMMEpisodeId', video.get('GenericId', '0')),
+                    'banner':           banner,
+                    'xVideoResolution': video.find('Media').get('videoResolution', 0),
+                    'xVideoCodec':      video.find('Media').get('videoCodec', ''),
+                    'xVideoAspect':     float(video.find('Media').get('aspectRatio', 0)),
+                    'xAudioCodec':      video.find('Media').get('audioCodec', ''),
+                    'xAudioChannels':   int(video.find('Media').get('audioChannels', 0)),
+                    'actors':           actors,
+                    'AudioStreams':     defaultdict(dict),
+                    'SubStreams':       defaultdict(dict)
                     }
 
                 # Information about streams inside video file
@@ -1474,21 +1475,21 @@ def play_video(url, ep_id):
 
     """
     details = {
-        'plot'         : xbmc.getInfoLabel('ListItem.Plot'),
-        'title'        : xbmc.getInfoLabel('ListItem.Title'),
-        'sorttitle'    : xbmc.getInfoLabel('ListItem.Title'),
-        'rating'       : xbmc.getInfoLabel('ListItem.Rating'),
-        'duration'     : xbmc.getInfoLabel('ListItem.Duration'),
-        'mpaa'         : xbmc.getInfoLabel('ListItem.Mpaa'),
-        'year'         : xbmc.getInfoLabel('ListItem.Year'),
-        'tagline'      : xbmc.getInfoLabel('ListItem.Tagline'),
-        'episode'      : xbmc.getInfoLabel('ListItem.Episode'),
-        'aired'        : xbmc.getInfoLabel('ListItem.Premiered'),
-        'tvshowtitle'  : xbmc.getInfoLabel('ListItem.TVShowTitle'),
-        'votes'        : xbmc.getInfoLabel('ListItem.Votes'),
+        'plot':          xbmc.getInfoLabel('ListItem.Plot'),
+        'title':         xbmc.getInfoLabel('ListItem.Title'),
+        'sorttitle':     xbmc.getInfoLabel('ListItem.Title'),
+        'rating':        xbmc.getInfoLabel('ListItem.Rating'),
+        'duration':      xbmc.getInfoLabel('ListItem.Duration'),
+        'mpaa':          xbmc.getInfoLabel('ListItem.Mpaa'),
+        'year':          xbmc.getInfoLabel('ListItem.Year'),
+        'tagline':       xbmc.getInfoLabel('ListItem.Tagline'),
+        'episode':       xbmc.getInfoLabel('ListItem.Episode'),
+        'aired':         xbmc.getInfoLabel('ListItem.Premiered'),
+        'tvshowtitle':   xbmc.getInfoLabel('ListItem.TVShowTitle'),
+        'votes':         xbmc.getInfoLabel('ListItem.Votes'),
         'originaltitle': xbmc.getInfoLabel('ListItem.OriginalTitle'),
-        'size'         : xbmc.getInfoLabel('ListItem.Size'),
-        'season'       : xbmc.getInfoLabel('ListItem.Season')
+        'size':          xbmc.getInfoLabel('ListItem.Size'),
+        'season':        xbmc.getInfoLabel('ListItem.Season')
     }
 
     item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
@@ -1777,6 +1778,7 @@ if valid_user() is True:
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
+                    # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
                     if ui_index != '':
                         move_position_on_list(ctl, int(ui_index) + 1)
@@ -1807,6 +1809,7 @@ if valid_user() is True:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                 ctl = win.getControl(win.getFocusId())
                 if play_video(parameters['file'], parameters['ep_id']) != 0:
+                    # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
                     if ui_index != '':
                         move_position_on_list(ctl, int(ui_index) + 1)
