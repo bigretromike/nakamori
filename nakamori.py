@@ -1305,9 +1305,17 @@ def build_tv_episodes(params):
                     'tvshowtitle':   grandparent_title,
                     'votes':         int(video.get('votes', 0)),
                     'originaltitle': video.get('original_title', ''),
-                    'size':          int(video.find('Media').find('Part').get('size', 0)),
-                    'season':        int(video.get('season', 1))
+                    'size': int(video.find('Media').find('Part').get('size', 0)),
                 }
+
+                season = str(video.get('season', '1'))
+                try:
+                    if season != '1':
+                        season = season.split('x')[0]
+                except Exception as w:
+                    error(w, season)
+                details['season'] = int(season)
+
                 temp_date = str(details['aired']).split('-')
                 if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
                     details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
