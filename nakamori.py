@@ -1273,7 +1273,10 @@ def build_tv_episodes(params):
 
                 view_offset = video.get('viewOffset', 0)
                 # Check for empty duration from MediaInfo check fail and handle it properly
-                tmp_duration = video.find('Media').get('duration', '1000')
+                try:
+                    tmp_duration = video.find('Media').get('duration', '1000')
+                except:
+                    continue
                 if not tmp_duration:
                     duration = 1
                 else:
