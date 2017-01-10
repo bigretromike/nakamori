@@ -211,6 +211,7 @@ def processTags(addon,string):
     # on a separate loop in case 'original work' came before the source
     if removeOriginal:
         for a in string:
+            tag = str(a).lower().strip()
             if tag == "new":
                 toAdd.append('Original Work')
             elif tag == "original work":
