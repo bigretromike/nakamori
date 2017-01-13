@@ -797,6 +797,7 @@ def build_main_menu():
         # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         e = xml(get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
                         "/jmmserverkodi/getfilters/" + __addon__.getSetting("userid")))
+        set_window_heading(e)
         try:
             for atype in e.findall('Directory'):
                 title = atype.get('title')
@@ -1044,7 +1045,6 @@ def build_tv_seasons(params, extra_directories=None):
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
         e = xml(html)
-        set_window_heading(e)
         try:
             parent_title = ''
             try:
@@ -1060,6 +1060,7 @@ def build_tv_seasons(params, extra_directories=None):
                 build_tv_episodes(params)
                 return
 
+            set_window_heading(e)
             will_flatten = False
 
             # check for a single season
