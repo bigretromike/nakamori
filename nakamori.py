@@ -1655,7 +1655,7 @@ def vote_episode(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select('my_vote', vote_list)
+    my_vote = xbmcgui.Dialog().select('My Vote', vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -1827,6 +1827,8 @@ if valid_user() is True:
                         move_position_on_list(ctl, int(ui_index) + 1)
                     parameters['watched'] = True
                     watched_mark(parameters)
+                    if __addon__.getSetting('vote_always') == 'true':
+                        vote_episode(parameters)
             except Exception as exp:
                 xbmc.log(str(exp))
                 pass

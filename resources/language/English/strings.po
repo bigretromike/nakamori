@@ -113,7 +113,7 @@ msgid "Community"
 msgstr ""
 
 msgctxt "#30032"
-msgid "(WIP)Episode Vote after watching every episode"
+msgid "Trigger Voting after each episode"
 msgstr ""
 
 msgctxt "#30033"
