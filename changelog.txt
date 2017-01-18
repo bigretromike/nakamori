@@ -1,3 +1,10 @@
+v2.0.19 (18/01/2017)
+- Adding "Trigger Voting after each episode"
+- Fix some window headings
+- Expand and move around the Tag Filter based on AniDB's docs. (Still missing many I'm sure)
+- try catch duration
+- fix season to accept new and old format
+
 v2.0.18 (21/12/2016)
 - PEP8 Clean up
 - Update setCast for Kodi 17 (beta 6 or higher)
