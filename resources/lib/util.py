@@ -22,6 +22,7 @@ UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/20080924
 pDialog = ''
 
 
+# json
 def error(msg, error_type='Error'):
     """
     Log and notify the user of an error
@@ -73,15 +74,17 @@ def parse_possible_error(data, data_type):
 
 
 # Internal function
+# json
 def get_json(url_in):
     return get_data(url_in, None, "json")
 
-
+# legacy
 def get_xml(url_in):
     # return get_data(url_in, None, "xml")
     return get_data(url_in, None, "")
 
 
+# json + legacy
 def get_data(url_in, referer, data_type):
     """
     Send a message to the server and wait for a response
@@ -101,7 +104,6 @@ def get_data(url_in, referer, data_type):
             if url_in.lower().startswith(':'):
                 url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
 
-        # TODO: Remove with get_legacy
         if len(data_type) > 1:
             url = url_in + "." + data_type
         else:
@@ -143,6 +145,16 @@ def get_data(url_in, referer, data_type):
     return data
 
 
+# json
+def post_json(url_in, body):
+    if len(body) > 3:
+        proper_body = '{"apikey":"' + __addon__.getSetting("apikey") + '",' + body + '}'
+        return post_data(url_in, proper_body)
+    else:
+        return None
+
+
+# json
 def post_data(url, data_in):
     """
     Send a message to the server and wait for a response
@@ -168,6 +180,7 @@ def post_data(url, data_in):
         return None
 
 
+# legacy
 def xml(xml_string):
     """
     return an xml tree from string with error catching
@@ -231,19 +244,20 @@ def post(url, data, headers={}):
     return data
 
 
+# json
 def get_version():
     legacy = LooseVersion('0.0')
-    xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                       "/jmmserverkodi/getversion")
-    if xml_file is None:
+    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
+                         "/api/version")
+    if json_file is None:
         return legacy
-    data = None
     try:
-        data = xml(xml_file)
+        data = json_file
     except:
         return legacy
-    version = data.get('Message', '')
-    if version != '': return LooseVersion(version)
+    version = data.get('server', '')
+    if version != '':
+        return LooseVersion(version)
     return legacy
 
 
