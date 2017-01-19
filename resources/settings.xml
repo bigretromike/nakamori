@@ -2,11 +2,11 @@
 <settings>
     <category label="30001">
         <setting label="30006" type="lsep"/>
-		<setting label="30002" type="text" id="ipaddress" default="127.0.0.1"/>
-		<setting label="30003" type="number" id="port" default="8111"/>
-		<setting label="30004" type="number" id="timeout" default="60"/>
-		<setting label="30011" type="lsep"/>
-		<setting label="30012" type="number" id="userid" default="1" visible="true"/>
+        <setting label="30002" type="text" id="ipaddress" default="127.0.0.1"/>
+        <setting label="30003" type="number" id="port" default="8111"/>
+        <setting label="30004" type="number" id="timeout" default="60"/>
+        <setting label="30011" type="lsep"/>
+        <setting label="30012" type="number" id="userid" default="1" visible="true"/>
         <setting label="30015" type="text" id="login" default="Default"/>
         <setting label="30016" type="text" id="password" options="hidden"/>
         <setting label="30017" type="text" id="device" default="nakamori"/>
@@ -30,26 +30,26 @@
         <setting label="30061" type="bool" id="context_show_play_no_watch" default="true" />
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
     </category>
-	<category label="30023">
-		<setting label="30007" type="lsep"/>
+    <category label="30023">
+        <setting label="30007" type="lsep"/>
         <setting label="30025" type="bool" id="watchedbox" default="true"/>
         <setting label="30024" type="number" id="watched_mark" default="80"/>
         <setting label="30055" type="number" id="refresh_wait" default="1000"/>
-		<setting label="30005" type="bool" id="syncwatched" default="true"/>
-		<setting label="30026" type="lsep"/>
-		<setting label="30027" type="number" id="player_sleep" default="5000"/>
+        <setting label="30005" type="bool" id="syncwatched" default="true"/>
+        <setting label="30026" type="lsep"/>
+        <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
-	<category label="30021">
-		<setting label="30022" type="number" id="maxlimit" default="20"/>
-		<setting label="30033" type="number" id="maxlimit_tag" default="100"/>
+    <category label="30021">
+        <setting label="30022" type="number" id="maxlimit" default="20"/>
+        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
     </category>
-	<category label="30031">
-		<setting label="30032" type="bool" id="vote_always" default="false"/>
-		<setting label="30034" type="bool" id="vote_on_series" default="false"/>
-		<setting label="30038" type="lsep"/>
-		<setting label="30035" type="bool" id="trakt" default="false"/>
-		<setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
-		<setting label="30037" type="bool" id="trakt_scrobble_notification" default="false"/>
+    <category label="30031">
+        <setting label="30032" type="bool" id="vote_always" default="false"/>
+        <setting label="30034" type="bool" id="vote_on_series" default="false"/>
+        <setting label="30038" type="lsep"/>
+        <setting label="30035" type="bool" id="trakt" default="false"/>
+        <setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
+        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false"/>
     </category>
     <category label="30046">
         <setting label="30045" type="bool" id="hideMiscTags" default="false"/>
@@ -58,14 +58,14 @@
         <setting label="30049" type="bool" id="hideUsefulMiscTags" default="false"/>
         <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
     </category>
-	<category label="30044">
-		<setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
-		<setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
-		<setting label="30042" type="bool" id="spamLog" default="false"/>
-		<setting label="30013" type="bool" id="use_gzip" default="true"/>
+    <category label="30044">
+        <setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
+        <setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30042" type="bool" id="spamLog" default="false"/>
+        <setting label="30013" type="bool" id="use_gzip" default="true"/>
         <setting label="30066" type="bool" id="request_nocast" default="false"/>
         <setting label="30063" type="bool" id="remote_debug" default="false"/>
         <setting label="30064" type="text" id="ide_ip" default="localhost" visible="eq(-1,true)"/>
         <setting label="30065" type="number" id="ide_port" default="5376" visible="eq(-2,true)"/>
-	</category>
+    </category>
 </settings>
