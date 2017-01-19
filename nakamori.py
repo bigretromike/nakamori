@@ -28,7 +28,7 @@ __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 
 
-# json
+# json - ok
 def valid_user():
     """
     Logs into the server and stores the apikey, then checks if the userid is valid
@@ -71,6 +71,7 @@ def valid_user():
         except Exception as exc:
             error('Error in Valid_User', str(exc))
             return False
+
 
 # legacy - do we need it ?
 def set_userid():
@@ -142,7 +143,8 @@ def move_position_on_list(control_list, position=0):
             xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
             xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
 
-# legacy
+
+# legacy - or need tweak
 def set_window_heading(var_tree):
     """
     Sets the window titles
@@ -176,6 +178,7 @@ def filter_gui_item_by_tag(title):
     return len(str1) > 0
 
 
+# json - not proper reviewed also few hacks to bypass erros to draw items
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
     """Adds an item to the menu and populates its info labels
     :param url:The URL of the menu or file this item links to
@@ -402,9 +405,10 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                         % (sys.argv[1], url_peep)))
                     elif extra_data.get('source', 'none') == 'tvepisodes':
-                        series_id = extra_data.get('parentKey')[(my_len + 30):]
-                        url_peep = url_peep_base + "&anime_id=" + series_id + \
-                            "&ep_id=" + extra_data.get('jmmepisodeid') + '&ui_index=' + str(index)
+                        #series_id = extra_data.get('parentKey')[(my_len + 30):] <----
+                        series_id = "331122"
+                        url_peep = url_peep_base + "&anime_id=" + str(series_id) + \
+                            "&ep_id=" + str(extra_data.get('jmmepisodeid')) + '&ui_index=' + str(index)
                         if not extra_data.get('unsorted', False):
                             if __addon__.getSetting('context_show_play_no_watch') == 'true':
                                 context.append(('Play (Do not Mark as Watched (Shoko))',
@@ -669,61 +673,60 @@ def get_legacy_tags(tag_xml):
     return temp_genre
 
 
-# json
-def get_tags(serie_node):
+# json - ok
+def get_tags(tag_node):
     """
     Get the tags from the new style
     Args:
-        serie_node: node containing group
+        tag_node: node containing group
 
     Returns: a string of all of the tags formatted
 
     """
     try:
-        if "tags" in serie_node:
+        if len(tag_node) > 0:
             temp_genres = []
-            for tag in serie_node["tags"]:
-                if tag is not None:
-                    temp_genre = encode(tag["tag"]).strip()
-                    temp_genres.append(temp_genre)
-        temp_genres = TagFilter.processTags(__addon__, temp_genres)
-        temp_genre = " | ".join(temp_genres)
-        return temp_genre
+            for tag in tag_node:
+                temp_genre = encode(tag["tag"]).strip()
+                temp_genres.append(temp_genre)
+                temp_genres = TagFilter.processTags(__addon__, temp_genres)
+                temp_genre = " | ".join(temp_genres)
+            return temp_genre
+        else:
+            return ''
     except Exception as exc:
         error('Error generating tags', str(exc))
         return ''
 
 
-# json
+# json - ok
 def get_cast_and_role(data):
     """
     Get cast from the json and arrange in the new setCast format
     Args:
-        data: json node containing the cast
+        data: json node containing 'roles'
 
     Returns: a list of dictionaries for the cast
     """
     result_list = []
     if data is not None:
-        character_tag = 'Role'
-        if data["roles"] is not None:
-            for char in data["roles"]:
-                char_charname = char["role"]
-                char_seiyuuname = char["name"]
-                char_seiyuupic = char["rolepic"]
+        for char in data:
+            char_charname = char["role"]
+            char_seiyuuname = char["name"]
+            char_seiyuupic = char["rolepic"]
 
-                # only add it if it has data
-                # reorder these to match the convention (Actor is cast, character is role, in that order)
-                if len(char_charname) != 0:
-                    actor = {
-                        'name':         char_seiyuuname,
-                        'role':         char_charname,
-                        'thumbnail':    char_seiyuupic
-                    }
-                    result_list.append(actor)
-            if len(result_list) == 0:
-                return None
-            return result_list
+            # only add it if it has data
+            # reorder these to match the convention (Actor is cast, character is role, in that order)
+            if len(char_charname) != 0:
+                actor = {
+                    'name':         char_seiyuuname,
+                    'role':         char_charname,
+                    'thumbnail':    char_seiyuupic
+                }
+                result_list.append(actor)
+        if len(result_list) == 0:
+            return None
+        return result_list
     return None
 
 
@@ -927,14 +930,14 @@ def build_tv_shows(params, extra_directories=None):
 
             for grp in body["groups"]:
                 if len(grp["series"]) > 0:
-                    temp_genre = get_tags(grp["series"][0])
+                    temp_genre = get_tags(grp["series"][0]["tags"])
                     watched = int(grp["series"][0]["viewed"])
 
                     list_cast = []
                     list_cast_and_role = []
                     actors = []
                     if len(list_cast) == 0:
-                        result_list = get_cast_and_role(grp["series"][0])
+                        result_list = get_cast_and_role(grp["series"][0]["roles"])
                         actors = result_list
                         if result_list is not None:
                             result_list = convert_cast_and_role_to_legacy(result_list)
@@ -992,7 +995,7 @@ def build_tv_shows(params, extra_directories=None):
 
                     directory_type = ""
                     key_id = str(grp["series"][0]["id"])
-                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/serie?id=" + key_id
+                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/serie?id=" + key_id
                     #directory_type = directory.get('AnimeType', '')
                     #key = directory.get('key', '')
                     #filterid = ''
@@ -1057,6 +1060,7 @@ def build_tv_shows(params, extra_directories=None):
     xbmcplugin.endOfDirectory(handle)
 
 
+# still broken - hacked
 def build_tv_seasons(params, extra_directories=None):
     """
     Builds list items for The Types Menu, or optionally subgroups
@@ -1070,24 +1074,26 @@ def build_tv_seasons(params, extra_directories=None):
     # xbmcgui.Dialog().ok('MODE=5','IN')
     xbmcplugin.setContent(handle, 'seasons')
     try:
-        html = encode(decode(get_xml(params['url'])))
+        html = get_json(params['url'])
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
-        e = xml(html)
+        body = json.loads(html)
         try:
             parent_title = ''
             try:
-                parent_title = e.get('title1', '')
+                parent_title = body["title"]
             except Exception as exc:
                 error("Unable to get parent title in buildTVSeasons", str(exc))
 
-            if extra_directories is not None:
-                e.extend(extra_directories)
-
-            if e.find('Directory') is None:
-                params['url'] = params['url'].replace('&mode=5', '&mode=6')
-                build_tv_episodes(params)
-                return
+            # if extra_directories is not None: <---
+            #     e.extend(extra_directories) <---
+# DIRTY HACK UNTIL I GET HERE
+            # if e.find('Directory') is None:
+#                params['url'] = params['url'].replace('&mode=5', '&mode=6')
+#                build_tv_episodes(params)
+#                return
+            build_tv_episodes(params)
+            return
 
             set_window_heading(e)
             will_flatten = False
@@ -1224,6 +1230,7 @@ def build_tv_seasons(params, extra_directories=None):
     xbmcplugin.endOfDirectory(handle)
 
 
+# json - a lot comment out
 def build_tv_episodes(params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
     """
@@ -1233,28 +1240,34 @@ def build_tv_episodes(params):
     """
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        html = encode(decode(get_xml(params['url'])))
-        e = xml(html)
+        dbg(params['url'])
+        html = get_json(params['url'])
+        body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
-        set_window_heading(e)
+        # set_window_heading(e) <-----
         try:
             parent_title = ''
             try:
-                parent_title = e.get('title1', '')
+                parent_title = body["title"]
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
-            if e.find('Directory') is not None:
-                # this is never true
-                # if e.find('Directory').get('type', 'none') == 'season':
-                params['url'] = params['url'].replace('&mode=6', '&mode=5')
-                build_tv_seasons(params)
-                return
-            banner = gen_image_url(e.get('banner', ''))
-            art = gen_image_url(e.get('art', ''))
 
-            # unused
-            # season_thumb = e.get('thumb', '')
+            # DETECT PERSONA 4 THE ANIMATION TYPES OF EPISODES (before it was credit/ovas) not they are in eps
+            # if e.find('Directory') is not None:  <-----
+            #    params['url'] = params['url'].replace('&mode=6', '&mode=5')
+            #    build_tv_seasons(params)
+            #    return
+
+            art = ''
+            if len(body["art"]["fanart"]) > 0:
+                art = body["art"]["fanart"][0]["url"]
+            thumb = ''
+            if len(body["art"]["thumb"]) > 0:
+                thumb = body["art"]["thumb"][0]["url"]
+            banner = ''
+            if len(body["art"]["banner"]) > 0:
+                banner = body["art"]["banner"][0]["url"]
 
             if __addon__.getSetting('use_server_sort') == 'false':
                 # Set Sort Method
@@ -1271,10 +1284,9 @@ def build_tv_episodes(params):
             next_episode = -1
             episode_count = 0
 
-            video_list = e.findall('Video')
-            if len(video_list) <= 0:
+            if len(body["eps"]) <= 0:
                 error("No episodes in list")
-            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(video_list) > int(
+            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body["eps"]) > int(
                 __addon__.getSetting("skipExtraInfoMaxEpisodes"))
 
             # keep this init out of the loop, as we only provide this once
@@ -1285,173 +1297,186 @@ def build_tv_episodes(params):
             parent_key = ""
             grandparent_title = ""
             if not skip:
-                for video in video_list:
-                    # we only get this once, so only set it if it's not already set
-                    if len(list_cast) == 0:
-                        result_list = get_cast_and_role(video)
-                        if result_list is not None:
-                            actors = result_list
-                            result_list = convert_cast_and_role_to_legacy(result_list)
-                            list_cast = result_list[0]
-                            list_cast_and_role = result_list[1]
-                        temp_genre = get_tags(video)
-                        parent_key = video.get('parentKey', '0')
+                result_list = get_cast_and_role(body["roles"])
+                if result_list is not None:
+                    actors = result_list
+                    result_list = convert_cast_and_role_to_legacy(result_list)
+                    list_cast = result_list[0]
+                    list_cast_and_role = result_list[1]
 
-                        grandparent_title = encode(video.get('grandparentTitle', video.get('grandparentTitle', '')))
-            for video in video_list:
-                episode_count += 1
+                temp_genre = get_tags(body["tags"])
+                parent_key = body["id"]
+                grandparent_title = encode(body["title"])
 
-                view_offset = video.get('viewOffset', 0)
-                # Check for empty duration from MediaInfo check fail and handle it properly
-                try:
-                    tmp_duration = video.find('Media').get('duration', '1000')
-                except:
-                    continue
-                if not tmp_duration:
-                    duration = 1
-                else:
-                    duration = int(tmp_duration) / 1000
-                # Required listItem entries for XBMC
-                details = {
-                    'plot':          "..." if skip else remove_anidb_links(encode(video.get('summary', ''))),
-                    'title':         encode(video.get('title', 'Unknown')),
-                    'sorttitle':     encode(video.get('titleSort', video.get('title', 'Unknown'))),
-                    'parenttitle':   encode(parent_title),
-                    'rating':        float(str(video.get('rating', 0.0)).replace(',', '.')),
-                    # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
-                    # This doesn't work, some gremlins be afoot in this code...
-                    # it's probably just that it only applies at series level
-                    # 'cast'        : list(['Actor1','Actor2']),
-                    # 'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
-                    # According to the docs, this will auto fill castandrole
-                    'CastAndRole':   list_cast_and_role,
-                    'Cast':          list_cast,
-                    # 'director': " / ".join(temp_dir),
-                    # 'writer': " / ".join(temp_writer),
-                    'genre':        "..." if skip else temp_genre,
-                    'duration':      str(datetime.timedelta(seconds=duration)),
-                    'mpaa':          video.get('contentRating', ''),
-                    'year':          int(video.get('year', 0)),
-                    'tagline':       "..." if skip else temp_genre,
-                    'episode':       int(video.get('index', 0)),
-                    'aired':         video.get('originallyAvailableAt', ''),
-                    'tvshowtitle':   grandparent_title,
-                    'votes':         int(video.get('votes', 0)),
-                    'originaltitle': video.get('original_title', ''),
-                    'size': int(video.find('Media').find('Part').get('size', 0)),
-                }
+            if len(body["eps"]) > 0:
+                for video in body["eps"]:
+                    # check if episode have files
+                    if video["files"] is not None:
+                        if len(video["files"]) > 0:
+                            episode_count += 1
+                            # view_offset = video.get('viewOffset', 0) <---
+                            # Check for empty duration from MediaInfo check fail and handle it properly
+                            try:
+                                tmp_duration = video["files"][0]["duration"]
+                            except:
+                                continue
+                            if not tmp_duration:
+                                duration = 1
+                            else:
+                                duration = int(tmp_duration) / 1000
+                            # Required listItem entries for XBMC
+                            details = {
+                                'plot':          "..." if skip else remove_anidb_links(encode(video["summary"])),
+                                'title':         encode(video["title"]),
+                                'sorttitle':     encode(video["title"]),
+                                'parenttitle':   encode(parent_title),
+                                'rating':        float(str(video["rating"]).replace(',', '.')),
+                                # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
+                                # This doesn't work, some gremlins be afoot in this code...
+                                # it's probably just that it only applies at series level
+                                # 'cast'        : list(['Actor1','Actor2']),
+                                # 'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
+                                # According to the docs, this will auto fill castandrole
+                                'CastAndRole':   list_cast_and_role,
+                                'Cast':          list_cast,
+                                # 'director': " / ".join(temp_dir),
+                                # 'writer': " / ".join(temp_writer),
+                                'genre':        "..." if skip else temp_genre,
+                                'duration':      str(datetime.timedelta(seconds=duration)),
+                                # 'mpaa':          video.get('contentRating', ''), <--
+                                'year':          safeInt(video["year"]),
+                                'tagline':       "..." if skip else temp_genre,
+                                'episode':       safeInt(video["epnumber"]),
+                                'aired':         video["air"],
+                                'tvshowtitle':   grandparent_title,
+                                'votes':         safeInt(video["votes"]),
+                                # 'originaltitle': video.get('original_title', ''), <---
+                                'size': safeInt(body["size"])
+                            }
 
-                season = str(video.get('season', '1'))
-                try:
-                    if season != '1':
-                        season = season.split('x')[0]
-                except Exception as w:
-                    error(w, season)
-                details['season'] = int(season)
+                            season = str(body["season"])
+                            try:
+                                if season != '1':
+                                    season = season.split('x')[0]
+                            except Exception as w:
+                                error(w, season)
+                            details['season'] = int(season)
 
-                temp_date = str(details['aired']).split('-')
-                if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                    details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
+                            temp_date = str(details['aired']).split('-')
+                            if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
+                                details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
-                thumb = gen_image_url(video.get('thumb', ''))
+                            thumb = ''
+                            if len(video["art"]["thumb"]) > 0:
+                                thumb = video["art"]["thumb"][0]["url"]
+                            fanart = ''
+                            if len(video["art"]["fanart"]) > 0:
+                                fanart = video["art"]["fanart"][0]["url"]
+                            banner = ''
+                            if len(video["art"]["banner"]) > 0:
+                                banner = video["art"]["banner"][0]["url"]
 
-                key = video.get('key', '')
+                            # we could leave this as is and when trigger get essential data for this episode/file only
+                            key = video["files"][0]["id"]
+                            key = '123'
 
-                ext = video.find('Media').find('Part').get('container', '')
-                new_key = video.find('Media').find('Part').get('key', '')
+                            # <--- V V V
+                            # ext = video.find('Media').find('Part').get('container', '')
+                            # new_key = video.find('Media').find('Part').get('key', '')
 
-                if not key.lower().startswith("http") or 'videolocal' not in key.lower():
-                    key = new_key
-                    if not key.startswith("http") and 'videolocal' not in key.lower():
-                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + \
-                              str(int(__addon__.getSetting("port")) + 1) + "/videolocal/0/" + key
-                    if '.' + ext.lower() not in key.lower():
-                        key += '.' + ext.lower()
+                            # if not key.lower().startswith("http") or 'videolocal' not in key.lower():
+                            #    key = new_key
+                            #    if not key.startswith("http") and 'videolocal' not in key.lower():
+                            #        key = "http://" + __addon__.getSetting("ipaddress") + ":" + \
+                            #              str(int(__addon__.getSetting("port")) + 1) + "/videolocal/0/" + key
+                            #    if '.' + ext.lower() not in key.lower():
+                            #        key += '.' + ext.lower()
 
-                newerkey = encode(video.find('Media').find('Part').get('local_key', ''))
-                newerkey = newerkey.replace('\\', '\\\\')
-                if newerkey != '' and os.path.isfile(newerkey):
-                    key = newerkey
+                            # newerkey = encode(video.find('Media').find('Part').get('local_key', ''))
+                            # newerkey = newerkey.replace('\\', '\\\\')
+                            # if newerkey != '' and os.path.isfile(newerkey):
+                            #    key = newerkey
 
-                # Extra data required to manage other properties
-                extra_data = {
-                    'type':             "Video",
-                    'source':           "tvepisodes",
-                    'unsorted':         'animefile' in video.get('AnimeType', '').lower(),
-                    'thumb':            None if skip else thumb,
-                    'fanart_image':     None if skip else art,
-                    'key':              key,
-                    'resume':           int(int(view_offset) / 1000),
-                    'parentKey':        parent_key,
-                    'jmmepisodeid':     video.get('JMMEpisodeId', video.get('GenericId', '0')),
-                    'banner':           banner,
-                    'xVideoResolution': video.find('Media').get('videoResolution', 0),
-                    'xVideoCodec':      video.find('Media').get('videoCodec', ''),
-                    'xVideoAspect':     float(video.find('Media').get('aspectRatio', 0)),
-                    'xAudioCodec':      video.find('Media').get('audioCodec', ''),
-                    'xAudioChannels':   int(video.find('Media').get('audioChannels', 0)),
-                    'actors':           actors,
-                    'AudioStreams':     defaultdict(dict),
-                    'SubStreams':       defaultdict(dict)
-                    }
+                            # Extra data required to manage other properties
+                            extra_data = {
+                                'type':             "Video",
+                                'source':           "tvepisodes",
+                                # 'unsorted':         'animefile' in video.get('AnimeType', '').lower(), <---
+                                'thumb':            None if skip else thumb,
+                                'fanart_image':     None if skip else art,
+                                'key':              key,
+                                # 'resume':           int(int(view_offset) / 1000),<---
+                                'parentKey':        parent_key,
+                                'jmmepisodeid':     safeInt(body["id"]),
+                                'banner':           banner,
+                                # 'xVideoResolution': video["files"][0]["media"]["videos"]["1"]["Width"], <---
+                                # 'xVideoCodec':      video["files"][0]["media"]["videos"]["1"]["Codec"], <---
+                                # 'xVideoAspect':     float(video.find('Media').get('aspectRatio', 0)), <---
+                                # 'xAudioCodec':      video["files"][0]["media"]["audios"]["1"]["Codec"], <---
+                                # 'xAudioChannels':   safeInt(video["files"][0]["media"]["audios"]["1"]["Channels"]), <---
+                                'actors':           actors,
+                                'AudioStreams':     defaultdict(dict),
+                                'SubStreams':       defaultdict(dict)
+                                }
 
-                # Information about streams inside video file
-                for stream_info in video.find('Media').find('Part').findall('Stream'):
-                    stream = int(stream_info.get('streamType'))
-                    if stream == 1:
-                        # Video
-                        extra_data['VideoCodec'] = stream_info.get('codec', '')
-                        extra_data['width'] = int(stream_info.get('width', 0))
-                        extra_data['height'] = int(stream_info.get('height', 0))
-                        extra_data['duration'] = duration
-                    elif stream == 2:
-                        # Audio
-                        streams = extra_data.get('AudioStreams')
-                        streamid = int(stream_info.get('index'))
-                        streams[streamid]['AudioCodec'] = stream_info.get('codec')
-                        streams[streamid]['AudioLanguage'] = stream_info.get('languageCode')
-                        streams[streamid]['AudioChannels'] = int(stream_info.get('channels'))
-                        extra_data['AudioStreams'] = streams
-                    elif stream == 3:
-                        # Subtitle
-                        streams = extra_data.get('SubStreams')
-                        streamid = int(stream_info.get('index'))
-                        streams[streamid]['SubtitleLanguage'] = stream_info.get('languageCode')
-                        extra_data['SubStreams'] = streams
-                    else:
-                        # error
-                        error("Unknown Stream Type Received!")
+                            # Information about streams inside video file
+                            if video["files"][0]["media"] is not None:
+                                if len(video["files"][0]["media"]) > 0:
+                                    for stream_info in video["files"][0]["media"]["videos"]:
+                                        # Video
+                                        extra_data['VideoCodec'] = stream_info["Codec"]
+                                        extra_data['width'] = int(stream_info["Width"])
+                                        extra_data['height'] = int(stream_info["Height"])
+                                        extra_data['duration'] = safeInt(stream_info["Duration"])
 
-                # Determine what type of watched flag [overlay] to use
-                if int(video.get('viewCount', 0)) > 0:
-                    details['playcount'] = 1
-                    # details['overlay'] = 5
-                else:
-                    details['playcount'] = 0
-                    # details['overlay'] = 0
-                    if next_episode == -1:
-                        next_episode = episode_count - 1
+                                    for stream_info in video["files"][0]["media"]["audios"]:
+                                        # Audio
+                                        streams = extra_data.get('AudioStreams')
+                                        streamid = int(stream_info["Index"])
+                                        streams[streamid]['AudioCodec'] = stream_info["Codec"]
+                                        streams[streamid]['AudioLanguage'] = stream_info["LanguageCode"]
+                                        streams[streamid]['AudioChannels'] = int(stream_info["Channels"])
+                                        extra_data['AudioStreams'] = streams
 
-                if details['playcount'] == 0:
-                    # Hide plot and thumb for unwatched by kodi setting
-                    if not get_kodi_setting_bool("videolibrary.showunwatchedplots"):
-                        details['plot'] \
-                            = "Hidden due to user setting.\nCheck Show Plot" + \
-                              " for Unwatched Items in the Video Library Settings."
-                        extra_data['thumb'] = None
-                        extra_data['fanart_image'] = None
+                                    for stream_info in video["files"][0]["media"]["subtitles"]:
+                                        # Subtitle
+                                        streams = extra_data.get('SubStreams')
+                                        streamid = int(stream_info["Index"])
+                                        streams[streamid]['SubtitleLanguage'] = stream_info["LanguageCode"]
+                                        extra_data['SubStreams'] = streams
 
-                context = None
-                url = key
+                            # Determine what type of watched flag [overlay] to use
+                            if int(safeInt(video["view"])) > 0:
+                                details['playcount'] = 1
+                                # details['overlay'] = 5
+                            else:
+                                details['playcount'] = 0
+                                # details['overlay'] = 0
+                                if next_episode == -1:
+                                    next_episode = episode_count - 1
 
-                u = sys.argv[0]
-                u = set_parameter(u, 'url', url)
-                u = set_parameter(u, 'mode', '1')
-                u = set_parameter(u, 'file', key)
-                u = set_parameter(u, 'ep_id', extra_data.get('jmmepisodeid'))
-                u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
+                            if details['playcount'] == 0:
+                                # Hide plot and thumb for unwatched by kodi setting
+                                if not get_kodi_setting_bool("videolibrary.showunwatchedplots"):
+                                    details['plot'] \
+                                        = "Hidden due to user setting.\nCheck Show Plot" + \
+                                          " for Unwatched Items in the Video Library Settings."
+                                    extra_data['thumb'] = thumb
+                                    extra_data['fanart_image'] = fanart
 
-                add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
+                            context = None
+                            # url = key
+                            url = "http://test/"
+
+                            u = sys.argv[0]
+                            u = set_parameter(u, 'url', url)
+                            u = set_parameter(u, 'mode', '1')
+                            u = set_parameter(u, 'file', key)
+                            u = set_parameter(u, 'ep_id', key)
+                            # u = set_parameter(u, 'ep_id', body["id"]) <----
+                            u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
+
+                            add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
 
             # add item to move to next not played item (not marked as watched)
             if __addon__.getSetting("show_continue") == "true":
