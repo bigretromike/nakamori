@@ -23,6 +23,16 @@ pDialog = ''
 
 
 # json
+def dbg(msg):
+    """
+    simple log message into kodi.log
+    :param msg: the message to print to log
+    :return:
+    """
+    xbmc.log(str(msg), xbmc.LOGERROR)
+
+
+# json
 def error(msg, error_type='Error'):
     """
     Log and notify the user of an error
@@ -244,7 +254,7 @@ def post(url, data, headers={}):
     return data
 
 
-# json
+# json - ok
 def get_version():
     legacy = LooseVersion('0.0')
     json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
@@ -260,7 +270,7 @@ def get_version():
         if module["name"] == "server":
             version = module["version"]
             break
-            
+
     if version != '':
         return LooseVersion(version)
     return legacy

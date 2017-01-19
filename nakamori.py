@@ -820,16 +820,23 @@ def build_main_menu():
                 if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
                     key += '&nocast=1'
                 url = key
+                dbg(menu)
 
-                thumb = menu["thumb"]["0"]["url"]
-                fanart = menu["fanart"]["0"]["url"]
-                banner = menu["banner"]["0"]["url"]
+                thumb = ''
+                if len(menu["art"]["thumb"]) > 0:
+                    thumb = menu["art"]["thumb"][0]["url"]
+                fanart = ''
+                if len(menu["art"]["fanart"]) > 0:
+                    fanart = menu["art"]["fanart"][0]["url"]
+                banner = ''
+                if len(menu["art"]["banner"]) > 0:
+                    banner = menu["art"]["banner"][0]["url"]
 
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
-                u = set_parameter(u, 'filterid', menu["id"])
+                # u = set_parameter(u, 'filterid', menu["id"])
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': banner, 'icon': 'DefaultVideo.png'})
