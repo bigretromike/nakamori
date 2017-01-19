@@ -252,10 +252,15 @@ def get_version():
     if json_file is None:
         return legacy
     try:
-        data = json_file
+        data = json.loads(json_file)
     except:
         return legacy
-    version = data.get('server', '')
+
+    for module in data:
+        if module["name"] == "server":
+            version = module["version"]
+            break
+            
     if version != '':
         return LooseVersion(version)
     return legacy
