@@ -33,6 +33,19 @@ def dbg(msg):
 
 
 # json
+def safeInt(object):
+    """
+    safe convert type to int to avoid NoneType
+    :param object:
+    :return: int
+    """
+    if object is not None:
+        return int(object)
+    else:
+        return 0
+
+
+# json
 def error(msg, error_type='Error'):
     """
     Log and notify the user of an error
@@ -114,14 +127,16 @@ def get_data(url_in, referer, data_type):
             if url_in.lower().startswith(':'):
                 url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
 
-        if len(data_type) > 1:
-            url = url_in + "." + data_type
+        if data_type == "json":
+            url = url_in
         else:
             url = url_in
             data_type = "xml"
-        req = urllib2.Request(encode(url),
-                              headers={'Accept': 'application/' + data_type,
-                                       'apikey': __addon__.getSetting("apikey")})
+
+        req = urllib2.Request(encode(url))
+        req.add_header('Accept', 'application/' + data_type)
+        req.add_header('apikey', __addon__.getSetting("apikey"))
+
         if referer is not None:
             referer = urllib2.quote(encode(referer)).replace("%3A", ":")
             if len(referer) > 1:

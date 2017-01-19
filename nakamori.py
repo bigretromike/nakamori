@@ -592,7 +592,7 @@ def get_legacy_title(data):
     return encode(data.get('title', 'Unknown'))
 
 
-# json
+# json - ok
 def get_title(data):
     """
     Get the new title
@@ -621,19 +621,19 @@ def get_title(data):
         title_type = __addon__.getSetting("title_type")
         try:
             for titleTag in data["titles"]:
-                if titleTag["Type"].text.lower() == title_type.lower():
-                    if titleTag["Language"].text.lower() == lang.lower():
-                        return encode(titleTag["Title"].text)
+                if titleTag["Type"].lower() == title_type.lower():
+                    if titleTag["Language"].lower() == lang.lower():
+                        return encode(titleTag["Title"])
             # fallback on language any title
-            for titleTag in data.findall('AnimeTitle'):
-                if titleTag["Type"].text.lower() != 'short':
-                    if titleTag["Language"].text.lower() == lang.lower():
-                        return encode(titleTag["Title"].text)
+            for titleTag in data["titles"]:
+                if titleTag["Type"].lower() != 'short':
+                    if titleTag["Language"].lower() == lang.lower():
+                        return encode(titleTag["Title"])
             # fallback on x-jat main title
-            for titleTag in data.findall('AnimeTitle'):
-                if titleTag["Type"].text.lower() == 'main':
-                    if titleTag["Language"].text.lower() == 'x-jat':
-                        return encode(titleTag["Title"].text)
+            for titleTag in  data["titles"]:
+                if titleTag["Type"].lower() == 'main':
+                    if titleTag["Language"].lower() == 'x-jat':
+                        return encode(titleTag["Title"])
             # fallback on directory title
             return encode(data["title"])
         except Exception as expc:
@@ -789,18 +789,17 @@ def get_cast_and_role_legacy(data):
 
 
 # Adding items to list/menu:
-# json
+# json - ok
 def build_main_menu():
     """
     Builds the list of items in the Main Menu
     """
     xbmcplugin.setContent(handle, content='tvshows')
     try:
-        # http://127.0.0.1:8111/jmmserverkodi/getfilters/1
         json_menu = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
                                         "/api/filter"))
         # currently missing those info
-        # set_window_heading(menu)
+        # set_window_heading(menu) <-----
         try:
             for menu in json_menu:
                 title = menu["name"]
@@ -820,7 +819,6 @@ def build_main_menu():
                 if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
                     key += '&nocast=1'
                 url = key
-                dbg(menu)
 
                 thumb = ''
                 if len(menu["art"]["thumb"]) > 0:
@@ -836,7 +834,7 @@ def build_main_menu():
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
-                # u = set_parameter(u, 'filterid', menu["id"])
+                # u = set_parameter(u, 'filterid', menu["id"]) <-----
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': banner, 'icon': 'DefaultVideo.png'})
@@ -883,7 +881,7 @@ def build_main_menu():
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
-# json + few value to fix as they aren't implemented
+# json  - ok + few value to fix as they aren't implemented
 def build_tv_shows(params, extra_directories=None):
     """
     Builds the list of items for Filters and Groups
@@ -904,7 +902,8 @@ def build_tv_shows(params, extra_directories=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        html = encode(decode(get_json(params['url']+"&level=2")))
+        # level 3 will fill group and series
+        html = get_json(params['url'] + "&level=3")
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(params['url'])
             xbmc.log(html)
@@ -927,123 +926,130 @@ def build_tv_shows(params, extra_directories=None):
                 return
 
             for grp in body["groups"]:
-                temp_genre = get_tags(grp["series"]["0"])
-                watched = int(grp["series"]["0"]["viewed"])
+                if len(grp["series"]) > 0:
+                    temp_genre = get_tags(grp["series"][0])
+                    watched = int(grp["series"][0]["viewed"])
 
-                list_cast = []
-                list_cast_and_role = []
-                actors = []
-                if len(list_cast) == 0:
-                    result_list = get_cast_and_role(grp["series"]["0"])
-                    actors = result_list
-                    if result_list is not None:
-                        result_list = convert_cast_and_role_to_legacy(result_list)
-                        list_cast = result_list[0]
-                        list_cast_and_role = result_list[1]
+                    list_cast = []
+                    list_cast_and_role = []
+                    actors = []
+                    if len(list_cast) == 0:
+                        result_list = get_cast_and_role(grp["series"][0])
+                        actors = result_list
+                        if result_list is not None:
+                            result_list = convert_cast_and_role_to_legacy(result_list)
+                            list_cast = result_list[0]
+                            list_cast_and_role = result_list[1]
 
-                if __addon__.getSetting("local_total") == "true":
-                    total = int(grp["series"]["0"]["localsize"])
-                else:
-                    total = int(grp["series"]["0"]["size"])
-                title = get_title(grp["series"]["0"])
-                details = {
-                    'title':            title,
-                    'parenttitle':      encode(parent_title),
-                    'genre':            temp_genre,
-                    'year':             int(grp["series"]["0"]["year"]),
-                    'episode':          total,
-                    'season':           int(grp["series"]["0"]["season"]),
-                    # 'count'        : count,
-                    # 'size'         : size,
-                    # 'Date'         : date,
-                    'rating':           float(str(grp["series"]["0"]["rating"]).replace(',', '.')),
-                    # 'playcount'    : int(atype.get('viewedLeafCount')),
-                    # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
-                    'cast':             list_cast,  # cast : list (Michal C. Hall,
-                    'castandrole':      list_cast_and_role,
-                    # This also does nothing. Those gremlins.
-                    # 'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
-                    # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
-                    # director       : string (Dagur Kari,
-                    ### 'mpaa':             directory.get('contentRating', ''),
-                    'plot':             remove_anidb_links(encode(grp["series"]["0"]["summary"])),
-                    # 'plotoutline'  : plotoutline,
-                    'originaltitle':    title,
-                    'sorttitle':        title,
-                    # 'Duration'     : duration,
-                    # 'Studio'       : studio, < ---
-                    # 'Tagline'      : tagline,
-                    # 'Writer'       : writer,
-                    # 'tvshowtitle'  : tvshowtitle,
-                    'tvshowname':       title,
-                    # 'premiered'    : premiered,
-                    # 'Status'       : status,
-                    # code           : string (tt0110293, - IMDb code
-                    ### 'aired':            directory.get('originallyAvailableAt', ''),
-                    # credits        : string (Andy Kaufman, - writing credits
-                    # 'Lastplayed'   : lastplayed,
-                    ### 'votes':            directory.get('votes'),
-                    # trailer        : string (/home/user/trailer.avi,
-                    ### 'dateadded':        directory.get('addedAt')
-                }
-                temp_date = str(grp["series"]["0"]["aired"]).split('-')
-                if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                    details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
+                    if __addon__.getSetting("local_total") == "true":
+                        total = safeInt(grp["series"][0]["localsize"])
+                    else:
+                        total = safeInt(grp["series"][0]["size"])
+                    title = get_title(grp["series"][0])
+                    details = {
+                        'title':            title,
+                        'parenttitle':      encode(parent_title),
+                        'genre':            temp_genre,
+                        'year':             safeInt(grp["series"][0]["year"]),
+                        'episode':          total,
+                        'season':           safeInt(grp["series"][0]["season"]),
+                        # 'count'        : count,
+                        # 'size'         : size,
+                        # 'Date'         : date,
+                        'rating':           float(str(grp["series"][0]["rating"]).replace(',', '.')),
+                        # 'playcount'    : int(atype.get('viewedLeafCount')),
+                        # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
+                        'cast':             list_cast,  # cast : list (Michal C. Hall,
+                        'castandrole':      list_cast_and_role,
+                        # This also does nothing. Those gremlins.
+                        # 'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
+                        # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
+                        # director       : string (Dagur Kari,
+                        ### 'mpaa':             directory.get('contentRating', ''),
+                        'plot':             remove_anidb_links(encode(grp["series"][0]["summary"])),
+                        # 'plotoutline'  : plotoutline,
+                        'originaltitle':    title,
+                        'sorttitle':        title,
+                        # 'Duration'     : duration,
+                        # 'Studio'       : studio, < ---
+                        # 'Tagline'      : tagline,
+                        # 'Writer'       : writer,
+                        # 'tvshowtitle'  : tvshowtitle,
+                        'tvshowname':       title,
+                        # 'premiered'    : premiered,
+                        # 'Status'       : status,
+                        # code           : string (tt0110293, - IMDb code
+                        ### 'aired':            directory.get('originallyAvailableAt', ''),
+                        # credits        : string (Andy Kaufman, - writing credits
+                        # 'Lastplayed'   : lastplayed,
+                        ### 'votes':            directory.get('votes'),
+                        # trailer        : string (/home/user/trailer.avi,
+                        ### 'dateadded':        directory.get('addedAt')
+                    }
+                    temp_date = str(grp["series"][0]["air"]).split('-')
+                    if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
+                        details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
 
-                directory_type = ""
-                key_id = grp["series"]["0"]["id"]
-                key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/serie?id=" + key_id
-                #directory_type = directory.get('AnimeType', '')
-                #key = directory.get('key', '')
-                #filterid = ''
-                #if get_version() > LooseVersion(
-                #        '3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
-                #    if params.get('filterid', '') != '':
-                #        filterid = params.get('filterid', '')
-                #        if directory_type == 'AnimeGroupFilter':
-                #            filterid = directory.get('GenericId', '')
-                #        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                #                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
-                #        key = key[length:]
-                #        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                #              + "/api/metadata/" + key + '/' + filterid
+                    directory_type = ""
+                    key_id = str(grp["series"][0]["id"])
+                    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/serie?id=" + key_id
+                    #directory_type = directory.get('AnimeType', '')
+                    #key = directory.get('key', '')
+                    #filterid = ''
+                    #if get_version() > LooseVersion(
+                    #        '3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
+                    #    if params.get('filterid', '') != '':
+                    #        filterid = params.get('filterid', '')
+                    #        if directory_type == 'AnimeGroupFilter':
+                    #            filterid = directory.get('GenericId', '')
+                    #        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                    #                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
+                    #        key = key[length:]
+                    #        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                    #              + "/api/metadata/" + key + '/' + filterid
 
-                thumb = grp["series"]["0"]["art"]["thumb"]["0"]["url"]
-                fanart = grp["series"]["0"]["art"]["fanart"]["0"]["url"]
-                banner = grp["series"]["0"]["art"]["banner"]["0"]["url"]
+                    thumb = ''
+                    if len(grp["series"][0]["art"]["thumb"]) > 0:
+                        thumb = grp["series"][0]["art"]["thumb"][0]["url"]
+                    fanart = ''
+                    if len(grp["series"][0]["art"]["fanart"]) > 0:
+                        fanart = grp["series"][0]["art"]["fanart"][0]["url"]
+                    banner = ''
+                    if len(grp["series"][0]["art"]["banner"]) > 0:
+                        banner = grp["series"][0]["art"]["banner"][0]["url"]
 
-                extra_data = {
-                    'type':                 'video',
-                    'source':               directory_type,
-                    'UnWatchedEpisodes':    int(details['episode']) - watched,
-                    'WatchedEpisodes':      watched,
-                    'TotalEpisodes':        details['episode'],
-                    'thumb':                thumb,
-                    'fanart_image':         fanart,
-                    'banner':               banner,
-                    'key':                  key,
-                    'actors':               actors
-                }
-                if __addon__.getSetting('request_nocast') == 'true':
-                    key += '/nocast'
+                    extra_data = {
+                        'type':                 'video',
+                        'source':               directory_type,
+                        'UnWatchedEpisodes':    int(details['episode']) - watched,
+                        'WatchedEpisodes':      watched,
+                        'TotalEpisodes':        details['episode'],
+                        'thumb':                thumb,
+                        'fanart_image':         fanart,
+                        'banner':               banner,
+                        'key':                  key,
+                        'actors':               actors
+                    }
+                    if __addon__.getSetting('request_nocast') == 'true':
+                        key += '&nocast=1'
 
-                url = key
-                set_watch_flag(extra_data, details)
-                use_mode = 5
-                if __addon__.getSetting("useSeasons") == "false":
-                    # this will help when users is using grouping option in jmm which results in series in series
-                    if "data/1/2/" in extra_data['key'].lower():
-                        use_mode = 4
-                u = sys.argv[0]
-                u = set_parameter(u, 'url', url)
-                u = set_parameter(u, 'mode', str(use_mode))
-                #if filterid != '':
-                #    u = set_parameter(u, 'filterid', filterid)
-                #else:
-                u = set_parameter(u, 'filterid', None)
+                    url = key
+                    set_watch_flag(extra_data, details)
+                    use_mode = 5
+                    if __addon__.getSetting("useSeasons") == "false":
+                        # this will help when users is using grouping option in jmm which results in series in series
+                        if "data/1/2/" in extra_data['key'].lower():
+                            use_mode = 4
+                    u = sys.argv[0]
+                    u = set_parameter(u, 'url', url)
+                    u = set_parameter(u, 'mode', str(use_mode))
+                    #if filterid != '':
+                    #    u = set_parameter(u, 'filterid', filterid)
+                    #else:
+                    u = set_parameter(u, 'filterid', None)
 
-                context = None
-                add_gui_item(u, details, extra_data, context)
+                    context = None
+                    add_gui_item(u, details, extra_data, context)
         except Exception as e:
             error("Error during build_tv_shows", str(e))
     except Exception as e:
@@ -1544,7 +1550,7 @@ def play_video(url, ep_id):
             xbmc.log(html)
         episode_body = json.loads(html)
         # extract extra data about file from episode
-        file_id = episode_body["files"]["0"]["id"]
+        file_id = episode_body["files"][0]["id"]
         if file_id is not None and file_id != 0:
             file_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
                           "/file/" + str(file_id)
@@ -1556,7 +1562,7 @@ def play_video(url, ep_id):
             video_codec['codec'] = file_body["files"]["videos"]["1"]["Codec"]
             video_codec['width'] = int(file_body["files"]["videos"]["1"]["Width"])
             video_codec['height'] = int(file_body["files"]["videos"]["1"]["Height"])
-            video_codec['duration'] = int(file_body["files"]["0"]["duration"])
+            video_codec['duration'] = int(file_body["files"][0]["duration"])
             item.addStreamInfo('video', video_codec)
 
             # Audio
