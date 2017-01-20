@@ -1292,7 +1292,7 @@ def build_tv_episodes(params):
     """
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        dbg("build_episode:" + params['url'])
+        # dbg("build_episode:" + params['url'])
         html = get_json(params['url'])
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
@@ -1435,10 +1435,10 @@ def build_tv_episodes(params):
 
                             # we could leave this as is and when trigger get essential data for this episode/file only
                             key = video["files"][0]["url"]
-                            if key is not None:
-                                dbg("key:" + key)
-                            else:
-                                dbg("key is None")
+                            #if key is not None:
+                            #    dbg("key:" + key)
+                            #else:
+                            #    dbg("key is None")
 
                             # <--- V V V
                             # ext = video.find('Media').find('Part').get('container', '')
@@ -1487,7 +1487,7 @@ def build_tv_episodes(params):
                                         extra_data['VideoCodec'] = video["files"][0]["media"]["videos"][stream_info]['Codec']
                                         extra_data['width'] = int(video["files"][0]["media"]["videos"][stream_info]["Width"])
                                         extra_data['height'] = int(video["files"][0]["media"]["videos"][stream_info]["Height"])
-                                        extra_data['duration'] = safeInt(video["files"][0]["media"]["videos"][stream_info]["Duration"])
+                                        extra_data['duration'] = safeInt(video["files"][0]["media"]["videos"][stream_info]["Duration"]) if "Duration" in video["files"][0]["media"]["videos"][stream_info] else 1
 
                                     for stream_info in video["files"][0]["media"]["audios"]:
                                         # Audio
@@ -1502,7 +1502,7 @@ def build_tv_episodes(params):
                                         # Subtitle
                                         streams = extra_data.get('SubStreams')
                                         streamid = int(video["files"][0]["media"]["subtitles"][stream_info]["Index"])
-                                        streams[streamid]['SubtitleLanguage'] = video["files"][0]["media"]["subtitles"][stream_info]["LanguageCode"]
+                                        streams[streamid]['SubtitleLanguage'] = video["files"][0]["media"]["subtitles"][stream_info]["LanguageCode"] if "LanguageCode" in video["files"][0]["media"]["subtitles"][stream_info] else "unk"
                                         extra_data['SubStreams'] = streams
 
                             # Determine what type of watched flag [overlay] to use
@@ -1631,7 +1631,8 @@ def play_video(url, ep_id):
     item.setProperty('IsPlayable', 'true')
     try:
         episode_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
-                          "/ep/" + str(ep_id)
+                          "/api/ep?id=" + str(ep_id)
+        # dbg(episode_url)
         html = get_json(encode(episode_url))
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
@@ -1640,28 +1641,28 @@ def play_video(url, ep_id):
         file_id = episode_body["files"][0]["id"]
         if file_id is not None and file_id != 0:
             file_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
-                          "/file/" + str(file_id)
-            file_body = json.loads(get_json(encode(file_url)))
-
+                          "/api/file?id=" + str(file_id)
+            file_body = json.loads(get_json(file_url))
+            
             # Information about streams inside video file
             # Video
             video_codec = dict()
-            video_codec['codec'] = file_body["files"]["videos"]["1"]["Codec"]
-            video_codec['width'] = int(file_body["files"]["videos"]["1"]["Width"])
-            video_codec['height'] = int(file_body["files"]["videos"]["1"]["Height"])
-            video_codec['duration'] = int(file_body["files"][0]["duration"])
+            video_codec['codec'] = file_body["media"]["videos"]["1"]["Codec"]
+            video_codec['width'] = int(file_body["media"]["videos"]["1"]["Width"])
+            video_codec['height'] = int(file_body["media"]["videos"]["1"]["Height"])
+            video_codec['duration'] = int(file_body["duration"])
             item.addStreamInfo('video', video_codec)
 
             # Audio
             audio_codec = dict()
-            audio_codec['codec'] = file_body["files"]["audios"]["1"]["Codec"]
-            audio_codec['language'] = file_body["files"]["audios"]["1"]["LanguageCode"]
-            audio_codec['channels'] = int(file_body["files"]["audios"]["1"]["Channels"])
+            audio_codec['codec'] = file_body["media"]["audios"]["1"]["Codec"]
+            audio_codec['language'] = file_body["media"]["audios"]["1"]["LanguageCode"]
+            audio_codec['channels'] = int(file_body["media"]["audios"]["1"]["Channels"])
             item.addStreamInfo('audio', audio_codec)
 
             # Subtitle
             subtitle_codec = dict()
-            subtitle_codec['language'] = file_body["files"]["subtitles"]["1"]["LanguageCode"]
+            subtitle_codec['language'] = file_body["media"]["subtitles"]["1"]["LanguageCode"]
             item.addStreamInfo('subtitle', subtitle_codec)
         else:
             # error
@@ -1955,7 +1956,7 @@ if valid_user() is True:
             try:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                 ctl = win.getControl(win.getFocusId())
-                dbg("file:" + parameters['file'])
+                # dbg("file:" + parameters['file'])
                 if play_video(parameters['file'], parameters['ep_id']) != 0:
                     # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
