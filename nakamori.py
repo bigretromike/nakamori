@@ -27,8 +27,9 @@ __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 
+_server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
 
-# json - ok
+
 def valid_user():
     """
     Logs into the server and stores the apikey, then checks if the userid is valid
@@ -42,8 +43,6 @@ def valid_user():
     # reset apikey if user enters new login info
     # if apikey is present login should be empty as its not needed anymore
     if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
-        # ignore what we put in for userid, the api sets it
-        set_userid()
         return True
     else:
         xbmc.log('-- apikey empty --')
@@ -53,15 +52,13 @@ def valid_user():
                 body = '{"user":"' + __addon__.getSetting("login") + '",' + \
                        '"device":"' + __addon__.getSetting("device") + '",' + \
                        '"pass":"' + __addon__.getSetting("password") + '"}'
-                postd = post_data("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                                  "/api/auth", body)
-                auth = json.loads(postd)
+                post_body = post_data(_server_ + "/api/auth", body)
+                auth = json.loads(post_body)
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user credentials --')
                     __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
                     __addon__.setSetting(id='login', value='')
                     __addon__.setSetting(id='password', value='')
-                    set_userid()
                     return True
                 else:
                     raise Exception('Error Getting apikey')
@@ -73,40 +70,7 @@ def valid_user():
             return False
 
 
-# legacy - do we need it ?
-def set_userid():
-    """
-    Set userid that is assign to current user via jmm3.7+ api
-    Returns: bool True if set assign was successful
-    """
-    uid = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" +
-                              __addon__.getSetting("port") + "/api/myid/get"))
-    if "userid" in uid:
-        __addon__.setSetting(id='userid', value=str(uid['userid']))
-        return True
-    else:
-        return False
-
-
-# legacy
-def valid_userid():
-    """
-    Checks if the set userid is valid
-    Returns: bool True if valid
-
-    """
-    xml_file = get_xml("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                       "/jmmserverkodi/getusers")
-    if xml_file is not None:
-        data = xml(xml_file)
-        for user_data in data.findall('User'):
-            user_id = user_data.get('id', '')
-            if user_id == __addon__.getSetting("userid"):
-                return True
-        return False
-    return False
-
-
+# TODO: to-check
 def refresh():
     """
     Refresh and re-request data from server
@@ -117,6 +81,7 @@ def refresh():
     xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
 
 
+# TODO: to-check
 # use episode number for position
 def move_position_on_list(control_list, position=0):
     """
@@ -144,21 +109,20 @@ def move_position_on_list(control_list, position=0):
             xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
 
 
-# legacy - or need tweak
-def set_window_heading(var_tree):
+def set_window_heading(window_name):
     """
     Sets the window titles
     Args:
-        var_tree: details dict
+        window_name: name to put in titles
     """
     window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     try:
-        window_obj.setProperty("heading", var_tree.get('title1'))
+        window_obj.setProperty("heading", str(window_name))
     except Exception as e:
         error('set_window_heading Exception', str(e))
         window_obj.clearProperty("heading")
     try:
-        window_obj.setProperty("heading2", var_tree.get('title2'))
+        window_obj.setProperty("heading2", str(window_name))
     except Exception as e:
         error('set_window_heading2 Exception', str(e))
         window_obj.clearProperty("heading2")
@@ -178,7 +142,7 @@ def filter_gui_item_by_tag(title):
     return len(str1) > 0
 
 
-# json - not proper reviewed also few hacks to bypass erros to draw items
+# TODO: only context menu need to be redone
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
     """Adds an item to the menu and populates its info labels
     :param url:The URL of the menu or file this item links to
@@ -201,23 +165,13 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         tp = 'Video'
         link_url = ""
 
-        # handle short urls to work with seriesid and epid
-        if extra_data.get('key', '') != '':
-            url_in = str(extra_data.get('key'))
-            if folder:
-                if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":" +
-                                                 __addon__.getSetting("port")):
-                    if url_in.lower().startswith('/jmmserverkodi'):
-                        extra_data['key'] = "http://" + __addon__.getSetting("ipaddress") + ":" + \
-                                            __addon__.getSetting("port") + url_in
-
         # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
             if details.get('year', '') != '' and details['year'] != 0:
                 details['date'] = '01.01.' + str(details['year'])
                 details['aired'] = details['date']
-                # details['aired'] = str(details['year'])+'-01-01'
+
         if __addon__.getSetting("spamLog") == 'true':
             xbmc.log("add_gui_item - url: " + url, xbmc.LOGWARNING)
             if details is not None:
@@ -260,7 +214,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi})
-            liz.setArt({'poster': get_poster(tbi)})
+            liz.setArt({'poster': tbi})
 
         if extra_data is not None and len(extra_data) > 0:
             actors = extra_data.get('actors', None)
@@ -369,14 +323,13 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 if extra_data.get('season_thumb'):
                     liz.setArt({'seasonThumb': extra_data.get('season_thumb', '')})
 
+# TODO: This need to review
         if context is None:
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
                     context = []
                     url_peep_base = sys.argv[2]
-                    my_len = len(
-                        "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                        + __addon__.getSetting("userid"))
+                    my_len = len(_server_)
 
                     if extra_data.get('source', 'none') == 'AnimeSerie':
                         series_id = extra_data.get('key')[(my_len + 30):]
@@ -468,82 +421,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         error("Error during add_gui_item", str(e))
 
 
-def remove_anidb_links(data=""):
-    """
-    Remove anidb links from descriptions
-    Args:
-        data: the strong to remove links from
-
-    Returns: new string without links
-
-    """
-    # search for string with 1 to 3 letters and 1 to 7 numbers
-    p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
-    data2 = p.sub('', data)
-    # remove '[' and ']' that included link to anidb.net
-    p = re.compile('(\[|\])')
-    return p.sub('', data2)
-
-
-# legacy
-def get_poster(data=""):
-    """
-    Convert a thumb to a poster if needed and return
-    Args:
-        data: The url of the image
-
-    Returns: the new url of the image
-
-    """
-    if data is not None:
-        result = data
-        if len(data) > 0 and "getthumb" in data.lower():
-            p = data.lower().replace('getthumb', 'getimage')
-            s = p.split("/")
-            last_word = ""
-            for chunk in s:
-                last_word = chunk
-            result = p.replace(last_word, '')[:-1]
-        return result
-    return data
-
-
-# legacy
-def gen_image_url(data=""):
-    """
-    Perform conversion of url if necessary
-    Args:
-        data: URL of the image
-
-    Returns: the new URL of the image
-
-    """
-    if __addon__.getSetting('useOriginalThumbnailRatio') == 'true':
-        ratio = '0'
-    else:
-        ratio = '1.7778'
-    if data is not None:
-        if data.startswith("http"):
-            if data.endswith("0.6667"):
-                data = data.replace("0.6667", ratio)
-            elif data.endswith("0,6667"):
-                data = data.replace("0,6667", ratio)
-            if 'getsupportimage' in data.lower():
-                data = data.replace("/0.6667", '')
-                data = data.replace("/0,6667", '')
-            return data
-        if data.endswith("0.6667"):
-            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                    + "/JMMServerREST/GetThumb/" + data).replace("0.6667", ratio)
-        elif data.endswith("0,6667"):
-            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                    + "/JMMServerREST/GetThumb/" + data).replace("0,6667", ratio)
-        else:
-            return ("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                    + "/JMMServerREST/GetImage/" + data)
-    return data
-
-
 def set_watch_flag(extra_data, details):
     """
     Set the flag icon for the list item to the desired state based on watched episodes
@@ -561,42 +438,7 @@ def set_watch_flag(extra_data, details):
         extra_data['partialTV'] = 1
 
 
-def get_legacy_title(data):
-    """
-    Get the legacy title format
-    Args:
-        data: the xml node containing the title
-
-    Returns: string of the desired title
-
-    """
-    lang = __addon__.getSetting("displaylang")
-    title_type = __addon__.getSetting("title_type")
-    temp_title = encode(data.get('original_title', 'Unknown'))
-    titles = temp_title.split('|')
-
-    try:
-        for title in titles:
-            stripped = title[title.index('}') + 1:]
-            if ('{' + title_type.lower() + ':' + lang.lower() + '}') in title:
-                return stripped
-        for title in titles:
-            # fallback on language
-            stripped = title[title.index('}') + 1:]
-            if (':' + lang.lower() + '}') in title:
-                return stripped
-        for title in titles:
-            # fallback on x-jat
-            stripped = title[title.index('}') + 1:]
-            if '{main:x-jat}' in title:
-                return stripped
-    except:
-        pass
-
-    return encode(data.get('title', 'Unknown'))
-
-
-# json - ok
+# TODO: to-check [if working correctly]
 def get_title(data):
     """
     Get the new title
@@ -619,8 +461,7 @@ def get_title(data):
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
             return encode(data["title"])
-        #if data.get('original_title', '') != '':
-        #    return get_legacy_title(data)
+
         lang = __addon__.getSetting("displaylang")
         title_type = __addon__.getSetting("title_type")
         try:
@@ -634,7 +475,7 @@ def get_title(data):
                     if titleTag["Language"].lower() == lang.lower():
                         return encode(titleTag["Title"])
             # fallback on x-jat main title
-            for titleTag in  data["titles"]:
+            for titleTag in data["titles"]:
                 if titleTag["Type"].lower() == 'main':
                     if titleTag["Language"].lower() == 'x-jat':
                         return encode(titleTag["Title"])
@@ -648,32 +489,6 @@ def get_title(data):
         return 'Error'
 
 
-# legacy
-def get_legacy_tags(tag_xml):
-    """
-    Get the tags from the legacy style
-    Args:
-        tag_xml: the xml node containing the tags
-
-    Returns: a string of all of the tags formatted
-
-    """
-    temp_genre = ""
-    tag = tag_xml.find("Tag")
-
-    if tag is not None:
-        temp_genre = tag.get('tag', '')
-        temp_genres = str.split(temp_genre, ",")
-        temp_genres = TagFilter.processTags(__addon__, temp_genres)
-        temp_genre = ""
-
-        for a in temp_genres:
-            a = " ".join(w.capitalize() for w in a.split())
-            temp_genre = encode(a) if temp_genre == "" else temp_genre + " | " + encode(a)
-    return temp_genre
-
-
-# json - ok
 def get_tags(tag_node):
     """
     Get the tags from the new style
@@ -699,7 +514,6 @@ def get_tags(tag_node):
         return ''
 
 
-# json - ok
 def get_cast_and_role(data):
     """
     Get cast from the json and arrange in the new setCast format
@@ -730,7 +544,7 @@ def get_cast_and_role(data):
     return None
 
 
-# legacy - do we need this ?
+# TODO: legacy - do we need this, or is it proper function with bad name ?
 def convert_cast_and_role_to_legacy(list_of_dicts):
     result_list = []
     list_cast = []
@@ -748,60 +562,21 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
     return result_list
 
 
-def get_cast_and_role_legacy(data):
-    """
-    Get cast from the xml
-    Args:
-        data: xml node containing the cast
-
-    Returns: a list of the cast
-
-    """
-    if data is not None:
-        result_list = []
-        list_cast = []
-        list_cast_and_role = []
-
-        character_tag = 'Role'
-        if data.find('Characters') is not None:
-            data = data.find('Characters')
-            character_tag = 'Character'
-        for char in data.findall(character_tag):
-            # Don't init any variables we don't need right now
-            # char_id = char.get('charID')
-            if character_tag == 'Role':
-                char_charname = char.get('role', '')
-            else:
-                char_charname = char.get('charname', '')
-            # char_picture=char.get('picture','')
-            # char_desc=char.get('description','')
-            if character_tag == 'Role':
-                char_seiyuuname = char.get('seiyuuname', 'Unknown')
-            else:
-                char_seiyuuname = char.get('tag', 'Unknown')
-            # char_seiyuupic=char.get('seiyuupic', 'err404')
-            # only add it if it has data
-            # reorder these to match the convention (Actor is cast, character is role, in that order)
-            if len(char_charname) != 0:
-                list_cast.append(str(char_charname))
-                if len(char_seiyuuname) != 0:
-                    list_cast_and_role.append((str(char_seiyuuname), str(char_charname)))
-        result_list.append(list_cast)
-        result_list.append(list_cast_and_role)
-        return result_list
-
-
 # Adding items to list/menu:
 
 
-# json - ok
 def add_content_typ_dir(name, serie_id, ep_type):
-    url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-          + "/api/serie?id=" + str(serie_id) + "&level=4"
+    """
+    Adding directories for given types of content
+    :param name: name of directory
+    :param serie_id: id that the content belong too
+    :param ep_type: type of content
+    :return: add new directory
+    """
+    url = _server_ + "/api/serie?id=" + str(serie_id) + "&level=4"
     title = str(name)
     # TODO : add proper icon
-    thumb = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-            + "/image/support/plex_others.png"
+    thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
@@ -813,22 +588,19 @@ def add_content_typ_dir(name, serie_id, ep_type):
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
 
 
-# json - ok
+# TODO filterid is missing as I don't get it
 def build_main_menu():
     """
     Builds the list of items in the Main Menu
     """
     xbmcplugin.setContent(handle, content='tvshows')
     try:
-        json_menu = json.loads(get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                                        "/api/filter"))
-        # currently missing those info
-        # set_window_heading(menu) <-----
+        json_menu = json.loads(get_json(_server_ + "/api/filter"))
+        set_window_heading("main")
         try:
             for menu in json_menu:
                 title = menu["name"]
                 use_mode = 4
-
                 key = menu["url"]
 
                 if title == 'Continue Watching (SYSTEM)':
@@ -867,15 +639,12 @@ def build_main_menu():
         except Exception as e:
             error("Error during build_main_menu", str(e))
     except Exception as e:
-        # get_html now catches, so an XML error is the only thing this will catch
-        error("Invalid XML Received in build_main_menu", str(e))
+        error("Invalid JSON Received in build_main_menu", str(e))
 
     # Start Add_Search
-    url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-          + "/serie/search?limit=" + __addon__.getSetting("maxlimit")
+    url = _server_ + "/serie/search?limit=" + __addon__.getSetting("maxlimit")
     title = "Search"
-    thumb = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-            + "/image/support/plex_others.png"
+    thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
@@ -887,11 +656,9 @@ def build_main_menu():
     # End Add_Search
 
     # Start Add_Search_tag
-    url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-          + "/serie/tag?limit=" + __addon__.getSetting("maxlimit_tag")
+    url = _server_ + "/serie/tag?limit=" + __addon__.getSetting("maxlimit_tag")
     title = "Search for TAG"
-    thumb = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-            + "/image/support/plex_others.png"
+    thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
@@ -905,7 +672,7 @@ def build_main_menu():
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
-# json  - ok + few value to fix as they aren't implemented
+# TODO filterid is missing as I don't get it and group (shoko) option have bad logic now
 def build_tv_shows(params, extra_directories=None):
     """
     Builds the list of items for Filters and Groups
@@ -932,20 +699,12 @@ def build_tv_shows(params, extra_directories=None):
             xbmc.log(params['url'])
             xbmc.log(html)
         body = json.loads(html)
-        # set_window_heading(e)
+        set_window_heading(body["name"])
         try:
-            parent_title = ''
-            #try:
-            #    parent_title = e.get('title1', '')
-            #except Exception as exc:
-            #    error("Unable to get parent title in buildTVShows", str(exc))
+            # TODO: Do we really use parent ?
+            parent_title = body["name"]
 
-            #if extra_directories is not None:
-            #    e.extend(extra_directories)
-
-            #directory_list = e.findall('Directory')
-
-            # hack for search results that give only series (missing groups)
+            # converting series from search to group so we can handle them here
             if "groups" not in body:
                 new_serie = dict()
                 series_list = []
@@ -974,6 +733,7 @@ def build_tv_shows(params, extra_directories=None):
                         if len(list_cast) == 0:
                             result_list = get_cast_and_role(series["roles"])
                             actors = result_list
+                            # TODO: need this ?
                             if result_list is not None:
                                 result_list = convert_cast_and_role_to_legacy(result_list)
                                 list_cast = result_list[0]
@@ -984,6 +744,11 @@ def build_tv_shows(params, extra_directories=None):
                         else:
                             total = safeInt(series["size"])
                         title = get_title(series)
+                        if series["userrating"] is not None:
+                            userrating = str(series["userrating"]).replace(',', '.')
+                        else:
+                            userrating = 0.0
+
                         details = {
                             'title':            title,
                             'parenttitle':      encode(parent_title),
@@ -992,17 +757,14 @@ def build_tv_shows(params, extra_directories=None):
                             'episode':          total,
                             'season':           safeInt(series["season"]),
                             # 'count'        : count,
-                            # 'size'         : size,
-                            # 'Date'         : date,
+                            'size':             total,
+                            'Date':             series["air"],
                             'rating':           float(str(series["rating"]).replace(',', '.')),
-                            'userrating':           float(str(series["UserRating"]).replace(',', '.')) if "UserRating" in series else 0,
-                            # 'playcount'    : int(atype.get('viewedLeafCount')),
+                            'userrating':       float(userrating),
+                            'playcount':        int(series["viewed"]),
                             # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
                             'cast':             list_cast,  # cast : list (Michal C. Hall,
                             'castandrole':      list_cast_and_role,
-                            # This also does nothing. Those gremlins.
-                            # 'cast'         : list([("Actor1", "Character1"),("Actor2","Character2")]),
-                            # 'castandrole'  : list([("Actor1", "Character1"),("Actor2","Character2")]),
                             # director       : string (Dagur Kari,
                             ### 'mpaa':             directory.get('contentRating', ''),
                             'plot':             remove_anidb_links(encode(series["summary"])),
@@ -1018,7 +780,7 @@ def build_tv_shows(params, extra_directories=None):
                             # 'premiered'    : premiered,
                             # 'Status'       : status,
                             # code           : string (tt0110293, - IMDb code
-                            ### 'aired':            directory.get('originallyAvailableAt', ''),
+                            'aired':            series["air"],
                             # credits        : string (Andy Kaufman, - writing credits
                             # 'Lastplayed'   : lastplayed,
                             ### 'votes':            directory.get('votes'),
@@ -1026,12 +788,13 @@ def build_tv_shows(params, extra_directories=None):
                             ### 'dateadded':        directory.get('addedAt')
                         }
                         temp_date = str(series["air"]).split('-')
-                        if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                            details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
+                        if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
+                            details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
                         directory_type = ""
                         key_id = str(series["id"])
-                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/serie?id=" + key_id
+                        key = _server_ + "/api/serie?id=" + key_id
+                        # TODO: filter_id onc again
                         #directory_type = directory.get('AnimeType', '')
                         #key = directory.get('key', '')
                         #filterid = ''
@@ -1041,10 +804,10 @@ def build_tv_shows(params, extra_directories=None):
                         #        filterid = params.get('filterid', '')
                         #        if directory_type == 'AnimeGroupFilter':
                         #            filterid = directory.get('GenericId', '')
-                        #        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                        #        length = len(_server_
                         #                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         #        key = key[length:]
-                        #        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                        #        key = _server_ \
                         #              + "/api/metadata/" + key + '/' + filterid
 
                         thumb = ''
@@ -1075,6 +838,7 @@ def build_tv_shows(params, extra_directories=None):
                         url = key
                         set_watch_flag(extra_data, details)
                         use_mode = 5
+                        # TODO: re-check logic as data/1/2 is no longer
                         if __addon__.getSetting("useSeasons") == "false":
                             # this will help when users is using grouping option in jmm which results in series in series
                             if "data/1/2/" in extra_data['key'].lower():
@@ -1096,6 +860,7 @@ def build_tv_shows(params, extra_directories=None):
     xbmcplugin.endOfDirectory(handle)
 
 
+# TODO continue here...... <---------------------------------------------------
 # json - still broken - hacked - added dirs
 def build_tv_seasons(params, extra_directories=None):
     """
@@ -1212,9 +977,9 @@ def build_tv_seasons(params, extra_directories=None):
                 if atype.get('sorttitle'):
                     details['sorttitle'] = atype.get('sorttitle')
 
-                thumb = gen_image_url(atype.get('thumb'))
-                fanart = gen_image_url(atype.get('art', thumb))
-                banner = gen_image_url(atype.get('banner', e.get('banner', '')))
+                thumb = atype.get('thumb')
+                fanart = atype.get('art', thumb)
+                banner = atype.get('banner', e.get('banner', ''))
 
                 directory_type = atype.get('AnimeType', '')
 
@@ -1225,10 +990,10 @@ def build_tv_seasons(params, extra_directories=None):
                         filterid = params.get('filterid', '')
                         if directory_type == 'AnimeGroupFilter':
                             filterid = atype.get('GenericId', '')
-                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                        length = len(_server_
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
-                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                        key = _server_ \
                               + "/api/metadata/" + key + '/' + filterid
 
                 extra_data = {
@@ -1575,10 +1340,10 @@ def build_search(url=''):
                 term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
 
                 if '/tag/' in url:
-                    url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                    url2 = _server_ \
                          + "/api/serie/tag?limit=" + __addon__.getSetting("maxlimit_tag") + "&query="
                 else:
-                    url2 = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                    url2 = _server_ \
                            + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit") + "&query="
                 to_send = {'url': url2 + term}
                 search_body = json.loads(get_json(url2 + term))
@@ -1630,7 +1395,7 @@ def play_video(url, ep_id):
     item.setInfo(type='Video', infoLabels=details)
     item.setProperty('IsPlayable', 'true')
     try:
-        episode_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
+        episode_url = _server_ + \
                           "/api/ep?id=" + str(ep_id)
         # dbg(episode_url)
         html = get_json(encode(episode_url))
@@ -1640,7 +1405,7 @@ def play_video(url, ep_id):
         # extract extra data about file from episode
         file_id = episode_body["files"][0]["id"]
         if file_id is not None and file_id != 0:
-            file_url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + \
+            file_url = _server_ + \
                           "/api/file?id=" + str(file_id)
             file_body = json.loads(get_json(file_url))
             
@@ -1761,7 +1526,7 @@ def vote_series(params):
         # vote_type = str(1)
         series_id = params['anime_id']
         body = '"id":"'+series_id+'","score":"'+vote_value+'"'
-        post_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+        post_json(_server_
                   + "/serie/vote", body)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
             'Vote saved', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
@@ -1784,7 +1549,7 @@ def vote_episode(params):
         # vote_type = str(4)
         ep_id = params['ep_id']
         body = '"id":"'+ep_id+'","score":"'+vote_value+'"'
-        post_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+        post_json(_server_
                   + "/ep/vote", body)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
             'Vote saved', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
@@ -1801,7 +1566,7 @@ def watched_mark(params):
     anime_id = params.get('anime_id', '')
     group_id = params.get('group_id', '')
     watched = bool(params['watched'])
-    key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+    key = _server_
     if watched is True:
         watched_msg = "watched"
         if episode_id != '':
@@ -1809,7 +1574,7 @@ def watched_mark(params):
         elif anime_id != '':
             key += "/serie/watch"
         elif group_id != '':
-            key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+            key = _server_ \
                 + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
                 watched).strip()
     else:
@@ -1819,7 +1584,7 @@ def watched_mark(params):
         elif anime_id != '':
             key += "/serie/unwatch"
         elif group_id != '':
-            key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+            key = _server_ \
                   + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
                 watched).strip()
 
@@ -1863,7 +1628,7 @@ def rescan_file(params, rescan):
 
     key = ""
     if episode_id != '':
-        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+        key = _server_ \
               + "/jmmserverkodi/" + command + episode_id
     if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('vlid: ' + str(episode_id))

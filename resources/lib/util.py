@@ -22,6 +22,23 @@ UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/20080924
 pDialog = ''
 
 
+def remove_anidb_links(data=""):
+    """
+    Remove anidb links from descriptions
+    Args:
+        data: the strong to remove links from
+
+    Returns: new string without links
+
+    """
+    # search for string with 1 to 3 letters and 1 to 7 numbers
+    p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
+    data2 = p.sub('', data)
+    # remove '[' and ']' that included link to anidb.net
+    p = re.compile('(\[|\])')
+    return p.sub('', data2)
+
+
 # json
 def dbg(msg):
     """
