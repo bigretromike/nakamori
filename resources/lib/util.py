@@ -50,14 +50,14 @@ def dbg(msg):
 
 
 # json
-def safeInt(object):
+def safeInt(object_body):
     """
     safe convert type to int to avoid NoneType
-    :param object:
+    :param object_body:
     :return: int
     """
-    if object is not None:
-        return int(object)
+    if object_body is not None:
+        return int(object_body)
     else:
         return 0
 
