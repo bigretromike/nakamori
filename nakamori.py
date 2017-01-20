@@ -1123,7 +1123,6 @@ def build_tv_seasons(params, extra_directories=None):
 
             # if extra_directories is not None: <---
             #     e.extend(extra_directories) <---
-# DIRTY HACK UNTIL I GET HERE
             # if e.find('Directory') is None:
 #                params['url'] = params['url'].replace('&mode=5', '&mode=6')
 #                build_tv_episodes(params)
