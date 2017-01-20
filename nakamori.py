@@ -792,6 +792,27 @@ def get_cast_and_role_legacy(data):
 
 
 # Adding items to list/menu:
+
+
+#json - ok
+def add_content_typ_dir(name, serie_id, ep_type):
+    url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+          + "/api/serie?id=" + str(serie_id)
+    title = str(name)
+    # TODO : add proper icon
+    thumb = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+            + "/image/support/plex_others.png"
+    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+    liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'mode', str(6))
+    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'type', ep_type)
+    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+
+
 # json - ok
 def build_main_menu():
     """
@@ -1075,7 +1096,7 @@ def build_tv_shows(params, extra_directories=None):
     xbmcplugin.endOfDirectory(handle)
 
 
-# still broken - hacked
+# json - still broken - hacked - added dirs
 def build_tv_seasons(params, extra_directories=None):
     """
     Builds list items for The Types Menu, or optionally subgroups
@@ -1107,9 +1128,25 @@ def build_tv_seasons(params, extra_directories=None):
 #                params['url'] = params['url'].replace('&mode=5', '&mode=6')
 #                build_tv_episodes(params)
 #                return
-            build_tv_episodes(params)
-            return
+            content_dict = dict()
+            if "eps" in body:
+                if len(body["eps"]) > 1:
+                    for ep in body["eps"]:
+                        if ep["eptype"] not in content_dict:
+                            # episode
+                            content_dict[str(ep["eptype"])] = ep["type"]
+            if 1 in content_dict.keys() and len(content_dict) == 1:
+                build_tv_episodes(params)
+                return
+            else:
+                for content in content_dict.keys():
+                    add_content_typ_dir(content_dict[content], body["id"], content)
 
+                xbmcplugin.endOfDirectory(handle)
+                return
+
+            # it wont go below as it return in both cases
+            e = ''
             set_window_heading(e)
             will_flatten = False
 
@@ -1117,9 +1154,9 @@ def build_tv_seasons(params, extra_directories=None):
             if int(e.get('size', 0)) == 1:
                 will_flatten = True
 
-            section_art = gen_image_url(e.get('art', ''))
+            #section_art = gen_image_url(e.get('art', ''))
 
-            set_window_heading(e)
+            #set_window_heading(e)
 
             for atype in e.findall('Directory'):
                 key = atype.get('key', '')
@@ -1327,7 +1364,11 @@ def build_tv_episodes(params):
             if len(body["eps"]) > 0:
                 for video in body["eps"]:
                     # check if episode have files
-                    if video["files"] is not None:
+                    episode_type = True
+                    if "type" in params:
+                        # dbg("param_type:" + str(params["type"]) + " video[eptype]:" + str(video["eptype"]))
+                        episode_type = True if str(video["eptype"]) == str(params["type"]) else False
+                    if video["files"] is not None and episode_type:
                         if len(video["files"]) > 0:
                             episode_count += 1
                             # view_offset = video.get('viewOffset', 0) <---
@@ -1936,7 +1977,7 @@ if valid_user() is True:
             build_tv_shows(parameters)
         elif mode == 5:  # TVSeasons
             # xbmcgui.Dialog().ok('MODE=5','MODE')
-            build_tv_shows(parameters)
+            build_tv_seasons(parameters)
         elif mode == 6:  # TVEpisodes
             # xbmcgui.Dialog().ok('MODE=6','MODE')
             build_tv_episodes(parameters)
