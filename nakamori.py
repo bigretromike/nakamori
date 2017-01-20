@@ -1134,7 +1134,7 @@ def build_tv_seasons(params, extra_directories=None):
                         if ep["eptype"] not in content_dict:
                             # episode
                             content_dict[str(ep["eptype"])] = ep["type"]
-            if 1 in content_dict.keys() and len(content_dict) == 1:
+            if content_dict.keys().__contains__('1') and len(content_dict) == 1:
                 build_tv_episodes(params)
                 return
             else:
@@ -1487,7 +1487,7 @@ def build_tv_episodes(params):
                                         extra_data['VideoCodec'] = video["files"][0]["media"]["videos"][stream_info]['Codec']
                                         extra_data['width'] = int(video["files"][0]["media"]["videos"][stream_info]["Width"])
                                         extra_data['height'] = int(video["files"][0]["media"]["videos"][stream_info]["Height"])
-                                        extra_data['duration'] = safeInt(video["files"][0]["media"]["videos"][stream_info]["Duration"]) if "Duration" in video["files"][0]["media"]["videos"][stream_info] else 1
+                                        #extra_data['duration'] = int(video["files"][0]["media"]["videos"][stream_info]["Duration"]) if "Duration" in video["files"][0]["media"]["videos"][stream_info] else 1
 
                                     for stream_info in video["files"][0]["media"]["audios"]:
                                         # Audio
