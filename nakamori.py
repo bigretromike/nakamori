@@ -794,10 +794,10 @@ def get_cast_and_role_legacy(data):
 # Adding items to list/menu:
 
 
-#json - ok
+# json - ok
 def add_content_typ_dir(name, serie_id, ep_type):
     url = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-          + "/api/serie?id=" + str(serie_id)
+          + "/api/serie?id=" + str(serie_id) + "&level=4"
     title = str(name)
     # TODO : add proper icon
     thumb = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
@@ -1292,7 +1292,7 @@ def build_tv_episodes(params):
     """
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        dbg(params['url'])
+        dbg("build_episode:" + params['url'])
         html = get_json(params['url'])
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
@@ -1434,8 +1434,11 @@ def build_tv_episodes(params):
                                 banner = video["art"]["banner"][0]["url"]
 
                             # we could leave this as is and when trigger get essential data for this episode/file only
-                            key = video["files"][0]["id"]
-                            key = '123'
+                            key = video["files"][0]["url"]
+                            if key is not None:
+                                dbg("key:" + key)
+                            else:
+                                dbg("key is None")
 
                             # <--- V V V
                             # ext = video.find('Media').find('Part').get('container', '')
@@ -1481,25 +1484,25 @@ def build_tv_episodes(params):
                                 if len(video["files"][0]["media"]) > 0:
                                     for stream_info in video["files"][0]["media"]["videos"]:
                                         # Video
-                                        extra_data['VideoCodec'] = stream_info["Codec"]
-                                        extra_data['width'] = int(stream_info["Width"])
-                                        extra_data['height'] = int(stream_info["Height"])
-                                        extra_data['duration'] = safeInt(stream_info["Duration"])
+                                        extra_data['VideoCodec'] = video["files"][0]["media"]["videos"][stream_info]['Codec']
+                                        extra_data['width'] = int(video["files"][0]["media"]["videos"][stream_info]["Width"])
+                                        extra_data['height'] = int(video["files"][0]["media"]["videos"][stream_info]["Height"])
+                                        extra_data['duration'] = safeInt(video["files"][0]["media"]["videos"][stream_info]["Duration"])
 
                                     for stream_info in video["files"][0]["media"]["audios"]:
                                         # Audio
                                         streams = extra_data.get('AudioStreams')
-                                        streamid = int(stream_info["Index"])
-                                        streams[streamid]['AudioCodec'] = stream_info["Codec"]
-                                        streams[streamid]['AudioLanguage'] = stream_info["LanguageCode"]
-                                        streams[streamid]['AudioChannels'] = int(stream_info["Channels"])
+                                        streamid = int(video["files"][0]["media"]["audios"][stream_info]["Index"])
+                                        streams[streamid]['AudioCodec'] = video["files"][0]["media"]["audios"][stream_info]["Codec"]
+                                        streams[streamid]['AudioLanguage'] = video["files"][0]["media"]["audios"][stream_info]["LanguageCode"]
+                                        streams[streamid]['AudioChannels'] = int(video["files"][0]["media"]["audios"][stream_info]["Channels"])
                                         extra_data['AudioStreams'] = streams
 
                                     for stream_info in video["files"][0]["media"]["subtitles"]:
                                         # Subtitle
                                         streams = extra_data.get('SubStreams')
-                                        streamid = int(stream_info["Index"])
-                                        streams[streamid]['SubtitleLanguage'] = stream_info["LanguageCode"]
+                                        streamid = int(video["files"][0]["media"]["subtitles"][stream_info]["Index"])
+                                        streams[streamid]['SubtitleLanguage'] = video["files"][0]["media"]["subtitles"][stream_info]["LanguageCode"]
                                         extra_data['SubStreams'] = streams
 
                             # Determine what type of watched flag [overlay] to use
@@ -1522,15 +1525,13 @@ def build_tv_episodes(params):
                                     extra_data['fanart_image'] = fanart
 
                             context = None
-                            # url = key
-                            url = "http://test/"
+                            url = key
 
                             u = sys.argv[0]
                             u = set_parameter(u, 'url', url)
                             u = set_parameter(u, 'mode', '1')
                             u = set_parameter(u, 'file', key)
-                            u = set_parameter(u, 'ep_id', key)
-                            # u = set_parameter(u, 'ep_id', body["id"]) <----
+                            u = set_parameter(u, 'ep_id', str(video["id"]))
                             u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
                             add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
@@ -1954,6 +1955,7 @@ if valid_user() is True:
             try:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                 ctl = win.getControl(win.getFocusId())
+                dbg("file:" + parameters['file'])
                 if play_video(parameters['file'], parameters['ep_id']) != 0:
                     # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
