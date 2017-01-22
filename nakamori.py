@@ -899,7 +899,7 @@ def build_tv_seasons(params, extra_directories=None):
                         if ep["eptype"] not in content_dict:
                             # episode
                             content_dict[str(ep["eptype"])] = ep["type"]
-            if content_dict.keys().__contains__('1') and len(content_dict) == 1:
+            if '1' in content_dict.keys() and len(content_dict) == 1:
                 build_tv_episodes(params)
                 return
             else:
