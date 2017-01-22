@@ -655,20 +655,6 @@ def build_main_menu():
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
     # End Add_Search
 
-    # Start Add_Search_tag
-    url = _server_ + "/serie/tag?limit=" + __addon__.getSetting("maxlimit_tag")
-    title = "Search for TAG"
-    thumb = _server_ + "/image/support/plex_others.png"
-    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
-    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-    u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
-    u = set_parameter(u, 'mode', str(3))
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
-    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
-    # End Add_Search_Tag
-
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
