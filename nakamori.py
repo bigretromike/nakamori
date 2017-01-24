@@ -70,7 +70,6 @@ def valid_user():
             return False
 
 
-# TODO: to-check
 def refresh():
     """
     Refresh and re-request data from server
@@ -81,11 +80,9 @@ def refresh():
     xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
 
 
-# TODO: to-check
-# use episode number for position
 def move_position_on_list(control_list, position=0):
     """
-    Move to the position in a list
+    Move to the position in a list - use episode number for position
     Args:
         control_list: the list control
         position: the index of the item not including settings
@@ -311,7 +308,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             partemp = util.parseParameters(input_string=url)
             liz.setProperty('path', str(partemp.get('file', 'empty')))
 
-        # TODO: with source = type (filter, group, series, ep) this section need tweaks
         if extra_data and len(extra_data) > 0:
             if extra_data.get('source') == 'serie' or extra_data.get('source') == 'group':
                 # Then set the number of watched and unwatched, which will be displayed per season
@@ -333,99 +329,99 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 if extra_data.get('season_thumb'):
                     liz.setArt({'seasonThumb': extra_data.get('season_thumb', '')})
 
-# TODO: This need to review
         if context is None:
             if extra_data and len(extra_data) > 0:
-                if extra_data.get('type', 'video').lower() == "video":
-                    context = []
-                    url_peep_base = sys.argv[2]
-                    my_len = len(_server_)
+                context = []
+                url_peep_base = sys.argv[2]
+                my_len = len(_server_)
 
-                    if extra_data.get('source', 'none') == 'AnimeSerie':
-                        series_id = extra_data.get('key')[(my_len + 30):]
-                        url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
-                        if __addon__.getSetting('context_show_info') == 'true':
-                            context.append(('More Info', 'Action(Info)'))
-                        if __addon__.getSetting('context_show_vote_Series') == 'true':
-                            context.append(('Vote (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s)' %
-                                            (sys.argv[1], url_peep)))
-                        url_peep = url_peep_base + "&anime_id=" + series_id
-                        context.append(('Mark as Watched (Shoko)',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                        % (sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched (Shoko)',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                        % (sys.argv[1], url_peep)))
-                    elif extra_data.get('source', 'none') == 'AnimeGroup':
-                        series_id = extra_data.get('key')[(my_len + 30):]
-                        if __addon__.getSetting('context_show_info') == 'true':
-                            context.append(('More Info', 'Action(Info)'))
-                        url_peep = url_peep_base + "&group_id=" + series_id
-                        context.append(('Mark as Watched (Shoko)',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                        % (sys.argv[1], url_peep)))
-                        context.append(('Mark as Unwatched (Shoko)',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                        % (sys.argv[1], url_peep)))
-                    elif extra_data.get('source', 'none') == 'tvepisodes':
-                        #series_id = extra_data.get('parentKey')[(my_len + 30):] <----
-                        series_id = "331122"
-                        url_peep = url_peep_base + "&anime_id=" + str(series_id) + \
-                            "&ep_id=" + str(extra_data.get('jmmepisodeid')) + '&ui_index=' + str(index)
-                        if not extra_data.get('unsorted', False):
-                            if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                                context.append(('Play (Do not Mark as Watched (Shoko))',
-                                                'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
-                                                % (sys.argv[1], url_peep)))
-                        if __addon__.getSetting('context_show_info') == 'true':
-                            context.append(('More Info', 'Action(Info)'))
-                        if __addon__.getSetting('context_show_vote_Series') == 'true' and not extra_data.get('unsorted',
-                                                                                                             False):
-                            if series_id != '':
-                                context.append(
-                                    ('Vote for Series (Shoko)',
-                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)'
-                                     % (sys.argv[1], url_peep)))
-                        if __addon__.getSetting('context_show_vote_Episode') == 'true' and not extra_data.get(
-                                'unsorted', False):
-                            if extra_data.get('jmmepisodeid') != '':
-                                context.append(
-                                    ('Vote for Episode (Shoko)',
-                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)'
-                                     % (sys.argv[1], url_peep)))
+                # menu for group
+                if extra_data.get('source', 'none') == 'group':
+                    group_id = extra_data.get('id')
+                    if __addon__.getSetting('context_show_info') == 'true':
+                        context.append(('More Info', 'Action(Info)'))
+                    url_peep = url_peep_base + "&group_id=" + group_id
+                    context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                    % (sys.argv[1], url_peep)))
+                    context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                    % (sys.argv[1], url_peep)))
 
-                        if extra_data.get('jmmepisodeid') != '' and not extra_data.get('unsorted', False):
-                            if __addon__.getSetting('context_krypton_watched') == 'true':
-                                if details.get('playcount', 0) == 0:
-                                    context.append(
-                                        ('Mark as Watched (Shoko)',
-                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                         % (sys.argv[1], url_peep)))
-                                else:
-                                    context.append(
-                                        ('Mark as Unwatched (Shoko)',
-                                         'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                         % (sys.argv[1], url_peep)))
-                            else:
+                # menu for serie
+                elif extra_data.get('source', 'none') == 'serie':
+                    series_id = extra_data.get('id')
+                    url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
+                    if __addon__.getSetting('context_show_info') == 'true':
+                        context.append(('More Info', 'Action(Info)'))
+                    if __addon__.getSetting('context_show_vote_Series') == 'true':
+                        context.append(('Vote (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s)' %
+                                        (sys.argv[1], url_peep)))
+                    url_peep = url_peep_base + "&anime_id=" + series_id
+                    context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                    % (sys.argv[1], url_peep)))
+                    context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                    % (sys.argv[1], url_peep)))
+
+                # menu for episode
+                elif extra_data.get('source', 'none') == 'ep':
+                    ep_id = extra_data.get('id')
+                    series_id = "331122"
+                    url_peep = url_peep_base + "&anime_id=" + str(series_id) + \
+                        "&ep_id=" + str(ep_id) + '&ui_index=' + str(index)
+
+                    if not extra_data.get('unsorted', False):
+                        if __addon__.getSetting('context_show_play_no_watch') == 'true':
+                            context.append(('Play (Do not Mark as Watched (Shoko))',
+                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
+                                            % (sys.argv[1], url_peep)))
+                    if __addon__.getSetting('context_show_info') == 'true':
+                        context.append(('More Info', 'Action(Info)'))
+                    if __addon__.getSetting('context_show_vote_Series') == 'true' and not extra_data.get('unsorted',
+                                                                                                         False):
+                        if series_id != '':
+                            context.append(
+                                ('Vote for Series (Shoko)',
+                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)'
+                                 % (sys.argv[1], url_peep)))
+                    if __addon__.getSetting('context_show_vote_Episode') == 'true' and not extra_data.get(
+                            'unsorted', False):
+                        if extra_data.get('jmmepisodeid') != '':
+                            context.append(
+                                ('Vote for Episode (Shoko)',
+                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)'
+                                 % (sys.argv[1], url_peep)))
+
+                    if extra_data.get('jmmepisodeid') != '' and not extra_data.get('unsorted', False):
+                        if __addon__.getSetting('context_krypton_watched') == 'true':
+                            if details.get('playcount', 0) == 0:
                                 context.append(
                                     ('Mark as Watched (Shoko)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
                                      % (sys.argv[1], url_peep)))
+                            else:
                                 context.append(
                                     ('Mark as Unwatched (Shoko)',
                                      'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                      % (sys.argv[1], url_peep)))
+                        else:
+                            context.append(
+                                ('Mark as Watched (Shoko)',
+                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
+                                 % (sys.argv[1], url_peep)))
+                            context.append(
+                                ('Mark as Unwatched (Shoko)',
+                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
+                                 % (sys.argv[1], url_peep)))
 
-                        if extra_data.get('unsorted', False):
-                            context.append(
-                                ('Rescan File',
-                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)'
-                                 % (sys.argv[1], url_peep)))
-                            context.append(
-                                ('Rehash File',
-                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)'
-                                 % (sys.argv[1], url_peep)))
-                    liz.addContextMenuItems(context)
+                    if extra_data.get('unsorted', False):
+                        context.append(
+                            ('Rescan File',
+                             'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)'
+                             % (sys.argv[1], url_peep)))
+                        context.append(
+                            ('Rehash File',
+                             'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)'
+                             % (sys.argv[1], url_peep)))
+                liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
         error("Error during add_gui_item", str(e))
@@ -554,9 +550,8 @@ def get_cast_and_role(data):
     return None
 
 
-# TODO: legacy - do we need this, or is it proper function with bad name ?
-# This is for Kodi 16 and under which doesn't take the nice new function
 def convert_cast_and_role_to_legacy(list_of_dicts):
+    # This is for Kodi 16 and under which doesn't take the nice new function
     result_list = []
     list_cast = []
     list_cast_and_role = []
@@ -573,15 +568,13 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
     return result_list
 
 
-# Adding items to list/menu:
+# region Adding items to list/menu:
 
-
-def add_content_typ_dir(name, serie_id, ep_type):
+def add_content_typ_dir(name, serie_id):
     """
     Adding directories for given types of content
     :param name: name of directory
     :param serie_id: id that the content belong too
-    :param ep_type: type of content
     :return: add new directory
     """
     url = _server_ + "/api/serie?id=" + str(serie_id) + "&level=4"
@@ -595,7 +588,7 @@ def add_content_typ_dir(name, serie_id, ep_type):
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', str(6))
     u = set_parameter(u, 'name', urllib.quote_plus(title))
-    u = set_parameter(u, 'type', ep_type)
+    u = set_parameter(u, 'type', name)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
 
 
@@ -670,7 +663,7 @@ def add_serie_item(node, parent_title):
 
     directory_type = str(node["type"])
     key_id = str(node["id"])
-    key = _server_ + "/api/serie"
+    key = _server_ + "/api/serie?id=" + key_id
     set_parameter(key, 'id', key_id)
     if __addon__.getSetting('request_nocast') == 'true':
         set_parameter(key, 'nocast', 1)
@@ -695,7 +688,8 @@ def add_serie_item(node, parent_title):
         'fanart_image':         fanart,
         'banner':               banner,
         'key':                  key,
-        'actors':               actors
+        'actors':               actors,
+        'id':                   key_id
     }
 
     url = key
@@ -760,7 +754,8 @@ def add_group_item(node, parent_title, filter):
         'thumb':                thumb,
         'fanart_image':         fanart,
         'banner':               banner,
-        'key':                  key
+        'key':                  key,
+        'id':                   key_id
     }
 
     url = key
@@ -783,7 +778,6 @@ def add_group_item(node, parent_title, filter):
     add_gui_item(u, details, extra_data, context)
 
 
-# TODO filterid is missing as I don't get it
 def build_filters_menu():
     """
     Builds the list of items (filters) in the Main Menu
@@ -833,7 +827,7 @@ def build_filters_menu():
 
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
-                u = set_parameter(u, 'mode', str(use_mode))
+                u = set_parameter(u, 'mode', use_mode)
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
                 u = set_parameter(u, 'filter', menu["id"])
 
@@ -847,8 +841,8 @@ def build_filters_menu():
     except Exception as e:
         error("Invalid JSON Received in build_filters_menu", str(e))
 
-    # Start Add_Search
-    url = _server_ + "/serie/search?limit=" + __addon__.getSetting("maxlimit")
+    # region Start Add_Search
+    url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit")
     title = "Search"
     thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -860,13 +854,12 @@ def build_filters_menu():
     u = set_parameter(u, 'mode', str(3))
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
-    # End Add_Search
+    # endregion
 
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
-# TODO filterid is missing as I don't get it and group (shoko) option have bad logic now
-# groups have great logic...written poorly
+# TODO group (shoko) option have bad logic now
 def build_groups_menu(params, extra_directories=None):
     """
     Builds the list of items for Filters and Groups
@@ -895,45 +888,31 @@ def build_groups_menu(params, extra_directories=None):
         body = json.loads(html)
         set_window_heading(body["name"])
         try:
-            # TODO: Do we really use parent ?
             parent_title = body["name"]
-
-            # converting series from search to group so we can handle them here
-            if "groups" not in body:
-                new_serie = dict()
-                series_list = []
-                for ser in body:
-                    series_list.append(ser)
-                new_serie["series"] = series_list
-                new_group = []
-                new_group.append(new_serie)
-                new_body = dict()
-                new_body["groups"] = new_group
-                body = new_body
 
             if len(body["groups"]) <= 0:
                 build_serie_episodes(params)
                 return
 
             directory_type = body['type']
-            filter = ''
-            if directory_type != 'episode' and directory_type != 'serie':
+            filter_id = ''
+            if directory_type != 'ep' and directory_type != 'serie':
                 if 'filter' in params:
-                    filter = params['filter']
+                    filter_id = params['filter']
                     if directory_type == 'filter':
-                        filter = body['id']
+                        filter_id = body['id']
 
             for grp in body["groups"]:
                 if len(grp["series"]) > 0:
                     if len(grp["series"]) == 1:
                         add_serie_item(grp["series"][0], parent_title)
                     else:
-                        add_group_item(grp, parent_title, filter)
+                        add_group_item(grp, parent_title, filter_id)
 
         except Exception as e:
             error("Error during build_groups_menu", str(e))
     except Exception as e:
-        error("Invalid XML Received in build_groups_menu", str(e))
+        error("Invalid JSON Received in build_groups_menu", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -952,6 +931,7 @@ def build_serie_episodes_types(params, extra_directories=None):
     # xbmcgui.Dialog().ok('MODE=5', str(params['url']))
     xbmcplugin.setContent(handle, 'seasons')
     try:
+        dbg(params['url'])
         html = get_json(params['url'])
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
@@ -963,29 +943,24 @@ def build_serie_episodes_types(params, extra_directories=None):
             except Exception as exc:
                 error("Unable to get parent title in buildTVSeasons", str(exc))
 
-            # if extra_directories is not None: <---
-            #     e.extend(extra_directories) <---
-            # if e.find('Directory') is None:
-#                params['url'] = params['url'].replace('&mode=5', '&mode=6')
-#                build_serie_episodes(params)
-#                return
-            content_dict = dict()
+            content_type = []
             if "eps" in body:
                 if len(body["eps"]) >= 1:
                     for ep in body["eps"]:
-                        if ep["eptype"] not in content_dict:
-                            # episode
-                            content_dict[str(ep["eptype"])] = ep["type"]
-            if '1' in content_dict.keys() and len(content_dict) == 1:
+                        if ep["eptype"] not in content_type:
+                            content_type.append(ep["eptype"])
+            # no matter what type is its only one type, flat directory
+            if len(content_type) == 1:
                 build_serie_episodes(params)
                 return
             else:
-                for content in content_dict.keys():
-                    add_content_typ_dir(content_dict[content], body["id"], content)
-
+                for content in content_type:
+                    add_content_typ_dir(content, body["id"])
                 xbmcplugin.endOfDirectory(handle)
                 return
 
+            # TODO the code below is unneded as its duplicate from series_episodes or the content_typ dont need them
+            # or am i wrong? (maybe view/unwatched will be needed but those should go to conent_typ_then)
             # it wont go below as it return in both cases
             e = ''
             set_window_heading(e)
@@ -1107,7 +1082,6 @@ def build_serie_episodes_types(params, extra_directories=None):
     xbmcplugin.endOfDirectory(handle)
 
 
-# json - a lot comment out
 def build_serie_episodes(params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
     """
@@ -1122,29 +1096,14 @@ def build_serie_episodes(params):
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
-        # set_window_heading(e) <-----
+
         try:
             parent_title = ''
             try:
                 parent_title = body["title"]
+                set_window_heading(parent_title)
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
-
-            # DETECT PERSONA 4 THE ANIMATION TYPES OF EPISODES (before it was credit/ovas) not they are in eps
-            # if e.find('Directory') is not None:  <-----
-            #    params['url'] = params['url'].replace('&mode=6', '&mode=5')
-            #    build_serie_episodes_types(params)
-            #    return
-
-            art = ''
-            if len(body["art"]["fanart"]) > 0:
-                art = body["art"]["fanart"][0]["url"]
-            thumb = ''
-            if len(body["art"]["thumb"]) > 0:
-                thumb = body["art"]["thumb"][0]["url"]
-            banner = ''
-            if len(body["art"]["banner"]) > 0:
-                banner = body["art"]["banner"][0]["url"]
 
             if __addon__.getSetting('use_server_sort') == 'false':
                 # Set Sort Method
@@ -1212,13 +1171,10 @@ def build_serie_episodes(params):
                                 'sorttitle':     encode(video["title"]),
                                 'parenttitle':   encode(parent_title),
                                 'rating':        float(str(video["rating"]).replace(',', '.')),
-                                'userrating':        float(str(video["UserRating"]).replace(',', '.')) if "UserRating" in video else 0,
+                                'userrating':    float(str(video["UserRating"]).replace(',', '.')) if "UserRating" in video else 0,
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                                 # This doesn't work, some gremlins be afoot in this code...
                                 # it's probably just that it only applies at series level
-                                # 'cast'        : list(['Actor1','Actor2']),
-                                # 'castandrole' : list([('Actor1','Character1'),('Actor2','Character2')]),
-                                # According to the docs, this will auto fill castandrole
                                 'CastAndRole':   list_cast_and_role,
                                 'Cast':          list_cast,
                                 # 'director': " / ".join(temp_dir),
@@ -1232,7 +1188,7 @@ def build_serie_episodes(params):
                                 'aired':         video["air"],
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         safeInt(video["votes"]),
-                                # 'originaltitle': video.get('original_title', ''), <---
+                                'originaltitle': encode(video["title"]),
                                 'size': safeInt(body["size"])
                             }
 
@@ -1258,76 +1214,56 @@ def build_serie_episodes(params):
                             if len(video["art"]["banner"]) > 0:
                                 banner = video["art"]["banner"][0]["url"]
 
-                            # we could leave this as is and when trigger get essential data for this episode/file only
                             key = video["files"][0]["url"]
-                            #if key is not None:
-                            #    dbg("key:" + key)
-                            #else:
-                            #    dbg("key is None")
-
-                            # <--- V V V
-                            # ext = video.find('Media').find('Part').get('container', '')
-                            # new_key = video.find('Media').find('Part').get('key', '')
-
-                            # if not key.lower().startswith("http") or 'videolocal' not in key.lower():
-                            #    key = new_key
-                            #    if not key.startswith("http") and 'videolocal' not in key.lower():
-                            #        key = "http://" + __addon__.getSetting("ipaddress") + ":" + \
-                            #              str(int(__addon__.getSetting("port")) + 1) + "/videolocal/0/" + key
-                            #    if '.' + ext.lower() not in key.lower():
-                            #        key += '.' + ext.lower()
-
-                            # newerkey = encode(video.find('Media').find('Part').get('local_key', ''))
-                            # newerkey = newerkey.replace('\\', '\\\\')
-                            # if newerkey != '' and os.path.isfile(newerkey):
-                            #    key = newerkey
+                            media = video["files"][0]["media"]
 
                             # Extra data required to manage other properties
                             extra_data = {
-                                'type':             "Video",
-                                'source':           "tvepisodes",
+                                'type':             "video",
+                                'source':           "ep",
+                                'id':               safeInt(body["id"]),
                                 # 'unsorted':         'animefile' in video.get('AnimeType', '').lower(), <---
                                 'thumb':            None if skip else thumb,
-                                'fanart_image':     None if skip else art,
+                                'fanart_image':     None if skip else fanart,
+                                'banner':           None if skip else banner,
                                 'key':              key,
                                 # 'resume':           int(int(view_offset) / 1000),<---
                                 'parentKey':        parent_key,
                                 'jmmepisodeid':     safeInt(body["id"]),
-                                'banner':           banner,
-                                # 'xVideoResolution': video["files"][0]["media"]["videos"]["1"]["Width"], <---
-                                # 'xVideoCodec':      video["files"][0]["media"]["videos"]["1"]["Codec"], <---
-                                # 'xVideoAspect':     float(video.find('Media').get('aspectRatio', 0)), <---
-                                # 'xAudioCodec':      video["files"][0]["media"]["audios"]["1"]["Codec"], <---
-                                # 'xAudioChannels':   safeInt(video["files"][0]["media"]["audios"]["1"]["Channels"]), <---
                                 'actors':           actors,
                                 'AudioStreams':     defaultdict(dict),
                                 'SubStreams':       defaultdict(dict)
                                 }
 
                             # Information about streams inside video file
-                            if video["files"][0]["media"] is not None:
+                            if media is not None:
                                 if len(video["files"][0]["media"]) > 0:
+                                    extra_data['xVideoCodec'] = media["videos"]["1"]["Codec"]
+                                    extra_data['xVideoResolution'] = media["videos"]["1"]["Width"]
+                                    extra_data['xAudioCodec'] = media["audios"]["1"]["Codec"]
+                                    extra_data['xAudioChannels'] = safeInt(media["audios"]["1"]["Channels"])
+                                    # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
                                     for stream_info in video["files"][0]["media"]["videos"]:
                                         # Video
-                                        extra_data['VideoCodec'] = video["files"][0]["media"]["videos"][stream_info]['Codec']
-                                        extra_data['width'] = int(video["files"][0]["media"]["videos"][stream_info]["Width"])
-                                        extra_data['height'] = int(video["files"][0]["media"]["videos"][stream_info]["Height"])
-                                        #extra_data['duration'] = int(video["files"][0]["media"]["videos"][stream_info]["Duration"]) if "Duration" in video["files"][0]["media"]["videos"][stream_info] else 1
+                                        extra_data['VideoCodec'] = media["videos"][stream_info]['Codec']
+                                        extra_data['width'] = int(media["videos"][stream_info]["Width"])
+                                        extra_data['height'] = int(media["videos"][stream_info]["Height"])
+                                        # extra_data['duration'] = int(media["videos"][stream_info]["Duration"]) if "Duration" in media["videos"][stream_info] else 1
 
-                                    for stream_info in video["files"][0]["media"]["audios"]:
+                                    for stream_info in media["audios"]:
                                         # Audio
                                         streams = extra_data.get('AudioStreams')
-                                        streamid = int(video["files"][0]["media"]["audios"][stream_info]["Index"])
-                                        streams[streamid]['AudioCodec'] = video["files"][0]["media"]["audios"][stream_info]["Codec"]
-                                        streams[streamid]['AudioLanguage'] = video["files"][0]["media"]["audios"][stream_info]["LanguageCode"]
-                                        streams[streamid]['AudioChannels'] = int(video["files"][0]["media"]["audios"][stream_info]["Channels"])
+                                        stream_id = int(media["audios"][stream_info]["Index"])
+                                        streams[stream_id]['AudioCodec'] = media["audios"][stream_info]["Codec"]
+                                        streams[stream_id]['AudioLanguage'] = media["audios"][stream_info]["LanguageCode"]
+                                        streams[stream_id]['AudioChannels'] = int(media["audios"][stream_info]["Channels"])
                                         extra_data['AudioStreams'] = streams
 
-                                    for stream_info in video["files"][0]["media"]["subtitles"]:
+                                    for stream_info in media["subtitles"]:
                                         # Subtitle
                                         streams = extra_data.get('SubStreams')
-                                        streamid = int(video["files"][0]["media"]["subtitles"][stream_info]["Index"])
-                                        streams[streamid]['SubtitleLanguage'] = video["files"][0]["media"]["subtitles"][stream_info]["LanguageCode"] if "LanguageCode" in video["files"][0]["media"]["subtitles"][stream_info] else "unk"
+                                        stream_id = int(media["subtitles"][stream_info]["Index"])
+                                        streams[stream_id]['SubtitleLanguage'] = media["subtitles"][stream_info]["LanguageCode"] if "LanguageCode" in media["subtitles"][stream_info] else "unk"
                                         extra_data['SubStreams'] = streams
 
                             # Determine what type of watched flag [overlay] to use
@@ -1383,9 +1319,6 @@ def build_serie_episodes(params):
     xbmcplugin.endOfDirectory(handle)
 
 
-# json - ok + one minnor clean need ? or not
-# TODO Pretty sure you broke something, just by looking at this
-# but a later issue
 def build_search(url=''):
     """
     Build directory list of series containing searched query
@@ -1400,27 +1333,15 @@ def build_search(url=''):
         if term is not None and term != "":
             try:
                 term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
-
-                if '/tag/' in url:
-                    url2 = _server_ \
-                         + "/api/serie/tag?limit=" + __addon__.getSetting("maxlimit_tag") + "&query="
-                else:
-                    url2 = _server_ \
-                           + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit") + "&query="
-                to_send = {'url': url2 + term}
-                search_body = json.loads(get_json(url2 + term))
-
-                # is this needed ?
-                directories = None
-                if len(search_body) <= 0:
-                    directories = None
-
-                build_groups_menu(to_send, directories)
+                to_send = {'url': url + "&query=" + term}
+                dbg(to_send)
+                build_groups_menu(to_send, None)
             except Exception as exc:
                 error("Error during build_search", str(exc))
     except Exception as exc:
         error("Error during searchBox", str(exc))
 
+# endregion
 
 # Other functions
 # json

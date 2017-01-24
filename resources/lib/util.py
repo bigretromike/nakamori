@@ -411,6 +411,7 @@ def relevanceCheck(title, animeList):
 
 
 def set_parameter(url, parameter, value):
+    value = str(value)
     if value is None or value == '':
         if '?' not in url:
             return url
