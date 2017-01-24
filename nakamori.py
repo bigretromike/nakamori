@@ -115,6 +115,11 @@ def set_window_heading(window_name):
     Args:
         window_name: name to put in titles
     """
+    if window_name == 'Continue Watching (System)':
+        window_name = 'Continue Watching'
+    elif window_name == 'Unsort':
+        window_name = 'Unsorted'
+
     window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
     try:
         window_obj.setProperty("heading", str(window_name))
@@ -550,6 +555,7 @@ def get_cast_and_role(data):
 
 
 # TODO: legacy - do we need this, or is it proper function with bad name ?
+# This is for Kodi 16 and under which doesn't take the nice new function
 def convert_cast_and_role_to_legacy(list_of_dicts):
     result_list = []
     list_cast = []
@@ -664,22 +670,10 @@ def add_serie_item(node, parent_title):
 
     directory_type = str(node["type"])
     key_id = str(node["id"])
-    key = _server_ + "/api/serie?id=" + key_id
-    # TODO: filter_id onc again
-    #directory_type = directory.get('AnimeType', '')
-    #key = directory.get('key', '')
-    #filterid = ''
-    #if get_version() > LooseVersion(
-    #        '3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
-    #    if params.get('filterid', '') != '':
-    #        filterid = params.get('filterid', '')
-    #        if directory_type == 'AnimeGroupFilter':
-    #            filterid = directory.get('GenericId', '')
-    #        length = len(_server_
-    #                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
-    #        key = key[length:]
-    #        key = _server_ \
-    #              + "/api/metadata/" + key + '/' + filterid
+    key = _server_ + "/api/serie"
+    set_parameter(key, 'id', key_id)
+    if __addon__.getSetting('request_nocast') == 'true':
+        set_parameter(key, 'nocast', 1)
 
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
@@ -703,8 +697,6 @@ def add_serie_item(node, parent_title):
         'key':                  key,
         'actors':               actors
     }
-    if __addon__.getSetting('request_nocast') == 'true':
-        key += '&nocast=1'
 
     url = key
     set_watch_flag(extra_data, details)
@@ -717,16 +709,12 @@ def add_serie_item(node, parent_title):
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', str(use_mode))
-    #if filterid != '':
-    #    u = set_parameter(u, 'filterid', filterid)
-    #else:
-    u = set_parameter(u, 'filterid', None)
 
     context = None
     add_gui_item(u, details, extra_data, context)
 
 
-def add_group_item(node, parent_title):
+def add_group_item(node, parent_title, filter):
     # xbmcgui.Dialog().ok('group','group')
     temp_genre = get_tags(node["tags"])
     title = node["name"]
@@ -750,7 +738,11 @@ def add_group_item(node, parent_title):
     }
 
     key_id = str(node["id"])
-    key = _server_ + "/api/group?id=" + key_id
+    key = _server_ + "/api/group"
+    set_parameter(key, 'id', key_id)
+    set_parameter(key, 'filter', filter)
+    if __addon__.getSetting('request_nocast') == 'true':
+        set_parameter(key, 'nocast', 1)
 
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
@@ -771,9 +763,6 @@ def add_group_item(node, parent_title):
         'key':                  key
     }
 
-    if __addon__.getSetting('request_nocast') == 'true':
-        key += '&nocast=1'
-
     url = key
     set_watch_flag(extra_data, details)
     use_mode = 5
@@ -785,10 +774,10 @@ def add_group_item(node, parent_title):
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', str(use_mode))
-    #if filterid != '':
-    #    u = set_parameter(u, 'filterid', filterid)
-    #else:
-    u = set_parameter(u, 'filterid', None)
+    if filter != '':
+        u = set_parameter(u, 'filter', filter)
+    else:
+        u = set_parameter(u, 'filter', None)
 
     context = None
     add_gui_item(u, details, extra_data, context)
@@ -824,20 +813,29 @@ def build_filters_menu():
                 url = key
 
                 thumb = ''
-                if len(menu["art"]["thumb"]) > 0:
-                    thumb = menu["art"]["thumb"][0]["url"]
+                try:
+                    if len(menu["art"]["thumb"]) > 0:
+                        thumb = menu["art"]["thumb"][0]["url"]
+                except:
+                    pass
                 fanart = ''
-                if len(menu["art"]["fanart"]) > 0:
-                    fanart = menu["art"]["fanart"][0]["url"]
+                try:
+                    if len(menu["art"]["fanart"]) > 0:
+                        fanart = menu["art"]["fanart"][0]["url"]
+                except:
+                    pass
                 banner = ''
-                if len(menu["art"]["banner"]) > 0:
-                    banner = menu["art"]["banner"][0]["url"]
+                try:
+                    if len(menu["art"]["banner"]) > 0:
+                        banner = menu["art"]["banner"][0]["url"]
+                except:
+                    pass
 
                 u = sys.argv[0]
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', str(use_mode))
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
-                # u = set_parameter(u, 'filterid', menu["id"]) <-----
+                u = set_parameter(u, 'filter', menu["id"])
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': thumb, 'banner': banner, 'clearart': fanart})
@@ -868,6 +866,7 @@ def build_filters_menu():
 
 
 # TODO filterid is missing as I don't get it and group (shoko) option have bad logic now
+# groups have great logic...written poorly
 def build_groups_menu(params, extra_directories=None):
     """
     Builds the list of items for Filters and Groups
@@ -916,12 +915,20 @@ def build_groups_menu(params, extra_directories=None):
                 build_serie_episodes(params)
                 return
 
+            directory_type = body['type']
+            filter = ''
+            if directory_type != 'episode' and directory_type != 'serie':
+                if 'filter' in params:
+                    filter = params['filter']
+                    if directory_type == 'filter':
+                        filter = body['id']
+
             for grp in body["groups"]:
                 if len(grp["series"]) > 0:
                     if len(grp["series"]) == 1:
                         add_serie_item(grp["series"][0], parent_title)
                     else:
-                        add_group_item(grp, parent_title)
+                        add_group_item(grp, parent_title, filter)
 
         except Exception as e:
             error("Error during build_groups_menu", str(e))
@@ -1053,19 +1060,6 @@ def build_serie_episodes_types(params, extra_directories=None):
 
                 directory_type = atype.get('AnimeType', '')
 
-                filterid = ''
-                if get_version() > LooseVersion(
-                        '3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
-                    if params.get('filterid', '') != '':
-                        filterid = params.get('filterid', '')
-                        if directory_type == 'AnimeGroupFilter':
-                            filterid = atype.get('GenericId', '')
-                        length = len(_server_
-                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
-                        key = key[length:]
-                        key = _server_ \
-                              + "/api/metadata/" + key + '/' + filterid
-
                 extra_data = {
                     'type':                 'video',
                     'source':               directory_type,
@@ -1092,10 +1086,6 @@ def build_serie_episodes_types(params, extra_directories=None):
                 url = sys.argv[0]
                 url = set_parameter(url, 'url', extra_data['key'] + key_append)
                 url = set_parameter(url, 'mode', str(6))
-                if filterid != '':
-                    url = set_parameter(url, 'filterid', filterid)
-                else:
-                    url = set_parameter(url, 'filterid', None)
 
                 context = None
 
@@ -1394,6 +1384,8 @@ def build_serie_episodes(params):
 
 
 # json - ok + one minnor clean need ? or not
+# TODO Pretty sure you broke something, just by looking at this
+# but a later issue
 def build_search(url=''):
     """
     Build directory list of series containing searched query
