@@ -306,8 +306,9 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             partemp = util.parseParameters(input_string=url)
             liz.setProperty('path', str(partemp.get('file', 'empty')))
 
+        # TODO: with source = type (filter, group, series, ep) this section need tweaks
         if extra_data and len(extra_data) > 0:
-            if extra_data.get('source') == 'AnimeGroup' or extra_data.get('source') == 'AnimeSerie':
+            if extra_data.get('source') == 'serie' or extra_data.get('source') == 'group':
                 # Then set the number of watched and unwatched, which will be displayed per season
                 liz.setProperty('TotalEpisodes', str(extra_data['TotalEpisodes']))
                 liz.setProperty('WatchedEpisodes', str(extra_data['WatchedEpisodes']))
@@ -316,8 +317,12 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 if extra_data.get('partialTV') == 1:
                     liz.setProperty('TotalTime', '100')
                     liz.setProperty('ResumeTime', '50')
+                if extra_data.get('thumb'):
+                    liz.setArt({"thumb": extra_data.get('thumb', '')})
+                    liz.setArt({"poster": extra_data.get('thumb', '')})
                 if extra_data.get('fanart_image'):
                     liz.setArt({"fanart": extra_data.get('fanart_image', '')})
+                    liz.setArt({"clearart": extra_data.get('fanart_image', '')})
                 if extra_data.get('banner'):
                     liz.setArt({'banner': extra_data.get('banner', '')})
                 if extra_data.get('season_thumb'):
@@ -588,10 +593,211 @@ def add_content_typ_dir(name, serie_id, ep_type):
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
 
 
+def add_serie_item(node, parent_title):
+    #xbmcgui.Dialog().ok('series', 'series')
+    temp_genre = get_tags(node["tags"])
+    watched = int(node["viewed"])
+
+    list_cast = []
+    list_cast_and_role = []
+    actors = []
+    if len(list_cast) == 0:
+        result_list = get_cast_and_role(node["roles"])
+        actors = result_list
+        # TODO: need this ?
+        if result_list is not None:
+            result_list = convert_cast_and_role_to_legacy(result_list)
+            list_cast = result_list[0]
+            list_cast_and_role = result_list[1]
+
+    if __addon__.getSetting("local_total") == "true":
+        total = safeInt(node["localsize"])
+    else:
+        total = safeInt(node["size"])
+    title = get_title(node)
+    if node["userrating"] is not None:
+        userrating = str(node["userrating"]).replace(',', '.')
+    else:
+        userrating = 0.0
+
+    details = {
+        'title':            title,
+        'parenttitle':      encode(parent_title),
+        'genre':            temp_genre,
+        'year':             safeInt(node["year"]),
+        'episode':          total,
+        'season':           safeInt(node["season"]),
+        # 'count'        : count,
+        'size':             total,
+        'Date':             node["air"],
+        'rating':           float(str(node["rating"]).replace(',', '.')),
+        'userrating':       float(userrating),
+        'playcount':        int(node["viewed"]),
+        # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
+        'cast':             list_cast,  # cast : list (Michal C. Hall,
+        'castandrole':      list_cast_and_role,
+        # director       : string (Dagur Kari,
+        ### 'mpaa':             directory.get('contentRating', ''),
+        'plot':             remove_anidb_links(encode(node["summary"])),
+        # 'plotoutline'  : plotoutline,
+        'originaltitle':    title,
+        'sorttitle':        title,
+        # 'Duration'     : duration,
+        # 'Studio'       : studio, < ---
+        # 'Tagline'      : tagline,
+        # 'Writer'       : writer,
+        # 'tvshowtitle'  : tvshowtitle,
+        'tvshowname':       title,
+        # 'premiered'    : premiered,
+        # 'Status'       : status,
+        # code           : string (tt0110293, - IMDb code
+        'aired':            node["air"],
+        # credits        : string (Andy Kaufman, - writing credits
+        # 'Lastplayed'   : lastplayed,
+        ### 'votes':            directory.get('votes'),
+        # trailer        : string (/home/user/trailer.avi,
+        ### 'dateadded':        directory.get('addedAt')
+    }
+    temp_date = str(node["air"]).split('-')
+    if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
+        details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
+
+    directory_type = str(node["type"])
+    key_id = str(node["id"])
+    key = _server_ + "/api/serie?id=" + key_id
+    # TODO: filter_id onc again
+    #directory_type = directory.get('AnimeType', '')
+    #key = directory.get('key', '')
+    #filterid = ''
+    #if get_version() > LooseVersion(
+    #        '3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
+    #    if params.get('filterid', '') != '':
+    #        filterid = params.get('filterid', '')
+    #        if directory_type == 'AnimeGroupFilter':
+    #            filterid = directory.get('GenericId', '')
+    #        length = len(_server_
+    #                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
+    #        key = key[length:]
+    #        key = _server_ \
+    #              + "/api/metadata/" + key + '/' + filterid
+
+    thumb = ''
+    if len(node["art"]["thumb"]) > 0:
+        thumb = node["art"]["thumb"][0]["url"]
+    fanart = ''
+    if len(node["art"]["fanart"]) > 0:
+        fanart = node["art"]["fanart"][0]["url"]
+    banner = ''
+    if len(node["art"]["banner"]) > 0:
+        banner = node["art"]["banner"][0]["url"]
+
+    extra_data = {
+        'type':                 'video',
+        'source':               directory_type,
+        'UnWatchedEpisodes':    int(details['episode']) - watched,
+        'WatchedEpisodes':      watched,
+        'TotalEpisodes':        details['episode'],
+        'thumb':                thumb,
+        'fanart_image':         fanart,
+        'banner':               banner,
+        'key':                  key,
+        'actors':               actors
+    }
+    if __addon__.getSetting('request_nocast') == 'true':
+        key += '&nocast=1'
+
+    url = key
+    set_watch_flag(extra_data, details)
+    use_mode = 5
+    # TODO: re-check logic as data/1/2 is no longer
+    if __addon__.getSetting("useSeasons") == "false":
+        # this will help when users is using grouping option in jmm which results in node in node
+        if "data/1/2/" in extra_data['key'].lower():
+            use_mode = 4
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'mode', str(use_mode))
+    #if filterid != '':
+    #    u = set_parameter(u, 'filterid', filterid)
+    #else:
+    u = set_parameter(u, 'filterid', None)
+
+    context = None
+    add_gui_item(u, details, extra_data, context)
+
+
+def add_group_item(node, parent_title):
+    # xbmcgui.Dialog().ok('group','group')
+    temp_genre = get_tags(node["tags"])
+    title = node["name"]
+    size = node["size"]
+    type = node["type"]
+    details = {
+        'title':            title,
+        'parenttitle':      encode(parent_title),
+        'genre':            temp_genre,
+        'year':             safeInt(node["year"]),
+        'episode':          size,
+        'season':           safeInt(node["season"]),
+        'size':             size,
+        'rating':           float(str(node["rating"]).replace(',', '.')),
+        'playcount':        int(node["viewed"]),
+        'plot':             remove_anidb_links(encode(node["summary"])),
+        'originaltitle':    title,
+        'sorttitle':        title,
+        'tvshowname':       title,
+        'dateadded':        node["added"]
+    }
+
+    key_id = str(node["id"])
+    key = _server_ + "/api/group?id=" + key_id
+
+    thumb = ''
+    if len(node["art"]["thumb"]) > 0:
+        thumb = node["art"]["thumb"][0]["url"]
+    fanart = ''
+    if len(node["art"]["fanart"]) > 0:
+        fanart = node["art"]["fanart"][0]["url"]
+    banner = ''
+    if len(node["art"]["banner"]) > 0:
+        banner = node["art"]["banner"][0]["url"]
+
+    extra_data = {
+        'type':                 'video',
+        'source':               type,
+        'thumb':                thumb,
+        'fanart_image':         fanart,
+        'banner':               banner,
+        'key':                  key
+    }
+
+    if __addon__.getSetting('request_nocast') == 'true':
+        key += '&nocast=1'
+
+    url = key
+    set_watch_flag(extra_data, details)
+    use_mode = 5
+    # TODO: re-check logic as data/1/2 is no longer
+    if __addon__.getSetting("useSeasons") == "false":
+        # this will help when users is using grouping option in jmm which results in node in node
+        if "data/1/2/" in extra_data['key'].lower():
+            use_mode = 4
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'mode', str(use_mode))
+    #if filterid != '':
+    #    u = set_parameter(u, 'filterid', filterid)
+    #else:
+    u = set_parameter(u, 'filterid', None)
+
+    context = None
+    add_gui_item(u, details, extra_data, context)
+
+
 # TODO filterid is missing as I don't get it
-def build_main_menu():
+def build_filters_menu():
     """
-    Builds the list of items in the Main Menu
+    Builds the list of items (filters) in the Main Menu
     """
     xbmcplugin.setContent(handle, content='tvshows')
     try:
@@ -602,6 +808,7 @@ def build_main_menu():
                 title = menu["name"]
                 use_mode = 4
                 key = menu["url"]
+                size = safeInt(menu["size"])
 
                 if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
@@ -610,7 +817,7 @@ def build_main_menu():
                     use_mode = 6
 
                 if __addon__.getSetting("spamLog") == "true":
-                    xbmc.log("build_main_menu - key = " + key)
+                    xbmc.log("build_filters_menu - key = " + key)
 
                 if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
                     key += '&nocast=1'
@@ -633,20 +840,22 @@ def build_main_menu():
                 # u = set_parameter(u, 'filterid', menu["id"]) <-----
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-                liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': banner, 'icon': 'DefaultVideo.png'})
-                liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': thumb, 'banner': banner, 'clearart': fanart})
+                liz.setIconImage('DefaultVideo.png')
+                liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
-            error("Error during build_main_menu", str(e))
+            error("Error during build_filters_menu", str(e))
     except Exception as e:
-        error("Invalid JSON Received in build_main_menu", str(e))
+        error("Invalid JSON Received in build_filters_menu", str(e))
 
     # Start Add_Search
     url = _server_ + "/serie/search?limit=" + __addon__.getSetting("maxlimit")
     title = "Search"
     thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
+    liz.setArt({'thumb': thumb, 'poster': thumb})
+    liz.setIconImage('DefaultVideo.png')
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
@@ -659,7 +868,7 @@ def build_main_menu():
 
 
 # TODO filterid is missing as I don't get it and group (shoko) option have bad logic now
-def build_tv_shows(params, extra_directories=None):
+def build_groups_menu(params, extra_directories=None):
     """
     Builds the list of items for Filters and Groups
     Args:
@@ -669,7 +878,7 @@ def build_tv_shows(params, extra_directories=None):
     Returns:
 
     """
-    # xbmcgui.Dialog().ok('MODE=4','IN')
+    # xbmcgui.Dialog().ok('MODE=4', 'IN')
     xbmcplugin.setContent(handle, 'tvshows')
     if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
         xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -704,151 +913,26 @@ def build_tv_shows(params, extra_directories=None):
                 body = new_body
 
             if len(body["groups"]) <= 0:
-                build_tv_episodes(params)
+                build_serie_episodes(params)
                 return
 
             for grp in body["groups"]:
                 if len(grp["series"]) > 0:
-                    for series in grp["series"]:
-                        temp_genre = get_tags(series["tags"])
-                        watched = int(series["viewed"])
+                    if len(grp["series"]) == 1:
+                        add_serie_item(grp["series"][0], parent_title)
+                    else:
+                        add_group_item(grp, parent_title)
 
-                        list_cast = []
-                        list_cast_and_role = []
-                        actors = []
-                        if len(list_cast) == 0:
-                            result_list = get_cast_and_role(series["roles"])
-                            actors = result_list
-                            # TODO: need this ?
-                            if result_list is not None:
-                                result_list = convert_cast_and_role_to_legacy(result_list)
-                                list_cast = result_list[0]
-                                list_cast_and_role = result_list[1]
-
-                        if __addon__.getSetting("local_total") == "true":
-                            total = safeInt(series["localsize"])
-                        else:
-                            total = safeInt(series["size"])
-                        title = get_title(series)
-                        if series["userrating"] is not None:
-                            userrating = str(series["userrating"]).replace(',', '.')
-                        else:
-                            userrating = 0.0
-
-                        details = {
-                            'title':            title,
-                            'parenttitle':      encode(parent_title),
-                            'genre':            temp_genre,
-                            'year':             safeInt(series["year"]),
-                            'episode':          total,
-                            'season':           safeInt(series["season"]),
-                            # 'count'        : count,
-                            'size':             total,
-                            'Date':             series["air"],
-                            'rating':           float(str(series["rating"]).replace(',', '.')),
-                            'userrating':       float(userrating),
-                            'playcount':        int(series["viewed"]),
-                            # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
-                            'cast':             list_cast,  # cast : list (Michal C. Hall,
-                            'castandrole':      list_cast_and_role,
-                            # director       : string (Dagur Kari,
-                            ### 'mpaa':             directory.get('contentRating', ''),
-                            'plot':             remove_anidb_links(encode(series["summary"])),
-                            # 'plotoutline'  : plotoutline,
-                            'originaltitle':    title,
-                            'sorttitle':        title,
-                            # 'Duration'     : duration,
-                            # 'Studio'       : studio, < ---
-                            # 'Tagline'      : tagline,
-                            # 'Writer'       : writer,
-                            # 'tvshowtitle'  : tvshowtitle,
-                            'tvshowname':       title,
-                            # 'premiered'    : premiered,
-                            # 'Status'       : status,
-                            # code           : string (tt0110293, - IMDb code
-                            'aired':            series["air"],
-                            # credits        : string (Andy Kaufman, - writing credits
-                            # 'Lastplayed'   : lastplayed,
-                            ### 'votes':            directory.get('votes'),
-                            # trailer        : string (/home/user/trailer.avi,
-                            ### 'dateadded':        directory.get('addedAt')
-                        }
-                        temp_date = str(series["air"]).split('-')
-                        if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
-                            details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
-
-                        directory_type = ""
-                        key_id = str(series["id"])
-                        key = _server_ + "/api/serie?id=" + key_id
-                        # TODO: filter_id onc again
-                        #directory_type = directory.get('AnimeType', '')
-                        #key = directory.get('key', '')
-                        #filterid = ''
-                        #if get_version() > LooseVersion(
-                        #        '3.6.1.0') and directory_type != 'AnimeType' and directory_type != 'AnimeSerie':
-                        #    if params.get('filterid', '') != '':
-                        #        filterid = params.get('filterid', '')
-                        #        if directory_type == 'AnimeGroupFilter':
-                        #            filterid = directory.get('GenericId', '')
-                        #        length = len(_server_
-                        #                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
-                        #        key = key[length:]
-                        #        key = _server_ \
-                        #              + "/api/metadata/" + key + '/' + filterid
-
-                        thumb = ''
-                        if len(series["art"]["thumb"]) > 0:
-                            thumb = series["art"]["thumb"][0]["url"]
-                        fanart = ''
-                        if len(series["art"]["fanart"]) > 0:
-                            fanart = series["art"]["fanart"][0]["url"]
-                        banner = ''
-                        if len(series["art"]["banner"]) > 0:
-                            banner = series["art"]["banner"][0]["url"]
-
-                        extra_data = {
-                            'type':                 'video',
-                            'source':               directory_type,
-                            'UnWatchedEpisodes':    int(details['episode']) - watched,
-                            'WatchedEpisodes':      watched,
-                            'TotalEpisodes':        details['episode'],
-                            'thumb':                thumb,
-                            'fanart_image':         fanart,
-                            'banner':               banner,
-                            'key':                  key,
-                            'actors':               actors
-                        }
-                        if __addon__.getSetting('request_nocast') == 'true':
-                            key += '&nocast=1'
-
-                        url = key
-                        set_watch_flag(extra_data, details)
-                        use_mode = 5
-                        # TODO: re-check logic as data/1/2 is no longer
-                        if __addon__.getSetting("useSeasons") == "false":
-                            # this will help when users is using grouping option in jmm which results in series in series
-                            if "data/1/2/" in extra_data['key'].lower():
-                                use_mode = 4
-                        u = sys.argv[0]
-                        u = set_parameter(u, 'url', url)
-                        u = set_parameter(u, 'mode', str(use_mode))
-                        #if filterid != '':
-                        #    u = set_parameter(u, 'filterid', filterid)
-                        #else:
-                        u = set_parameter(u, 'filterid', None)
-
-                        context = None
-                        add_gui_item(u, details, extra_data, context)
         except Exception as e:
-            error("Error during build_tv_shows", str(e))
+            error("Error during build_groups_menu", str(e))
     except Exception as e:
-        error("Invalid XML Received in build_tv_shows", str(e))
+        error("Invalid XML Received in build_groups_menu", str(e))
     xbmcplugin.endOfDirectory(handle)
 
 
 # TODO continue here...... <---------------------------------------------------
 # json - still broken - hacked - added dirs
-def build_tv_seasons(params, extra_directories=None):
+def build_serie_episodes_types(params, extra_directories=None):
     """
     Builds list items for The Types Menu, or optionally subgroups
     Args:
@@ -858,7 +942,7 @@ def build_tv_seasons(params, extra_directories=None):
     Returns:
 
     """
-    # xbmcgui.Dialog().ok('MODE=5','IN')
+    # xbmcgui.Dialog().ok('MODE=5', str(params['url']))
     xbmcplugin.setContent(handle, 'seasons')
     try:
         html = get_json(params['url'])
@@ -876,17 +960,17 @@ def build_tv_seasons(params, extra_directories=None):
             #     e.extend(extra_directories) <---
             # if e.find('Directory') is None:
 #                params['url'] = params['url'].replace('&mode=5', '&mode=6')
-#                build_tv_episodes(params)
+#                build_serie_episodes(params)
 #                return
             content_dict = dict()
             if "eps" in body:
-                if len(body["eps"]) > 1:
+                if len(body["eps"]) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_dict:
                             # episode
                             content_dict[str(ep["eptype"])] = ep["type"]
             if '1' in content_dict.keys() and len(content_dict) == 1:
-                build_tv_episodes(params)
+                build_serie_episodes(params)
                 return
             else:
                 for content in content_dict.keys():
@@ -913,7 +997,7 @@ def build_tv_seasons(params, extra_directories=None):
 
                 if will_flatten:
                     new_params = {'url': key, 'mode': 6}
-                    build_tv_episodes(new_params)
+                    build_serie_episodes(new_params)
                     return
 
                 plot = remove_anidb_links(encode(atype.get('summary', '')))
@@ -1027,14 +1111,14 @@ def build_tv_seasons(params, extra_directories=None):
                 xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
         except Exception as exc:
-            error("Error during build_tv_seasons", str(exc))
+            error("Error during build_serie_episodes_types", str(exc))
     except Exception as exc:
-        error("Invalid XML Received in build_tv_seasons", str(exc))
+        error("Invalid XML Received in build_serie_episodes_types", str(exc))
     xbmcplugin.endOfDirectory(handle)
 
 
 # json - a lot comment out
-def build_tv_episodes(params):
+def build_serie_episodes(params):
     # xbmcgui.Dialog().ok('MODE=6','IN')
     """
 
@@ -1059,7 +1143,7 @@ def build_tv_episodes(params):
             # DETECT PERSONA 4 THE ANIMATION TYPES OF EPISODES (before it was credit/ovas) not they are in eps
             # if e.find('Directory') is not None:  <-----
             #    params['url'] = params['url'].replace('&mode=6', '&mode=5')
-            #    build_tv_seasons(params)
+            #    build_serie_episodes_types(params)
             #    return
 
             art = ''
@@ -1168,7 +1252,7 @@ def build_tv_episodes(params):
                                     season = season.split('x')[0]
                             except Exception as w:
                                 error(w, season)
-                            details['season'] = int(season)
+                            details['season'] = safeInt(season)
 
                             temp_date = str(details['aired']).split('-')
                             if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
@@ -1303,9 +1387,9 @@ def build_tv_episodes(params):
                     pass
 
         except Exception as exc:
-            error("Error during build_tv_episodes", str(exc))
+            error("Error during build_serie_episodes", str(exc))
     except Exception as exc:
-        error("Invalid XML Received in build_tv_episodes", str(exc))
+        error("Invalid XML Received in build_serie_episodes", str(exc))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -1316,7 +1400,7 @@ def build_search(url=''):
     Args:
         url: url pointing to search api
 
-    Returns: build_tv_shows out of search query
+    Returns: build_groups_menu out of search query
 
     """
     try:
@@ -1339,7 +1423,7 @@ def build_search(url=''):
                 if len(search_body) <= 0:
                     directories = None
 
-                build_tv_shows(to_send, directories)
+                build_groups_menu(to_send, directories)
             except Exception as exc:
                 error("Error during build_search", str(exc))
     except Exception as exc:
@@ -1702,6 +1786,7 @@ if valid_user() is True:
         elif cmd == 'rehash':
             rescan_file(parameters, False)
     else:
+        # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
             try:
@@ -1727,18 +1812,18 @@ if valid_user() is True:
             build_search(str(parameters['url']))
         elif mode == 4:  # TVShows
             # xbmcgui.Dialog().ok('MODE=4','MODE')
-            build_tv_shows(parameters)
+            build_groups_menu(parameters)
         elif mode == 5:  # TVSeasons
             # xbmcgui.Dialog().ok('MODE=5','MODE')
-            build_tv_seasons(parameters)
-        elif mode == 6:  # TVEpisodes
+            build_serie_episodes_types(parameters)
+        elif mode == 6:  # TVEpisodes/Eps in Serie
             # xbmcgui.Dialog().ok('MODE=6','MODE')
-            build_tv_episodes(parameters)
+            build_serie_episodes(parameters)
         elif mode == 7:  # Playlist -continue-
             # xbmcgui.Dialog().ok('MODE=7','MODE')
             play_continue_item()
         else:
-            build_main_menu()
+            build_filters_menu()
 else:
     error("Incorrect Credentials", "Please change in Settings")
 if __addon__.getSetting('remote_debug') == 'true':

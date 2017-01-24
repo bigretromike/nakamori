@@ -56,9 +56,12 @@ def safeInt(object_body):
     :param object_body:
     :return: int
     """
-    if object_body is not None:
-        return int(object_body)
-    else:
+    try:
+        if object_body is not None and object_body != '':
+            return int(object_body)
+        else:
+            return 0
+    except:
         return 0
 
 
@@ -117,6 +120,7 @@ def parse_possible_error(data, data_type):
 # json
 def get_json(url_in):
     return get_data(url_in, None, "json")
+
 
 # legacy
 def get_xml(url_in):
