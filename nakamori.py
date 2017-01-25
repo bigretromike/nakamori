@@ -593,7 +593,7 @@ def add_content_typ_dir(name, serie_id):
 
 
 def add_serie_item(node, parent_title):
-    #xbmcgui.Dialog().ok('series', 'series')
+    # xbmcgui.Dialog().ok('series', 'series')
     temp_genre = get_tags(node["tags"])
     watched = int(node["viewed"])
 
@@ -718,17 +718,17 @@ def add_group_item(node, parent_title, filter):
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
-        'year':             safeInt(node["year"]),
+        'year':             safeInt(node["year"]) if "year" in node else "2001",
         'episode':          size,
-        'season':           safeInt(node["season"]),
+        'season':           safeInt(node["season"]) if "season" in node else "0",
         'size':             size,
-        'rating':           float(str(node["rating"]).replace(',', '.')),
-        'playcount':        int(node["viewed"]),
-        'plot':             remove_anidb_links(encode(node["summary"])),
+        'rating':           float(str(node["rating"] if node["rating"] is not None else 0.0).replace(',', '.')) if "rating" in node else "0.0",
+        'playcount':        int(node["viewed"]) if "viewed" in node else "0",
+        'plot':             remove_anidb_links(encode(node["summary"] if node["summary"] is not None else "...")) if "summary" in node else "...",
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
-        'dateadded':        node["added"]
+        'dateadded':        node["added"] if "added" in node else "01-01-2001"
     }
 
     key_id = str(node["id"])
@@ -755,7 +755,10 @@ def add_group_item(node, parent_title, filter):
         'fanart_image':         fanart,
         'banner':               banner,
         'key':                  key,
-        'id':                   key_id
+        'id':                   key_id,
+        'WatchedEpisodes':      0,
+        'TotalEpisodes':        size,
+        'UnWatchedEpisodes':    size
     }
 
     url = key
@@ -842,7 +845,7 @@ def build_filters_menu():
         error("Invalid JSON Received in build_filters_menu", str(e))
 
     # region Start Add_Search
-    url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit")
+    url = _server_ + "/api/serie/tag?limit=" + __addon__.getSetting("maxlimit")
     title = "Search"
     thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -860,7 +863,7 @@ def build_filters_menu():
 
 
 # TODO group (shoko) option have bad logic now
-def build_groups_menu(params, extra_directories=None):
+def build_groups_menu(params, extra_directories=None, json_body=None):
     """
     Builds the list of items for Filters and Groups
     Args:
@@ -880,12 +883,16 @@ def build_groups_menu(params, extra_directories=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        # level 3 will fill group and series
-        html = get_json(params['url'] + "&level=3")
-        if __addon__.getSetting("spamLog") == "true":
-            xbmc.log(params['url'])
-            xbmc.log(html)
-        body = json.loads(html)
+        if json_body is None:
+            # level 3 will fill group and series
+            html = get_json(params['url'] + "&level=3")
+            if __addon__.getSetting("spamLog") == "true":
+                xbmc.log(params['url'])
+                xbmc.log(html)
+            body = json.loads(html)
+        else:
+            body = json_body
+
         set_window_heading(body["name"])
         try:
             parent_title = body["name"]
@@ -907,7 +914,11 @@ def build_groups_menu(params, extra_directories=None):
                     if len(grp["series"]) == 1:
                         add_serie_item(grp["series"][0], parent_title)
                     else:
-                        add_group_item(grp, parent_title, filter_id)
+                        if json_body is not None:
+                            for srg in grp["series"]:
+                                add_serie_item(srg, parent_title)
+                        else:
+                            add_group_item(grp, parent_title, filter_id)
 
         except Exception as e:
             error("Error during build_groups_menu", str(e))
@@ -1334,8 +1345,21 @@ def build_search(url=''):
             try:
                 term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
                 to_send = {'url': url + "&query=" + term}
-                dbg(to_send)
-                build_groups_menu(to_send, None)
+
+                json_body = json.loads(get_json(to_send['url']))
+                # check groups.0.size as search result use 1 group
+                if json_body["groups"][0]["size"] == 0:
+                    to_send['url'] = to_send['url'].replace('tag', 'search')
+                    json_body = json.loads(get_json(to_send['url']))
+
+                    if json_body["groups"][0]["size"] == 0:
+                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
+                            'No results', 'No items found', '!', __addon__.getAddonInfo('icon')))
+                    else:
+                        build_groups_menu(to_send, None, json_body)
+                else:
+                    build_groups_menu(to_send, None, json_body)
+
             except Exception as exc:
                 error("Error during build_search", str(exc))
     except Exception as exc:
