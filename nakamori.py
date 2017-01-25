@@ -409,8 +409,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
                 # menu for episode
                 elif extra_data.get('source', 'none') == 'ep':
+                    series_id = extra_data.get('id')
                     ep_id = extra_data.get('id')
-                    series_id = "331122"
                     url_peep = url_peep_base + "&anime_id=" + str(series_id) + \
                         "&ep_id=" + str(ep_id) + '&ui_index=' + str(index)
 
@@ -634,7 +634,11 @@ def add_raw_files(node):
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     u = set_parameter(u, 'type', "raw")
     u = set_parameter(u, 'file', key)
-    u = set_parameter(u, 'ep_id', 0)
+    u = set_parameter(u, 'ep_id', node["import_folder_id"])
+    context = []
+    context.append(('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)))
+    context.append(('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)))
+    liz.addContextMenuItems(context)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
 
 
@@ -1312,7 +1316,7 @@ def build_raw_list(params):
             xbmc.log(html)
 
         try:
-            for file_body in body["media"]:
+            for file_body in body:
                 add_raw_files(file_body)
         except Exception as exc:
             error("Error during build_raw_list add_raw_files", str(exc))
@@ -1555,7 +1559,6 @@ def watched_mark(params):
     refresh()
 
 
-# TODO: unimplemented on api
 def rescan_file(params, rescan):
     """
     Rescans or rehashes a file
@@ -1563,24 +1566,22 @@ def rescan_file(params, rescan):
         params:
         rescan: True to rescan, False to rehash
     """
-    episode_id = params.get('ep_id', '')
-    command = 'rehash/'
+    vl_id = params.get('ep_id', '')
+    xbmcgui.Dialog().ok('ep', str(vl_id))
+    command = 'rehash'
     if rescan:
-        command = 'rescan/'
+        command = 'rescan'
 
     key = ""
-    if episode_id != '':
-        key = _server_ \
-              + "/jmmserverkodi/" + command + episode_id
+    if vl_id != '':
+        key = _server_ + "/api/" + command + "?id=" + vl_id
     if __addon__.getSetting('log_spam') == 'true':
-        xbmc.log('vlid: ' + str(episode_id))
+        xbmc.log('vlid: ' + str(vl_id))
         xbmc.log('key: ' + key)
 
-    get_xml(key)
+    get_json(key)
 
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
-        'Queued file for ' + ('Rescan' if rescan else 'Rehash'), 'Refreshing in 10 seconds',
-        __addon__.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Queued file for ' + ('Rescan' if rescan else 'Rehash'), 'Refreshing in 10 seconds', __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
     refresh()
 
