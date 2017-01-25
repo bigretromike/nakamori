@@ -1182,7 +1182,6 @@ def build_serie_episodes(params):
                                     for media_info in video["files"][0]["media"]:
                                         video_file_information(media_info, extra_data)
 
-
                             # Determine what type of watched flag [overlay] to use
                             if int(safeInt(video["view"])) > 0:
                                 details['playcount'] = 1
@@ -1219,9 +1218,7 @@ def build_serie_episodes(params):
             # add item to move to next not played item (not marked as watched)
             if __addon__.getSetting("show_continue") == "true":
                 if str(parent_title).lower() != "unsort":
-                    util.addDir("-continue-", '', '7', "http://" + __addon__.getSetting("ipaddress") + ":"
-                                + __addon__.getSetting("port") + "/jmmserverkodi/GetSupportImage/plex_others.png",
-                                "2", "3", "4", str(next_episode))
+                    util.addDir("-continue-", '', '7', _server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
 
             if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
                 try:
@@ -1234,7 +1231,7 @@ def build_serie_episodes(params):
         except Exception as exc:
             error("Error during build_serie_episodes", str(exc))
     except Exception as exc:
-        error("Invalid XML Received in build_serie_episodes", str(exc))
+        error("Invalid JSON Received in build_serie_episodes", str(exc))
     xbmcplugin.endOfDirectory(handle)
 
 
