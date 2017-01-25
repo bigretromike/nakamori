@@ -144,6 +144,45 @@ def filter_gui_item_by_tag(title):
     return len(str1) > 0
 
 
+def video_file_information(node_base, detail_dict):
+    # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
+    # dbg(node_base)
+    # Video
+    for node in node_base:
+        if "video" in node:
+            for stream_info in node["videos"]:
+                streams = detail_dict.get('VideoStreams')
+                stream_id = int(stream_info["Index"])
+                streams[stream_id]['VideoCodec'] = stream_info['Codec']
+                streams['xVideoCodec'] = stream_info['Codec']
+                streams[stream_id]['width'] = stream_info['Width']
+                streams['xVideoResolution'] = stream_info['Width']
+                streams[stream_id]['height'] = stream_info['Height']
+                streams['xVideoResolution'] += "x" + stream_info['Height']
+                streams[stream_id]['duration'] = stream_info['Duration']
+                detail_dict['VideoStreams'] = streams
+
+        # Audio
+        if "audios" in node:
+            for stream_info in node["audios"]:
+                streams = detail_dict.get('AudioStreams')
+                stream_id = int(stream_info["Index"])
+                streams[stream_id]['AudioCodec'] = stream_info["Codec"] if "Codec" in stream_info else ""
+                streams['xAudioChannels'] = safeInt(streams[stream_id]['AudioCodec'])
+                streams[stream_id]['AudioLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
+                streams[stream_id]['AudioChannels'] = int(stream_info["Channels"]) if "Channels" in stream_info else ""
+                streams['xAudioChannels'] = safeInt(streams[stream_id]['AudioChannels'])
+                detail_dict['AudioStreams'] = streams
+
+        # Subtitle
+        if "subtitles" in node:
+            for stream_info in node["subtitles"]:
+                streams = detail_dict.get('SubStreams')
+                stream_id = int(stream_info["Index"])
+                streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
+                detail_dict['SubStreams'] = streams
+
+
 # TODO: only context menu need to be redone
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
     """Adds an item to the menu and populates its info labels
@@ -1272,33 +1311,9 @@ def build_serie_episodes(params):
                             # Information about streams inside video file
                             if media is not None:
                                 if len(video["files"][0]["media"]) > 0:
-                                    extra_data['xVideoCodec'] = media["videos"]["1"]["Codec"]
-                                    extra_data['xVideoResolution'] = media["videos"]["1"]["Width"]
-                                    extra_data['xAudioCodec'] = media["audios"]["1"]["Codec"]
-                                    extra_data['xAudioChannels'] = safeInt(media["audios"]["1"]["Channels"])
-                                    # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
-                                    for stream_info in video["files"][0]["media"]["videos"]:
-                                        # Video
-                                        extra_data['VideoCodec'] = media["videos"][stream_info]['Codec']
-                                        extra_data['width'] = int(media["videos"][stream_info]["Width"])
-                                        extra_data['height'] = int(media["videos"][stream_info]["Height"])
-                                        # extra_data['duration'] = int(media["videos"][stream_info]["Duration"]) if "Duration" in media["videos"][stream_info] else 1
+                                    for media_info in video["files"][0]["media"]:
+                                        video_file_information(media_info, extra_data)
 
-                                    for stream_info in media["audios"]:
-                                        # Audio
-                                        streams = extra_data.get('AudioStreams')
-                                        stream_id = int(media["audios"][stream_info]["Index"])
-                                        streams[stream_id]['AudioCodec'] = media["audios"][stream_info]["Codec"]
-                                        streams[stream_id]['AudioLanguage'] = media["audios"][stream_info]["LanguageCode"]
-                                        streams[stream_id]['AudioChannels'] = int(media["audios"][stream_info]["Channels"])
-                                        extra_data['AudioStreams'] = streams
-
-                                    for stream_info in media["subtitles"]:
-                                        # Subtitle
-                                        streams = extra_data.get('SubStreams')
-                                        stream_id = int(media["subtitles"][stream_info]["Index"])
-                                        streams[stream_id]['SubtitleLanguage'] = media["subtitles"][stream_info]["LanguageCode"] if "LanguageCode" in media["subtitles"][stream_info] else "unk"
-                                        extra_data['SubStreams'] = streams
 
                             # Determine what type of watched flag [overlay] to use
                             if int(safeInt(video["view"])) > 0:
@@ -1459,24 +1474,12 @@ def play_video(url, ep_id, raw_id):
             
             # Information about streams inside video file
             # Video
-            video_codec = dict()
-            video_codec['codec'] = file_body["media"]["videos"]["1"]["Codec"]
-            video_codec['width'] = int(file_body["media"]["videos"]["1"]["Width"])
-            video_codec['height'] = int(file_body["media"]["videos"]["1"]["Height"])
-            video_codec['duration'] = int(file_body["duration"])
-            item.addStreamInfo('video', video_codec)
-
-            # Audio
-            audio_codec = dict()
-            audio_codec['codec'] = file_body["media"]["audios"]["1"]["Codec"]
-            audio_codec['language'] = file_body["media"]["audios"]["1"]["LanguageCode"]
-            audio_codec['channels'] = int(file_body["media"]["audios"]["1"]["Channels"])
-            item.addStreamInfo('audio', audio_codec)
-
-            # Subtitle
-            subtitle_codec = dict()
-            subtitle_codec['language'] = file_body["media"]["subtitles"]["1"]["LanguageCode"]
-            item.addStreamInfo('subtitle', subtitle_codec)
+            codecs = dict()
+            dbg(str(file_body))
+            video_file_information(file_body["media"], codecs)
+            item.addStreamInfo('video', codecs["VideoStream"])
+            item.addStreamInfo('audio', codecs["AudioStreams"])
+            item.addStreamInfo('subtitle', codecs["SubStreams"])
         else:
             # error
             error("Unknown Stream Type Received!")
