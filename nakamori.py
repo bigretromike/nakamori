@@ -146,8 +146,15 @@ def filter_gui_item_by_tag(title):
 
 def video_file_information(node_base, detail_dict):
     # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
-    # dbg(node_base)
+    # dbg("INCOMING: " + str(node_base))
     # Video
+    if 'VideoStream' not in detail_dict:
+        detail_dict['VideoStream'] = ''
+    if 'AudioStream' not in detail_dict:
+        detail_dict['AudioStreams'] = ''
+    if 'SubStream' not in detail_dict:
+        detail_dict['SubStreams'] = ''
+
     for node in node_base:
         if "video" in node:
             for stream_info in node["videos"]:
@@ -1413,7 +1420,7 @@ def build_raw_list(params):
             xbmc.log(html)
 
         try:
-            for file_body in body:
+            for file_body in body["media"]:
                 add_raw_files(file_body)
         except Exception as exc:
             error("Error during build_raw_list add_raw_files", str(exc))
@@ -1476,7 +1483,8 @@ def play_video(url, ep_id, raw_id):
             # Video
             codecs = dict()
             dbg(str(file_body))
-            video_file_information(file_body["media"], codecs)
+            for stream_info in file_body["media"]:
+                video_file_information(stream_info, codecs)
             item.addStreamInfo('video', codecs["VideoStream"])
             item.addStreamInfo('audio', codecs["AudioStreams"])
             item.addStreamInfo('subtitle', codecs["SubStreams"])
