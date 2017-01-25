@@ -458,15 +458,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                                  'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
                                  % (sys.argv[1], url_peep)))
 
-                    if extra_data.get('unsorted', False):
-                        context.append(
-                            ('Rescan File',
-                             'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)'
-                             % (sys.argv[1], url_peep)))
-                        context.append(
-                            ('Rehash File',
-                             'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)'
-                             % (sys.argv[1], url_peep)))
                 liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
@@ -675,7 +666,6 @@ def add_serie_item(node, parent_title):
     if len(list_cast) == 0:
         result_list = get_cast_and_role(node["roles"])
         actors = result_list
-        # TODO: need this ?
         if result_list is not None:
             result_list = convert_cast_and_role_to_legacy(result_list)
             list_cast = result_list[0]
@@ -1102,19 +1092,20 @@ def build_serie_episodes(params):
                 __addon__.getSetting("skipExtraInfoMaxEpisodes"))
 
             # keep this init out of the loop, as we only provide this once
-            list_cast = []
-            list_cast_and_role = []
-            actors = []
             temp_genre = ""
             parent_key = ""
             grandparent_title = ""
+            list_cast = []
+            list_cast_and_role = []
+            actors = []
             if not skip:
-                result_list = get_cast_and_role(body["roles"])
-                if result_list is not None:
+                if len(list_cast) == 0:
+                    result_list = get_cast_and_role(body["roles"])
                     actors = result_list
-                    result_list = convert_cast_and_role_to_legacy(result_list)
-                    list_cast = result_list[0]
-                    list_cast_and_role = result_list[1]
+                    if result_list is not None:
+                        result_list = convert_cast_and_role_to_legacy(result_list)
+                        list_cast = result_list[0]
+                        list_cast_and_role = result_list[1]
 
                 temp_genre = get_tags(body["tags"])
                 parent_key = body["id"]
@@ -1151,8 +1142,8 @@ def build_serie_episodes(params):
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                                 # This doesn't work, some gremlins be afoot in this code...
                                 # it's probably just that it only applies at series level
-                                'CastAndRole':   list_cast_and_role,
-                                'Cast':          list_cast,
+                                'castandrole':   list_cast_and_role,
+                                'cast':          list_cast,
                                 # 'director': " / ".join(temp_dir),
                                 # 'writer': " / ".join(temp_writer),
                                 'genre':        "..." if skip else temp_genre,
@@ -1601,9 +1592,7 @@ if __addon__.getSetting('remote_debug') == 'true':
 # Script run from here
 if valid_user() is True:
     try:
-        # xbmc.log('before', str(sys.argv[2]))
         parameters = util.parseParameters()
-        # xbmc.log('after', str(parameters))
     except Exception as exp:
         error('valid_userid parseParameters() error', str(exp))
         parameters = {'mode': 2}
@@ -1622,8 +1611,7 @@ if valid_user() is True:
             cmd = None
     except:
         cmd = None
-    # xbmcgui.Dialog().ok("CMD", cmd)
-    # xbmcgui.Dialog().ok("PARAMETERS", str(parameters))
+
     if cmd is not None:
         if cmd == "voteSer":
             vote_series(parameters)
@@ -1680,11 +1668,11 @@ if valid_user() is True:
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # Search
             build_search(str(parameters['url']))
-        elif mode == 4:  # TVShows
+        elif mode == 4:  # Group/Serie
             build_groups_menu(parameters)
-        elif mode == 5:  # TVSeasons
+        elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
             build_serie_episodes_types(parameters)
-        elif mode == 6:  # TVEpisodes/Eps in Serie
+        elif mode == 6:  # Serie Episodes (list of episodes)
             build_serie_episodes(parameters)
         elif mode == 7:  # Playlist -continue-
             play_continue_item()
