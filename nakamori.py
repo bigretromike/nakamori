@@ -379,84 +379,58 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             if extra_data and len(extra_data) > 0:
                 context = []
                 url_peep_base = sys.argv[2]
-                my_len = len(_server_)
 
                 # menu for group
                 if extra_data.get('source', 'none') == 'group':
                     group_id = extra_data.get('id')
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
-                    url_peep = url_peep_base + "&group_id=" + group_id
-                    context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                    % (sys.argv[1], url_peep)))
-                    context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                    % (sys.argv[1], url_peep)))
+                    # TODO: are we sure we want to mark full group as watched?
+                    # url_peep = url_peep_base + "&group_id=" + group_id
+                    # context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                    # context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
 
                 # menu for serie
                 elif extra_data.get('source', 'none') == 'serie':
-                    series_id = extra_data.get('id')
-                    url_peep = url_peep_base + "&anime_id=" + series_id + "&cmd=voteSer"
+                    series_id = extra_data.get('serie_id')
+
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
                     if __addon__.getSetting('context_show_vote_Series') == 'true':
-                        context.append(('Vote (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s)' %
-                                        (sys.argv[1], url_peep)))
-                    url_peep = url_peep_base + "&anime_id=" + series_id
-                    context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                    % (sys.argv[1], url_peep)))
-                    context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                    % (sys.argv[1], url_peep)))
+                        url_peep = url_peep_base + "&serie_id=" + series_id + "&cmd=voteSer"
+                        context.append(('Vote (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
+
+                    url_peep = url_peep_base + "&serie_id=" + series_id
+                    context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                    context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
 
                 # menu for episode
                 elif extra_data.get('source', 'none') == 'ep':
-                    series_id = extra_data.get('id')
-                    ep_id = extra_data.get('id')
-                    url_peep = url_peep_base + "&anime_id=" + str(series_id) + \
-                        "&ep_id=" + str(ep_id) + '&ui_index=' + str(index)
+                    series_id = extra_data.get('serie_id')
+                    ep_id = extra_data.get('ep_id')
+                    url_peep = url_peep_base + "&serie_id=" + str(series_id) + "&ep_id=" + str(ep_id) + '&ui_index=' + str(index)
 
-                    if not extra_data.get('unsorted', False):
-                        if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                            context.append(('Play (Do not Mark as Watched (Shoko))',
-                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)'
-                                            % (sys.argv[1], url_peep)))
+                    if __addon__.getSetting('context_show_play_no_watch') == 'true':
+                        context.append(('Play (Do not Mark as Watched (Shoko))', 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' % (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
-                    if __addon__.getSetting('context_show_vote_Series') == 'true' and not extra_data.get('unsorted',
-                                                                                                         False):
-                        if series_id != '':
-                            context.append(
-                                ('Vote for Series (Shoko)',
-                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)'
-                                 % (sys.argv[1], url_peep)))
-                    if __addon__.getSetting('context_show_vote_Episode') == 'true' and not extra_data.get(
-                            'unsorted', False):
-                        if extra_data.get('jmmepisodeid') != '':
-                            context.append(
-                                ('Vote for Episode (Shoko)',
-                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)'
-                                 % (sys.argv[1], url_peep)))
 
-                    if extra_data.get('jmmepisodeid') != '' and not extra_data.get('unsorted', False):
+                    if __addon__.getSetting('context_show_vote_Series') == 'true':
+                        if series_id != '':
+                            context.append(('Vote for Series (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (sys.argv[1], url_peep)))
+                    if __addon__.getSetting('context_show_vote_Episode') == 'true':
+                        if ep_id != '':
+                            context.append(('Vote for Episode (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (sys.argv[1], url_peep)))
+
+                    if extra_data.get('jmmepisodeid') != '':
                         if __addon__.getSetting('context_krypton_watched') == 'true':
                             if details.get('playcount', 0) == 0:
-                                context.append(
-                                    ('Mark as Watched (Shoko)',
-                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                     % (sys.argv[1], url_peep)))
+                                context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
                             else:
-                                context.append(
-                                    ('Mark as Unwatched (Shoko)',
-                                     'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                     % (sys.argv[1], url_peep)))
+                                context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'% (sys.argv[1], url_peep)))
                         else:
-                            context.append(
-                                ('Mark as Watched (Shoko)',
-                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)'
-                                 % (sys.argv[1], url_peep)))
-                            context.append(
-                                ('Mark as Unwatched (Shoko)',
-                                 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'
-                                 % (sys.argv[1], url_peep)))
+                            context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                            context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
 
                 liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
@@ -751,7 +725,7 @@ def add_serie_item(node, parent_title):
         'banner':               banner,
         'key':                  key,
         'actors':               actors,
-        'id':                   key_id
+        'serie_id':             key_id
     }
 
     url = key
@@ -775,7 +749,7 @@ def add_group_item(node, parent_title, filter):
     temp_genre = get_tags(node["tags"])
     title = node["name"]
     size = node["size"]
-    type = node["type"]
+    content_type = node["type"]
     details = {
         'title':            title,
         'parenttitle':      encode(parent_title),
@@ -812,12 +786,12 @@ def add_group_item(node, parent_title, filter):
 
     extra_data = {
         'type':                 'video',
-        'source':               type,
+        'source':               content_type,
         'thumb':                thumb,
         'fanart_image':         fanart,
         'banner':               banner,
         'key':                  key,
-        'id':                   key_id,
+        'group_id':             key_id,
         'WatchedEpisodes':      0,
         'TotalEpisodes':        size,
         'UnWatchedEpisodes':    size
@@ -1188,8 +1162,6 @@ def build_serie_episodes(params):
                             extra_data = {
                                 'type':             "video",
                                 'source':           "ep",
-                                'id':               safeInt(body["id"]),
-                                # 'unsorted':         'animefile' in video.get('AnimeType', '').lower(), <---
                                 'thumb':            None if skip else thumb,
                                 'fanart_image':     None if skip else fanart,
                                 'banner':           None if skip else banner,
@@ -1199,8 +1171,10 @@ def build_serie_episodes(params):
                                 'jmmepisodeid':     safeInt(body["id"]),
                                 'actors':           actors,
                                 'AudioStreams':     defaultdict(dict),
-                                'SubStreams':       defaultdict(dict)
-                                }
+                                'SubStreams':       defaultdict(dict),
+                                'ep_id':            safeInt(video["id"]),
+                                'serie_id':         safeInt(body["id"])
+                            }
 
                             # Information about streams inside video file
                             if media is not None:
@@ -1233,9 +1207,11 @@ def build_serie_episodes(params):
 
                             u = sys.argv[0]
                             u = set_parameter(u, 'url', url)
-                            u = set_parameter(u, 'mode', '1')
+                            u = set_parameter(u, 'mode', 1)
                             u = set_parameter(u, 'file', key)
-                            u = set_parameter(u, 'ep_id', str(video["id"]))
+                            u = set_parameter(u, 'ep_id', video["id"])
+                            u = set_parameter(u, 'serie_id', body["id"])
+                            u = set_parameter(u, 'userrating', details["userrating"])
                             u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
                             add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
@@ -1468,7 +1444,7 @@ def vote_series(params):
     elif my_vote != 0:
         vote_value = str(vote_list[my_vote])
         # vote_type = str(1)
-        series_id = params['anime_id']
+        series_id = params['serie_id']
         body = '?id=' + series_id + '&score=' + vote_value
         get_json(_server_ + "/serie/vote" + body)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Serie voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
@@ -1501,7 +1477,7 @@ def watched_mark(params):
         params: must contain either an episode, series, or group id, and a watched value to mark
     """
     episode_id = params.get('ep_id', '')
-    anime_id = params.get('anime_id', '')
+    anime_id = params.get('serie_id', '')
     # group_id = params.get('group_id', '')
     watched = bool(params['watched'])
     key = _server_ + "/api"
@@ -1652,7 +1628,7 @@ if valid_user() is True:
             try:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                 ctl = win.getControl(win.getFocusId())
-                if play_video(parameters['file'], parameters['ep_id'], parameters['id'] if 'id' in parameters else "0") != 0:
+                if play_video(parameters['file'], parameters['ep_id'], parameters['file_id'] if 'id' in parameters else "0") != 0:
                     # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
                     if ui_index != '':
@@ -1660,7 +1636,8 @@ if valid_user() is True:
                     parameters['watched'] = True
                     watched_mark(parameters)
                     if __addon__.getSetting('vote_always') == 'true':
-                        vote_episode(parameters)
+                        if parameters.get('userrate', 0) == 0:
+                            vote_episode(parameters)
             except Exception as exp:
                 xbmc.log(str(exp))
                 pass
