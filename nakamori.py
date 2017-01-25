@@ -996,8 +996,6 @@ def build_groups_menu(params, extra_directories=None, json_body=None):
     xbmcplugin.endOfDirectory(handle)
 
 
-# TODO continue here...... <---------------------------------------------------
-# json - still broken - hacked - added dirs
 def build_serie_episodes_types(params, extra_directories=None):
     """
     Builds list items for The Types Menu, or optionally subgroups
@@ -1034,126 +1032,20 @@ def build_serie_episodes_types(params, extra_directories=None):
                 build_serie_episodes(params)
                 return
             else:
+                set_window_heading(parent_title)
+
+                if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
+                    # Apparently date sorting in Kodi has been broken for years
+                    xbmcplugin.addSortMethod(handle, 17)  # year
+                    xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
+                    xbmcplugin.addSortMethod(handle, 3)  # date
+                    xbmcplugin.addSortMethod(handle, 18)  # rating
+                    xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+
                 for content in content_type:
                     add_content_typ_dir(content, body["id"])
                 xbmcplugin.endOfDirectory(handle)
                 return
-
-            # TODO the code below is unneded as its duplicate from series_episodes or the content_typ dont need them
-            # or am i wrong? (maybe view/unwatched will be needed but those should go to conent_typ_then)
-            # it wont go below as it return in both cases
-            e = ''
-            set_window_heading(e)
-            will_flatten = False
-
-            # check for a single season
-            if int(e.get('size', 0)) == 1:
-                will_flatten = True
-
-            #section_art = gen_image_url(e.get('art', ''))
-
-            #set_window_heading(e)
-
-            for atype in e.findall('Directory'):
-                key = atype.get('key', '')
-
-                if will_flatten:
-                    new_params = {'url': key, 'mode': 6}
-                    build_serie_episodes(new_params)
-                    return
-
-                plot = remove_anidb_links(encode(atype.get('summary', '')))
-
-                temp_genre = get_tags(atype)
-                watched = int(atype.get('viewedLeafCount', 0))
-
-                list_cast = []
-                list_cast_and_role = []
-                actors = []
-                if len(list_cast) == 0:
-                    result_list = get_cast_and_role(atype)
-                    actors = result_list
-                    if result_list is not None:
-                        result_list = convert_cast_and_role_to_legacy(result_list)
-                        list_cast = result_list[0]
-                        list_cast_and_role = result_list[1]
-
-                # Create the basic data structures to pass up
-                if __addon__.getSetting("local_total") == "true":
-                    total = int(atype.get('totalLocal', 0))
-                else:
-                    total = int(atype.get('leafCount', 0))
-                title = get_title(atype)
-                details = {
-                    'title':        title,
-                    'parenttitle':  encode(parent_title),
-                    'tvshowname':   title,
-                    'sorttitle':    encode(atype.get('titleSort', title)),
-                    'studio':       encode(atype.get('studio', '')),
-                    'cast':         list_cast,
-                    'castandrole':  list_cast_and_role,
-                    'plot':         plot,
-                    'genre':        temp_genre,
-                    'season':       int(atype.get('season', 1)),
-                    'episode':      total,
-                    'mpaa':         atype.get('contentRating', ''),
-                    'rating':       float(str(atype.get('rating', 0.0)).replace(',', '.')),
-                    'userrating':       float(str(atype.get('UserRating', 0.0)).replace(',', '.')) if "UserRating" in atype else 0,
-                    'aired':        atype.get('originallyAvailableAt', ''),
-                    'year':         int(atype.get('year', 0))
-                }
-                temp_date = str(details['aired']).split('-')
-                if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
-                    details['date'] = temp_date[1] + '.' + temp_date[2] + '.' + temp_date[0]
-
-                if atype.get('sorttitle'):
-                    details['sorttitle'] = atype.get('sorttitle')
-
-                thumb = atype.get('thumb')
-                fanart = atype.get('art', thumb)
-                banner = atype.get('banner', e.get('banner', ''))
-
-                directory_type = atype.get('AnimeType', '')
-
-                extra_data = {
-                    'type':                 'video',
-                    'source':               directory_type,
-                    'TotalEpisodes':        details['episode'],
-                    'WatchedEpisodes':      watched,
-                    'UnWatchedEpisodes':    details['episode'] - watched,
-                    'thumb':                thumb,
-                    'fanart_image':         fanart,
-                    'banner':               banner,
-                    'key':                  key,
-                    'mode':                 str(6),
-                    'actors':               actors
-                }
-
-                if extra_data['fanart_image'] == "":
-                    extra_data['fanart_image'] = section_art
-
-                set_watch_flag(extra_data, details)
-
-                key_append = ''
-                if __addon__.getSetting('request_nocast') == 'true':
-                    key_append = '/nocast'
-
-                url = sys.argv[0]
-                url = set_parameter(url, 'url', extra_data['key'] + key_append)
-                url = set_parameter(url, 'mode', str(6))
-
-                context = None
-
-                # Build the screen directory listing
-                add_gui_item(url, details, extra_data, context)
-
-            if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
-                # Apparently date sorting in Kodi has been broken for years
-                xbmcplugin.addSortMethod(handle, 17)  # year
-                xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
-                xbmcplugin.addSortMethod(handle, 3)  # date
-                xbmcplugin.addSortMethod(handle, 18)  # rating
-                xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
         except Exception as exc:
             error("Error during build_serie_episodes_types", str(exc))
@@ -1536,7 +1428,6 @@ def play_video(url, ep_id, raw_id):
     return 0
 
 
-# json
 def play_continue_item():
     """
     Move to next item that was not marked as watched
@@ -1558,7 +1449,7 @@ def play_continue_item():
         pass
 
 
-# TODO: Trakt_Scrobble need work - JMM support it (for series not movies)
+# TODO: Trakt_Scrobble unimplemented in Shoko
 def trakt_scrobble(data=""):
     """
 
@@ -1568,7 +1459,6 @@ def trakt_scrobble(data=""):
     xbmcgui.Dialog().ok('WIP', str(data))
 
 
-# json
 def vote_series(params):
     """
     Marks a rating for a series
@@ -1584,14 +1474,11 @@ def vote_series(params):
         vote_value = str(vote_list[my_vote])
         # vote_type = str(1)
         series_id = params['anime_id']
-        body = '"id":"'+series_id+'","score":"'+vote_value+'"'
-        post_json(_server_
-                  + "/serie/vote", body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-            'Vote saved', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
+        body = '?id=' + series_id + '&score=' + vote_value
+        get_json(_server_ + "/serie/vote" + body)
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Serie voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
 
 
-# json
 def vote_episode(params):
     """
     Marks a rating for an episode
@@ -1607,72 +1494,68 @@ def vote_episode(params):
         vote_value = str(vote_list[my_vote])
         # vote_type = str(4)
         ep_id = params['ep_id']
-        body = '"id":"'+ep_id+'","score":"'+vote_value+'"'
-        post_json(_server_
-                  + "/ep/vote", body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-            'Vote saved', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
+        body = '?id=' + ep_id + '&score=' + vote_value
+        get_json(_server_ + "/ep/vote" + body)
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Episode voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
 
 
-# json + 1 legacy unimplemented
 def watched_mark(params):
     """
-    Marks an epsiode, series, or group as either watched or unwatched
+    Marks an episode, series, or group as either watched or unwatched
     Args:
         params: must contain either an episode, series, or group id, and a watched value to mark
     """
     episode_id = params.get('ep_id', '')
     anime_id = params.get('anime_id', '')
-    group_id = params.get('group_id', '')
+    # group_id = params.get('group_id', '')
     watched = bool(params['watched'])
-    key = _server_
+    key = _server_ + "/api"
     if watched is True:
         watched_msg = "watched"
         if episode_id != '':
             key += "/ep/watch"
         elif anime_id != '':
             key += "/serie/watch"
-        elif group_id != '':
-            key = _server_ \
-                + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
-                watched).strip()
+        # elif group_id != '':
+        #    key = _server_ \
+        #        + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
+        #        watched).strip()
     else:
         watched_msg = "unwatched"
         if episode_id != '':
             key += "/ep/unwatch"
         elif anime_id != '':
             key += "/serie/unwatch"
-        elif group_id != '':
-            key = _server_ \
-                  + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
-                watched).strip()
+        # elif group_id != '':
+        #    key = _server_ \
+        #          + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
+        #        watched).strip()
 
     if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('anime_id: ' + str(anime_id))
-        xbmc.log('group_id: ' + str(group_id))
+        # xbmc.log('group_id: ' + str(group_id))
         xbmc.log('key: ' + key)
 
     # sync mark flags
     sync = __addon__.getSetting("syncwatched")
     if sync == "true":
         if episode_id != '':
-            body = '"id":"' + episode_id + '"'
-            post_json(key, body)
+            body = '?id=' + episode_id
+            get_json(key + body)
         elif anime_id != '':
-            body = '"id":"' + anime_id + '"'
-            post_json(key, body)
-        elif group_id != '':
-            get_xml(key)
+            body = '?id=' + anime_id + '"'
+            get_json(key + body)
+        # elif group_id != '':
+        #    get_xml(key)
 
     box = __addon__.getSetting("watchedbox")
     if box == "true":
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (
-            'Watched status changed', 'Mark as ', watched_msg, __addon__.getAddonInfo('icon')))
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg, __addon__.getAddonInfo('icon')))
     refresh()
 
 
-# legacy unimplemented
+# TODO: unimplemented on api
 def rescan_file(params, rescan):
     """
     Rescans or rehashes a file
