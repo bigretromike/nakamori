@@ -1211,7 +1211,7 @@ def build_serie_episodes(params):
                             u = set_parameter(u, 'file', key)
                             u = set_parameter(u, 'ep_id', video["id"])
                             u = set_parameter(u, 'serie_id', body["id"])
-                            u = set_parameter(u, 'userrating', details["userrating"])
+                            u = set_parameter(u, 'userrate', details["userrating"])
                             u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
                             add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
