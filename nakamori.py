@@ -570,6 +570,28 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
 
 # region Adding items to list/menu:
 
+def add_raw_files(node):
+    name = encode(node["filename"])
+    file_id = node["id"]
+    key = node["url"]
+    url = _server_ + "/api/file?id=" + str(file_id)
+    title = str(name)
+    thumb = _server_ + "/image/support/plex_others.png"
+    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+    liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+    liz.setProperty('IsPlayable', 'true')
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'mode', 1)
+    u = set_parameter(u, 'id', file_id)
+    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'type', "raw")
+    u = set_parameter(u, 'file', key)
+    u = set_parameter(u, 'ep_id', 0)
+    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
+
+
 def add_content_typ_dir(name, serie_id):
     """
     Adding directories for given types of content
@@ -798,9 +820,10 @@ def build_filters_menu():
 
                 if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
+                # TODO : is it not lang related? because we can 'if /file/unsort'
                 elif title == 'Unsort':
                     title = 'Unsorted'
-                    use_mode = 6
+                    use_mode = 8
 
                 if __addon__.getSetting("spamLog") == "true":
                     xbmc.log("build_filters_menu - key = " + key)
@@ -1365,17 +1388,36 @@ def build_search(url=''):
     except Exception as exc:
         error("Error during searchBox", str(exc))
 
+
+def build_raw_list(params):
+    xbmcplugin.setContent(handle, 'files')
+    try:
+        html = get_json(params['url'])
+        body = json.loads(html)
+        if __addon__.getSetting("spamLog") == "true":
+            xbmc.log(html)
+
+        try:
+            for file_body in body:
+                add_raw_files(file_body)
+        except Exception as exc:
+            error("Error during build_raw_list add_raw_files", str(exc))
+    except Exception as exc:
+        error("Error during build_raw_list", str(exc))
+
+    xbmcplugin.endOfDirectory(handle, True, False, False)
+
 # endregion
 
+
 # Other functions
-# json
-def play_video(url, ep_id):
+def play_video(url, ep_id, raw_id):
     """
     Plays a file or episode
     Args:
         url: location of the file
         ep_id: episode id, if applicable for watched status and stream details
-
+        raw_id: file id, that is only used when ep_id = 0
     Returns:
 
     """
@@ -1397,23 +1439,22 @@ def play_video(url, ep_id):
         'season':        xbmc.getInfoLabel('ListItem.Season')
     }
 
-    item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
-                            path=url)
+    item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=url)
     item.setInfo(type='Video', infoLabels=details)
     item.setProperty('IsPlayable', 'true')
     try:
-        episode_url = _server_ + \
-                          "/api/ep?id=" + str(ep_id)
-        # dbg(episode_url)
-        html = get_json(encode(episode_url))
-        if __addon__.getSetting("spamLog") == "true":
-            xbmc.log(html)
-        episode_body = json.loads(html)
-        # extract extra data about file from episode
-        file_id = episode_body["files"][0]["id"]
+        if ep_id != "0":
+            episode_url = _server_ + "/api/ep?id=" + str(ep_id)
+            html = get_json(encode(episode_url))
+            if __addon__.getSetting("spamLog") == "true":
+                xbmc.log(html)
+            episode_body = json.loads(html)
+            # extract extra data about file from episode
+            file_id = episode_body["files"][0]["id"]
+        else:
+            file_id = raw_id
         if file_id is not None and file_id != 0:
-            file_url = _server_ + \
-                          "/api/file?id=" + str(file_id)
+            file_url = _server_ + "/api/file?id=" + str(file_id)
             file_body = json.loads(get_json(file_url))
             
             # Information about streams inside video file
@@ -1724,13 +1765,11 @@ if valid_user() is True:
             rescan_file(parameters, False)
     else:
         # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
-        if mode == 1:  # VIDEO
-            # xbmcgui.Dialog().ok('MODE=1','MODE')
+        if mode == 1:  # play_file
             try:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                 ctl = win.getControl(win.getFocusId())
-                # dbg("file:" + parameters['file'])
-                if play_video(parameters['file'], parameters['ep_id']) != 0:
+                if play_video(parameters['file'], parameters['ep_id'], parameters['id'] if 'id' in parameters else "0") != 0:
                     # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
                     if ui_index != '':
@@ -1744,21 +1783,18 @@ if valid_user() is True:
                 pass
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
-        elif mode == 3:  # SEARCH
-            # xbmcgui.Dialog().ok('MODE=3','MODE')
+        elif mode == 3:  # Search
             build_search(str(parameters['url']))
         elif mode == 4:  # TVShows
-            # xbmcgui.Dialog().ok('MODE=4','MODE')
             build_groups_menu(parameters)
         elif mode == 5:  # TVSeasons
-            # xbmcgui.Dialog().ok('MODE=5','MODE')
             build_serie_episodes_types(parameters)
         elif mode == 6:  # TVEpisodes/Eps in Serie
-            # xbmcgui.Dialog().ok('MODE=6','MODE')
             build_serie_episodes(parameters)
         elif mode == 7:  # Playlist -continue-
-            # xbmcgui.Dialog().ok('MODE=7','MODE')
             play_continue_item()
+        elif mode == 8:  # File List
+            build_raw_list(parameters)
         else:
             build_filters_menu()
 else:
