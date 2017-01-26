@@ -882,7 +882,7 @@ def build_filters_menu():
         error("Invalid JSON Received in build_filters_menu", str(e))
 
     # region Start Add_Search
-    url = _server_ + "/api/serie/tag?limit=" + __addon__.getSetting("maxlimit")
+    url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit")
     title = "Search"
     thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -900,19 +900,18 @@ def build_filters_menu():
 
 
 # TODO group (shoko) option have bad logic now
-def build_groups_menu(params, extra_directories=None, json_body=None):
+def build_groups_menu(params, json_body=None):
     """
     Builds the list of items for Filters and Groups
     Args:
         params:
-        extra_directories:
 
     Returns:
 
     """
     # xbmcgui.Dialog().ok('MODE=4', 'IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
+    if __addon__.getSetting('use_server_sort') == 'false':
         xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
         xbmcplugin.addSortMethod(handle, 3)  # date
         xbmcplugin.addSortMethod(handle, 18)  # rating
@@ -964,12 +963,11 @@ def build_groups_menu(params, extra_directories=None, json_body=None):
     xbmcplugin.endOfDirectory(handle)
 
 
-def build_serie_episodes_types(params, extra_directories=None):
+def build_serie_episodes_types(params):
     """
     Builds list items for The Types Menu, or optionally subgroups
     Args:
         params:
-        extra_directories:
 
     Returns:
 
@@ -1002,7 +1000,7 @@ def build_serie_episodes_types(params, extra_directories=None):
             else:
                 set_window_heading(parent_title)
 
-                if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
+                if __addon__.getSetting('use_server_sort') == 'false':
                     # Apparently date sorting in Kodi has been broken for years
                     xbmcplugin.addSortMethod(handle, 17)  # year
                     xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -1249,21 +1247,20 @@ def build_search(url=''):
         if term is not None and term != "":
             try:
                 term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
-                to_send = {'url': url + "&query=" + term}
+                to_send = {'url': url + "&query=" + term + "&tag=2"}
 
                 json_body = json.loads(get_json(to_send['url']))
                 # check groups.0.size as search result use 1 group
                 if json_body["groups"][0]["size"] == 0:
-                    to_send['url'] = to_send['url'].replace('tag', 'search')
                     json_body = json.loads(get_json(to_send['url']))
 
                     if json_body["groups"][0]["size"] == 0:
                         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
                             'No results', 'No items found', '!', __addon__.getAddonInfo('icon')))
                     else:
-                        build_groups_menu(to_send, None, json_body)
+                        build_groups_menu(to_send, json_body)
                 else:
-                    build_groups_menu(to_send, None, json_body)
+                    build_groups_menu(to_send, json_body)
 
             except Exception as exc:
                 error("Error during build_search", str(exc))
