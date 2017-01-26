@@ -15,7 +15,6 @@ import xbmcplugin
 from resources.lib.util import *
 
 from collections import defaultdict
-from distutils.version import LooseVersion
 
 try:
     import pydevd
@@ -23,7 +22,6 @@ except ImportError:
     pass
 
 handle = int(sys.argv[1])
-sysarg = int(sys.argv[1])
 
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonversion__ = __addon__.getAddonInfo('version')
@@ -496,6 +494,7 @@ def get_tags(tag_node):
     try:
         if len(tag_node) > 0:
             temp_genres = []
+            temp_genre = ''
             for tag in tag_node:
                 temp_genre = encode(tag["tag"]).strip()
                 temp_genres.append(temp_genre)
@@ -578,10 +577,9 @@ def add_raw_files(node):
     u = set_parameter(u, 'type', "raw")
     u = set_parameter(u, 'file', key)
     u = set_parameter(u, 'ep_id', node["import_folder_id"])
-    context = []
-    context.append(('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)))
-    context.append(('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)))
-    context.append(('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u)))
+    context = [('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)),
+               ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
+               ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
     liz.addContextMenuItems(context)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
 
@@ -731,7 +729,7 @@ def add_serie_item(node, parent_title):
     add_gui_item(u, details, extra_data, context)
 
 
-def add_group_item(node, parent_title, filter):
+def add_group_item(node, parent_title, filter_id):
     # xbmcgui.Dialog().ok('group','group')
     temp_genre = get_tags(node["tags"])
     title = node["name"]
@@ -757,7 +755,7 @@ def add_group_item(node, parent_title, filter):
     key_id = str(node["id"])
     key = _server_ + "/api/group"
     set_parameter(key, 'id', key_id)
-    set_parameter(key, 'filter', filter)
+    set_parameter(key, 'filter', filter_id)
     if __addon__.getSetting('request_nocast') == 'true':
         set_parameter(key, 'nocast', 1)
 
@@ -795,8 +793,8 @@ def add_group_item(node, parent_title, filter):
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', str(use_mode))
-    if filter != '':
-        u = set_parameter(u, 'filter', filter)
+    if filter_id != '':
+        u = set_parameter(u, 'filter', filter_id)
     else:
         u = set_parameter(u, 'filter', None)
 
@@ -892,13 +890,12 @@ def build_filters_menu():
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
 
-# TODO group (shoko) option have bad logic now
 def build_groups_menu(params, json_body=None):
     """
     Builds the list of items for Filters and Groups
     Args:
         params:
-
+        json_body: parsing json_file directly, this will skip loading remote url from params
     Returns:
 
     """
@@ -925,11 +922,6 @@ def build_groups_menu(params, json_body=None):
         set_window_heading(body["name"])
         try:
             parent_title = body["name"]
-
-            # group always have series even empty
-            # if len(body["groups"]) <= 0:
-            #    build_serie_episodes(params)
-            #    return
 
             directory_type = body['type']
             filter_id = ''
@@ -1232,8 +1224,7 @@ def build_search_directory():
     Build Search directory 'New Search' and read Search History
     :return:
     """
-    items = []
-    items.append({
+    items = [{
         "title": "New Search",
         "url": _server_ + "/api/serie",
         "mode": 3,
@@ -1243,8 +1234,7 @@ def build_search_directory():
         "type": "",
         "plot": "",
         "extras": "true-search"
-    })
-    items.append({
+    }, {
         "title": "[COLOR yellow]Clear Search Terms[/COLOR]",
         "url": "delete-all",
         "mode": 31,
@@ -1254,7 +1244,7 @@ def build_search_directory():
         "type": "",
         "plot": "",
         "extras": ""
-    })
+    }]
 
     # read search history
     search_history = search.get_search_history()
@@ -1698,7 +1688,7 @@ if valid_user() is True:
                 if parameters['extras'] == "force-search":
                     search_for(parameters['url'])
                 else:
-                    xbmcplugin.setContent(int(sysarg), "movies")
+                    xbmcplugin.setContent(int(handle), "movies")
                     execute_search_and_add_query()
             except:
                 build_search_directory()
@@ -1713,7 +1703,7 @@ if valid_user() is True:
         elif mode == 8:  # File List
             build_raw_list(parameters)
         elif mode == 31:
-            util.deleteSearch(parameters)
+            search.clear_search_history(parameters)
         else:
             build_filters_menu()
 else:

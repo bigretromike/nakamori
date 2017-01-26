@@ -9,6 +9,7 @@ import os.path
 
 import xbmc
 import xbmcaddon
+import xbmcgui
 
 ADDON_ID='plugin.video.nakamori'
 addon = xbmcaddon.Addon(id=ADDON_ID)
@@ -77,7 +78,11 @@ def remove_search_history(params):
     """
     db_connection = database.connect(db_file)
     db_cursor = db_connection.cursor()
-    db_cursor.execute("DELETE FROM search WHERE search_term=?", (params['name'],))
+    try:
+        if params["extras"] == "single-delete":
+            db_cursor.execute("DELETE FROM search WHERE search_term=?", (params['name'],))
+    except:
+        db_cursor.execute("DELETE FROM search")
     db_connection.commit()
     db_connection.close()
 
@@ -95,3 +100,10 @@ def check_in_database(term):
     if len(data) == 0:
         return False
     return True
+
+
+def clear_search_history(params):
+    do_clean = xbmcgui.Dialog().yesno("Confirm Delete", "Are you sure you want to delete ALL search terms?")
+    if do_clean:
+        remove_search_history(params)
+        xbmc.executebuiltin('Container.Refresh')
