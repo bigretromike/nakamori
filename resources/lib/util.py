@@ -1,4 +1,13 @@
-import os, sys, urllib, urllib2, re, gzip, traceback, json
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import os
+import sys
+import urllib
+import urllib2
+import re
+import gzip
+import traceback
+import json
 from distutils.version import LooseVersion
 
 import xbmc
@@ -8,6 +17,7 @@ import xbmcplugin
 
 from StringIO import StringIO
 import xml.etree.ElementTree as Tree
+import search
 
 # get addon info
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
@@ -20,6 +30,17 @@ __localize__ = __addon__.getLocalizedString
 ADDON_ID = 'plugin.video.nakamori'
 UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
+
+
+def deleteSearch(params):
+    try:
+        if "single-delete" in params["extras"]:
+            runDelete=True
+    except:
+        runDelete = xbmcgui.Dialog().yesno("Confirm Delete", "Are you sure you want to delete ALL search terms?")
+    if runDelete:
+        search.remove_search_history(params)
+        xbmc.executebuiltin('Container.Refresh')
 
 
 def remove_anidb_links(data=""):
@@ -454,6 +475,7 @@ def searchBox():
     keyb = xbmc.Keyboard('', 'Enter search text')
     keyb.doModal()
     searchText = ''
+
     if (keyb.isConfirmed()):
         searchText = keyb.getText()
     if searchText != '':

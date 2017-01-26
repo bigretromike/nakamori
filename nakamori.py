@@ -5,6 +5,7 @@ import json
 
 import resources.lib.TagBlacklist as TagFilter
 import resources.lib.util as util
+import resources.lib.search as search
 
 import xbmc
 import xbmcaddon
@@ -22,12 +23,14 @@ except ImportError:
     pass
 
 handle = int(sys.argv[1])
+sysarg = int(sys.argv[1])
 
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 
 _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+home=xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 
 def valid_user():
@@ -1224,39 +1227,87 @@ def build_serie_episodes(params):
     xbmcplugin.endOfDirectory(handle)
 
 
-def build_search(url=''):
+def build_search_directory():
     """
-    Build directory list of series containing searched query
-    Args:
-        url: url pointing to search api
-
-    Returns: build_groups_menu out of search query
-
+    Build Search directory 'New Search' and read Search History
+    :return:
     """
+    items = []
+    items.append({
+        "title": "New Search",
+        "url": _server_ + "/api/serie",
+        "mode": 3,
+        "poster": "none",
+        "icon": os.path.join(home, 'resources/media', 'new-search.jpg'),
+        "fanart": os.path.join(home, '', 'fanart.jpg'),
+        "type": "",
+        "plot": "",
+        "extras": "true-search"
+    })
+    items.append({
+        "title": "[COLOR yellow]Clear Search Terms[/COLOR]",
+        "url": "delete-all",
+        "mode": 31,
+        "poster": "none",
+        "icon": os.path.join(home, 'resources/media', 'clear-search.jpg'),
+        "fanart": os.path.join(home, '', 'fanart.jpg'),
+        "type": "",
+        "plot": "",
+        "extras": ""
+    })
+
+    # read search history
+    search_history = search.get_search_history()
+    search_history.sort()
+    for ss in search_history:
+        try:
+            if len(ss[0]) > 0:
+                items.append({
+                    "title": ss[0],
+                    "url": _server_ + "/api/serie/search?query=" + ss[0],
+                    "mode": 3,
+                    "poster": "none",
+                    "icon": os.path.join(home, 'resources/media', 'main-search.jpg'),
+                    "fanart": os.path.join(home, '', 'fanart.jpg'),
+                    "type": "",
+                    "plot": "",
+                    "extras": "force-search",
+                    "extras2": "db-search"
+                })
+        except:
+            pass
+
+    for detail in items:
+        u = sys.argv[0] + "?url=" + detail['url'] + "&mode="+str(detail['mode']) + "&name=" + urllib.quote_plus(detail['title'].encode("utf-8")) + "&icon=" + detail['icon'] + "&extras=" + detail['extras']
+        liz = xbmcgui.ListItem(detail['title'].encode("utf-8"), iconImage=detail['icon'], thumbnailImage=detail['icon'])
+        liz.setInfo(type=detail['type'], infoLabels={"Title": detail['title'].encode("utf-8"), "Plot": detail['plot']})
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url = u, listitem = liz, isFolder = True)
+    xbmcplugin.endOfDirectory(handle)
+
+
+def search_for(url):
     try:
-        term = util.searchBox()
-        if term is not None and term != "":
-            try:
-                term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
-                to_send = {'url': url + "&query=" + term + "&tags=2&level=1"}
+        json_body = json.loads(get_json(url))
+        if json_body["groups"][0]["size"] == 0:
+            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('No results', 'No items found', '!', __addon__.getAddonInfo('icon')))
+        else:
+            build_groups_menu(url, json_body)
+    except:
+        error("error in findVideo")
 
-                json_body = json.loads(get_json(to_send['url']))
-                # check groups.0.size as search result use 1 group
-                if json_body["groups"][0]["size"] == 0:
-                    json_body = json.loads(get_json(to_send['url']))
 
-                    if json_body["groups"][0]["size"] == 0:
-                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (
-                            'No results', 'No items found', '!', __addon__.getAddonInfo('icon')))
-                    else:
-                        build_groups_menu(to_send, json_body)
-                else:
-                    build_groups_menu(to_send, json_body)
-
-            except Exception as exc:
-                error("Error during build_search", str(exc))
-    except Exception as exc:
-        error("Error during searchBox", str(exc))
+def execute_search_and_add_query():
+    """
+    Search for query and if its not in Search History add it
+    :return:
+    """
+    find = util.searchBox()
+    # check search history
+    if not search.check_in_database(find):
+        # if its not add to history & refresh
+        search.add_search_history(find)
+        xbmc.executebuiltin('Container.Refresh')
+    search_for(_server_ + "/api/serie/search?query=" + find + "&tags=2&level=1")
 
 
 def build_raw_list(params):
@@ -1643,7 +1694,14 @@ if valid_user() is True:
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
         elif mode == 3:  # Search
-            build_search(str(parameters['url']))
+            try:
+                if parameters['extras'] == "force-search":
+                    search_for(parameters['url'])
+                else:
+                    xbmcplugin.setContent(int(sysarg), "movies")
+                    execute_search_and_add_query()
+            except:
+                build_search_directory()
         elif mode == 4:  # Group/Serie
             build_groups_menu(parameters)
         elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
@@ -1654,6 +1712,8 @@ if valid_user() is True:
             play_continue_item()
         elif mode == 8:  # File List
             build_raw_list(parameters)
+        elif mode == 31:
+            util.deleteSearch(parameters)
         else:
             build_filters_menu()
 else:
