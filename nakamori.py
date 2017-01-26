@@ -872,7 +872,7 @@ def build_filters_menu():
         error("Invalid JSON Received in build_filters_menu", str(e))
 
     # region Start Add_Search
-    url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit")
+    url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit") + "&limit_tag=" + __addon__.getSetting("maxlimit_tag")
     title = "Search"
     thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
@@ -1238,7 +1238,7 @@ def build_search(url=''):
         if term is not None and term != "":
             try:
                 term = term.replace(' ', '%20').replace("'", '%27').replace('?', '%3F')
-                to_send = {'url': url + "&query=" + term + "&tag=2"}
+                to_send = {'url': url + "&query=" + term + "&tags=2&level=1"}
 
                 json_body = json.loads(get_json(to_send['url']))
                 # check groups.0.size as search result use 1 group
