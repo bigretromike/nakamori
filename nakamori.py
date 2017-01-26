@@ -190,7 +190,6 @@ def video_file_information(node_base, detail_dict):
                 detail_dict['SubStreams'] = streams
 
 
-# TODO: only context menu need to be redone
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
     """Adds an item to the menu and populates its info labels
     :param url:The URL of the menu or file this item links to
@@ -380,59 +379,35 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 context = []
                 url_peep_base = sys.argv[2]
 
-                # menu for group
-                if extra_data.get('source', 'none') == 'group':
-                    group_id = extra_data.get('id')
-                    if __addon__.getSetting('context_show_info') == 'true':
-                        context.append(('More Info', 'Action(Info)'))
-                    # TODO: are we sure we want to mark full group as watched?
-                    # url_peep = url_peep_base + "&group_id=" + group_id
-                    # context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
-                    # context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
-
-                # menu for serie
-                elif extra_data.get('source', 'none') == 'serie':
-                    series_id = extra_data.get('serie_id')
-
-                    if __addon__.getSetting('context_show_info') == 'true':
-                        context.append(('More Info', 'Action(Info)'))
-                    if __addon__.getSetting('context_show_vote_Series') == 'true':
-                        url_peep = url_peep_base + "&serie_id=" + series_id + "&cmd=voteSer"
-                        context.append(('Vote (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep)))
-
-                    url_peep = url_peep_base + "&serie_id=" + series_id
-                    context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
-                    context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
-
                 # menu for episode
-                elif extra_data.get('source', 'none') == 'ep':
+                if extra_data.get('source', 'none') == 'ep':
                     series_id = extra_data.get('serie_id')
                     ep_id = extra_data.get('ep_id')
                     url_peep = url_peep_base + "&serie_id=" + str(series_id) + "&ep_id=" + str(ep_id) + '&ui_index=' + str(index)
 
                     if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                        context.append(('Play (Do not Mark as Watched (Shoko))', 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' % (sys.argv[1], url_peep)))
+                        context.append(('Play (Do not Mark as Watched)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' % (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
 
                     if __addon__.getSetting('context_show_vote_Series') == 'true':
                         if series_id != '':
-                            context.append(('Vote for Series (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (sys.argv[1], url_peep)))
+                            context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_vote_Episode') == 'true':
                         if ep_id != '':
-                            context.append(('Vote for Episode (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (sys.argv[1], url_peep)))
+                            context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (sys.argv[1], url_peep)))
 
                     if extra_data.get('jmmepisodeid') != '':
                         if __addon__.getSetting('context_krypton_watched') == 'true':
                             if details.get('playcount', 0) == 0:
-                                context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                                context.append(('Mark episode as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
                             else:
-                                context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'% (sys.argv[1], url_peep)))
+                                context.append(('Mark episode as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'% (sys.argv[1], url_peep)))
                         else:
-                            context.append(('Mark as Watched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
-                            context.append(('Mark as Unwatched (Shoko)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+                            context.append(('Mark episode as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                            context.append(('Mark episode as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
 
-                liz.addContextMenuItems(context)
+        liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
     except Exception as e:
         error("Error during add_gui_item", str(e))
@@ -460,7 +435,7 @@ def get_title(data):
     """
     Get the new title
     Args:
-        data: json xml node containing the title
+        data: json node containing the title
 
     Returns: string of the desired title
 
@@ -586,7 +561,7 @@ def add_raw_files(node):
     file_id = node["id"]
     key = node["url"]
     url = _server_ + "/api/file?id=" + str(file_id)
-    title = str(name)
+    title = os.path.split(str(name))[1]
     thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
@@ -603,6 +578,7 @@ def add_raw_files(node):
     context = []
     context.append(('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)))
     context.append(('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)))
+    context.append(('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u)))
     liz.addContextMenuItems(context)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
 
@@ -740,7 +716,15 @@ def add_serie_item(node, parent_title):
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', str(use_mode))
 
-    context = None
+    context = []
+    url_peep = sys.argv[2] + "&serie_id=" + key_id
+    if __addon__.getSetting('context_show_info') == 'true':
+        context.append(('More Info', 'Action(Info)'))
+    if __addon__.getSetting('context_show_vote_Series') == 'true':
+        context.append(('Vote on serie', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep + "&cmd=voteSer")))
+    context.append(('Mark serie as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+    context.append(('Mark serie as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+
     add_gui_item(u, details, extra_data, context)
 
 
@@ -813,7 +797,13 @@ def add_group_item(node, parent_title, filter):
     else:
         u = set_parameter(u, 'filter', None)
 
-    context = None
+    context = []
+    if __addon__.getSetting('context_show_info') == 'true':
+        context.append(('More Info', 'Action(Info)'))
+        url_peep = sys.argv[2] + "&group_id=" + key_id
+        context.append(('Mark group as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+        context.append(('Mark group as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+
     add_gui_item(u, details, extra_data, context)
 
 
@@ -933,9 +923,10 @@ def build_groups_menu(params, json_body=None):
         try:
             parent_title = body["name"]
 
-            if len(body["groups"]) <= 0:
-                build_serie_episodes(params)
-                return
+            # group always have series even empty
+            # if len(body["groups"]) <= 0:
+            #    build_serie_episodes(params)
+            #    return
 
             directory_type = body['type']
             filter_id = ''
@@ -1016,7 +1007,7 @@ def build_serie_episodes_types(params):
         except Exception as exc:
             error("Error during build_serie_episodes_types", str(exc))
     except Exception as exc:
-        error("Invalid XML Received in build_serie_episodes_types", str(exc))
+        error("Invalid JSON Received in build_serie_episodes_types", str(exc))
     xbmcplugin.endOfDirectory(handle)
 
 
@@ -1472,7 +1463,7 @@ def watched_mark(params):
     """
     episode_id = params.get('ep_id', '')
     anime_id = params.get('serie_id', '')
-    # group_id = params.get('group_id', '')
+    group_id = params.get('group_id', '')
     watched = bool(params['watched'])
     key = _server_ + "/api"
     if watched is True:
@@ -1481,25 +1472,21 @@ def watched_mark(params):
             key += "/ep/watch"
         elif anime_id != '':
             key += "/serie/watch"
-        # elif group_id != '':
-        #    key = _server_ \
-        #        + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
-        #        watched).strip()
+        elif group_id != '':
+            key += "/group/watch"
     else:
         watched_msg = "unwatched"
         if episode_id != '':
             key += "/ep/unwatch"
         elif anime_id != '':
             key += "/serie/unwatch"
-        # elif group_id != '':
-        #    key = _server_ \
-        #          + "/jmmserverkodi/watchgroup/" + __addon__.getSetting("userid") + "/" + group_id + "/" + str(
-        #        watched).strip()
+        elif group_id != '':
+            key += "/group/unwatch"
 
     if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('epid: ' + str(episode_id))
         xbmc.log('anime_id: ' + str(anime_id))
-        # xbmc.log('group_id: ' + str(group_id))
+        xbmc.log('group_id: ' + str(group_id))
         xbmc.log('key: ' + key)
 
     # sync mark flags
@@ -1511,8 +1498,9 @@ def watched_mark(params):
         elif anime_id != '':
             body = '?id=' + anime_id + '"'
             get_json(key + body)
-        # elif group_id != '':
-        #    get_xml(key)
+        elif group_id != '':
+            body = '?id=' + group_id + '"'
+            get_json(key + body)
 
     box = __addon__.getSetting("watchedbox")
     if box == "true":
@@ -1528,21 +1516,36 @@ def rescan_file(params, rescan):
         rescan: True to rescan, False to rehash
     """
     vl_id = params.get('ep_id', '')
-    xbmcgui.Dialog().ok('ep', str(vl_id))
     command = 'rehash'
     if rescan:
         command = 'rescan'
 
-    key = ""
+    key_url = ""
     if vl_id != '':
-        key = _server_ + "/api/" + command + "?id=" + vl_id
+        key_url = _server_ + "/api/" + command + "?id=" + vl_id
     if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('vlid: ' + str(vl_id))
+        xbmc.log('key: ' + key_url)
+
+    get_json(key_url)
+
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Queued file for ' + ('Rescan' if rescan else 'Rehash'), 'Refreshing in 10 seconds', __addon__.getAddonInfo('icon')))
+    xbmc.sleep(10000)
+    refresh()
+
+
+def remove_missing_files():
+    """
+    Run "remove missing files" on server to remove every file that is not accessible by server
+    :return:
+    """
+    key = _server_ + "/api/remove_missing_files"
+
+    if __addon__.getSetting('log_spam') == 'true':
         xbmc.log('key: ' + key)
 
     get_json(key)
-
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Queued file for ' + ('Rescan' if rescan else 'Rehash'), 'Refreshing in 10 seconds', __addon__.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Removing missing files...', 'This can take some time', __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
     refresh()
 
@@ -1616,6 +1619,8 @@ if valid_user() is True:
             rescan_file(parameters, True)
         elif cmd == 'rehash':
             rescan_file(parameters, False)
+        elif cmd == 'missing':
+            remove_missing_files()
     else:
         # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
         if mode == 1:  # play_file
