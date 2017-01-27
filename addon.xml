@@ -7,9 +7,9 @@
 		<provides>video</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="en_GB">Nakamori give You ability to interact with Your Shoko collection</summary>
-		<description lang="en_GB">Nakamori give You ability to interact with Your Shoko collection for Kodi-enabled devices. By giving Kodi ability to communicate with Shoko via API calls your are able to interact with collection (liek watching, voting, syncing and more)</description>
-        <disclaimer lang="en_GB">If Shoko server is on different machine setup proper ip address in Nakamori Settings</disclaimer>
+		<summary lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection</summary>
+		<description lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
+        <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
         <news>
             v2.1.0 ()
             - Nakamori not use purely a new Shoko API v2 Interface to communicate

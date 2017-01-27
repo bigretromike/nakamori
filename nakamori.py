@@ -676,9 +676,9 @@ def add_serie_item(node, parent_title):
     directory_type = str(node["type"])
     key_id = str(node["id"])
     key = _server_ + "/api/serie?id=" + key_id
-    set_parameter(key, 'id', key_id)
+    key = set_parameter(key, 'id', key_id)
     if __addon__.getSetting('request_nocast') == 'true':
-        set_parameter(key, 'nocast', 1)
+        key = set_parameter(key, 'nocast', 1)
 
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
@@ -752,10 +752,10 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         key = _server_ + "/api/filter?id=" + key_id
     else:
         key = _server_ + "/api/group?id=" + key_id
-    set_parameter(key, 'id', key_id)
-    set_parameter(key, 'filter', filter_id)
+    key = set_parameter(key, 'id', key_id)
+    key = set_parameter(key, 'filter', filter_id)
     if __addon__.getSetting('request_nocast') == 'true':
-        set_parameter(key, 'nocast', 1)
+        key = set_parameter(key, 'nocast', 1)
 
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
@@ -1270,7 +1270,7 @@ def build_search_directory():
             pass
 
     for detail in items:
-        u = sys.argv[0] + "?url=" + detail['url'] + "&mode="+str(detail['mode']) + "&name=" + urllib.quote_plus(detail['title'].encode("utf-8")) + "&extras=" + detail['extras']
+        u = sys.argv[0] + "?url=" + detail['url'] + "&mode=" + str(detail['mode']) + "&name=" + urllib.quote_plus(detail['title'].encode("utf-8")) + "&extras=" + detail['extras']
         liz = xbmcgui.ListItem(detail['title'].encode("utf-8"))
         liz.setArt({'thumb': detail['icon'], 'poster': detail['poster'], 'icon': detail['icon'], 'fanart': detail['fanart']})
         liz.setInfo(type=detail['type'], infoLabels={"Title": detail['title'].encode("utf-8"), "Plot": detail['plot']})
@@ -1280,6 +1280,10 @@ def build_search_directory():
 
 def search_for(url):
     try:
+        url = set_parameter(url, 'tags', 2)
+        url = set_parameter(url, 'level', 1)
+        url = set_parameter(url, 'limit', __addon__.getSetting('maxlimit'))
+        url = set_parameter(url, 'limit_tag', __addon__.getSetting('maxlimit_tag'))
         json_body = json.loads(get_json(url))
         if json_body["groups"][0]["size"] == 0:
             xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('No results', 'No items found', '!', __addon__.getAddonInfo('icon')))
@@ -1300,7 +1304,7 @@ def execute_search_and_add_query():
         # if its not add to history & refresh
         search.add_search_history(find)
         xbmc.executebuiltin('Container.Refresh')
-    search_for(_server_ + "/api/serie/search?query=" + find + "&tags=2&level=1")
+    search_for(_server_ + "/api/serie/search?query=" + find)
 
 
 def build_raw_list(params):
