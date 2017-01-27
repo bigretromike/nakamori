@@ -149,19 +149,10 @@ def get_data(url_in, referer, data_type):
     Returns: The response from the server in forced type (.json or .xml)
     """
     try:
-        if not url_in.lower().startswith("http://" + __addon__.getSetting("ipaddress") + ":"
-                                                 + __addon__.getSetting("port")):
-            if url_in.lower().startswith('/jmmserverkodi'):
-                url_in = 'http://' + __addon__.getSetting("ipaddress") + ":" \
-                         + __addon__.getSetting("port") + url_in
-            if url_in.lower().startswith(':'):
-                url_in = 'http://' + __addon__.getSetting("ipaddress") + url_in
-
-        if data_type == "json":
-            url = url_in
-        else:
-            url = url_in
+        if data_type != "json":
             data_type = "xml"
+
+        url = url_in
 
         req = urllib2.Request(encode(url))
         req.add_header('Accept', 'application/' + data_type)
@@ -172,8 +163,9 @@ def get_data(url_in, referer, data_type):
             if len(referer) > 1:
                 req.add_header('Referer', referer)
         use_gzip = __addon__.getSetting("use_gzip")
-        if use_gzip == "true":
-            req.add_header('Accept-encoding', 'gzip')
+        if "127.0.0.1" not in url and "localhost" not in url:
+            if use_gzip == "true":
+                req.add_header('Accept-encoding', 'gzip')
         data = None
         try:
             response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
