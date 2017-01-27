@@ -147,7 +147,6 @@ def filter_gui_item_by_tag(title):
 
 def video_file_information(node_base, detail_dict):
     # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
-    # dbg("INCOMING: " + str(node_base))
     # Video
     if 'VideoStream' not in detail_dict:
         detail_dict['VideoStream'] = ''
@@ -729,12 +728,11 @@ def add_serie_item(node, parent_title):
     add_gui_item(u, details, extra_data, context)
 
 
-def add_group_item(node, parent_title, filter_id):
-    # xbmcgui.Dialog().ok('group','group')
-    temp_genre = get_tags(node["tags"])
+def add_group_item(node, parent_title, filter_id, is_filter=False):
+    temp_genre = get_tags(node.get("tags", ""))
     title = node["name"]
     size = node["size"]
-    content_type = node["type"]
+    content_type = node["type"] if not is_filter else "filter"
     details = {
         'title':            title,
         'parenttitle':      encode(parent_title),
@@ -753,7 +751,10 @@ def add_group_item(node, parent_title, filter_id):
     }
 
     key_id = str(node["id"])
-    key = _server_ + "/api/group"
+    if is_filter:
+        key = _server_ + "/api/filter?id=" + key_id
+    else:
+        key = _server_ + "/api/group?id=" + key_id
     set_parameter(key, 'id', key_id)
     set_parameter(key, 'filter', filter_id)
     if __addon__.getSetting('request_nocast') == 'true':
@@ -784,12 +785,8 @@ def add_group_item(node, parent_title, filter_id):
 
     url = key
     set_watch_flag(extra_data, details)
-    use_mode = 5
-    # TODO: re-check logic as data/1/2 is no longer
-    if __addon__.getSetting("useSeasons") == "false":
-        # this will help when users is using grouping option in jmm which results in node in node
-        if "data/1/2/" in extra_data['key'].lower():
-            use_mode = 4
+    use_mode = 5 if not is_filter else 4
+
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', str(use_mode))
@@ -799,7 +796,7 @@ def add_group_item(node, parent_title, filter_id):
         u = set_parameter(u, 'filter', None)
 
     context = []
-    if __addon__.getSetting('context_show_info') == 'true':
+    if __addon__.getSetting('context_show_info') == 'true' and not is_filter:
         context.append(('More Info', 'Action(Info)'))
         url_peep = sys.argv[2] + "&group_id=" + key_id
         context.append(('Mark group as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
@@ -919,7 +916,16 @@ def build_groups_menu(params, json_body=None):
         else:
             body = json_body
 
-        set_window_heading(body["name"])
+        # check if this is maybe filter-inception
+        try:
+            set_window_heading(body["name"])
+        except:
+            # it isn't single filter
+            for nest_filter in body:
+                add_group_item(nest_filter, '', '', True)
+            xbmcplugin.endOfDirectory(handle)
+            return
+
         try:
             parent_title = body["name"]
 
@@ -961,7 +967,6 @@ def build_serie_episodes_types(params):
     # xbmcgui.Dialog().ok('MODE=5', str(params['url']))
     xbmcplugin.setContent(handle, 'seasons')
     try:
-        dbg(params['url'])
         html = get_json(params['url'])
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html)
@@ -1015,7 +1020,6 @@ def build_serie_episodes(params):
     """
     xbmcplugin.setContent(handle, 'episodes')
     try:
-        # dbg("build_episode:" + params['url'])
         html = get_json(params['url'])
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
@@ -1074,7 +1078,6 @@ def build_serie_episodes(params):
                     # check if episode have files
                     episode_type = True
                     if "type" in params:
-                        # dbg("param_type:" + str(params["type"]) + " video[eptype]:" + str(video["eptype"]))
                         episode_type = True if str(video["eptype"]) == str(params["type"]) else False
                     if video["files"] is not None and episode_type:
                         if len(video["files"]) > 0:
@@ -1371,7 +1374,7 @@ def play_video(url, ep_id, raw_id):
             # Information about streams inside video file
             # Video
             codecs = dict()
-            dbg(str(file_body))
+
             for stream_info in file_body["media"]:
                 video_file_information(stream_info, codecs)
             item.addStreamInfo('video', codecs["VideoStream"])
