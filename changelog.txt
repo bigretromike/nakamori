@@ -5,7 +5,10 @@ v2.1.0 ()
 - Brand new Search option with local Database to store your favorite 'search query'
 - Added 'The coast of seven leages in Kamakura' as New Search Art
 - Added 'Red Fuji southern wind clear morning' as Clear Search Art
-- Added icons for Search History
+- Added icons for Search History (#18)
+- Ignore Vote_All setting when you already voted on object (#185)
+- Added Trakt support (via Shoko APIv2) (#33)
+- Disable gzip on localhost (#161)
 
 v2.0.19 (18/01/2017)
 - Adding "Trigger Voting after each episode"
