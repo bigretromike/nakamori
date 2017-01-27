@@ -809,9 +809,9 @@ def build_filters_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         json_menu = json.loads(get_json(_server_ + "/api/filter"))
-        set_window_heading("main")
+        set_window_heading(json_menu["name"])
         try:
-            for menu in json_menu:
+            for menu in json_menu["filters"]:
                 title = menu["name"]
                 use_mode = 4
                 key = menu["url"]
@@ -932,16 +932,20 @@ def build_groups_menu(params, json_body=None):
                     if directory_type == 'filter':
                         filter_id = body['id']
 
-            for grp in body["groups"]:
-                if len(grp["series"]) > 0:
-                    if len(grp["series"]) == 1:
-                        add_serie_item(grp["series"][0], parent_title)
-                    else:
-                        if json_body is not None:
-                            for srg in grp["series"]:
-                                add_serie_item(srg, parent_title)
+            if directory_type == 'filter':
+                for grp in body["groups"]:
+                    if len(grp["series"]) > 0:
+                        if len(grp["series"]) == 1:
+                            add_serie_item(grp["series"][0], parent_title)
                         else:
-                            add_group_item(grp, parent_title, filter_id)
+                            if json_body is not None:
+                                for srg in grp["series"]:
+                                    add_serie_item(srg, parent_title)
+                            else:
+                                add_group_item(grp, parent_title, filter_id)
+            elif directory_type == 'filters':
+                for flt in body["filters"]:
+                    add_group_item(flt, parent_title, filter_id)
 
         except Exception as e:
             error("Error during build_groups_menu", str(e))
@@ -973,12 +977,12 @@ def build_serie_episodes_types(params):
             except Exception as exc:
                 error("Unable to get parent title in buildTVSeasons", str(exc))
 
-            content_type = []
+            content_type = dict()
             if "eps" in body:
                 if len(body["eps"]) >= 1:
                     for ep in body["eps"]:
-                        if ep["eptype"] not in content_type:
-                            content_type.append(ep["eptype"])
+                        if ep["eptype"] not in content_type.keys():
+                            content_type[ep["eptype"]] =  ep["art"]["thumb"][0]["url"]
             # no matter what type is its only one type, flat directory
             if len(content_type) == 1:
                 build_serie_episodes(params)
