@@ -1693,7 +1693,7 @@ if valid_user() is True:
         elif cmd == 'missing':
             remove_missing_files()
     else:
-        xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
+        # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
         if mode == 1:  # play_file
             try:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
