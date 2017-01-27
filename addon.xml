@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.0" provider-name="BigRetroMike">
-	<extension point="xbmc.python.pluginsource" library="nakamori.py">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.0" provider-name="BigRetroMike, da3dsoul">
+    <requires>
+        <import addon="script.service.nakamori" version="0.1.0" optional="true"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="en">Nakamori enables you to browse your JMM collection within Kodi.</summary>
-		<description lang="en">Nakamori enables you to browse your JMM collection within Kodi without needing to re-import it, any way. Thanks to this approach, you are still able to manage your JMM collection and use its organized data in Kodi. </description>
-		<platform>all</platform>
+		<summary lang="en_GB">Nakamori give You ability to interact with Your Shoko collection</summary>
+		<description lang="en_GB">Nakamori give You ability to interact with Your Shoko collection for Kodi-enabled devices. By giving Kodi ability to communicate with Shoko via API calls your are able to interact with collection (liek watching, voting, syncing and more)</description>
+        <disclaimer lang="en_GB">If Shoko server is on different machine setup proper ip address in Nakamori Settings</disclaimer>
+        <news>
+            v2.1.0 ()
+            - Nakamori not use purely a new Shoko API v2 Interface to communicate
+            - Shoko Server should be 3.7.0.4 or higher
+            - Code have been clean off any legacy (unused) code
+            - Brand new Search option with local Database to store your favorite 'search query'
+            - Added 'The coast of seven leages in Kamakura' as New Search Art
+            - Added 'Red Fuji southern wind clear morning' as Clear Search Art
+            - Added icons for Search History (#18)
+            - Ignore Vote_All setting when you already voted on object (#185)
+            - Added Trakt support (via Shoko APIv2) (#33)
+            - Disable gzip on localhost (#161)
+        </news>
+        <platform>all</platform>
+        <language>en</language>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-		<language>en</language>
+        <website>https://shokunin.monogatari.pl/nakamori/</website>
 		<source>https://github.com/bigretromike/nakamori/</source>
-		<email>bigretromike at monogatari dot pl</email>
-		<disclaimer lang="en">Remember to change IP address in settings if your JMM Server is not on the same computer as Kodi.</disclaimer>
+		<email></email>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+		</assets>
 	</extension>
 </addon>
