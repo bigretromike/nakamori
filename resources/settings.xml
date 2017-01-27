@@ -48,7 +48,7 @@
         <setting label="30038" type="lsep"/>
         <setting label="30035" type="bool" id="trakt" default="false"/>
         <setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
-        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false"/>
+        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"/>
     </category>
     <category label="30046">
         <setting label="30045" type="bool" id="hideMiscTags" default="false"/>

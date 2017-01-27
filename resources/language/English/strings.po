@@ -129,11 +129,11 @@ msgid "(WIP)Enable voting for Trakt"
 msgstr ""
 
 msgctxt "#30036"
-msgid "(WIP)Trakt Scrobble (without Notification)"
+msgid "Trakt Scrobble"
 msgstr ""
 
 msgctxt "#30037"
-msgid "(WIP)Enable Trakt Scrobble Notification"
+msgid "Enable Trakt Scrobble Notification"
 msgstr ""
 
 msgctxt "#30039"

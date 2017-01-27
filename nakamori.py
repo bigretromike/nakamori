@@ -707,14 +707,11 @@ def add_serie_item(node, parent_title):
     url = key
     set_watch_flag(extra_data, details)
     use_mode = 5
-    # TODO: re-check logic as data/1/2 is no longer
-    if __addon__.getSetting("useSeasons") == "false":
-        # this will help when users is using grouping option in jmm which results in node in node
-        if "data/1/2/" in extra_data['key'].lower():
-            use_mode = 4
+
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
-    u = set_parameter(u, 'mode', str(use_mode))
+    u = set_parameter(u, 'mode', use_mode)
+    u = set_parameter(u, 'movie', node['ismovie'] if 'ismovie' in node else 0)
 
     context = []
     url_peep = sys.argv[2] + "&serie_id=" + key_id
@@ -1329,13 +1326,14 @@ def build_raw_list(params):
 
 
 # Other functions
-def play_video(url, ep_id, raw_id):
+def play_video(url, ep_id, raw_id, movie):
     """
     Plays a file or episode
     Args:
         url: location of the file
         ep_id: episode id, if applicable for watched status and stream details
         raw_id: file id, that is only used when ep_id = 0
+        movie: determinate if played object is movie or episode (ex.Trakt)
     Returns:
 
     """
@@ -1402,22 +1400,50 @@ def play_video(url, ep_id, raw_id):
     mark = float(__addon__.getSetting("watched_mark"))
     mark /= 100
     file_fin = False
+    trakt_404 = False
     # hack for slow connection and buffering time
     xbmc.sleep(int(__addon__.getSetting("player_sleep")))
     try:
+        clock_tick = -1
         while player.isPlaying():
             try:
-                xbmc.sleep(500)
+                if clock_tick == -1:
+                    if __addon__.getSetting("trakt_scrobble_notification") == "true":
+                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Starting Scrobble', '', __addon__.getAddonInfo('icon')))
+                clock_tick += 1
+                xbmc.sleep(60)
                 total_time = player.getTotalTime()
                 current_time = player.getTime()
+
+                # region Trakt support
+                if __addon__.getSetting("trakt_scrobble") == "true":
+                    if clock_tick >= 200:
+                        clock_tick = 0
+                        if ep_id != 0:
+                            progress = int((current_time / total_time) * 100)
+                            try:
+                                if not trakt_404:
+                                    # status: 1-start,2-pause,3-stop
+                                    trakt_body = json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(1) + "&progress=" + str(progress)))
+                                    if str(trakt_body['code']) != str(200):
+                                        trakt_404 = True
+                            except Exception as trakt_ex:
+                                dbg(str(trakt_ex))
+                                pass
+                # endregion
+
                 if (total_time * mark) < current_time:
                     file_fin = True
                 if not player.isPlaying():
                     break
             except:
-                xbmc.sleep(500)
+                xbmc.sleep(60)
+                if not trakt_404:
+                    # send 'pause' to trakt
+                    json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(2) + "&progress=" + str(progress)))
                 break
-    except:
+    except Exception as ops_ex:
+        dbg(ops_ex)
         pass
 
     no_watch_status = False
@@ -1427,6 +1453,12 @@ def play_video(url, ep_id, raw_id):
         __addon__.setSetting('no_mark', '0')
 
     if file_fin is True:
+        if __addon__.getSetting("trakt_scrobble") == "true":
+            if not trakt_404:
+                get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(3) + "&progress=" + str(100))
+                if __addon__.getSetting("trakt_scrobble_notification") == "true":
+                    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Stopping scrobble', '', __addon__.getAddonInfo('icon')))
+
         if no_watch_status is False:
             return ep_id
     return 0
@@ -1661,12 +1693,12 @@ if valid_user() is True:
         elif cmd == 'missing':
             remove_missing_files()
     else:
-        # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
+        xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
         if mode == 1:  # play_file
             try:
                 win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                 ctl = win.getControl(win.getFocusId())
-                if play_video(parameters['file'], parameters['ep_id'], parameters['file_id'] if 'id' in parameters else "0") != 0:
+                if play_video(parameters['file'], parameters['ep_id'], parameters['file_id'] if 'id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
                     # noinspection PyTypeChecker
                     ui_index = parameters.get('ui_index', '')
                     if ui_index != '':

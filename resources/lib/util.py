@@ -55,7 +55,7 @@ def dbg(msg):
     :param msg: the message to print to log
     :return:
     """
-    xbmc.log(str(msg), xbmc.LOGERROR)
+    xbmc.log(str(msg), xbmc.LOGDEBUG)
 
 
 # json
