@@ -260,8 +260,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
-            liz.setArt({'thumb': tbi})
-            liz.setArt({'poster': tbi})
+            liz.setArt({'thumb': tbi, 'icon': tbi, 'poster': tbi})
 
         if extra_data is not None and len(extra_data) > 0:
             actors = extra_data.get('actors', None)
@@ -365,6 +364,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     liz.setProperty('ResumeTime', '50')
                 if extra_data.get('thumb'):
                     liz.setArt({"thumb": extra_data.get('thumb', '')})
+                    liz.setArt({"icon": extra_data.get('thumb', '')})
                     liz.setArt({"poster": extra_data.get('thumb', '')})
                 if extra_data.get('fanart_image'):
                     liz.setArt({"fanart": extra_data.get('fanart_image', '')})
@@ -835,8 +835,15 @@ def build_filters_menu():
                 try:
                     if len(menu["art"]["thumb"]) > 0:
                         thumb = menu["art"]["thumb"][0]["url"]
+                    if "Year" in title:
+                        thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
+                    elif "Tag" in title:
+                        thumb = os.path.join(_home_, 'resources/media/icons', 'tag.png')
                 except:
-                    pass
+                    if "Year" in title:
+                        thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
+                    elif "Tag" in title:
+                        thumb = os.path.join(_home_, 'resources/media/icons', 'tag.png')
                 fanart = ''
                 try:
                     if len(menu["art"]["fanart"]) > 0:
@@ -854,11 +861,11 @@ def build_filters_menu():
                 u = set_parameter(u, 'url', url)
                 u = set_parameter(u, 'mode', use_mode)
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
-                u = set_parameter(u, 'filter', menu["id"])
+                u = set_parameter(u, 'filter_id', menu["id"])
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-                liz.setArt({'thumb': thumb, 'fanart': fanart, 'poster': thumb, 'banner': banner, 'clearart': fanart})
-                liz.setIconImage('DefaultVideo.png')
+                liz.setArt({'icon': thumb, 'thumb': thumb, 'fanart': fanart, 'poster': thumb, 'banner': banner, 'clearart': fanart})
+                if thumb == '': liz.setIconImage('DefaultVideo.png')
                 liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
@@ -867,7 +874,7 @@ def build_filters_menu():
         error("Invalid JSON Received in build_filters_menu", str(e))
 
     # region Start Add_Search
-    url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit") + "&limit_tag=" + __addon__.getSetting("maxlimit_tag")
+    url = _server_ + "/api/serie/search"
     title = "Search"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'), "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
@@ -915,11 +922,14 @@ def build_groups_menu(params, json_body=None):
         try:
             set_window_heading(body["name"])
         except:
-            # it isn't single filter
-            for nest_filter in body:
-                add_group_item(nest_filter, '', '', True)
-            xbmcplugin.endOfDirectory(handle)
-            return
+            try: # this might not be a filter
+                # it isn't single filter
+                for nest_filter in body:
+                    add_group_item(nest_filter, '', body['id'], True)
+                xbmcplugin.endOfDirectory(handle)
+                return
+            except:
+                pass
 
         try:
             parent_title = body["name"]
