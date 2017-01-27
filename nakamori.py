@@ -28,7 +28,7 @@ __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 
 _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-home=xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
+_home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 
 def valid_user():
@@ -873,7 +873,7 @@ def build_filters_menu():
     url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit") + "&limit_tag=" + __addon__.getSetting("maxlimit_tag")
     title = "Search"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({"icon": os.path.join(home, 'resources/media/icons', 'search.png'), "fanart": os.path.join(home, 'resources/media', 'new-search.jpg')})
+    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'), "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
@@ -1230,8 +1230,8 @@ def build_search_directory():
         "url": _server_ + "/api/serie",
         "mode": 3,
         "poster": "none",
-        "icon": os.path.join(home, 'resources/media/icons', 'search.png'),
-        "fanart": os.path.join(home, 'resources/media', 'new-search.jpg'),
+        "icon": os.path.join(_home_, 'resources/media/icons', 'search.png'),
+        "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg'),
         "type": "",
         "plot": "",
         "extras": "true-search"
@@ -1240,8 +1240,8 @@ def build_search_directory():
         "url": "delete-all",
         "mode": 31,
         "poster": "none",
-        "icon": os.path.join(home, 'resources/media/icons', 'trash.png'),
-        "fanart": os.path.join(home, 'resources/media', 'clear-search.jpg'),
+        "icon": os.path.join(_home_, 'resources/media/icons', 'trash.png'),
+        "fanart": os.path.join(_home_, 'resources/media', 'clear-search.jpg'),
         "type": "",
         "plot": "",
         "extras": ""
@@ -1258,8 +1258,8 @@ def build_search_directory():
                     "url": _server_ + "/api/serie/search?query=" + ss[0],
                     "mode": 3,
                     "poster": "none",
-                    "icon": os.path.join(home, 'resources/media/icons', 'tag.png'),
-                    "fanart": os.path.join(home, '', 'fanart.jpg'),
+                    "icon": os.path.join(_home_, 'resources/media/icons', 'tag.png'),
+                    "fanart": os.path.join(_home_, '', 'fanart.jpg'),
                     "type": "",
                     "plot": "",
                     "extras": "force-search",
@@ -1303,6 +1303,11 @@ def execute_search_and_add_query():
 
 
 def build_raw_list(params):
+    """
+    Build list of RawFiles (ex. Unsort)
+    :param params: json body with all files to draw
+    :return:
+    """
     xbmcplugin.setContent(handle, 'files')
     try:
         html = get_json(params['url'])
@@ -1448,16 +1453,6 @@ def play_continue_item():
         pass
 
 
-# TODO: Trakt_Scrobble unimplemented in Shoko
-def trakt_scrobble(data=""):
-    """
-
-    Args:
-        data:
-    """
-    xbmcgui.Dialog().ok('WIP', str(data))
-
-
 def vote_series(params):
     """
     Marks a rating for a series
@@ -1593,7 +1588,7 @@ def remove_missing_files():
     refresh()
 
 
-# Setting up Remote Debug
+# region Setting up Remote Debug
 if __addon__.getSetting('remote_debug') == 'true':
     try:
         if pydevd:
@@ -1604,6 +1599,7 @@ if __addon__.getSetting('remote_debug') == 'true':
     except Exception as ex:
         error('pydevd not found, disabling remote_debug', str(ex))
         __addon__.setSetting('remote_debug', 'false')
+#endregion
 
 # Script run from here
 if valid_user() is True:
