@@ -1,8 +1,11 @@
 v2.1.0 ()
-- Nakamori not use purly a new Shoko API v2 Interface to communicate
+- Nakamori not use purely a new Shoko API v2 Interface to communicate
 - Shoko Server should be 3.7.0.4 or higher
 - Code have been clean off any legacy (unused) code
 - Brand new Search option with local Database to store your favorite 'search query'
+- Added 'The coast of seven leages in Kamakura' as New Search Art
+- Added 'Red Fuji southern wind clear morning' as Clear Search Art
+- Added icons for Search History
 
 v2.0.19 (18/01/2017)
 - Adding "Trigger Voting after each episode"

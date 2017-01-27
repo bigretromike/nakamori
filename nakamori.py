@@ -872,10 +872,8 @@ def build_filters_menu():
     # region Start Add_Search
     url = _server_ + "/api/serie/search?limit=" + __addon__.getSetting("maxlimit") + "&limit_tag=" + __addon__.getSetting("maxlimit_tag")
     title = "Search"
-    thumb = _server_ + "/image/support/plex_others.png"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({'thumb': thumb, 'poster': thumb})
-    liz.setIconImage('DefaultVideo.png')
+    liz.setArt({"icon": os.path.join(home, 'resources/media/icons', 'search.png'), "fanart": os.path.join(home, 'resources/media', 'new-search.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
@@ -1232,8 +1230,8 @@ def build_search_directory():
         "url": _server_ + "/api/serie",
         "mode": 3,
         "poster": "none",
-        "icon": os.path.join(home, 'resources/media', 'new-search.jpg'),
-        "fanart": os.path.join(home, '', 'fanart.jpg'),
+        "icon": os.path.join(home, 'resources/media/icons', 'search.png'),
+        "fanart": os.path.join(home, 'resources/media', 'new-search.jpg'),
         "type": "",
         "plot": "",
         "extras": "true-search"
@@ -1242,8 +1240,8 @@ def build_search_directory():
         "url": "delete-all",
         "mode": 31,
         "poster": "none",
-        "icon": os.path.join(home, 'resources/media', 'clear-search.jpg'),
-        "fanart": os.path.join(home, '', 'fanart.jpg'),
+        "icon": os.path.join(home, 'resources/media/icons', 'trash.png'),
+        "fanart": os.path.join(home, 'resources/media', 'clear-search.jpg'),
         "type": "",
         "plot": "",
         "extras": ""
@@ -1260,7 +1258,7 @@ def build_search_directory():
                     "url": _server_ + "/api/serie/search?query=" + ss[0],
                     "mode": 3,
                     "poster": "none",
-                    "icon": os.path.join(home, 'resources/media', 'main-search.jpg'),
+                    "icon": os.path.join(home, 'resources/media/icons', 'tag.png'),
                     "fanart": os.path.join(home, '', 'fanart.jpg'),
                     "type": "",
                     "plot": "",
@@ -1271,10 +1269,11 @@ def build_search_directory():
             pass
 
     for detail in items:
-        u = sys.argv[0] + "?url=" + detail['url'] + "&mode="+str(detail['mode']) + "&name=" + urllib.quote_plus(detail['title'].encode("utf-8")) + "&icon=" + detail['icon'] + "&extras=" + detail['extras']
-        liz = xbmcgui.ListItem(detail['title'].encode("utf-8"), iconImage=detail['icon'], thumbnailImage=detail['icon'])
+        u = sys.argv[0] + "?url=" + detail['url'] + "&mode="+str(detail['mode']) + "&name=" + urllib.quote_plus(detail['title'].encode("utf-8")) + "&extras=" + detail['extras']
+        liz = xbmcgui.ListItem(detail['title'].encode("utf-8"))
+        liz.setArt({'thumb': detail['icon'], 'poster': detail['poster'], 'icon': detail['icon'], 'fanart': detail['fanart']})
         liz.setInfo(type=detail['type'], infoLabels={"Title": detail['title'].encode("utf-8"), "Plot": detail['plot']})
-        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url = u, listitem = liz, isFolder = True)
+        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle)
 
 
