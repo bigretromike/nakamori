@@ -592,8 +592,35 @@ def add_content_typ_dir(name, serie_id):
     """
     url = _server_ + "/api/serie?id=" + str(serie_id) + "&level=4"
     title = str(name)
-    # TODO : add proper icon
-    thumb = _server_ + "/image/support/plex_others.png"
+    thumb = _server_ + "/api/image/support/"
+
+    if title == "Credit":
+        thumb += "plex_credits.png"
+    elif title == "Movie":
+        thumb += "plex_movies.png"
+    elif title == "Ova":
+        thumb += "plex_ovas.png"
+    elif title == "Other":
+        thumb += "plex_others.png"
+    elif title == "Episode":
+        thumb += "plex_episodes.png"
+    elif title == "TV Episode":
+        thumb += "plex_tvepisodes.png"
+    elif title == "Web Clip":
+        thumb += "plex_webclips.png"
+    elif title == "Episode":
+        thumb += "plex_episodes.png"
+    elif title == "Parody":
+        thumb += "plex_parodies.png"
+    elif title == "Special":
+        thumb += "plex_specials.png"
+    elif title == "Trailer":
+        thumb += "plex_trailers.png"
+    elif title == "Misc":
+        thumb += "plex_misc.png"
+    else:
+        thumb += "plex_others.png"
+
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
@@ -992,7 +1019,7 @@ def build_serie_episodes_types(params):
                 if len(body["eps"]) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
-                            content_type[ep["eptype"]] =  ep["art"]["thumb"][0]["url"]
+                            content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"]
             # no matter what type is its only one type, flat directory
             if len(content_type) == 1:
                 build_serie_episodes(params)
