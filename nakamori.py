@@ -754,7 +754,7 @@ def add_serie_item(node, parent_title):
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
     temp_genre = get_tags(node.get("tags", ""))
-    title = node['title']
+    title = node['name']
     size = node["size"]
     content_type = node["type"] if not is_filter else "filter"
     details = {
@@ -836,10 +836,10 @@ def build_filters_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         json_menu = json.loads(get_json(_server_ + "/api/filter"))
-        set_window_heading(json_menu['title'])
+        set_window_heading(json_menu['name'])
         try:
             for menu in json_menu["filters"]:
-                title = menu['title']
+                title = menu['name']
                 use_mode = 4
                 key = menu["url"]
                 size = safeInt(menu["size"])
@@ -941,13 +941,14 @@ def build_groups_menu(params, json_body=None):
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'])
                 xbmc.log(html)
+            dbg(html)
             body = json.loads(html)
         else:
             body = json_body
 
         # check if this is maybe filter-inception
         try:
-            set_window_heading(body['title'])
+            set_window_heading(body['name'])
         except:
             try: # this might not be a filter
                 # it isn't single filter
@@ -959,7 +960,7 @@ def build_groups_menu(params, json_body=None):
                 pass
 
         try:
-            parent_title = body['title']
+            parent_title = body['name']
 
             directory_type = body['type']
             filter_id = ''
