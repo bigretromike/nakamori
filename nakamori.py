@@ -519,7 +519,7 @@ def get_cast_and_role(data):
     if data is not None:
         for char in data:
             char_charname = char["role"]
-            char_seiyuuname = char["name"]
+            char_seiyuuname = char['name']
             char_seiyuupic = char["rolepic"]
 
             # only add it if it has data
@@ -754,7 +754,7 @@ def add_serie_item(node, parent_title):
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
     temp_genre = get_tags(node.get("tags", ""))
-    title = node["name"]
+    title = node['title']
     size = node["size"]
     content_type = node["type"] if not is_filter else "filter"
     details = {
@@ -836,10 +836,10 @@ def build_filters_menu():
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         json_menu = json.loads(get_json(_server_ + "/api/filter"))
-        set_window_heading(json_menu["name"])
+        set_window_heading(json_menu['title'])
         try:
             for menu in json_menu["filters"]:
-                title = menu["name"]
+                title = menu['title']
                 use_mode = 4
                 key = menu["url"]
                 size = safeInt(menu["size"])
@@ -947,7 +947,7 @@ def build_groups_menu(params, json_body=None):
 
         # check if this is maybe filter-inception
         try:
-            set_window_heading(body["name"])
+            set_window_heading(body['title'])
         except:
             try: # this might not be a filter
                 # it isn't single filter
@@ -959,7 +959,7 @@ def build_groups_menu(params, json_body=None):
                 pass
 
         try:
-            parent_title = body["name"]
+            parent_title = body['title']
 
             directory_type = body['type']
             filter_id = ''
