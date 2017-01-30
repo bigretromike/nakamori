@@ -442,9 +442,9 @@ def get_title(data):
     """
     try:
         if __addon__.getSetting('use_server_title') == 'true':
-            return encode(data["title"])
+            return encode(data['name'])
         # xbmc.log(data.get('title', 'Unknown'))
-        title = encode(data["title"].lower())
+        title = encode(data['name'].lower())
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
                 or title == 'special' or title == 'specials' \
@@ -452,7 +452,7 @@ def get_title(data):
                 or title == 'credit' or title == 'credits' \
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
-            return encode(data["title"])
+            return encode(data['name'])
 
         lang = __addon__.getSetting("displaylang")
         title_type = __addon__.getSetting("title_type")
@@ -472,10 +472,10 @@ def get_title(data):
                     if titleTag["Language"].lower() == 'x-jat':
                         return encode(titleTag["Title"])
             # fallback on directory title
-            return encode(data["title"])
+            return encode(data['name'])
         except Exception as expc:
             error('Error thrown on getting title', str(expc))
-            return encode(data["title"])
+            return encode(data['name'])
     except Exception as exw:
         error("get_title Exception", str(exw))
         return 'Error'
@@ -901,7 +901,7 @@ def build_filters_menu():
         error("Invalid JSON Received in build_filters_menu", str(e))
 
     # region Start Add_Search
-    url = _server_ + "/api/serie/search"
+    url = _server_ + "/api/search"
     title = "Search"
     liz = xbmcgui.ListItem(label=title, label2=title, path=url)
     liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'), "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
@@ -1294,7 +1294,7 @@ def build_search_directory():
             if len(ss[0]) > 0:
                 items.append({
                     "title": ss[0],
-                    "url": _server_ + "/api/serie/search?query=" + ss[0],
+                    "url": _server_ + "/api/search?query=" + ss[0],
                     "mode": 3,
                     "poster": "none",
                     "icon": os.path.join(_home_, 'resources/media/icons', 'tag.png'),
@@ -1342,7 +1342,7 @@ def execute_search_and_add_query():
         # if its not add to history & refresh
         search.add_search_history(find)
         xbmc.executebuiltin('Container.Refresh')
-    search_for(_server_ + "/api/serie/search?query=" + find)
+    search_for(_server_ + "/api/search?query=" + find)
 
 
 def build_raw_list(params):
