@@ -809,7 +809,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
 
     url = key
     set_watch_flag(extra_data, details)
-    use_mode = 5 if not is_filter else 4
+    use_mode = 4 if not is_filter else 4
 
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
@@ -936,7 +936,7 @@ def build_groups_menu(params, json_body=None):
 
     try:
         if json_body is None:
-            # level 3 will fill group and series
+            # level 3 will fill group and series (for filter)
             html = get_json(params['url'] + "&level=3")
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'])
@@ -984,6 +984,9 @@ def build_groups_menu(params, json_body=None):
             elif directory_type == 'filters':
                 for flt in body["filters"]:
                     add_group_item(flt, parent_title, filter_id)
+            elif directory_type == 'group':
+                for sers in body['series']:
+                    add_serie_item(sers, parent_title)
 
         except Exception as e:
             error("Error during build_groups_menu", str(e))
@@ -1011,7 +1014,7 @@ def build_serie_episodes_types(params):
         try:
             parent_title = ''
             try:
-                parent_title = body["title"]
+                parent_title = body['name']
             except Exception as exc:
                 error("Unable to get parent title in buildTVSeasons", str(exc))
 
@@ -1020,7 +1023,8 @@ def build_serie_episodes_types(params):
                 if len(body["eps"]) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
-                            content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"]
+                            # TODO add image for those without thumb
+                            content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"] if len(ep["art"]["thumb"]) > 0 else ''
             # no matter what type is its only one type, flat directory
             if len(content_type) == 1:
                 build_serie_episodes(params)
@@ -1065,7 +1069,7 @@ def build_serie_episodes(params):
         try:
             parent_title = ''
             try:
-                parent_title = body["title"]
+                parent_title = body['name']
                 set_window_heading(parent_title)
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
@@ -1108,7 +1112,7 @@ def build_serie_episodes(params):
 
                 temp_genre = get_tags(body["tags"])
                 parent_key = body["id"]
-                grandparent_title = encode(body["title"])
+                grandparent_title = encode(body['name'])
 
             if len(body["eps"]) > 0:
                 for video in body["eps"]:
@@ -1132,8 +1136,8 @@ def build_serie_episodes(params):
                             # Required listItem entries for XBMC
                             details = {
                                 'plot':          "..." if skip else remove_anidb_links(encode(video["summary"])),
-                                'title':         encode(video["title"]),
-                                'sorttitle':     encode(video["title"]),
+                                'title':         encode(video['name']),
+                                'sorttitle':     encode(video['name']),
                                 'parenttitle':   encode(parent_title),
                                 'rating':        float(str(video["rating"]).replace(',', '.')),
                                 'userrating':    float(str(video["UserRating"]).replace(',', '.')) if "UserRating" in video else 0,
@@ -1153,7 +1157,7 @@ def build_serie_episodes(params):
                                 'aired':         video["air"],
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         safeInt(video["votes"]),
-                                'originaltitle': encode(video["title"]),
+                                'originaltitle': encode(video['name']),
                                 'size': safeInt(body["size"])
                             }
 
