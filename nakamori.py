@@ -38,7 +38,7 @@ def valid_user():
     """
     version = get_version()
     if version == 'legacy' or version == '3.6.1.0':
-        error('Please upgrade Shoko', 'You are using unsupported version of Shoko.')
+        error('Please upgrade Shoko', 'You are using an unsupported version of Shoko.')
         return False
 
     # reset apikey if user enters new login info
@@ -275,6 +275,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
 
+        # TODO Refactor this out into the above method
         # For all video items
         if not folder:
             liz.setProperty('IsPlayable', 'true')
@@ -442,7 +443,7 @@ def get_title(data):
 
     """
     try:
-        if __addon__.getSetting('use_server_title') == 'true':
+        if 'titles' not in data or __addon__.getSetting('use_server_title') == 'true':
             return encode(data['name'])
         # xbmc.log(data.get('title', 'Unknown'))
         title = encode(data['name'].lower())
@@ -492,6 +493,7 @@ def get_tags(tag_node):
 
     """
     try:
+        if tag_node is None: return
         if len(tag_node) > 0:
             temp_genres = []
             temp_genre = ''
@@ -847,7 +849,7 @@ def build_filters_menu():
 
                 if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
-                # TODO : is it not lang related? because we can 'if /file/unsort'
+                # This is related. Even if we remove the use_mode, it renames Unsort to Unsorted (which is actually a word)
                 elif title == 'Unsort':
                     title = 'Unsorted'
                     use_mode = 8
