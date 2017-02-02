@@ -869,6 +869,7 @@ def build_tv_shows(params, extra_directories=None):
 
     """
     # xbmcgui.Dialog().ok('MODE=4','IN')
+    # xbmcgui.Dialog().ok('MODE=4', str(params['url']))
     xbmcplugin.setContent(handle, 'tvshows')
     if __addon__.getSetting('use_server_sort') == 'false' and extra_directories is None:
         xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -978,11 +979,11 @@ def build_tv_shows(params, extra_directories=None):
                         filterid = params.get('filterid', '')
                         if directory_type == 'AnimeGroupFilter':
                             filterid = directory.get('GenericId', '')
-                        length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                                     + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/") + 1
-                        key = key[length:]
-                        key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + '/2/' + key
+                        # length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+                        #             + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/") + 2
+                        #key = key[length:]
+                        #key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
+                        #      + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + '/0/' + key
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -1815,6 +1816,7 @@ if valid_user() is True:
         elif cmd == 'rehash':
             rescan_file(parameters, False)
     else:
+        # xbmcgui.Dialog().ok('mode', str(mode))
         if mode == 1:  # VIDEO
             # xbmcgui.Dialog().ok('MODE=1','MODE')
             try:
