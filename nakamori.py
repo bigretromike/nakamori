@@ -939,13 +939,18 @@ def build_groups_menu(params, json_body=None):
 
     try:
         if json_body is None:
-            # level 3 will fill group and series (for filter)
-            html = get_json(params['url'] + "&level=3")
+            html = get_json(params['url'] + "&nocast=1&notag=1&level=1")
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'])
                 xbmc.log(html)
-            dbg(html)
-            body = json.loads(html)
+            html_body = json.loads(html)
+            directory_type = html_body['type']
+            if directory_type != "filters":
+                # level 3 will fill group and series (for filter)
+                html = get_json(params['url'] + "&level=3")
+                body = json.loads(html)
+            else:
+                body = html_body
         else:
             body = json_body
 
@@ -986,7 +991,7 @@ def build_groups_menu(params, json_body=None):
                                 add_group_item(grp, parent_title, filter_id)
             elif directory_type == 'filters':
                 for flt in body["filters"]:
-                    add_group_item(flt, parent_title, filter_id)
+                    add_group_item(flt, parent_title, filter_id, True)
             elif directory_type == 'group':
                 for sers in body['series']:
                     add_serie_item(sers, parent_title)
