@@ -278,6 +278,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
         # For all video items
         if not folder:
             liz.setProperty('IsPlayable', 'true')
+            liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
                     liz.setProperty('TotalTime', str(extra_data.get('duration')))
@@ -1137,7 +1138,7 @@ def build_serie_episodes(params):
                             details = {
                                 'plot':          "..." if skip else remove_anidb_links(encode(video["summary"])),
                                 'title':         encode(video['name']),
-                                'sorttitle':     encode(video['name']),
+                                'sorttitle':     str(video["epnumber"]) + " " + encode(video['name']),
                                 'parenttitle':   encode(parent_title),
                                 'rating':        float(str(video["rating"]).replace(',', '.')),
                                 'userrating':    float(str(video["UserRating"]).replace(',', '.')) if "UserRating" in video else 0,
