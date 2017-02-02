@@ -1,3 +1,6 @@
+v2.0.21 (02/02/2017)
+- fix grouped series (sorry about that)
+
 v2.0.20 (02/02/2017)
 - moving to proper api url
 - fixing missing subtitle stream index

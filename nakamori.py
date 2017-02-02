@@ -979,10 +979,10 @@ def build_tv_shows(params, extra_directories=None):
                         if directory_type == 'AnimeGroupFilter':
                             filterid = directory.get('GenericId', '')
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
+                                     + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + '/' + key + '/' + filterid
+                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + '/2/' + key
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -1139,10 +1139,10 @@ def build_tv_seasons(params, extra_directories=None):
                         if directory_type == 'AnimeGroupFilter':
                             filterid = atype.get('GenericId', '')
                         length = len("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-                                     + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
+                                     + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + '/' + key + '/' + filterid
+                              + "/JMMServerKodi/GetMetadata/" + __addon__.getSetting("userid") + '/2/' + key
 
                 extra_data = {
                     'type':                 'video',
