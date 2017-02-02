@@ -9,6 +9,7 @@ v2.1.0 ()
 - Ignore Vote_All setting when you already voted on object (#185)
 - Added Trakt support (via Shoko APIv2) (#33)
 - Disable gzip on localhost (#161)
+- Episodes sort if fixed for webinterface (#176)
 
 v2.0.19 (18/01/2017)
 - Adding "Trigger Voting after each episode"
