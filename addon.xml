@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.0.19" provider-name="BigRetroMike">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.0.20" provider-name="BigRetroMike">
 	<extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
 	</extension>
@@ -10,7 +10,7 @@
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
 		<language>en</language>
 		<source>https://github.com/bigretromike/nakamori/</source>
-		<email>bigretromike at monogatari dot pl</email>
+		<website>https://shokunin.monogatari.pl/nakamori/</website>
 		<disclaimer lang="en">Remember to change IP address in settings if your JMM Server is not on the same computer as Kodi.</disclaimer>
 	</extension>
 </addon>

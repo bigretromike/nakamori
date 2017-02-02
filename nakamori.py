@@ -982,7 +982,7 @@ def build_tv_shows(params, extra_directories=None):
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/api/metadata/" + key + '/' + filterid
+                              + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + '/' + key + '/' + filterid
 
                 thumb = gen_image_url(directory.get('thumb'))
                 fanart = gen_image_url(directory.get('art', thumb))
@@ -1142,7 +1142,7 @@ def build_tv_seasons(params, extra_directories=None):
                                      + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + "/") + 1
                         key = key[length:]
                         key = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") \
-                              + "/api/metadata/" + key + '/' + filterid
+                              + "jmmserverkodi/getmetadata/" + __addon__.getSetting("userid") + '/' + key + '/' + filterid
 
                 extra_data = {
                     'type':                 'video',
@@ -1386,7 +1386,7 @@ def build_tv_episodes(params):
                     elif stream == 3:
                         # Subtitle
                         streams = extra_data.get('SubStreams')
-                        streamid = int(stream_info.get('index'))
+                        streamid = int(stream_info.get('index', 0))
                         streams[streamid]['SubtitleLanguage'] = stream_info.get('languageCode')
                         extra_data['SubStreams'] = streams
                     else:
