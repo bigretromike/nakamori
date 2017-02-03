@@ -1148,7 +1148,7 @@ def build_serie_episodes(params):
                                 'title':         encode(video['name']),
                                 'sorttitle':     str(video["epnumber"]) + " " + encode(video['name']),
                                 'parenttitle':   encode(parent_title),
-                                'rating':        float(str(video["rating"]).replace(',', '.')),
+                                'rating':        float(str(video.get("rating",'')).replace(',', '.')),
                                 'userrating':    float(str(video["UserRating"]).replace(',', '.')) if "UserRating" in video else 0,
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                                 # This doesn't work, some gremlins be afoot in this code...
@@ -1163,14 +1163,14 @@ def build_serie_episodes(params):
                                 'year':          safeInt(video["year"]),
                                 'tagline':       "..." if skip else temp_genre,
                                 'episode':       safeInt(video["epnumber"]),
-                                'aired':         video["air"],
+                                'aired':         video.get("air",''),
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         safeInt(video["votes"]),
                                 'originaltitle': encode(video['name']),
                                 'size': safeInt(body["size"])
                             }
 
-                            season = str(body["season"])
+                            season = str(body["season"] if 'season' in body else '1')
                             try:
                                 if season != '1':
                                     season = season.split('x')[0]
