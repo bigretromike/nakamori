@@ -692,14 +692,14 @@ def add_serie_item(node, parent_title):
         # 'premiered'    : premiered,
         # 'Status'       : status,
         # code           : string (tt0110293, - IMDb code
-        'aired':            node["air"],
+        'aired':            node["air"] if 'air' in node else "",
         # credits        : string (Andy Kaufman, - writing credits
         # 'Lastplayed'   : lastplayed,
         ### 'votes':            directory.get('votes'),
         # trailer        : string (/home/user/trailer.avi,
         ### 'dateadded':        directory.get('addedAt')
     }
-    temp_date = str(node["air"]).split('-')
+    temp_date = str(node["air"]  if 'air' in node else "").split('-')
     if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
         details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
@@ -764,9 +764,9 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
-        'year':             safeInt(node["year"]) if "year" in node else "2001",
+        'year':             safeInt(node["year"]) if "year" in node else "",
         'episode':          size,
-        'season':           safeInt(node["season"]) if "season" in node else "0",
+        'season':           safeInt(node["season"]) if "season" in node else "1",
         'size':             size,
         'rating':           float(str(node["rating"] if node["rating"] is not None else 0.0).replace(',', '.')) if "rating" in node else "0.0",
         'playcount':        int(node["viewed"]) if "viewed" in node else "0",
@@ -774,7 +774,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
-        'dateadded':        node["added"] if "added" in node else "01-01-2001"
+        'dateadded':        node["added"] if "added" in node else ""
     }
 
     key_id = str(node["id"])
