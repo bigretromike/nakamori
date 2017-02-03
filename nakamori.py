@@ -639,7 +639,7 @@ def add_serie_item(node, parent_title):
     # xbmcgui.Dialog().ok('series', 'series')
     if 'tags' in node:
         temp_genre = get_tags(node["tags"])
-    watched = int(node["viewed"] if 'viewed' in node else '')
+    watched = int(node["viewed"] if 'viewed' in node else '0')
 
     list_cast = []
     list_cast_and_role = []
@@ -671,16 +671,16 @@ def add_serie_item(node, parent_title):
         'season':           safeInt(node["season"]),
         # 'count'        : count,
         'size':             total,
-        'Date':             node["air"],
+        'Date':             node.get("air", ''),
         'rating':           float(str(node["rating"]).replace(',', '.')),
         'userrating':       float(userrating),
-        'playcount':        int(node["viewed"]),
+        'playcount':        int(node.get("viewed", '0')),
         # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
         'cast':             list_cast,  # cast : list (Michal C. Hall,
         'castandrole':      list_cast_and_role,
         # director       : string (Dagur Kari,
         ### 'mpaa':             directory.get('contentRating', ''),
-        'plot':             remove_anidb_links(encode(node["summary"])),
+        'plot':             remove_anidb_links(encode(node.get("summary", '...'))),
         # 'plotoutline'  : plotoutline,
         'originaltitle':    title,
         'sorttitle':        title,
