@@ -637,13 +637,14 @@ def add_content_typ_dir(name, serie_id):
 
 def add_serie_item(node, parent_title):
     # xbmcgui.Dialog().ok('series', 'series')
-    temp_genre = get_tags(node["tags"])
-    watched = int(node["viewed"])
+    if 'tags' in node:
+        temp_genre = get_tags(node["tags"])
+    watched = int(node["viewed"] if 'viewed' in node else '')
 
     list_cast = []
     list_cast_and_role = []
     actors = []
-    if len(list_cast) == 0:
+    if len(list_cast) == 0 and 'roles' in node:
         result_list = get_cast_and_role(node["roles"])
         actors = result_list
         if result_list is not None:
@@ -656,7 +657,7 @@ def add_serie_item(node, parent_title):
     else:
         total = safeInt(node["size"])
     title = get_title(node)
-    if node["userrating"] is not None:
+    if "userrating" in node:
         userrating = str(node["userrating"]).replace(',', '.')
     else:
         userrating = 0.0
