@@ -305,11 +305,20 @@ def post(url, data, headers={}):
     return data
 
 
+def get_server_status():
+    try:
+        if get_version() != LooseVersion('0.0'):
+            return True
+        else:
+            return False
+    except:
+        return False
+
+
 # json - ok
 def get_version():
     legacy = LooseVersion('0.0')
-    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") +
-                         "/api/version")
+    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version")
     if json_file is None:
         return legacy
     try:

@@ -31,6 +31,10 @@ _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSe
 _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 
+def valid_connect():
+    return util.get_server_status()
+
+
 def valid_user():
     """
     Logs into the server and stores the apikey, then checks if the userid is valid
@@ -1399,6 +1403,19 @@ def build_raw_list(params):
 
     xbmcplugin.endOfDirectory(handle, True, False, False)
 
+
+def build_network_menu():
+    url = _server_ + "/api/version"
+    title = "Network connection error"
+    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'), "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+    xbmcplugin.endOfDirectory(handle, True, False, False)
+
 # endregion
 
 
@@ -1711,110 +1728,115 @@ if __addon__.getSetting('remote_debug') == 'true':
 #endregion
 
 # Script run from here
-if valid_user() is True:
-    try:
-        parameters = util.parseParameters()
-    except Exception as exp:
-        error('valid_userid parseParameters() error', str(exp))
-        parameters = {'mode': 2}
-    if parameters:
-        try:
-            mode = int(parameters['mode'])
-        except Exception as exp:
-            error('valid_userid set \'mode\' error', str(exp) + " parameters: " + str(parameters))
-            mode = None
-    else:
-        mode = None
-    try:
-        if 'cmd' in parameters:
-            cmd = parameters['cmd']
-        else:
-            cmd = None
-    except:
-        cmd = None
 
-    if cmd is not None:
-        if cmd == "voteSer":
-            vote_series(parameters)
-        elif cmd == "voteEp":
-            vote_episode(parameters)
-        elif cmd == "watched":
-            if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0:
+if valid_connect() is True:
+    if valid_user() is True:
+        try:
+            parameters = util.parseParameters()
+        except Exception as exp:
+            error('valid_userid parseParameters() error', str(exp))
+            parameters = {'mode': 2}
+        if parameters:
+            try:
+                mode = int(parameters['mode'])
+            except Exception as exp:
+                error('valid_userid set \'mode\' error', str(exp) + " parameters: " + str(parameters))
+                mode = None
+        else:
+            mode = None
+        try:
+            if 'cmd' in parameters:
+                cmd = parameters['cmd']
+            else:
+                cmd = None
+        except:
+            cmd = None
+
+        if cmd is not None:
+            if cmd == "voteSer":
+                vote_series(parameters)
+            elif cmd == "voteEp":
+                vote_episode(parameters)
+            elif cmd == "watched":
+                if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0:
+                    try:
+                        win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                        ctl = win.getControl(win.getFocusId())
+                        # noinspection PyTypeChecker
+                        ui_index = parameters.get('ui_index', '')
+                        if ui_index != '':
+                            move_position_on_list(ctl, int(ui_index) + 1)
+                    except Exception as exp:
+                        xbmc.log(str(exp), xbmc.LOGWARNING)
+                        pass
+                parameters['watched'] = True
+                watched_mark(parameters)
+                voting = __addon__.getSetting("vote_always")
+                if voting == "true":
+                    vote_episode(parameters)
+            elif cmd == "unwatched":
+                parameters['watched'] = False
+                watched_mark(parameters)
+            elif cmd == "playlist":
+                play_continue_item()
+            elif cmd == "no_mark":
+                __addon__.setSetting('no_mark', '1')
+                xbmc.executebuiltin('Action(Select)')
+            elif cmd == 'rescan':
+                rescan_file(parameters, True)
+            elif cmd == 'rehash':
+                rescan_file(parameters, False)
+            elif cmd == 'missing':
+                remove_missing_files()
+        else:
+            # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
+            if mode == 1:  # play_file
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
-                    # noinspection PyTypeChecker
-                    ui_index = parameters.get('ui_index', '')
-                    if ui_index != '':
-                        move_position_on_list(ctl, int(ui_index) + 1)
+                    if play_video(parameters['file'], parameters['ep_id'], parameters['file_id'] if 'id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
+                        # noinspection PyTypeChecker
+                        ui_index = parameters.get('ui_index', '')
+                        if ui_index != '':
+                            move_position_on_list(ctl, int(ui_index) + 1)
+                        parameters['watched'] = True
+                        watched_mark(parameters)
+                        if __addon__.getSetting('vote_always') == 'true':
+                            if parameters.get('userrate', 0) == 0:
+                                vote_episode(parameters)
                 except Exception as exp:
                     xbmc.log(str(exp), xbmc.LOGWARNING)
                     pass
-            parameters['watched'] = True
-            watched_mark(parameters)
-            voting = __addon__.getSetting("vote_always")
-            if voting == "true":
-                vote_episode(parameters)
-        elif cmd == "unwatched":
-            parameters['watched'] = False
-            watched_mark(parameters)
-        elif cmd == "playlist":
-            play_continue_item()
-        elif cmd == "no_mark":
-            __addon__.setSetting('no_mark', '1')
-            xbmc.executebuiltin('Action(Select)')
-        elif cmd == 'rescan':
-            rescan_file(parameters, True)
-        elif cmd == 'rehash':
-            rescan_file(parameters, False)
-        elif cmd == 'missing':
-            remove_missing_files()
+            elif mode == 2:  # DIRECTORY
+                xbmcgui.Dialog().ok('MODE=2', 'MODE')
+            elif mode == 3:  # Search
+                try:
+                    if parameters['extras'] == "force-search":
+                        search_for(parameters['url'])
+                    else:
+                        xbmcplugin.setContent(int(handle), "movies")
+                        execute_search_and_add_query()
+                except:
+                    build_search_directory()
+            elif mode == 4:  # Group/Serie
+                build_groups_menu(parameters)
+            elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
+                build_serie_episodes_types(parameters)
+            elif mode == 6:  # Serie Episodes (list of episodes)
+                build_serie_episodes(parameters)
+            elif mode == 7:  # Playlist -continue-
+                play_continue_item()
+            elif mode == 8:  # File List
+                build_raw_list(parameters)
+            elif mode == 31:
+                search.clear_search_history(parameters)
+            else:
+                build_filters_menu()
     else:
-        # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
-        if mode == 1:  # play_file
-            try:
-                win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                ctl = win.getControl(win.getFocusId())
-                if play_video(parameters['file'], parameters['ep_id'], parameters['file_id'] if 'id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
-                    # noinspection PyTypeChecker
-                    ui_index = parameters.get('ui_index', '')
-                    if ui_index != '':
-                        move_position_on_list(ctl, int(ui_index) + 1)
-                    parameters['watched'] = True
-                    watched_mark(parameters)
-                    if __addon__.getSetting('vote_always') == 'true':
-                        if parameters.get('userrate', 0) == 0:
-                            vote_episode(parameters)
-            except Exception as exp:
-                xbmc.log(str(exp), xbmc.LOGWARNING)
-                pass
-        elif mode == 2:  # DIRECTORY
-            xbmcgui.Dialog().ok('MODE=2', 'MODE')
-        elif mode == 3:  # Search
-            try:
-                if parameters['extras'] == "force-search":
-                    search_for(parameters['url'])
-                else:
-                    xbmcplugin.setContent(int(handle), "movies")
-                    execute_search_and_add_query()
-            except:
-                build_search_directory()
-        elif mode == 4:  # Group/Serie
-            build_groups_menu(parameters)
-        elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
-            build_serie_episodes_types(parameters)
-        elif mode == 6:  # Serie Episodes (list of episodes)
-            build_serie_episodes(parameters)
-        elif mode == 7:  # Playlist -continue-
-            play_continue_item()
-        elif mode == 8:  # File List
-            build_raw_list(parameters)
-        elif mode == 31:
-            search.clear_search_history(parameters)
-        else:
-            build_filters_menu()
+        error("Incorrect Credentials", "Please change them in Settings")
 else:
-    error("Incorrect Credentials", "Please change in Settings")
+    build_network_menu()
+
 if __addon__.getSetting('remote_debug') == 'true':
     try:
         if pydevd:
