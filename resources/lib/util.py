@@ -82,7 +82,7 @@ def error(msg, error_type='Error'):
         msg: the message to print to log and user notification
         error_type: Type of Error
     """
-    xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__))
+    xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__), xbmc.LOGERROR)
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     key = sys.argv[0]
     if len(sys.argv) > 2 and sys.argv[2] != '':
@@ -104,8 +104,22 @@ def error(msg, error_type='Error'):
 
 def parse_possible_error(data, data_type):
     if data_type == 'json':
-        # TODO actually support this
-        pass
+        stream = json.loads(data)
+        if "StatusCode" in stream:
+            code = stream.get('StatusCode')
+            if code != '200':
+                error_msg = code
+                if code == '500':
+                    error_msg = 'Server Error'
+                elif code == '404':
+                    error_msg = 'Invalid URL: Endpoint not Found in Server'
+                elif code == '503':
+                    error_msg = 'Service Unavailable: Check netsh http'
+                elif code == '401' or code == '403':
+                    error_msg = 'The was refused as unauthorized'
+                error(error_msg, error_type='Network Error: ' + code)
+                if stream.get('Details', '') != '':
+                    xbmc.log(encode(stream.get('Details')), xbmc.LOGERROR)
     elif data_type == 'xml':
         stream = xml(data)
         if stream.get('Code', '') != '':
@@ -180,7 +194,7 @@ def get_data(url_in, referer, data_type):
                 data = response.read()
             response.close()
         except Exception as ex:
-            xbmc.log("url: " + str(url))
+            xbmc.log("url: " + str(url), xbmc.LOGERROR)
             error('Connection Failed', str(ex))
             data = None
     except Exception as ex:
@@ -482,7 +496,6 @@ def addDir(name, url, mode, iconimage='DefaultTVShows.png', plot="", poster="Def
     liz.setProperty("Poster_Image", iconimage)
     if mode is not '':
         if mode == 7:
-            xbmc.log('setting addDir as playable')
             ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
         else:
             ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)

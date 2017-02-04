@@ -444,9 +444,9 @@ def get_title(data):
     """
     try:
         if 'titles' not in data or __addon__.getSetting('use_server_title') == 'true':
-            return encode(data['name'])
+            return encode(data.get('name',''))
         # xbmc.log(data.get('title', 'Unknown'))
-        title = encode(data['name'].lower())
+        title = encode(data.get('name','').lower())
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
                 or title == 'special' or title == 'specials' \
@@ -454,7 +454,7 @@ def get_title(data):
                 or title == 'credit' or title == 'credits' \
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
-            return encode(data['name'])
+            return encode(data.get('name',''))
 
         lang = __addon__.getSetting("displaylang")
         title_type = __addon__.getSetting("title_type")
@@ -474,10 +474,10 @@ def get_title(data):
                     if titleTag["Language"].lower() == 'x-jat':
                         return encode(titleTag["Title"])
             # fallback on directory title
-            return encode(data['name'])
+            return encode(data.get('name',''))
         except Exception as expc:
             error('Error thrown on getting title', str(expc))
-            return encode(data['name'])
+            return encode(data.get('name',''))
     except Exception as exw:
         error("get_title Exception", str(exw))
         return 'Error'
@@ -519,7 +519,7 @@ def get_cast_and_role(data):
     Returns: a list of dictionaries for the cast
     """
     result_list = []
-    if data is not None:
+    if data is not None and len(data) > 0:
         for char in data:
             char_charname = char["role"]
             char_seiyuuname = char['name']
@@ -545,7 +545,7 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
     result_list = []
     list_cast = []
     list_cast_and_role = []
-    if len(list_of_dicts) > 0:
+    if list_of_dicts is not None and len(list_of_dicts) > 0:
         for actor in list_of_dicts:
             seiyuu = actor.get('name', '')
             role = actor.get('role', '')
@@ -561,9 +561,9 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
 # region Adding items to list/menu:
 
 def add_raw_files(node):
-    name = encode(node["filename"])
-    file_id = node["id"]
-    key = node["url"]
+    name = encode(node.get("filename",''))
+    file_id = node.get("id",'')
+    key = node.get("url",'')
     url = _server_ + "/api/file?id=" + str(file_id)
     title = os.path.split(str(name))[1]
     thumb = _server_ + "/image/support/plex_others.png"
@@ -593,7 +593,9 @@ def add_content_typ_dir(name, serie_id):
     :param serie_id: id that the content belong too
     :return: add new directory
     """
-    url = _server_ + "/api/serie?id=" + str(serie_id) + "&level=4"
+    url = _server_ + "/api/serie"
+    url = set_parameter(url, 'id', str(serie_id))
+    url = set_parameter(url, 'level', 4)
     title = str(name)
     thumb = _server_ + "/api/image/support/"
 
@@ -638,14 +640,14 @@ def add_content_typ_dir(name, serie_id):
 def add_serie_item(node, parent_title):
     # xbmcgui.Dialog().ok('series', 'series')
     if 'tags' in node:
-        temp_genre = get_tags(node["tags"])
-    watched = int(node["viewed"] if 'viewed' in node else '0')
+        temp_genre = get_tags(node.get("tags",{}))
+    watched = int(node.get("viewed",'0'))
 
     list_cast = []
     list_cast_and_role = []
     actors = []
     if len(list_cast) == 0 and 'roles' in node:
-        result_list = get_cast_and_role(node["roles"])
+        result_list = get_cast_and_role(node.get("roles",{}))
         actors = result_list
         if result_list is not None:
             result_list = convert_cast_and_role_to_legacy(result_list)
@@ -653,12 +655,12 @@ def add_serie_item(node, parent_title):
             list_cast_and_role = result_list[1]
 
     if __addon__.getSetting("local_total") == "true":
-        total = safeInt(node["localsize"])
+        total = safeInt(node.get("localsize",''))
     else:
-        total = safeInt(node["size"])
+        total = safeInt(node.get("size",''))
     title = get_title(node)
     if "userrating" in node:
-        userrating = str(node["userrating"]).replace(',', '.')
+        userrating = str(node.get("userrating",'0')).replace(',', '.')
     else:
         userrating = 0.0
 
@@ -666,13 +668,13 @@ def add_serie_item(node, parent_title):
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
-        'year':             safeInt(node["year"]),
+        'year':             node.get("year",''),
         'episode':          total,
-        'season':           safeInt(node["season"]),
+        'season':           safeInt(node.get("season",'1')),
         # 'count'        : count,
         'size':             total,
         'Date':             node.get("air", ''),
-        'rating':           float(str(node["rating"]).replace(',', '.')),
+        'rating':           float(str(node.get("rating",'0')).replace(',', '.')),
         'userrating':       float(userrating),
         'playcount':        int(node.get("viewed", '0')),
         # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
@@ -693,21 +695,22 @@ def add_serie_item(node, parent_title):
         # 'premiered'    : premiered,
         # 'Status'       : status,
         # code           : string (tt0110293, - IMDb code
-        'aired':            node["air"] if 'air' in node else "",
+        'aired':            node.get("air",''),
         # credits        : string (Andy Kaufman, - writing credits
         # 'Lastplayed'   : lastplayed,
         ### 'votes':            directory.get('votes'),
         # trailer        : string (/home/user/trailer.avi,
         ### 'dateadded':        directory.get('addedAt')
     }
-    temp_date = str(node["air"]  if 'air' in node else "").split('-')
+    temp_date = str(node.get("air",'')).split('-')
     if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
         details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
-    directory_type = str(node["type"])
-    key_id = str(node["id"])
-    key = _server_ + "/api/serie?id=" + key_id
+    directory_type = str(node.get("type",''))
+    key_id = str(node.get("id",''))
+    key = _server_ + "/api/serie"
     key = set_parameter(key, 'id', key_id)
+    key = set_parameter(key, 'level', 2)
     if __addon__.getSetting('request_nocast') == 'true':
         key = set_parameter(key, 'nocast', 1)
 
@@ -742,7 +745,7 @@ def add_serie_item(node, parent_title):
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', use_mode)
-    u = set_parameter(u, 'movie', node['ismovie'] if 'ismovie' in node else 0)
+    u = set_parameter(u, 'movie', node.get('ismovie','0'))
 
     context = []
     url_peep = sys.argv[2] + "&serie_id=" + key_id
@@ -757,34 +760,35 @@ def add_serie_item(node, parent_title):
 
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
-    temp_genre = get_tags(node.get("tags", ""))
-    title = node['name']
-    size = node["size"]
-    content_type = node["type"] if not is_filter else "filter"
+    temp_genre = get_tags(node.get("tags", {}))
+    title = node.get('name','')
+    size = node.get("size",'')
+    content_type = node.get("type",'') if not is_filter else "filter"
     details = {
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
-        'year':             safeInt(node["year"]) if "year" in node else "",
+        'year':             node.get("year",''),
         'episode':          size,
-        'season':           safeInt(node["season"]) if "season" in node else "1",
+        'season':           safeInt(node.get("season",'1')),
         'size':             size,
-        'rating':           float(str(node["rating"] if node["rating"] is not None else 0.0).replace(',', '.')) if "rating" in node else "0.0",
-        'playcount':        int(node["viewed"]) if "viewed" in node else "0",
-        'plot':             remove_anidb_links(encode(node["summary"] if node["summary"] is not None else "...")) if "summary" in node else "...",
+        'rating':           float(str(node.get("rating",'0')).replace(',', '.')),
+        'playcount':        int(node.get("viewed",'0')),
+        'plot':             remove_anidb_links(encode(node.get("summary",'...'))),
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
-        'dateadded':        node["added"] if "added" in node else ""
+        'dateadded':        node.get("added",'')
     }
 
-    key_id = str(node["id"])
+    key_id = str(node.get("id",''))
     if is_filter:
-        key = _server_ + "/api/filter?id=" + key_id
+        key = _server_ + "/api/filter"
     else:
-        key = _server_ + "/api/group?id=" + key_id
+        key = _server_ + "/api/group"
     key = set_parameter(key, 'id', key_id)
     key = set_parameter(key, 'filter', filter_id)
+    key = set_parameter(key, 'level', 1)
     if __addon__.getSetting('request_nocast') == 'true':
         key = set_parameter(key, 'nocast', 1)
 
@@ -856,10 +860,11 @@ def build_filters_menu():
                     use_mode = 8
 
                 if __addon__.getSetting("spamLog") == "true":
-                    xbmc.log("build_filters_menu - key = " + key)
+                    xbmc.log("build_filters_menu - key = " + key, xbmc.LOGWARNING)
 
                 if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
-                    key += '&nocast=1'
+                    key = set_parameter(key, 'nocast', 1)
+                key = set_parameter(key, 'level', 2)
                 url = key
 
                 thumb = ''
@@ -940,15 +945,21 @@ def build_groups_menu(params, json_body=None):
 
     try:
         if json_body is None:
-            html = get_json(params['url'] + "&nocast=1&notag=1&level=1")
+            tempurl = params['url']
+            tempurl = set_parameter(tempurl, 'nocast', 1)
+            tempurl = set_parameter(tempurl, 'notag', 1)
+            tempurl = set_parameter(tempurl, 'level', 1)
+            html = get_json(tempurl)
             if __addon__.getSetting("spamLog") == "true":
-                xbmc.log(params['url'])
-                xbmc.log(html)
+                xbmc.log(params['url'], xbmc.LOGWARNING)
+                xbmc.log(html, xbmc.LOGWARNING)
             html_body = json.loads(html)
             directory_type = html_body['type']
             if directory_type != "filters":
                 # level 3 will fill group and series (for filter)
-                html = get_json(params['url'] + "&level=3")
+                tempurl = params['url']
+                tempurl = set_parameter(tempurl, 'level', 3)
+                html = get_json(tempurl)
                 body = json.loads(html)
             else:
                 body = html_body
@@ -957,27 +968,27 @@ def build_groups_menu(params, json_body=None):
 
         # check if this is maybe filter-inception
         try:
-            set_window_heading(body['name'])
+            set_window_heading(body.get('name',''))
         except:
             try: # this might not be a filter
                 # it isn't single filter
                 for nest_filter in body:
-                    add_group_item(nest_filter, '', body['id'], True)
+                    add_group_item(nest_filter, '', body.get('id',''), True)
                 xbmcplugin.endOfDirectory(handle)
                 return
             except:
                 pass
 
         try:
-            parent_title = body['name']
+            parent_title = body.get('name','')
 
-            directory_type = body['type']
+            directory_type = body.get('type','')
             filter_id = ''
             if directory_type != 'ep' and directory_type != 'serie':
                 if 'filter' in params:
                     filter_id = params['filter']
                     if directory_type == 'filter':
-                        filter_id = body['id']
+                        filter_id = body.get('id','')
 
             if directory_type == 'filter':
                 for grp in body["groups"]:
@@ -1018,18 +1029,18 @@ def build_serie_episodes_types(params):
     try:
         html = get_json(params['url'])
         if __addon__.getSetting("spamLog") == "true":
-            xbmc.log(html)
+            xbmc.log(html, xbmc.LOGWARNING)
         body = json.loads(html)
         try:
             parent_title = ''
             try:
-                parent_title = body['name']
+                parent_title = body.get('name','')
             except Exception as exc:
                 error("Unable to get parent title in buildTVSeasons", str(exc))
 
             content_type = dict()
             if "eps" in body:
-                if len(body["eps"]) >= 1:
+                if len(body.get("eps",{})) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
                             # TODO add image for those without thumb
@@ -1050,7 +1061,7 @@ def build_serie_episodes_types(params):
                     xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
                 for content in content_type:
-                    add_content_typ_dir(content, body["id"])
+                    add_content_typ_dir(content, body.get("id",''))
                 xbmcplugin.endOfDirectory(handle)
                 return
 
@@ -1073,12 +1084,12 @@ def build_serie_episodes(params):
         html = get_json(params['url'])
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
-            xbmc.log(html)
+            xbmc.log(html, xbmc.LOGWARNING)
 
         try:
             parent_title = ''
             try:
-                parent_title = body['name']
+                parent_title = body.get('name','')
                 set_window_heading(parent_title)
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
@@ -1098,9 +1109,9 @@ def build_serie_episodes(params):
             next_episode = -1
             episode_count = 0
 
-            if len(body["eps"]) <= 0:
+            if len(body.get("eps",{})) <= 0:
                 error("No episodes in list")
-            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body["eps"]) > int(
+            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body.get("eps",{})) > int(
                 __addon__.getSetting("skipExtraInfoMaxEpisodes"))
 
             # keep this init out of the loop, as we only provide this once
@@ -1112,18 +1123,18 @@ def build_serie_episodes(params):
             actors = []
             if not skip:
                 if len(list_cast) == 0:
-                    result_list = get_cast_and_role(body["roles"])
+                    result_list = get_cast_and_role(body.get("roles",{}))
                     actors = result_list
                     if result_list is not None:
                         result_list = convert_cast_and_role_to_legacy(result_list)
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
-                temp_genre = get_tags(body["tags"])
-                parent_key = body["id"]
-                grandparent_title = encode(body['name'])
+                temp_genre = get_tags(body.get("tags",{}))
+                parent_key = body.get("id",'')
+                grandparent_title = encode(body.get('name',''))
 
-            if len(body["eps"]) > 0:
+            if len(body.get("eps",{})) > 0:
                 for video in body["eps"]:
                     # check if episode have files
                     episode_type = True
@@ -1148,8 +1159,8 @@ def build_serie_episodes(params):
                                 'title':         encode(video['name']),
                                 'sorttitle':     str(video["epnumber"]) + " " + encode(video['name']),
                                 'parenttitle':   encode(parent_title),
-                                'rating':        float(str(video.get("rating",'')).replace(',', '.')),
-                                'userrating':    float(str(video["UserRating"]).replace(',', '.')) if "UserRating" in video else 0,
+                                'rating':        float(str(video.get("rating",'0')).replace(',', '.')),
+                                'userrating':    float(str(video.get("UserRating",'0')).replace(',', '.')),
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                                 # This doesn't work, some gremlins be afoot in this code...
                                 # it's probably just that it only applies at series level
@@ -1167,10 +1178,10 @@ def build_serie_episodes(params):
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         safeInt(video["votes"]),
                                 'originaltitle': encode(video['name']),
-                                'size': safeInt(body["size"])
+                                'size': safeInt(body.get("size",'0'))
                             }
 
-                            season = str(body["season"] if 'season' in body else '1')
+                            season = str(body.get("season",'1'))
                             try:
                                 if season != '1':
                                     season = season.split('x')[0]
@@ -1205,12 +1216,12 @@ def build_serie_episodes(params):
                                 'key':              key,
                                 # 'resume':           int(int(view_offset) / 1000),<---
                                 'parentKey':        parent_key,
-                                'jmmepisodeid':     safeInt(body["id"]),
+                                'jmmepisodeid':     safeInt(body.get("id",'')),
                                 'actors':           actors,
                                 'AudioStreams':     defaultdict(dict),
                                 'SubStreams':       defaultdict(dict),
-                                'ep_id':            safeInt(video["id"]),
-                                'serie_id':         safeInt(body["id"])
+                                'ep_id':            safeInt(video.get("id",'')),
+                                'serie_id':         safeInt(body.get("id",''))
                             }
 
                             # Information about streams inside video file
@@ -1220,7 +1231,7 @@ def build_serie_episodes(params):
                                         video_file_information(media_info, extra_data)
 
                             # Determine what type of watched flag [overlay] to use
-                            if int(safeInt(video["view"])) > 0:
+                            if int(safeInt(video.get("view",'0'))) > 0:
                                 details['playcount'] = 1
                                 # details['overlay'] = 5
                             else:
@@ -1245,8 +1256,8 @@ def build_serie_episodes(params):
                             u = set_parameter(u, 'url', url)
                             u = set_parameter(u, 'mode', 1)
                             u = set_parameter(u, 'file', key)
-                            u = set_parameter(u, 'ep_id', video["id"])
-                            u = set_parameter(u, 'serie_id', body["id"])
+                            u = set_parameter(u, 'ep_id', video.get("id",''))
+                            u = set_parameter(u, 'serie_id', body.get("id",''))
                             u = set_parameter(u, 'userrate', details["userrating"])
                             u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
@@ -1369,7 +1380,7 @@ def build_raw_list(params):
         html = get_json(params['url'])
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
-            xbmc.log(html)
+            xbmc.log(html, xbmc.LOGWARNING)
 
         try:
             for file_body in body:
@@ -1422,7 +1433,7 @@ def play_video(url, ep_id, raw_id, movie):
             episode_url = _server_ + "/api/ep?id=" + str(ep_id)
             html = get_json(encode(episode_url))
             if __addon__.getSetting("spamLog") == "true":
-                xbmc.log(html)
+                xbmc.log(html, xbmc.LOGWARNING)
             episode_body = json.loads(html)
             # extract extra data about file from episode
             file_id = episode_body["files"][0]["id"]
@@ -1484,7 +1495,7 @@ def play_video(url, ep_id, raw_id, movie):
                                 if not trakt_404:
                                     # status: 1-start,2-pause,3-stop
                                     trakt_body = json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(1) + "&progress=" + str(progress)))
-                                    if str(trakt_body['code']) != str(200):
+                                    if str(trakt_body.get('code','')) != str(200):
                                         trakt_404 = True
                             except Exception as trakt_ex:
                                 dbg(str(trakt_ex))
@@ -1613,10 +1624,10 @@ def watched_mark(params):
             key += "/group/unwatch"
 
     if __addon__.getSetting('log_spam') == 'true':
-        xbmc.log('epid: ' + str(episode_id))
-        xbmc.log('anime_id: ' + str(anime_id))
-        xbmc.log('group_id: ' + str(group_id))
-        xbmc.log('key: ' + key)
+        xbmc.log('epid: ' + str(episode_id), xbmc.LOGWARNING)
+        xbmc.log('anime_id: ' + str(anime_id), xbmc.LOGWARNING)
+        xbmc.log('group_id: ' + str(group_id), xbmc.LOGWARNING)
+        xbmc.log('key: ' + key, xbmc.LOGWARNING)
 
     # sync mark flags
     sync = __addon__.getSetting("syncwatched")
@@ -1653,8 +1664,8 @@ def rescan_file(params, rescan):
     if vl_id != '':
         key_url = _server_ + "/api/" + command + "?id=" + vl_id
     if __addon__.getSetting('log_spam') == 'true':
-        xbmc.log('vlid: ' + str(vl_id))
-        xbmc.log('key: ' + key_url)
+        xbmc.log('vlid: ' + str(vl_id), xbmc.LOGWARNING)
+        xbmc.log('key: ' + key_url, xbmc.LOGWARNING)
 
     get_json(key_url)
 
@@ -1671,7 +1682,7 @@ def remove_missing_files():
     key = _server_ + "/api/remove_missing_files"
 
     if __addon__.getSetting('log_spam') == 'true':
-        xbmc.log('key: ' + key)
+        xbmc.log('key: ' + key, xbmc.LOGWARNING)
 
     get_json(key)
     xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Removing missing files...', 'This can take some time', __addon__.getAddonInfo('icon')))
@@ -1730,7 +1741,7 @@ if valid_user() is True:
                     if ui_index != '':
                         move_position_on_list(ctl, int(ui_index) + 1)
                 except Exception as exp:
-                    xbmc.log(str(exp))
+                    xbmc.log(str(exp), xbmc.LOGWARNING)
                     pass
             parameters['watched'] = True
             watched_mark(parameters)
@@ -1768,7 +1779,7 @@ if valid_user() is True:
                         if parameters.get('userrate', 0) == 0:
                             vote_episode(parameters)
             except Exception as exp:
-                xbmc.log(str(exp))
+                xbmc.log(str(exp), xbmc.LOGWARNING)
                 pass
         elif mode == 2:  # DIRECTORY
             xbmcgui.Dialog().ok('MODE=2', 'MODE')
@@ -1802,5 +1813,5 @@ if __addon__.getSetting('remote_debug') == 'true':
         if pydevd:
             pydevd.stoptrace()
     except Exception as remote_exc:
-        xbmc.log(str(remote_exc))
+        xbmc.log(str(remote_exc), xbmc.LOGWARNING)
         pass
