@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import datetime
+import datetime as datetime
 import json
 
 import resources.lib.TagBlacklist as TagFilter
@@ -664,6 +664,13 @@ def add_serie_item(node, parent_title):
     else:
         userrating = 0.0
 
+    # filter out invalid date
+    air = node.get("air", '')
+    if air != '':
+        # air=0001-01-01
+        if air == '0001-01-01':
+            air = ''
+
     details = {
         'title':            title,
         'parenttitle':      encode(parent_title),
@@ -695,7 +702,7 @@ def add_serie_item(node, parent_title):
         # 'premiered'    : premiered,
         # 'Status'       : status,
         # code           : string (tt0110293, - IMDb code
-        'aired':            node.get("air",''),
+        'aired':            air,
         # credits        : string (Andy Kaufman, - writing credits
         # 'Lastplayed'   : lastplayed,
         ### 'votes':            directory.get('votes'),
