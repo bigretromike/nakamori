@@ -565,9 +565,9 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
 # region Adding items to list/menu:
 
 def add_raw_files(node):
-    name = encode(node.get("filename",''))
-    file_id = node.get("id",'')
-    key = node.get("url",'')
+    name = encode(node.get("filename", ''))
+    file_id = node.get("id", '')
+    key = node.get("url", '')
     url = _server_ + "/api/file?id=" + str(file_id)
     title = os.path.split(str(name))[1]
     thumb = _server_ + "/image/support/plex_others.png"
@@ -578,11 +578,12 @@ def add_raw_files(node):
     u = sys.argv[0]
     u = set_parameter(u, 'url', url)
     u = set_parameter(u, 'mode', 1)
-    u = set_parameter(u, 'id', file_id)
+    u = set_parameter(u, 'raw_id', file_id)
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     u = set_parameter(u, 'type', "raw")
     u = set_parameter(u, 'file', key)
-    u = set_parameter(u, 'ep_id', node["import_folder_id"])
+    u = set_parameter(u, 'ep_id', '0')
+    u = set_parameter(u, 'vl', node["import_folder_id"])
     context = [('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)),
                ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
                ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
@@ -644,8 +645,8 @@ def add_content_typ_dir(name, serie_id):
 def add_serie_item(node, parent_title):
     # xbmcgui.Dialog().ok('series', 'series')
     if 'tags' in node:
-        temp_genre = get_tags(node.get("tags",{}))
-    watched = int(node.get("viewed",'0'))
+        temp_genre = get_tags(node.get("tags", {}))
+    watched = int(node.get("viewed", '0'))
 
     list_cast = []
     list_cast_and_role = []
@@ -659,12 +660,12 @@ def add_serie_item(node, parent_title):
             list_cast_and_role = result_list[1]
 
     if __addon__.getSetting("local_total") == "true":
-        total = safeInt(node.get("localsize",''))
+        total = safeInt(node.get("localsize", ''))
     else:
-        total = safeInt(node.get("size",''))
+        total = safeInt(node.get("size", ''))
     title = get_title(node)
     if "userrating" in node:
-        userrating = str(node.get("userrating",'0')).replace(',', '.')
+        userrating = str(node.get("userrating", '0')).replace(',', '.')
     else:
         userrating = 0.0
 
@@ -713,12 +714,12 @@ def add_serie_item(node, parent_title):
         # trailer        : string (/home/user/trailer.avi,
         ### 'dateadded':        directory.get('addedAt')
     }
-    temp_date = str(node.get("air",'')).split('-')
+    temp_date = str(node.get('air', '')).split('-')
     if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
         details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
-    directory_type = str(node.get("type",''))
-    key_id = str(node.get("id",''))
+    directory_type = str(node.get('type', ''))
+    key_id = str(node.get('id', ''))
     key = _server_ + "/api/serie"
     key = set_parameter(key, 'id', key_id)
     key = set_parameter(key, 'level', 2)
@@ -772,9 +773,9 @@ def add_serie_item(node, parent_title):
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
     temp_genre = get_tags(node.get("tags", {}))
-    title = node.get('name','')
-    size = node.get("size",'')
-    content_type = node.get("type",'') if not is_filter else "filter"
+    title = node.get('name', '')
+    size = node.get("size", '')
+    content_type = node.get("type", '') if not is_filter else "filter"
     details = {
         'title':            title,
         'parenttitle':      encode(parent_title),
@@ -783,16 +784,16 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'episode':          size,
         'season':           safeInt(node.get("season",'1')),
         'size':             size,
-        'rating':           float(str(node.get("rating",'0')).replace(',', '.')),
-        'playcount':        int(node.get("viewed",'0')),
-        'plot':             remove_anidb_links(encode(node.get("summary",'...'))),
+        'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
+        'playcount':        int(node.get("viewed", '0')),
+        'plot':             remove_anidb_links(encode(node.get("summary", '...'))),
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
-        'dateadded':        node.get("added",'')
+        'dateadded':        node.get("added", '')
     }
 
-    key_id = str(node.get("id",''))
+    key_id = str(node.get("id", ''))
     if is_filter:
         key = _server_ + "/api/filter"
     else:
@@ -865,7 +866,6 @@ def build_filters_menu():
 
                 if title == 'Continue Watching (SYSTEM)':
                     title = 'Continue Watching'
-                # This is related. Even if we remove the use_mode, it renames Unsort to Unsorted (which is actually a word)
                 elif title == 'Unsort':
                     title = 'Unsorted'
                     use_mode = 8
@@ -912,7 +912,8 @@ def build_filters_menu():
 
                 liz = xbmcgui.ListItem(label=title, label2=title, path=url)
                 liz.setArt({'icon': thumb, 'thumb': thumb, 'fanart': fanart, 'poster': thumb, 'banner': banner, 'clearart': fanart})
-                if thumb == '': liz.setIconImage('DefaultVideo.png')
+                if thumb == '':
+                    liz.setIconImage('DefaultVideo.png')
                 liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
                 xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
@@ -1455,6 +1456,7 @@ def play_video(url, ep_id, raw_id, movie):
     try:
         if ep_id != "0":
             episode_url = _server_ + "/api/ep?id=" + str(ep_id)
+            episode_url = set_parameter(episode_url, "level", "1")
             html = get_json(encode(episode_url))
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(html, xbmc.LOGWARNING)
@@ -1498,63 +1500,66 @@ def play_video(url, ep_id, raw_id, movie):
     # hack for slow connection and buffering time
     xbmc.sleep(int(__addon__.getSetting("player_sleep")))
     try:
-        clock_tick = -1
-        while player.isPlaying():
-            try:
-                if clock_tick == -1:
-                    if __addon__.getSetting("trakt_scrobble_notification") == "true":
-                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Starting Scrobble', '', __addon__.getAddonInfo('icon')))
-                clock_tick += 1
-                xbmc.sleep(60)
-                total_time = player.getTotalTime()
-                current_time = player.getTime()
+        if raw_id == "0":  # skip for raw_file
+            clock_tick = -1
+            while player.isPlaying():
+                try:
+                    if clock_tick == -1:
+                        if __addon__.getSetting("trakt_scrobble") == "true":
+                            if __addon__.getSetting("trakt_scrobble_notification") == "true":
+                                xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Starting Scrobble', '', __addon__.getAddonInfo('icon')))
+                    clock_tick += 1
+                    xbmc.sleep(60)
+                    total_time = player.getTotalTime()
+                    current_time = player.getTime()
 
-                # region Trakt support
-                if __addon__.getSetting("trakt_scrobble") == "true":
-                    if clock_tick >= 200:
-                        clock_tick = 0
-                        if ep_id != 0:
-                            progress = int((current_time / total_time) * 100)
-                            try:
-                                if not trakt_404:
-                                    # status: 1-start,2-pause,3-stop
-                                    trakt_body = json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(1) + "&progress=" + str(progress)))
-                                    if str(trakt_body.get('code','')) != str(200):
-                                        trakt_404 = True
-                            except Exception as trakt_ex:
-                                dbg(str(trakt_ex))
-                                pass
-                # endregion
+                    # region Trakt support
+                    if __addon__.getSetting("trakt_scrobble") == "true":
+                        if clock_tick >= 200:
+                            clock_tick = 0
+                            if ep_id != 0:
+                                progress = int((current_time / total_time) * 100)
+                                try:
+                                    if not trakt_404:
+                                        # status: 1-start,2-pause,3-stop
+                                        trakt_body = json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(1) + "&progress=" + str(progress)))
+                                        if str(trakt_body.get('code','')) != str(200):
+                                            trakt_404 = True
+                                except Exception as trakt_ex:
+                                    dbg(str(trakt_ex))
+                                    pass
+                    # endregion
 
-                if (total_time * mark) < current_time:
-                    file_fin = True
-                if not player.isPlaying():
+                    if (total_time * mark) < current_time:
+                        file_fin = True
+                    if not player.isPlaying():
+                        break
+                except:
+                    xbmc.sleep(60)
+                    if not trakt_404:
+                        # send 'pause' to trakt
+                        json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(2) + "&progress=" + str(progress)))
                     break
-            except:
-                xbmc.sleep(60)
-                if not trakt_404:
-                    # send 'pause' to trakt
-                    json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(2) + "&progress=" + str(progress)))
-                break
     except Exception as ops_ex:
         dbg(ops_ex)
         pass
 
-    no_watch_status = False
-    if __addon__.getSetting('no_mark') != "0":
-        no_watch_status = True
-        # reset no_mark so next file will mark watched status
-        __addon__.setSetting('no_mark', '0')
+    if raw_id == "0":  # skip for raw_file
+        no_watch_status = False
+        if __addon__.getSetting('no_mark') != "0":
+            no_watch_status = True
+            # reset no_mark so next file will mark watched status
+            __addon__.setSetting('no_mark', '0')
 
-    if file_fin is True:
-        if __addon__.getSetting("trakt_scrobble") == "true":
-            if not trakt_404:
-                get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(3) + "&progress=" + str(100))
-                if __addon__.getSetting("trakt_scrobble_notification") == "true":
-                    xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Stopping scrobble', '', __addon__.getAddonInfo('icon')))
+        if file_fin is True:
+            if __addon__.getSetting("trakt_scrobble") == "true":
+                if not trakt_404:
+                    get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(3) + "&progress=" + str(100))
+                    if __addon__.getSetting("trakt_scrobble_notification") == "true":
+                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Stopping scrobble', '', __addon__.getAddonInfo('icon')))
 
-        if no_watch_status is False:
-            return ep_id
+            if no_watch_status is False:
+                return ep_id
     return 0
 
 
@@ -1679,7 +1684,7 @@ def rescan_file(params, rescan):
         params:
         rescan: True to rescan, False to rehash
     """
-    vl_id = params.get('ep_id', '')
+    vl_id = params.get('vl', '')
     command = 'rehash'
     if rescan:
         command = 'rescan'
@@ -1725,7 +1730,7 @@ if __addon__.getSetting('remote_debug') == 'true':
     except Exception as ex:
         error('pydevd not found, disabling remote_debug', str(ex))
         __addon__.setSetting('remote_debug', 'false')
-#endregion
+# endregion
 
 # Script run from here
 
@@ -1794,7 +1799,7 @@ if valid_connect() is True:
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
-                    if play_video(parameters['file'], parameters['ep_id'], parameters['file_id'] if 'id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
+                    if play_video(parameters['file'], parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
