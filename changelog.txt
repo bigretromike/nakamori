@@ -12,7 +12,9 @@ v2.1.0 ()
 - Episodes sort if fixed for webinterface (#176)
 - Proper handle error with network error (#187)
 - Support multiple files per Episode (#191)
-- Added 'Inspect files' context menu
+- Added 'Inspect files' to context menu
+- Playlist support (#145)
+- Added 'Playlist MODE' to context menu
 
 v2.0.22 (02/02/2017)
 - fix years/tags (sorry ;-) )
