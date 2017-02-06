@@ -683,6 +683,7 @@ def add_serie_item(node, parent_title, destination_playlist = False):
             air = ''
 
     details = {
+        'mediatype':        'episode',
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
@@ -786,20 +787,21 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     size = node.get("size", '')
     content_type = node.get("type", '') if not is_filter else "filter"
     details = {
+        'mediatype':        'tvshow',
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
-        'year':             node.get("year",''),
+        'year':             node.get('year', ''),
         'episode':          size,
-        'season':           safeInt(node.get("season",'1')),
+        'season':           safeInt(node.get('season', '1')),
         'size':             size,
-        'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
-        'playcount':        int(node.get("viewed", '0')),
-        'plot':             remove_anidb_links(encode(node.get("summary", '...'))),
+        'rating':           float(str(node.get('rating', '0')).replace(',', '.')),
+        'playcount':        int(node.get('viewed', '0')),
+        'plot':             remove_anidb_links(encode(node.get('summary', '...'))),
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
-        'dateadded':        node.get("added", '')
+        'dateadded':        node.get('added', '')
     }
 
     key_id = str(node.get("id", ''))
@@ -1176,6 +1178,7 @@ def build_serie_episodes(params):
                                 duration = int(tmp_duration) / 1000
                             # Required listItem entries for XBMC
                             details = {
+                                'mediatype':        'episode',
                                 'plot':          "..." if skip else remove_anidb_links(encode(video["summary"])),
                                 'title':         encode(video['name']),
                                 'sorttitle':     str(video["epnumber"]) + " " + encode(video['name']),
