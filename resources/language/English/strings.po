@@ -1,11 +1,10 @@
 # Kodi Media Center language file
 # Addon Name: Nakamori
-# Addon id: plugin.video.nakamoriplugin
+# Addon id: plugin.video.nakamori
 # Addon Provider: BigRetroMike
 msgid ""
 msgstr ""
 "Project-Id-Version: Kodi Addons\n"
-"Report-Msgid-Bugs-To: bigretromike at gmail dot com\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -56,8 +55,16 @@ msgctxt "#30011"
 msgid "Shoko User"
 msgstr ""
 
+msgctxt "#30012"
+msgid "Inspect files"
+msgstr ""
+
 msgctxt "#30013"
 msgid "Use gzip"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Enable 'Pick file' on multi files episodes"
 msgstr ""
 
 msgctxt "#30015"
@@ -74,6 +81,14 @@ msgstr ""
 
 msgctxt "#30018"
 msgid "API Key"
+msgstr ""
+
+msgctxt "#30019"
+msgid "UNUSED"
+msgstr ""
+
+msgctxt "#30020"
+msgid "UNUSED"
 msgstr ""
 
 msgctxt "#30021"
@@ -104,6 +119,18 @@ msgctxt "#30027"
 msgid "Max time to wait for buffer (in ms)"
 msgstr ""
 
+msgctxt "#30028"
+msgid "UNUSED"
+msgstr ""
+
+msgctxt "#30029"
+msgid "UNUSED"
+msgstr ""
+
+msgctxt "#30030"
+msgid "UNUSED"
+msgstr ""
+
 msgctxt "#30031"
 msgid "Community"
 msgstr ""
@@ -114,10 +141,6 @@ msgstr ""
 
 msgctxt "#30033"
 msgid "TAG results Max Limit"
-msgstr ""
-
-msgctxt "#30038"
-msgid "Trakt support"
 msgstr ""
 
 msgctxt "#30034"
@@ -134,6 +157,10 @@ msgstr ""
 
 msgctxt "#30037"
 msgid "Enable Trakt Scrobble Notification"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Trakt support"
 msgstr ""
 
 msgctxt "#30039"

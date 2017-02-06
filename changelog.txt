@@ -11,6 +11,14 @@ v2.1.0 ()
 - Disable gzip on localhost (#161)
 - Episodes sort if fixed for webinterface (#176)
 - Proper handle error with network error (#187)
+- Support multiple files per Episode (#191)
+- Added 'Inspect files' context menu
+
+v2.0.22 (02/02/2017)
+- fix years/tags (sorry ;-) )
+- fix grouped series
+- moving to proper api url
+- fixing missing subtitle stream index
 
 v2.0.19 (18/01/2017)
 - Adding "Trigger Voting after each episode"

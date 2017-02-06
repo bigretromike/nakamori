@@ -28,6 +28,7 @@
         <setting label="30060" type="bool" id="context_show_vote_Series" default="true" />
         <setting label="30061" type="bool" id="context_show_play_no_watch" default="true" />
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
+        <setting label="30012" type="bool" id="context_pick_file" default="true" />
     </category>
     <category label="30023">
         <setting label="30007" type="lsep"/>
@@ -35,6 +36,7 @@
         <setting label="30024" type="number" id="watched_mark" default="80"/>
         <setting label="30055" type="number" id="refresh_wait" default="1000"/>
         <setting label="30005" type="bool" id="syncwatched" default="true"/>
+        <setting label="30014" type="bool" id="pick_file" default="true"/>
         <setting label="30026" type="lsep"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>

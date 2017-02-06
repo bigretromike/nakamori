@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import datetime as datetime
 import json
+import os
 
 import resources.lib.TagBlacklist as TagFilter
 import resources.lib.util as util
@@ -393,6 +394,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
                     if __addon__.getSetting('context_show_play_no_watch') == 'true':
                         context.append(('Play (Do not Mark as Watched)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' % (sys.argv[1], url_peep)))
+                    if __addon__.getSetting('context_pick_file') == 'true':
+                        context.append(('Inspect files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=pickFile)' % (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
 
@@ -1421,11 +1424,10 @@ def build_network_menu():
 
 
 # Other functions
-def play_video(url, ep_id, raw_id, movie):
+def play_video(ep_id, raw_id, movie):
     """
     Plays a file or episode
     Args:
-        url: location of the file
         ep_id: episode id, if applicable for watched status and stream details
         raw_id: file id, that is only used when ep_id = 0
         movie: determinate if played object is movie or episode (ex.Trakt)
@@ -1450,9 +1452,8 @@ def play_video(url, ep_id, raw_id, movie):
         'season':        xbmc.getInfoLabel('ListItem.Season')
     }
 
-    item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=url)
-    item.setInfo(type='Video', infoLabels=details)
-    item.setProperty('IsPlayable', 'true')
+    file_url = ''
+
     try:
         if ep_id != "0":
             episode_url = _server_ + "/api/ep?id=" + str(ep_id)
@@ -1461,14 +1462,23 @@ def play_video(url, ep_id, raw_id, movie):
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(html, xbmc.LOGWARNING)
             episode_body = json.loads(html)
-            # extract extra data about file from episode
-            file_id = episode_body["files"][0]["id"]
+            if __addon__.getSetting("pick_file") == "true":
+                file_id = file_list_gui(episode_body)
+            else:
+                file_id = episode_body["files"][0]["id"]
         else:
             file_id = raw_id
+
         if file_id is not None and file_id != 0:
             file_url = _server_ + "/api/file?id=" + str(file_id)
             file_body = json.loads(get_json(file_url))
-            
+
+            file_url = file_body['url']
+
+            item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=file_url)
+            item.setInfo(type='Video', infoLabels=details)
+            item.setProperty('IsPlayable', 'true')
+
             # Information about streams inside video file
             # Video
             codecs = dict()
@@ -1479,18 +1489,18 @@ def play_video(url, ep_id, raw_id, movie):
             item.addStreamInfo('audio', codecs["AudioStreams"])
             item.addStreamInfo('subtitle', codecs["SubStreams"])
         else:
-            # error
-            error("Unknown Stream Type Received!")
+            error("file_id not retrieved")
     except Exception as exc:
         error('Error getting episode info', str(exc))
 
     player = xbmc.Player()
 
     try:
-        player.play(item=url, listitem=item, windowed=False)
+        player.play(item=file_url, listitem=item, windowed=False)
         xbmcplugin.setResolvedUrl(handle, True, item)
     except:
         pass
+
     # wait for player (network issue etc)
     xbmc.sleep(1000)
     mark = float(__addon__.getSetting("watched_mark"))
@@ -1622,6 +1632,26 @@ def vote_episode(params):
         body = '?id=' + ep_id + '&score=' + vote_value
         get_json(_server_ + "/ep/vote" + body)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Episode voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
+
+
+def file_list_gui(ep_body):
+    pick_filename = ['Cancel']
+    get_fileid = ['0']
+    if len(ep_body['files']) > 1:
+        for body in ep_body['files']:
+            filename = os.path.basename(body['filename'])
+            pick_filename.append(filename)
+            get_fileid.append(str(body['id']))
+        my_file = xbmcgui.Dialog().select('Files', pick_filename)
+        if my_file > 0:
+            return get_fileid[my_file]
+        else:
+            # cancel -1,0
+            return 0
+    elif len(ep_body['files']) == 1:
+        return ep_body['files'][0]['id']
+    else:
+        return 0
 
 
 def watched_mark(params):
@@ -1787,6 +1817,11 @@ if valid_connect() is True:
             elif cmd == "no_mark":
                 __addon__.setSetting('no_mark', '1')
                 xbmc.executebuiltin('Action(Select)')
+            elif cmd == "pickFile":
+                xbmcgui.Dialog().ok("par", str(parameters))
+                if str(parameters['ep_id']) != "0":
+                    ep_url = _server_ + "/api/ep?id=" + str(parameters['ep_id']) + "&level=2"
+                file_list_gui(json.loads(get_json(ep_url)))
             elif cmd == 'rescan':
                 rescan_file(parameters, True)
             elif cmd == 'rehash':
@@ -1799,7 +1834,7 @@ if valid_connect() is True:
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
-                    if play_video(parameters['file'], parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
+                    if play_video(parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
