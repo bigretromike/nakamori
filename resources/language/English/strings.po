@@ -84,7 +84,7 @@ msgid "API Key"
 msgstr ""
 
 msgctxt "#30019"
-msgid "UNUSED"
+msgid "Playlist Mode"
 msgstr ""
 
 msgctxt "#30020"

@@ -29,6 +29,7 @@
         <setting label="30061" type="bool" id="context_show_play_no_watch" default="true" />
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
         <setting label="30012" type="bool" id="context_pick_file" default="true" />
+        <setting label="30019" type="bool" id="context_playlist" default="true" />
     </category>
     <category label="30023">
         <setting label="30007" type="lsep"/>

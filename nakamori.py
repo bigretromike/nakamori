@@ -396,6 +396,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         context.append(('Play (Do not Mark as Watched)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' % (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_pick_file') == 'true':
                         context.append(('Inspect files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=pickFile)' % (sys.argv[1], url_peep)))
+                    if __addon__.getSetting('context_playlist') == 'true':
+                        context.append(('Playlist Mode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=createPlaylist)' % (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
 
@@ -645,8 +647,9 @@ def add_content_typ_dir(name, serie_id):
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
 
 
-def add_serie_item(node, parent_title):
+def add_serie_item(node, parent_title, destination_playlist = False):
     # xbmcgui.Dialog().ok('series', 'series')
+    temp_genre = ''
     if 'tags' in node:
         temp_genre = get_tags(node.get("tags", {}))
     watched = int(node.get("viewed", '0'))
@@ -771,7 +774,10 @@ def add_serie_item(node, parent_title):
     context.append(('Mark serie as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
     context.append(('Mark serie as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
 
-    add_gui_item(u, details, extra_data, context)
+    if destination_playlist:
+        return details
+    else:
+        add_gui_item(u, details, extra_data, context)
 
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
@@ -1749,6 +1755,30 @@ def remove_missing_files():
     refresh()
 
 
+def create_playlist(serie_id):
+    serie_url = _server_ + "/api/serie?id=" + str(serie_id) + "&level=2&nocast=1&notag=1"
+    serie_body = json.loads(get_json(serie_url))
+    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+    playlist.clear()
+    item_count = 0
+    # TODO sort by epnumber and eptype so it wont get mixed
+    if 'eps' in serie_body:
+        if len(serie_body['eps']) > 0:
+            for serie in serie_body['eps']:
+                if len(serie['files']) > 0:
+                    if 'view' in serie:
+                        if serie['view'] == 1:
+                            continue
+                    video = serie['files'][0]['url']
+                    details = add_serie_item(serie, serie_body['name'], True)
+                    liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
+                    liz.setInfo(type='Video', infoLabels=details)
+                    item_count += 1
+                    playlist.add(url=video, listitem=liz, index=item_count)
+    if item_count > 0:
+        xbmc.Player().play(playlist)
+
+
 # region Setting up Remote Debug
 if __addon__.getSetting('remote_debug') == 'true':
     try:
@@ -1818,7 +1848,6 @@ if valid_connect() is True:
                 __addon__.setSetting('no_mark', '1')
                 xbmc.executebuiltin('Action(Select)')
             elif cmd == "pickFile":
-                xbmcgui.Dialog().ok("par", str(parameters))
                 if str(parameters['ep_id']) != "0":
                     ep_url = _server_ + "/api/ep?id=" + str(parameters['ep_id']) + "&level=2"
                 file_list_gui(json.loads(get_json(ep_url)))
@@ -1828,6 +1857,8 @@ if valid_connect() is True:
                 rescan_file(parameters, False)
             elif cmd == 'missing':
                 remove_missing_files()
+            elif cmd == 'createPlaylist':
+                create_playlist(parameters['serie_id'])
         else:
             # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
             if mode == 1:  # play_file
