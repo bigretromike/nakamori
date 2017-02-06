@@ -453,9 +453,9 @@ def get_title(data):
     """
     try:
         if 'titles' not in data or __addon__.getSetting('use_server_title') == 'true':
-            return encode(data.get('name',''))
+            return encode(data.get('name', ''))
         # xbmc.log(data.get('title', 'Unknown'))
-        title = encode(data.get('name','').lower())
+        title = encode(data.get('name', '').lower())
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
                 or title == 'special' or title == 'specials' \
@@ -463,7 +463,7 @@ def get_title(data):
                 or title == 'credit' or title == 'credits' \
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
-            return encode(data.get('name',''))
+            return encode(data.get('name', ''))
 
         lang = __addon__.getSetting("displaylang")
         title_type = __addon__.getSetting("title_type")
@@ -483,10 +483,10 @@ def get_title(data):
                     if titleTag["Language"].lower() == 'x-jat':
                         return encode(titleTag["Title"])
             # fallback on directory title
-            return encode(data.get('name',''))
+            return encode(data.get('name', ''))
         except Exception as expc:
             error('Error thrown on getting title', str(expc))
-            return encode(data.get('name',''))
+            return encode(data.get('name', ''))
     except Exception as exw:
         error("get_title Exception", str(exw))
         return 'Error'
@@ -1112,7 +1112,7 @@ def build_serie_episodes(params):
         try:
             parent_title = ''
             try:
-                parent_title = body.get('name','')
+                parent_title = body.get('name', '')
                 set_window_heading(parent_title)
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
@@ -1132,9 +1132,9 @@ def build_serie_episodes(params):
             next_episode = -1
             episode_count = 0
 
-            if len(body.get("eps",{})) <= 0:
+            if len(body.get('eps', {})) <= 0:
                 error("No episodes in list")
-            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body.get("eps",{})) > int(
+            skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body.get('eps', {})) > int(
                 __addon__.getSetting("skipExtraInfoMaxEpisodes"))
 
             # keep this init out of the loop, as we only provide this once
@@ -1146,30 +1146,29 @@ def build_serie_episodes(params):
             actors = []
             if not skip:
                 if len(list_cast) == 0:
-                    result_list = get_cast_and_role(body.get("roles",{}))
+                    result_list = get_cast_and_role(body.get('roles', {}))
                     actors = result_list
                     if result_list is not None:
                         result_list = convert_cast_and_role_to_legacy(result_list)
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
-                temp_genre = get_tags(body.get("tags",{}))
-                parent_key = body.get("id",'')
-                grandparent_title = encode(body.get('name',''))
+                temp_genre = get_tags(body.get('tags', {}))
+                parent_key = body.get('id', '')
+                grandparent_title = encode(body.get('name', ''))
 
-            if len(body.get("eps",{})) > 0:
-                for video in body["eps"]:
+            if len(body.get('eps', {})) > 0:
+                for video in body['eps']:
                     # check if episode have files
                     episode_type = True
                     if "type" in params:
-                        episode_type = True if str(video["eptype"]) == str(params["type"]) else False
-                    if video["files"] is not None and episode_type:
-                        if len(video["files"]) > 0:
+                        episode_type = True if str(video['eptype']) == str(params['type']) else False
+                    if video['files'] is not None and episode_type:
+                        if len(video['files']) > 0:
                             episode_count += 1
-                            # view_offset = video.get('viewOffset', 0) <---
                             # Check for empty duration from MediaInfo check fail and handle it properly
                             try:
-                                tmp_duration = video["files"][0]["duration"]
+                                tmp_duration = video['files'][0]['duration']
                             except:
                                 continue
                             if not tmp_duration:
@@ -1178,13 +1177,13 @@ def build_serie_episodes(params):
                                 duration = int(tmp_duration) / 1000
                             # Required listItem entries for XBMC
                             details = {
-                                'mediatype':        'episode',
-                                'plot':          "..." if skip else remove_anidb_links(encode(video["summary"])),
+                                'mediatype':     'episode',
+                                'plot':          "..." if skip else remove_anidb_links(encode(video['summary'])),
                                 'title':         encode(video['name']),
-                                'sorttitle':     str(video["epnumber"]) + " " + encode(video['name']),
+                                'sorttitle':     str(video['epnumber']) + " " + encode(video['name']),
                                 'parenttitle':   encode(parent_title),
-                                'rating':        float(str(video.get("rating",'0')).replace(',', '.')),
-                                'userrating':    float(str(video.get("UserRating",'0')).replace(',', '.')),
+                                'rating':        float(str(video.get('rating', '0')).replace(',', '.')),
+                                'userrating':    float(str(video.get('UserRating', '0')).replace(',', '.')),
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
                                 # This doesn't work, some gremlins be afoot in this code...
                                 # it's probably just that it only applies at series level
@@ -1195,17 +1194,17 @@ def build_serie_episodes(params):
                                 'genre':        "..." if skip else temp_genre,
                                 'duration':      str(datetime.timedelta(seconds=duration)),
                                 # 'mpaa':          video.get('contentRating', ''), <--
-                                'year':          safeInt(video["year"]),
+                                'year':          safeInt(video['year']),
                                 'tagline':       "..." if skip else temp_genre,
-                                'episode':       safeInt(video["epnumber"]),
-                                'aired':         video.get("air",''),
+                                'episode':       safeInt(video['epnumber']),
+                                'aired':         video.get('air', ''),
                                 'tvshowtitle':   grandparent_title,
-                                'votes':         safeInt(video["votes"]),
+                                'votes':         safeInt(video['votes']),
                                 'originaltitle': encode(video['name']),
-                                'size': safeInt(body.get("size",'0'))
+                                'size': safeInt(body.get('size', '0'))
                             }
 
-                            season = str(body.get("season",'1'))
+                            season = str(body.get('season', '1'))
                             try:
                                 if season != '1':
                                     season = season.split('x')[0]
@@ -1232,20 +1231,20 @@ def build_serie_episodes(params):
 
                             # Extra data required to manage other properties
                             extra_data = {
-                                'type':             "video",
-                                'source':           "ep",
+                                'type':             'video',
+                                'source':           'ep',
                                 'thumb':            None if skip else thumb,
                                 'fanart_image':     None if skip else fanart,
                                 'banner':           None if skip else banner,
                                 'key':              key,
-                                # 'resume':           int(int(view_offset) / 1000),<---
+                                'resume':           int(int(video.get('offset', '0')) / 1000),
                                 'parentKey':        parent_key,
-                                'jmmepisodeid':     safeInt(body.get("id",'')),
+                                'jmmepisodeid':     safeInt(body.get('id', '')),
                                 'actors':           actors,
                                 'AudioStreams':     defaultdict(dict),
                                 'SubStreams':       defaultdict(dict),
-                                'ep_id':            safeInt(video.get("id",'')),
-                                'serie_id':         safeInt(body.get("id",''))
+                                'ep_id':            safeInt(video.get('id', '')),
+                                'serie_id':         safeInt(body.get('id', ''))
                             }
 
                             # Information about streams inside video file
@@ -1507,6 +1506,15 @@ def play_video(ep_id, raw_id, movie):
     try:
         player.play(item=file_url, listitem=item, windowed=False)
         xbmcplugin.setResolvedUrl(handle, True, item)
+        if __addon__.getSetting("file_resume") == "true":
+            if "offset" in file_body:
+                if file_body['offset'] != 0:
+                    xbmc.sleep(100)
+                    player.pause()  # pause
+                    xbmc.sleep(100)
+                    player.seekTime(int(file_body['offset']))
+                    xbmc.sleep(100)
+                    player.pause()  # un-pause
     except:
         pass
 
@@ -1528,9 +1536,20 @@ def play_video(ep_id, raw_id, movie):
                             if __addon__.getSetting("trakt_scrobble_notification") == "true":
                                 xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Starting Scrobble', '', __addon__.getAddonInfo('icon')))
                     clock_tick += 1
-                    xbmc.sleep(60)
+
+                    xbmc.sleep(1000)  # 1sec
                     total_time = player.getTotalTime()
                     current_time = player.getTime()
+
+                    # region Resume support
+                    if __addon__.getSetting("file_resume") == "true":
+                        offset_url = _server_ + "/api/file/offset"
+                        offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time)
+                        try:
+                            post_json(offset_url, offset_body)
+                        except:
+                            dbg("Error while updating Resume status.")
+                    # endregion
 
                     # region Trakt support
                     if __addon__.getSetting("trakt_scrobble") == "true":
@@ -1644,6 +1663,11 @@ def vote_episode(params):
 
 
 def file_list_gui(ep_body):
+    """
+    Create GUI with file list to pick
+    :param ep_body:
+    :return:
+    """
     pick_filename = ['Cancel']
     get_fileid = ['0']
     if len(ep_body['files']) > 1:
@@ -1759,6 +1783,11 @@ def remove_missing_files():
 
 
 def create_playlist(serie_id):
+    """
+    Create playlist of all episodes that wasn't watched
+    :param serie_id:
+    :return:
+    """
     serie_url = _server_ + "/api/serie?id=" + str(serie_id) + "&level=2&nocast=1&notag=1"
     serie_body = json.loads(get_json(serie_url))
     playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)

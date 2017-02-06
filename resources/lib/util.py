@@ -210,7 +210,7 @@ def get_data(url_in, referer, data_type):
 # json
 def post_json(url_in, body):
     if len(body) > 3:
-        proper_body = '{"apikey":"' + __addon__.getSetting("apikey") + '",' + body + '}'
+        proper_body = '{' + body + '}'
         return post_data(url_in, proper_body)
     else:
         return None
@@ -228,6 +228,8 @@ def post_data(url, data_in):
     """
     if data_in is not None:
         req = urllib2.Request(encode(url), data_in, {'Content-Type': 'application/json'})
+        req.add_header('apikey', __addon__.getSetting("apikey"))
+        req.add_header('Accept', 'application/json')
         data_out = None
         try:
             response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))

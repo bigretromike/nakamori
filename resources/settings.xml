@@ -38,6 +38,7 @@
         <setting label="30055" type="number" id="refresh_wait" default="1000"/>
         <setting label="30005" type="bool" id="syncwatched" default="true"/>
         <setting label="30014" type="bool" id="pick_file" default="true"/>
+        <setting label="30020" type="bool" id="file_resume" default="true"/>
         <setting label="30026" type="lsep"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
