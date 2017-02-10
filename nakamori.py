@@ -4,7 +4,7 @@ import datetime as datetime
 import json
 import os
 
-import resources.lib.TagBlacklist as TagFilter
+import TagBlacklist as TagFilter
 import resources.lib.util as util
 import resources.lib.search as search
 
@@ -146,7 +146,7 @@ def filter_gui_item_by_tag(title):
     :rtype: bool
     """
     str1 = [title]
-    str1 = TagFilter.processTags(__addon__, str1)
+    str1 = processTags(__addon__, str1)
     return len(str1) > 0
 
 
@@ -509,7 +509,7 @@ def get_tags(tag_node):
             for tag in tag_node:
                 temp_genre = encode(tag["tag"]).strip()
                 temp_genres.append(temp_genre)
-                temp_genres = TagFilter.processTags(__addon__, temp_genres)
+                temp_genres = processTags(__addon__, temp_genres)
                 temp_genre = " | ".join(temp_genres)
             return temp_genre
         else:
@@ -1361,6 +1361,114 @@ def build_search_directory():
         liz.setInfo(type=detail['type'], infoLabels={"Title": detail['title'].encode("utf-8"), "Plot": detail['plot']})
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle)
+
+
+# Feed this a list of str types
+def processTags(addon, string):
+
+    toRemove=[]
+    removeOriginal=False
+
+    for a in string:
+        tag = str(a).lower().strip()
+        if addon.getSetting("hideArtTags") == "true":
+            for remove in TagFilter.tagBlackListArtStyle:
+                if remove == tag:
+                    toRemove.append(a)
+                    break
+            if "censor" in tag:
+                toRemove.append(a)
+        if addon.getSetting("hideSourceTags") == "true":
+            for remove in TagFilter.tagBlackListSource:
+                if remove == tag:
+                    toRemove.append(a)
+                    break
+            if "original work" == tag:
+                toRemove.append(a)
+        else:
+            for remove in TagFilter.tagBlackListSource:
+                if remove == tag:
+                    removeOriginal=True
+                    break
+
+        if addon.getSetting("hideUsefulMiscTags") == "true":
+            for remove in TagFilter.tagBlackListUsefulHelpers:
+                if remove == tag:
+                    toRemove.append(a)
+                    break
+            if tag.startswith("preview"):
+                toRemove.append(a)
+
+        if addon.getSetting("hideSpoilerTags") == "true":
+            for remove in TagFilter.tagBlackListPlotSpoilers:
+                if remove == tag:
+                    toRemove.append(a)
+                    break
+            if tag.startswith("plot"):
+                toRemove.append(a)
+            if tag.endswith(" dies"):
+                toRemove.append(a)
+            if tag.endswith(" end"):
+                toRemove.append(a)
+            if tag.endswith(" ending"):
+                toRemove.append(a)
+
+        if addon.getSetting("hideMiscTags") == "true":
+            for remove in TagFilter.tagBlacklistAniDBHelpers:
+                if remove == tag:
+                    toRemove.append(a)
+                    break
+            if "to be" in tag:
+                if "merged" in tag:
+                    toRemove.append(a)
+                elif "deleted" in tag:
+                    toRemove.append(a)
+                elif "split" in tag:
+                    toRemove.append(a)
+                elif "moved" in tag:
+                    toRemove.append(a)
+                elif "improved" in tag or "improving" in tag or "improvement" in tag:
+                    toRemove.append(a)
+            elif "need" in tag or "needs" in tag:
+                if "merging" in tag or "merged" in tag:
+                    toRemove.append(a)
+                elif "deleting" in tag or "deleted" in tag:
+                    toRemove.append(a)
+                elif "moving" in tag or "moved" in tag:
+                    toRemove.append(a)
+                elif "improved" in tag or "improving" in tag or "improvement" in tag:
+                    toRemove.append(a)
+            elif "old animetags" in tag:
+                toRemove.append(a)
+            elif "missing" in tag:
+                toRemove.append(a)
+            elif tag.startswith("predominantly"):
+                toRemove.append(a)
+            elif tag.startswith("weekly"):
+                toRemove.append(a)
+
+    toAdd = []
+    # on a separate loop in case 'original work' came before the source
+    if removeOriginal:
+        for a in string:
+            tag = str(a).lower().strip()
+            if tag == "new":
+                toAdd.append('Original Work')
+            elif tag == "original work":
+                toRemove.append("original work")
+                # both just in case
+                toRemove.append("Original Work")
+                break
+
+    for a in toRemove:
+        if a in string:
+            string.remove(a)
+
+    for a in toAdd:
+        if a not in string:
+            string.append(a)
+
+    return string
 
 
 def search_for(url):
