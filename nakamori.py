@@ -32,6 +32,16 @@ _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSe
 _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 
+def populate_tag_setting_flags():
+    tag_setting_flags = 0
+    tag_setting_flags = tag_setting_flags | (0b00001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b00010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b00100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b01000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b10000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
+    return tag_setting_flags
+
+
 def valid_connect():
     return util.get_server_status()
 
@@ -146,7 +156,7 @@ def filter_gui_item_by_tag(title):
     :rtype: bool
     """
     str1 = [title]
-    str1 = TagFilter.processTags(__addon__, str1)
+    str1 = TagFilter.processTags(__tagSettingFlags__, str1)
     return len(str1) > 0
 
 
@@ -509,7 +519,7 @@ def get_tags(tag_node):
             for tag in tag_node:
                 temp_genre = encode(tag["tag"]).strip()
                 temp_genres.append(temp_genre)
-                temp_genres = TagFilter.processTags(__addon__, temp_genres)
+                temp_genres = TagFilter.processTags(__tagSettingFlags__, temp_genres)
                 temp_genre = " | ".join(temp_genres)
             return temp_genre
         else:
@@ -1825,6 +1835,10 @@ if __addon__.getSetting('remote_debug') == 'true':
 # endregion
 
 # Script run from here
+
+# I discovered this exists. Useful!
+global __tagSettingFlags__
+__tagSettingFlags__ = populate_tag_setting_flags()
 
 if valid_connect() is True:
     if valid_user() is True:
