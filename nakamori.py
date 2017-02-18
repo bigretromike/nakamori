@@ -1678,8 +1678,8 @@ def file_list_gui(ep_body):
     :param ep_body:
     :return:
     """
-    pick_filename = ['Cancel']
-    get_fileid = ['0']
+    pick_filename = []
+    get_fileid = []
     if len(ep_body['files']) > 1:
         for body in ep_body['files']:
             filename = os.path.basename(body['filename'])
@@ -1738,10 +1738,10 @@ def watched_mark(params):
             body = '?id=' + episode_id
             get_json(key + body)
         elif anime_id != '':
-            body = '?id=' + anime_id + '"'
+            body = '?id=' + anime_id
             get_json(key + body)
         elif group_id != '':
-            body = '?id=' + group_id + '"'
+            body = '?id=' + group_id
             get_json(key + body)
 
     box = __addon__.getSetting("watchedbox")
