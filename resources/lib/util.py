@@ -27,9 +27,35 @@ __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
 
 ADDON_ID = 'plugin.video.nakamori'
-#UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
-UA = xbmc.getUserAgent()
+
+try:
+    UA = xbmc.getUserAgent()
+except:
+    UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
+
+
+def dump_dictionary(details, name, recursions=0):
+    if __addon__.getSetting("spamLog") == 'true':
+        if details is not None:
+            index = recursions
+            string_prefix = ''
+            if index > 0:
+                while index > 0:
+                    string_prefix += '-'
+                    index -= 1
+            xbmc.log(string_prefix + "---- " + name + ' ----', xbmc.LOGWARNING)
+
+            for i in details:
+                temp_log = ""
+                a = details.get(encode(i))
+                if a is None:
+                    temp_log = "\'unset\'"
+                elif isinstance(a, list) or isinstance(a, dict):
+                    dump_dictionary(a, encode(i), recursions+1)
+                else:
+                    temp_log = str(a)
+                xbmc.log(string_prefix + "-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
 
 
 def remove_anidb_links(data=""):

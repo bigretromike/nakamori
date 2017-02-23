@@ -19,7 +19,7 @@ from collections import defaultdict
 
 try:
     import pydevd
-except ImportError:
+except:
     pass
 
 handle = int(sys.argv[1])
@@ -160,49 +160,54 @@ def filter_gui_item_by_tag(title):
     return len(str1) > 0
 
 
-def video_file_information(node_base, detail_dict):
+def video_file_information(node, detail_dict):
     # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
     # Video
-    if 'VideoStream' not in detail_dict:
-        detail_dict['VideoStream'] = ''
+    if 'VideoStreams' not in detail_dict:
+        detail_dict['VideoStreams'] = defaultdict(dict)
     if 'AudioStream' not in detail_dict:
-        detail_dict['AudioStreams'] = ''
+        detail_dict['AudioStreams'] = defaultdict(dict)
     if 'SubStream' not in detail_dict:
-        detail_dict['SubStreams'] = ''
+        detail_dict['SubStreams'] = defaultdict(dict)
 
-    for node in node_base:
-        if "video" in node:
-            for stream_info in node["videos"]:
-                streams = detail_dict.get('VideoStreams')
-                stream_id = int(stream_info["Index"])
-                streams[stream_id]['VideoCodec'] = stream_info['Codec']
-                streams['xVideoCodec'] = stream_info['Codec']
-                streams[stream_id]['width'] = stream_info['Width']
-                streams['xVideoResolution'] = stream_info['Width']
-                streams[stream_id]['height'] = stream_info['Height']
-                streams['xVideoResolution'] += "x" + stream_info['Height']
-                streams[stream_id]['duration'] = stream_info['Duration']
-                detail_dict['VideoStreams'] = streams
+    if "videos" in node:
+        for stream_node in node["videos"]:
+            stream_info = node["videos"][stream_node]
+            if not isinstance(stream_info, dict): continue
+            streams = detail_dict.get('VideoStreams', defaultdict(dict))
+            stream_id = int(stream_info["Index"])
+            streams[stream_id]['VideoCodec'] = stream_info['Codec']
+            streams['xVideoCodec'] = stream_info['Codec']
+            streams[stream_id]['width'] = stream_info['Width']
+            streams['xVideoResolution'] = stream_info['Width']
+            streams[stream_id]['height'] = stream_info['Height']
+            streams['xVideoResolution'] += "x" + stream_info['Height']
+            streams[stream_id]['duration'] = int(round(float(stream_info['Duration']) / 1000, 0))
+            detail_dict['VideoStreams'] = streams
 
-        # Audio
-        if "audios" in node:
-            for stream_info in node["audios"]:
-                streams = detail_dict.get('AudioStreams')
-                stream_id = int(stream_info["Index"])
-                streams[stream_id]['AudioCodec'] = stream_info["Codec"] if "Codec" in stream_info else ""
-                streams['xAudioChannels'] = safeInt(streams[stream_id]['AudioCodec'])
-                streams[stream_id]['AudioLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
-                streams[stream_id]['AudioChannels'] = int(stream_info["Channels"]) if "Channels" in stream_info else ""
-                streams['xAudioChannels'] = safeInt(streams[stream_id]['AudioChannels'])
-                detail_dict['AudioStreams'] = streams
+    # Audio
+    if "audios" in node:
+        for stream_node in node["audios"]:
+            stream_info = node["audios"][stream_node]
+            if not isinstance(stream_info, dict): continue
+            streams = detail_dict.get('AudioStreams', defaultdict(dict))
+            stream_id = int(stream_info["Index"])
+            streams[stream_id]['AudioCodec'] = stream_info["Codec"]
+            streams['xAudioCodec'] = streams[stream_id]['AudioCodec']
+            streams[stream_id]['AudioLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
+            streams[stream_id]['AudioChannels'] = int(stream_info["Channels"]) if "Channels" in stream_info else 1
+            streams['xAudioChannels'] = safeInt(streams[stream_id]['AudioChannels'])
+            detail_dict['AudioStreams'] = streams
 
-        # Subtitle
-        if "subtitles" in node:
-            for stream_info in node["subtitles"]:
-                streams = detail_dict.get('SubStreams')
-                stream_id = int(stream_info["Index"])
-                streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
-                detail_dict['SubStreams'] = streams
+    # Subtitle
+    if "subtitles" in node:
+        for stream_node in node["subtitles"]:
+            stream_info = node["audios"][stream_node]
+            if not isinstance(stream_info, dict): continue
+            streams = detail_dict.get('SubStreams', defaultdict(dict))
+            stream_id = int(stream_info["Index"])
+            streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
+            detail_dict['SubStreams'] = streams
 
 
 def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
@@ -236,32 +241,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
         if __addon__.getSetting("spamLog") == 'true':
             xbmc.log("add_gui_item - url: " + url, xbmc.LOGWARNING)
-            if details is not None:
-                xbmc.log("add_gui_item - details", xbmc.LOGWARNING)
-                for i in details:
-                    temp_log = ""
-                    a = details.get(encode(i))
-                    if a is None:
-                        temp_log = "\'unset\'"
-                    elif isinstance(a, list) or isinstance(a, dict):
-                        for b in a:
-                            temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
-                    else:
-                        temp_log = str(a)
-                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
-            if extra_data is not None:
-                xbmc.log("add_gui_item - extra_data", xbmc.LOGWARNING)
-                for i in extra_data:
-                    temp_log = ""
-                    a = extra_data.get(encode(i))
-                    if a is None:
-                        temp_log = "\'unset\'"
-                    elif isinstance(a, list) or isinstance(a, dict):
-                        for b in a:
-                            temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
-                    else:
-                        temp_log = str(a)
-                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+            dump_dictionary(details, 'details')
+            dump_dictionary(extra_data, 'extra data')
 
         if extra_data is not None and len(extra_data) > 0:
             if extra_data.get('parameters'):
@@ -297,7 +278,10 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
-                    liz.setProperty('TotalTime', str(extra_data.get('duration')))
+                    try:
+                        liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0]['duration']))
+                    except:
+                        pass
                     liz.setProperty('ResumeTime', str(extra_data.get('resume')))
 
                     liz.setProperty('VideoResolution', str(extra_data.get('xVideoResolution', '')))
@@ -306,35 +290,17 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                     liz.setProperty('AudioChannels', str(extra_data.get('xAudioChannels', '')))
                     liz.setProperty('VideoAspect', str(extra_data.get('xVideoAspect', '')))
 
-                    video_codec = {}
-                    if extra_data.get('VideoCodec'):
-                        video_codec['codec'] = extra_data.get('VideoCodec')
-                    if extra_data.get('height'):
-                        video_codec['height'] = int(extra_data.get('height'))
-                    if extra_data.get('width'):
-                        video_codec['width'] = int(extra_data.get('width'))
-                    if extra_data.get('xVideoAspect'):
-                        video_codec['aspect'] = float(extra_data.get('xVideoAspect'))
-                    if extra_data.get('duration'):
-                        video_codec['duration'] = extra_data.get('duration')
+                    video_codec = extra_data.get('VideoStreams', {})
+                    if len(video_codec) > 0:
+                        video_codec = video_codec[0]
+                        liz.addStreamInfo('video', video_codec)
 
                     if __addon__.getSetting("spamLog") == 'true':
-                        xbmc.log("add_gui_item - video codec", xbmc.LOGWARNING)
-                        for i in video_codec:
-                            temp_log = ""
-                            a = video_codec.get(encode(i))
-                            if a is None:
-                                temp_log = "\'unset\'"
-                            elif isinstance(a, list):
-                                for b in a:
-                                    temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
-                            else:
-                                temp_log = str(a)
-                            xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
-                    liz.addStreamInfo('video', video_codec)
+                        dump_dictionary(video_codec, 'video codec')
 
-                    if extra_data.get('AudioStreams'):
+                    if len(extra_data.get('AudioStreams', {})) > 0:
                         for stream in extra_data['AudioStreams']:
+                            if not isinstance(extra_data['AudioStreams'][stream], dict): continue
                             liz.setProperty('AudioCodec.' + str(stream), str(extra_data['AudioStreams'][stream]
                                                                              ['AudioCodec']))
                             liz.setProperty('AudioChannels.' + str(stream), str(extra_data['AudioStreams'][stream]
@@ -344,20 +310,9 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                             audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
                             audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
                             if __addon__.getSetting("spamLog") == 'true':
-                                xbmc.log("add_gui_item - audio codec", xbmc.LOGWARNING)
-                                for i in audio_codec:
-                                    temp_log = ""
-                                    a = audio_codec.get(encode(i))
-                                    if a is None:
-                                        temp_log = "\'unset\'"
-                                    elif isinstance(a, list):
-                                        for b in a:
-                                            temp_log = str(b) if temp_log == "" else temp_log + " | " + str(b)
-                                    else:
-                                        temp_log = str(a)
-                                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+                                dump_dictionary(audio_codec, 'audio codec')
                             liz.addStreamInfo('audio', audio_codec)
-                    if extra_data.get('SubStreams'):
+                    if len(extra_data.get('SubStreams', {})) > 0:
                         for stream2 in extra_data['SubStreams']:
                             liz.setProperty('SubtitleLanguage.' + str(stream2), str(extra_data['SubStreams'][stream2]
                                                                                     ['SubtitleLanguage']))
@@ -1177,11 +1132,12 @@ def build_serie_episodes(params):
                         if len(video['files']) > 0:
                             episode_count += 1
                             # Check for empty duration from MediaInfo check fail and handle it properly
+                            tmp_duration = 1
                             try:
                                 tmp_duration = video['files'][0]['duration']
                             except:
-                                continue
-                            if not tmp_duration:
+                                pass
+                            if tmp_duration == 1:
                                 duration = 1
                             else:
                                 duration = int(tmp_duration) / 1000
@@ -1202,7 +1158,7 @@ def build_serie_episodes(params):
                                 # 'director': " / ".join(temp_dir),
                                 # 'writer': " / ".join(temp_writer),
                                 'genre':        "..." if skip else temp_genre,
-                                'duration':      str(datetime.timedelta(seconds=duration)),
+                                'duration':      duration, # TODO detect kodi 18 - str(datetime.timedelta(seconds=duration)),
                                 # 'mpaa':          video.get('contentRating', ''), <--
                                 'year':          safeInt(video['year']),
                                 'tagline':       "..." if skip else temp_genre,
@@ -1211,7 +1167,7 @@ def build_serie_episodes(params):
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         safeInt(video['votes']),
                                 'originaltitle': encode(video['name']),
-                                'size': safeInt(body.get('size', '0'))
+                                'size': safeInt(video['files'][0].get('size', '0'))
                             }
 
                             season = str(body.get('season', '1'))
@@ -1237,7 +1193,6 @@ def build_serie_episodes(params):
                                 banner = video["art"]["banner"][0]["url"]
 
                             key = video["files"][0]["url"]
-                            media = video["files"][0]["media"]
 
                             # Extra data required to manage other properties
                             extra_data = {
@@ -1251,6 +1206,7 @@ def build_serie_episodes(params):
                                 'parentKey':        parent_key,
                                 'jmmepisodeid':     safeInt(body.get('id', '')),
                                 'actors':           actors,
+                                'VideoStreams':     defaultdict(dict),
                                 'AudioStreams':     defaultdict(dict),
                                 'SubStreams':       defaultdict(dict),
                                 'ep_id':            safeInt(video.get('id', '')),
@@ -1258,10 +1214,8 @@ def build_serie_episodes(params):
                             }
 
                             # Information about streams inside video file
-                            if media is not None:
-                                if len(video["files"][0]["media"]) > 0:
-                                    for media_info in video["files"][0]["media"]:
-                                        video_file_information(media_info, extra_data)
+                            if len(video["files"][0].get("media", {})) > 0:
+                                video_file_information(video['files'][0]['media'], extra_data)
 
                             # Determine what type of watched flag [overlay] to use
                             if int(safeInt(video.get("view",'0'))) > 0:
@@ -1493,19 +1447,27 @@ def play_video(ep_id, raw_id, movie):
 
             file_url = file_body['url']
 
+            # Information about streams inside video file
+            # Video
+            codecs = dict()
+            video_file_information(file_body["media"], codecs)
+
+            details['duration'] = file_body['duration']
+            details['size'] = file_body['size']
+
             item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=file_url)
             item.setInfo(type='Video', infoLabels=details)
             item.setProperty('IsPlayable', 'true')
 
-            # Information about streams inside video file
-            # Video
-            codecs = dict()
-
-            for stream_info in file_body["media"]:
-                video_file_information(stream_info, codecs)
-            item.addStreamInfo('video', codecs["VideoStream"])
-            item.addStreamInfo('audio', codecs["AudioStreams"])
-            item.addStreamInfo('subtitle', codecs["SubStreams"])
+            for stream_index in codecs["VideoStreams"]:
+                if not isinstance(codecs["VideoStreams"][stream_index], dict): continue
+                item.addStreamInfo('video', codecs["VideoStreams"][stream_index])
+            for stream_index in codecs["AudioStreams"]:
+                if not isinstance(codecs["AudioStreams"][stream_index], dict): continue
+                item.addStreamInfo('audio', codecs["AudioStreams"][stream_index])
+            for stream_index in codecs["SubStreams"]:
+                if not isinstance(codecs["SubStreams"][stream_index], dict): continue
+                item.addStreamInfo('subtitle', codecs["SubStreams"][stream_index])
         else:
             error("file_id not retrieved")
     except Exception as exc:
