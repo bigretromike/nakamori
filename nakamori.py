@@ -51,10 +51,6 @@ def valid_user():
     Logs into the server and stores the apikey, then checks if the userid is valid
     :return: bool True if all completes successfully
     """
-    version = get_version()
-    if version == 'legacy' or version == '3.6.1.0':
-        error('Please upgrade Shoko', 'You are using an unsupported version of Shoko.')
-        return False
 
     # reset apikey if user enters new login info
     # if apikey is present login should be empty as its not needed anymore
