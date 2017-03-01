@@ -230,6 +230,15 @@ def get_data(url_in, referer, data_type):
     return data
 
 
+def post_dict(url, body):
+    json = ''
+    try:
+        json = json.dumps(body)
+    except:
+        error('Failed to send data')
+    post_data(url, json)
+
+
 # json
 def post_json(url_in, body):
     if len(body) > 3:
@@ -381,6 +390,15 @@ def getURL(url, header):
             'Content-Encoding') + '): ' + url, xbmc.LOGERROR)
         xbmc.log('Content: ' + response.read(), xbmc.LOGERROR)
         return False
+
+
+def kodi_jsonrpc(request):
+    try:
+        return_data = xbmc.executeJSONRPC(request)
+        result = json.loads(return_data)
+        return result
+    except Exception as exc:
+        error("jsonrpc_error: " + str(exc))
 
 
 def get_kodi_setting_int(setting):

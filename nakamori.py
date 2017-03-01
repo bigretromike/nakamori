@@ -1195,7 +1195,7 @@ def build_serie_episodes(params):
                                 'fanart_image':     None if skip else fanart,
                                 'banner':           None if skip else banner,
                                 'key':              key,
-                                'resume':           int(int(video.get('offset', '0')) / 1000),
+                                'resume':           int(int(video['files'][0].get('offset', '0')) / 1000),
                                 'parentKey':        parent_key,
                                 'jmmepisodeid':     safeInt(body.get('id', '')),
                                 'actors':           actors,
@@ -1467,13 +1467,14 @@ def play_video(ep_id, raw_id, movie):
     try:
         player.play(item=file_url, listitem=item, windowed=False)
         xbmcplugin.setResolvedUrl(handle, True, item)
+        # TODO make a yes/no dialog
         if __addon__.getSetting("file_resume") == "true":
             if "offset" in file_body:
                 if file_body['offset'] != 0:
                     xbmc.sleep(100)
                     player.pause()  # pause
                     xbmc.sleep(100)
-                    player.seekTime(int(file_body['offset']))
+                    player.seekTime(int(file_body['offset']) / 1000)
                     xbmc.sleep(100)
                     player.pause()  # un-pause
     except:
@@ -1502,6 +1503,7 @@ def play_video(ep_id, raw_id, movie):
                     total_time = player.getTotalTime()
                     current_time = player.getTime()
 
+                    # this does not appear to work
                     # region Resume support
                     # we'll sync the offset if it's set to track watched states, and leave file_resume to auto resuming
                     if __addon__.getSetting("watched_mark") == "true":
