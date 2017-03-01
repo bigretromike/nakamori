@@ -10,6 +10,8 @@ import traceback
 import json
 from distutils.version import LooseVersion
 
+import collections
+
 import xbmc
 import xbmcgui
 import xbmcaddon
@@ -35,27 +37,22 @@ except:
 pDialog = ''
 
 
-def dump_dictionary(details, name, recursions=0):
+def dump_dictionary(details, name):
     if __addon__.getSetting("spamLog") == 'true':
         if details is not None:
-            index = recursions
-            string_prefix = ''
-            if index > 0:
-                while index > 0:
-                    string_prefix += '-'
-                    index -= 1
-            xbmc.log(string_prefix + "---- " + name + ' ----', xbmc.LOGWARNING)
+            xbmc.log("---- " + name + ' ----', xbmc.LOGWARNING)
 
             for i in details:
                 temp_log = ""
                 a = details.get(encode(i))
                 if a is None:
                     temp_log = "\'unset\'"
-                elif isinstance(a, list) or isinstance(a, dict):
-                    dump_dictionary(a, encode(i), recursions+1)
+                elif isinstance(a, collections.Iterable):
+                    # easier for recursion and pretty
+                    temp_log = json.dumps(a, sort_keys=True, indent=4, separators=(',', ': '))
                 else:
                     temp_log = str(a)
-                xbmc.log(string_prefix + "-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+                xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
 
 
 def remove_anidb_links(data=""):
@@ -102,7 +99,7 @@ def safeInt(object_body):
 
 
 # json
-def error(msg, error_type='Error'):
+def error(msg, error_type='Error', silent=False):
     """
     Log and notify the user of an error
     Args:
@@ -125,8 +122,8 @@ def error(msg, error_type='Error'):
         xbmc.log("There was an error catching the error. WTF.", xbmc.LOGERROR)
         xbmc.log("The error message: " + str(e), xbmc.LOGERROR)
         traceback.print_exc()
-
-    xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
+    if not silent:
+        xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
 
 
 def parse_possible_error(data, data_type):

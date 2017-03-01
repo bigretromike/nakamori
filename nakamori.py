@@ -128,7 +128,7 @@ def set_window_heading(window_name):
     Args:
         window_name: name to put in titles
     """
-    if window_name == 'Continue Watching (System)':
+    if window_name == 'Continue Watching (SYSTEM)':
         window_name = 'Continue Watching'
     elif window_name == 'Unsort':
         window_name = 'Unsorted'
@@ -278,10 +278,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
-                    try:
-                        liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0]['duration']))
-                    except:
-                        pass
+                    liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0]['duration']))
                     liz.setProperty('ResumeTime', str(extra_data.get('resume')))
 
                     liz.setProperty('VideoResolution', str(extra_data.get('xVideoResolution', '')))
@@ -295,9 +292,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                         video_codec = video_codec[0]
                         liz.addStreamInfo('video', video_codec)
 
-                    if __addon__.getSetting("spamLog") == 'true':
-                        dump_dictionary(video_codec, 'video codec')
-
                     if len(extra_data.get('AudioStreams', {})) > 0:
                         for stream in extra_data['AudioStreams']:
                             if not isinstance(extra_data['AudioStreams'][stream], dict): continue
@@ -309,8 +303,6 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                             audio_codec['codec'] = str(extra_data['AudioStreams'][stream]['AudioCodec'])
                             audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
                             audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
-                            if __addon__.getSetting("spamLog") == 'true':
-                                dump_dictionary(audio_codec, 'audio codec')
                             liz.addStreamInfo('audio', audio_codec)
                     if len(extra_data.get('SubStreams', {})) > 0:
                         for stream2 in extra_data['SubStreams']:
@@ -1123,6 +1115,11 @@ def build_serie_episodes(params):
                 grandparent_title = encode(body.get('name', ''))
 
             if len(body.get('eps', {})) > 0:
+                # add item to move to next not played item (not marked as watched)
+                if __addon__.getSetting("show_continue") == "true":
+                    if str(parent_title).lower() != "unsort":
+                        util.addDir("-continue-", '', '7', _server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
+
                 for video in body['eps']:
                     # check if episode have files
                     episode_type = True
@@ -1250,11 +1247,6 @@ def build_serie_episodes(params):
 
                             add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
 
-            # add item to move to next not played item (not marked as watched)
-            if __addon__.getSetting("show_continue") == "true":
-                if str(parent_title).lower() != "unsort":
-                    util.addDir("-continue-", '', '7', _server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
-
             if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
                 try:
                     new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
@@ -1363,6 +1355,7 @@ def build_raw_list(params):
     :return:
     """
     xbmcplugin.setContent(handle, 'files')
+    set_window_heading('Unsort')
     try:
         html = get_json(params['url'])
         body = json.loads(html)
@@ -1514,13 +1507,14 @@ def play_video(ep_id, raw_id, movie):
                     current_time = player.getTime()
 
                     # region Resume support
-                    if __addon__.getSetting("file_resume") == "true":
+                    # we'll sync the offset if it's set to track watched states, and leave file_resume to auto resuming
+                    if __addon__.getSetting("watched_mark") == "true":
                         offset_url = _server_ + "/api/file/offset"
                         offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time)
                         try:
                             post_json(offset_url, offset_body)
                         except:
-                            dbg("Error while updating Resume status.")
+                            error("Error while updating Resume status.", '', True)
                     # endregion
 
                     # region Trakt support
