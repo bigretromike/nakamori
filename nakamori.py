@@ -1056,6 +1056,10 @@ def build_serie_episodes(params):
     :return:
     """
     xbmcplugin.setContent(handle, 'episodes')
+
+    # value to hold position of not seen episode
+    next_episode = -1
+    episode_count = 0
     try:
         html = get_json(params['url'])
         body = json.loads(html)
@@ -1080,10 +1084,6 @@ def build_serie_episodes(params):
                 xbmcplugin.addSortMethod(handle, 17)  # year
                 xbmcplugin.addSortMethod(handle, 29)  # runtime
                 xbmcplugin.addSortMethod(handle, 28)  # by MPAA
-
-            # value to hold position of not seen episode
-            next_episode = -1
-            episode_count = 0
 
             if len(body.get('eps', {})) <= 0:
                 error("No episodes in list")
@@ -1243,19 +1243,20 @@ def build_serie_episodes(params):
 
                             add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
 
-            if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
-                try:
-                    new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                    new_control = new_window.getControl(new_window.getFocusId())
-                    move_position_on_list(new_control, next_episode)
-                except:
-                    pass
-
         except Exception as exc:
             error("Error during build_serie_episodes", str(exc))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes", str(exc))
     xbmcplugin.endOfDirectory(handle)
+
+    if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
+        try:
+            xbmc.sleep(150)
+            new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            new_control = new_window.getControl(new_window.getFocusId())
+            move_position_on_list(new_control, next_episode)
+        except:
+            pass
 
 
 def build_search_directory():
