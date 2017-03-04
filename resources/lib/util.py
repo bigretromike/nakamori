@@ -392,6 +392,15 @@ def getURL(url, header):
         return False
 
 
+def get_kodi_version():
+    """
+    This returns a LooseVersion instance containing the kodi version (16.0, 16.1, 17.0, etc)
+    """
+    versionstring = xbmc.getInfoLabel('System.BuildVersion')
+    versionstring = versionstring.split(' ')[0]
+    return LooseVersion(versionstring)
+
+
 def kodi_jsonrpc(request):
     try:
         return_data = xbmc.executeJSONRPC(request)
