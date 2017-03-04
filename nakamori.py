@@ -523,30 +523,33 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
 # region Adding items to list/menu:
 
 def add_raw_files(node):
-    name = encode(node.get("filename", ''))
-    file_id = node.get("id", '')
-    key = node.get("url", '')
-    url = _server_ + "/api/file?id=" + str(file_id)
-    title = os.path.split(str(name))[1]
-    thumb = _server_ + "/image/support/plex_others.png"
-    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
-    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-    liz.setProperty('IsPlayable', 'true')
-    u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
-    u = set_parameter(u, 'mode', 1)
-    u = set_parameter(u, 'raw_id', file_id)
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
-    u = set_parameter(u, 'type', "raw")
-    u = set_parameter(u, 'file', key)
-    u = set_parameter(u, 'ep_id', '0')
-    u = set_parameter(u, 'vl', node["import_folder_id"])
-    context = [('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)),
-               ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
-               ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
-    liz.addContextMenuItems(context)
-    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
+    try:
+        name = encode(node.get("filename", ''))
+        file_id = node["id"]
+        key = node["url"]
+        url = _server_ + "/api/file?id=" + str(file_id)
+        title = os.path.split(str(name))[1]
+        thumb = _server_ + "/image/support/plex_others.png"
+        liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+        liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
+        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+        liz.setProperty('IsPlayable', 'true')
+        u = sys.argv[0]
+        u = set_parameter(u, 'url', url)
+        u = set_parameter(u, 'mode', 1)
+        u = set_parameter(u, 'raw_id', file_id)
+        u = set_parameter(u, 'name', urllib.quote_plus(title))
+        u = set_parameter(u, 'type', "raw")
+        u = set_parameter(u, 'file', key)
+        u = set_parameter(u, 'ep_id', '0')
+        u = set_parameter(u, 'vl', node["import_folder_id"])
+        context = [('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)),
+                   ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
+                   ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
+        liz.addContextMenuItems(context)
+        xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
+    except: # Sometimes a file is deleted or invalid, but we should just skip it
+        pass
 
 
 def add_content_typ_dir(name, serie_id):
