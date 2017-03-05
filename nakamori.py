@@ -1606,7 +1606,7 @@ def vote_series(params):
         # vote_type = str(1)
         series_id = params['serie_id']
         body = '?id=' + series_id + '&score=' + vote_value
-        get_json(_server_ + "/serie/vote" + body)
+        get_json(_server_ + "/api/serie/vote" + body)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Serie voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
 
 
@@ -1626,7 +1626,7 @@ def vote_episode(params):
         # vote_type = str(4)
         ep_id = params['ep_id']
         body = '?id=' + ep_id + '&score=' + vote_value
-        get_json(_server_ + "/ep/vote" + body)
+        get_json(_server_ + "/api/ep/vote" + body)
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Episode voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
 
 
