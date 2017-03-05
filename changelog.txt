@@ -1,4 +1,4 @@
-v2.1.0 ()
+v2.1.0 (05/03/2017)
 - Nakamori not use purely a new Shoko API v2 Interface to communicate
 - Shoko Server should be 3.7.0.4 or higher
 - Code have been clean off any legacy (unused) code
@@ -17,6 +17,12 @@ v2.1.0 ()
 - Added 'Playlist MODE' to context menu
 - Added proper resume (#154)
 - Added 'Resume' to settings
+- Nakamori modulation
+- Fix watch and unwatch groups and series
+- fix stream info and get user agent 
+- remove second call to version 
+- Select first unwatched episode not working (#175)
+- Please keep backwards compatibility in mind (#198)
 
 v2.0.22 (02/02/2017)
 - fix years/tags (sorry ;-) )

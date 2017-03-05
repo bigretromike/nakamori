@@ -274,7 +274,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
-                    liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0]['duration']))
+                    liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0].get('duration', 0)))
                     liz.setProperty('ResumeTime', str(extra_data.get('resume')))
 
                     liz.setProperty('VideoResolution', str(extra_data.get('xVideoResolution', '')))
