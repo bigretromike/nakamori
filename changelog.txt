@@ -1,3 +1,7 @@
+v2.1.1 (07/03/2017)
+- Move player to service 
+- Display a message when Scripts is not installed
+
 v2.1.0 (05/03/2017)
 - Nakamori not use purely a new Shoko API v2 Interface to communicate
 - Shoko Server should be 3.7.0.4 or higher

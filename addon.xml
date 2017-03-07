@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.0" provider-name="BigRetroMike, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.1" provider-name="BigRetroMike, da3dsoul">
     <requires>
         <import addon="script.module.nakamori" version="1.0.0"/>
     </requires>
@@ -11,17 +11,9 @@
 		<description lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
         <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
         <news>
-            v2.1.0 ()
-            - Nakamori not use purely a new Shoko API v2 Interface to communicate
-            - Shoko Server should be 3.7.0.4 or higher
-            - Code have been clean off any legacy (unused) code
-            - Brand new Search option with local Database to store your favorite 'search query'
-            - Added 'The coast of seven leages in Kamakura' as New Search Art
-            - Added 'Red Fuji southern wind clear morning' as Clear Search Art
-            - Added icons for Search History (#18)
-            - Ignore Vote_All setting when you already voted on object (#185)
-            - Added Trakt support (via Shoko APIv2) (#33)
-            - Disable gzip on localhost (#161)
+            v2.1.1 (07/03/2017)
+			- Move player to service 
+			- Display a message when Scripts is not installed
         </news>
         <platform>all</platform>
         <language>en</language>
