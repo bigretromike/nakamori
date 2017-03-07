@@ -4,7 +4,6 @@ import datetime as datetime
 import json
 import os
 
-import TagBlacklist as TagFilter
 import resources.lib.util as util
 import resources.lib.search as search
 
@@ -16,6 +15,10 @@ import xbmcplugin
 from resources.lib.util import *
 
 from collections import defaultdict
+try:
+    import TagBlacklist as TagFilter
+except:
+    pass
 
 try:
     import pydevd
@@ -152,7 +155,10 @@ def filter_gui_item_by_tag(title):
     :rtype: bool
     """
     str1 = [title]
-    str1 = TagFilter.processTags(__tagSettingFlags__, str1)
+    try:
+        str1 = TagFilter.processTags(__tagSettingFlags__, str1)
+    except:
+        pass
     return len(str1) > 0
 
 
@@ -462,7 +468,10 @@ def get_tags(tag_node):
             for tag in tag_node:
                 temp_genre = encode(tag["tag"]).strip()
                 temp_genres.append(temp_genre)
-                temp_genres = TagFilter.processTags(__tagSettingFlags__, temp_genres)
+                try:
+                    temp_genres = TagFilter.processTags(__tagSettingFlags__, temp_genres)
+                except:
+                    pass
                 temp_genre = " | ".join(temp_genres)
             return temp_genre
         else:
@@ -1906,6 +1915,11 @@ if valid_connect() is True:
             elif mode == 31:
                 search.clear_search_history(parameters)
             else:
+                try:
+                    faketags = []
+                    faketags = TagFilter.processTags(__tagSettingFlags__, faketags)
+                except:
+                    error('Module Missing', 'Install Nakamori Scripts from repo')
                 build_filters_menu()
     else:
         error("Incorrect Credentials", "Please change them in Settings")
