@@ -532,10 +532,9 @@ def searchBox():
     keyb.doModal()
     searchText = ''
 
-    if (keyb.isConfirmed()):
+    if keyb.isConfirmed():
         searchText = keyb.getText()
-    if searchText != '':
-        return searchText
+    return searchText
 
 
 def addDir(name, url, mode, iconimage='DefaultTVShows.png', plot="", poster="DefaultVideo.png", filename="none",

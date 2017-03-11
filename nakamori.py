@@ -1350,6 +1350,9 @@ def execute_search_and_add_query():
     """
     find = util.searchBox()
     # check search history
+    if find == '':
+        build_search_directory()
+        return
     if not search.check_in_database(find):
         # if its not add to history & refresh
         search.add_search_history(find)
