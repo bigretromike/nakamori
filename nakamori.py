@@ -427,20 +427,26 @@ def get_title(data):
         lang = __addon__.getSetting("displaylang")
         title_type = __addon__.getSetting("title_type")
         try:
-            for titleTag in data["titles"]:
-                if titleTag["Type"].lower() == title_type.lower():
-                    if titleTag["Language"].lower() == lang.lower():
-                        return encode(titleTag["Title"])
+            for titleTag in data.get("titles", []):
+                if titleTag.get("Type", "").lower() == title_type.lower():
+                    if titleTag.get("Language", "").lower() == lang.lower():
+                        if encode(titleTag.get("Title", "")) == "":
+                            continue
+                        return encode(titleTag.get("Title", ""))
             # fallback on language any title
-            for titleTag in data["titles"]:
-                if titleTag["Type"].lower() != 'short':
-                    if titleTag["Language"].lower() == lang.lower():
-                        return encode(titleTag["Title"])
+            for titleTag in data.get("titles", []):
+                if titleTag.get("Type", "").lower() != 'short':
+                    if titleTag.get("Language", "").lower() == lang.lower():
+                        if encode(titleTag.get("Title", "")) == "":
+                            continue
+                        return encode(titleTag.get("Title", ""))
             # fallback on x-jat main title
-            for titleTag in data["titles"]:
-                if titleTag["Type"].lower() == 'main':
-                    if titleTag["Language"].lower() == 'x-jat':
-                        return encode(titleTag["Title"])
+            for titleTag in data.get("titles", []):
+                if titleTag.get("Type", "").lower() == 'main':
+                    if titleTag.get("Language", "").lower() == "x-jat":
+                        if encode(titleTag.get("Title", "")) == "":
+                            continue
+                        return encode(titleTag.get("Title", ""))
             # fallback on directory title
             return encode(data.get('name', ''))
         except Exception as expc:
@@ -748,7 +754,7 @@ def add_serie_item(node, parent_title, destination_playlist = False):
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
     temp_genre = get_tags(node.get("tags", {}))
-    title = node.get('name', '')
+    title = get_title(node)
     size = node.get("size", '')
     content_type = node.get("type", '') if not is_filter else "filter"
     details = {
