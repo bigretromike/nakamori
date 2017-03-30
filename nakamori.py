@@ -1313,7 +1313,7 @@ def build_search_directory():
             if len(ss[0]) > 0:
                 items.append({
                     "title": ss[0],
-                    "url": _server_ + "/api/search?query=" + ss[0],
+                    "url": _server_ + "/api/search?query=" + urllib.quote_plus(ss[0]),
                     "mode": 3,
                     "poster": "none",
                     "icon": os.path.join(_home_, 'resources/media/icons', 'tag.png'),
