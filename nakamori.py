@@ -1368,7 +1368,7 @@ def execute_search_and_add_query():
         search.add_search_history(find)
         xbmc.executebuiltin('Container.Refresh')
     url = _server_ + "/api/search"
-    set_parameter(url, "query", find)
+    url = set_parameter(url, "query", find)
     search_for(url)
 
 
