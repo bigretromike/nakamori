@@ -1313,7 +1313,8 @@ def build_search_directory():
             if len(ss[0]) > 0:
                 items.append({
                     "title": ss[0],
-                    "url": _server_ + "/api/search?query=" + urllib.quote_plus(ss[0]),
+                    "url": _server_ + "/api/search",
+                    "query": ss[0],
                     "mode": 3,
                     "poster": "none",
                     "icon": os.path.join(_home_, 'resources/media/icons', 'tag.png'),
@@ -1327,10 +1328,16 @@ def build_search_directory():
             pass
 
     for detail in items:
-        u = sys.argv[0] + "?url=" + detail['url'] + "&mode=" + str(detail['mode']) + "&name=" + urllib.quote_plus(detail['title'].encode("utf-8")) + "&extras=" + detail['extras']
-        liz = xbmcgui.ListItem(detail['title'].encode("utf-8"))
+        u = sys.argv[0]
+        u = set_parameter(u, 'url', detail['url'])
+        u = set_parameter(u, 'mode', detail['mode'])
+        u = set_parameter(u, 'name', encode(detail['title']))
+        u = set_parameter(u, 'extras', detail['extras'])
+        if 'query' in detail:
+            u = set_parameter(u, 'query', detail['query'])
+        liz = xbmcgui.ListItem(encode(detail['title']))
         liz.setArt({'thumb': detail['icon'], 'poster': detail['poster'], 'icon': detail['icon'], 'fanart': detail['fanart']})
-        liz.setInfo(type=detail['type'], infoLabels={"Title": detail['title'].encode("utf-8"), "Plot": detail['plot']})
+        liz.setInfo(type=detail['type'], infoLabels={"Title": encode(detail['title']), "Plot": detail['plot']})
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle)
 
@@ -1910,8 +1917,10 @@ if valid_connect() is True:
                 xbmcgui.Dialog().ok('MODE=2', 'MODE')
             elif mode == 3:  # Search
                 try:
-                    if parameters['extras'] == "force-search":
-                        search_for(parameters['url'])
+                    if parameters['extras'] == "force-search" and 'query' in parameters:
+                        url = _server_ + '/api/search'
+                        url = set_parameter(url, 'query', parameters['query'])
+                        search_for(url)
                     else:
                         xbmcplugin.setContent(int(handle), "movies")
                         execute_search_and_add_query()
