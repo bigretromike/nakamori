@@ -767,6 +767,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'season':           safeInt(node.get('season', '1')),
         'size':             size,
         'rating':           float(str(node.get('rating', '0')).replace(',', '.')),
+        'userrating':       float(str(node.get('userrating', '0')).replace(',', '.')),
         'playcount':        int(node.get('viewed', '0')),
         'plot':             remove_anidb_links(encode(node.get('summary', '...'))),
         'originaltitle':    title,
@@ -1335,6 +1336,10 @@ def build_search_directory():
 
 
 def search_for(url):
+    """
+    Actually do the search and build the result
+    :param url: search url with query
+    """
     try:
         url = set_parameter(url, 'tags', 2)
         url = set_parameter(url, 'level', 1)
@@ -1351,8 +1356,7 @@ def search_for(url):
 
 def execute_search_and_add_query():
     """
-    Search for query and if its not in Search History add it
-    :return:
+    Build a search query and if its not in Search History add it
     """
     find = util.searchBox()
     # check search history
@@ -1363,7 +1367,9 @@ def execute_search_and_add_query():
         # if its not add to history & refresh
         search.add_search_history(find)
         xbmc.executebuiltin('Container.Refresh')
-    search_for(_server_ + "/api/search?query=" + find)
+    url = _server_ + "/api/search"
+    set_parameter(url, "query", find)
+    search_for(url)
 
 
 def build_raw_list(params):
