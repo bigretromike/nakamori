@@ -344,6 +344,10 @@ def post(url, data, headers={}):
 
 
 def get_server_status():
+    """
+    Try to query server for version, if kodi get version respond then shoko server is running
+    :return: bool
+    """
     try:
         if get_version() != LooseVersion('0.0'):
             return True

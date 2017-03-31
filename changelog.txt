@@ -1,3 +1,10 @@
+v2.1.6 (01/04/2017)
+- vote after watching - stopped working (#203)
+- proper 'resume' support which will work correct with shoko 3.6.0.7 (not ETA)
+- more PEP8
+- added few missing docstrings
+- removed hack for partial mark series (as some skins may use % and hack would force 0,50,100%)
+
 v2.1.5 (31/03/2017)
 - Series/episodes not shown in list (#202)
 - Fix searches with spaces

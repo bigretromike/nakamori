@@ -3,17 +3,18 @@
 import resources.lib.util as util
 import resources.lib.search as search
 
-import xbmc
+from resources.lib.util import *
+from collections import defaultdict
+
+import xbmcplugin
 import xbmcaddon
 import xbmcgui
-import xbmcplugin
+import xbmc
 
-from resources.lib.util import *
-
-from collections import defaultdict
 try:
     import TagBlacklist as TagFilter
-except:
+except Exception as tag_ex:
+    error("Nakamori.script is missing", str(tag_ex))
     pass
 
 try:
@@ -32,6 +33,10 @@ _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 
 def populate_tag_setting_flags():
+    """
+    Get user settings from local Kodi, and use them with Nakamori
+    :return: setting_flags 
+    """
     tag_setting_flags = 0
     tag_setting_flags = tag_setting_flags | (0b00001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
     tag_setting_flags = tag_setting_flags | (0b00010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
@@ -42,6 +47,10 @@ def populate_tag_setting_flags():
 
 
 def valid_connect():
+    """
+    Try to query server for version, if kodi get version respond then shoko server is running
+    :return: bool
+    """
     return util.get_server_status()
 
 
@@ -83,10 +92,10 @@ def valid_user():
 def refresh():
     """
     Refresh and re-request data from server
+    refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
+    Allow time for the ui to reload
     """
-    # refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
     xbmc.executebuiltin('Container.Refresh')
-    # Allow time for the ui to reload (this may need to be tweaked, I am running on localhost)
     xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
 
 
@@ -158,6 +167,12 @@ def filter_gui_item_by_tag(title):
 
 
 def video_file_information(node, detail_dict):
+    """
+    Process given 'node' and parse it to create proper file information dictionary 'detail_dict' 
+    :param node: node that contains file
+    :param detail_dict: dictionary for output
+    :return: dict
+    """
     # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
     # Video
     if 'VideoStreams' not in detail_dict:
@@ -278,7 +293,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
                     liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0].get('duration', 0)))
-                    liz.setProperty('ResumeTime', str(extra_data.get('resume')))
+                    if __addon__.getSetting("file_resume") == "true":
+                        liz.setProperty('ResumeTime', str(extra_data.get('resume')))
 
                     liz.setProperty('VideoResolution', str(extra_data.get('xVideoResolution', '')))
                     liz.setProperty('VideoCodec', extra_data.get('xVideoCodec', ''))
@@ -322,10 +338,16 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                 liz.setProperty('TotalEpisodes', str(extra_data['TotalEpisodes']))
                 liz.setProperty('WatchedEpisodes', str(extra_data['WatchedEpisodes']))
                 liz.setProperty('UnWatchedEpisodes', str(extra_data['UnWatchedEpisodes']))
-                # Hack to show partial flag for TV shows and seasons
+
                 if extra_data.get('partialTV') == 1:
-                    liz.setProperty('TotalTime', '100')
-                    liz.setProperty('ResumeTime', '50')
+                    total = str(extra_data['TotalEpisodes'])
+                    watched = str(extra_data['WatchedEpisodes'])
+                    if unicode(total).isnumeric() and unicode(watched).isnumeric():
+                        liz.setProperty('TotalTime', total)
+                        liz.setProperty('ResumeTime', watched)
+                    else:
+                        liz.setProperty('TotalTime', '100')
+                        liz.setProperty('ResumeTime', '50')
                 if extra_data.get('thumb'):
                     liz.setArt({"thumb": extra_data.get('thumb', '')})
                     liz.setArt({"icon": extra_data.get('thumb', '')})
@@ -409,7 +431,6 @@ def set_watch_flag(extra_data, details):
         extra_data: the extra_data dict
         details: the details dict
     """
-    # TODO: Real watch progress instead of 0,50,100%
     # Set up overlays for watched and unwatched episodes
     if extra_data['WatchedEpisodes'] == 0:
         details['playcount'] = 0
@@ -485,7 +506,8 @@ def get_tags(tag_node):
 
     """
     try:
-        if tag_node is None: return
+        if tag_node is None:
+            return
         if len(tag_node) > 0:
             temp_genres = []
             temp_genre = ''
@@ -536,7 +558,12 @@ def get_cast_and_role(data):
 
 
 def convert_cast_and_role_to_legacy(list_of_dicts):
-    # This is for Kodi 16 and under which doesn't take the nice new function
+    """
+    Convert standard cast_and_role to version supported by Kodi16 and lower
+    :param list_of_dicts: 
+    :return: list
+    """
+
     result_list = []
     list_cast = []
     list_cast_and_role = []
@@ -556,19 +583,24 @@ def convert_cast_and_role_to_legacy(list_of_dicts):
 # region Adding items to list/menu:
 
 def add_raw_files(node):
+    """
+    adding raw_file item to listitem of kodi
+    :param node: node containing raw_file
+    :return: add item to listitem
+    """
     try:
         name = encode(node.get("filename", ''))
         file_id = node["id"]
         key = node["url"]
-        url = _server_ + "/api/file?id=" + str(file_id)
+        raw_url = _server_ + "/api/file?id=" + str(file_id)
         title = os.path.split(str(name))[1]
         thumb = _server_ + "/image/support/plex_others.png"
-        liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+        liz = xbmcgui.ListItem(label=title, label2=title, path=raw_url)
         liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         liz.setProperty('IsPlayable', 'true')
         u = sys.argv[0]
-        u = set_parameter(u, 'url', url)
+        u = set_parameter(u, 'url', raw_url)
         u = set_parameter(u, 'mode', 1)
         u = set_parameter(u, 'raw_id', file_id)
         u = set_parameter(u, 'name', urllib.quote_plus(title))
@@ -587,7 +619,7 @@ def add_raw_files(node):
 
 def add_content_typ_dir(name, serie_id):
     """
-    Adding directories for given types of content
+    Adding directories for given types of content inside series (ex. episodes, credits)
     :param name: name of directory
     :param serie_id: id that the content belong too
     :return: add new directory
@@ -637,6 +669,13 @@ def add_content_typ_dir(name, serie_id):
 
 
 def add_serie_item(node, parent_title, destination_playlist=False):
+    """
+    Processing serie/content_directory 'node' into episode list
+    :param node: 
+    :param parent_title: 
+    :param destination_playlist: 
+    :return: 
+    """
     # xbmcgui.Dialog().ok('series', 'series')
     temp_genre = ''
     if 'tags' in node:
@@ -676,13 +715,13 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'title':            title,
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
-        'year':             node.get("year",''),
+        'year':             node.get("year", ''),
         'episode':          total,
         'season':           safeInt(node.get("season",'1')),
         # 'count'        : count,
         'size':             total,
         'Date':             node.get("air", ''),
-        'rating':           float(str(node.get("rating",'0')).replace(',', '.')),
+        'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
         'userrating':       float(userrating),
         'playcount':        int(node.get("viewed", '0')),
         # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
@@ -774,6 +813,14 @@ def add_serie_item(node, parent_title, destination_playlist=False):
 
 
 def add_group_item(node, parent_title, filter_id, is_filter=False):
+    """
+    Processing group 'node' into series (serie grouping)
+    :param node: 
+    :param parent_title: 
+    :param filter_id: 
+    :param is_filter: 
+    :return: 
+    """
     temp_genre = get_tags(node.get("tags", {}))
     title = get_title(node)
     size = node.get("size", '')
@@ -826,7 +873,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'banner':               banner,
         'key':                  key,
         'group_id':             key_id,
-        'WatchedEpisodes':      0,
+        'WatchedEpisodes':      0,  # TODO check this one
         'TotalEpisodes':        size,
         'UnWatchedEpisodes':    size
     }
@@ -1014,7 +1061,7 @@ def build_groups_menu(params, json_body=None):
                 if 'filter' in params:
                     filter_id = params['filter']
                     if directory_type == 'filter':
-                        filter_id = body.get('id','')
+                        filter_id = body.get('id', '')
 
             if directory_type == 'filter':
                 for grp in body["groups"]:
@@ -1048,8 +1095,8 @@ def build_serie_episodes_types(params):
         params:
 
     Returns:
-
     """
+
     # xbmcgui.Dialog().ok('MODE=5', str(params['url']))
     xbmcplugin.setContent(handle, 'seasons')
     try:
@@ -1100,12 +1147,13 @@ def build_serie_episodes_types(params):
 
 
 def build_serie_episodes(params):
-    # xbmcgui.Dialog().ok('MODE=6','IN')
     """
-
+    Load episode information from api, parse them one by one and add to listitem
     :param params:
     :return:
     """
+
+    # xbmcgui.Dialog().ok('MODE=6','IN')
     xbmcplugin.setContent(handle, 'episodes')
 
     # value to hold position of not seen episode
@@ -1204,7 +1252,8 @@ def build_serie_episodes(params):
                                 # 'director': " / ".join(temp_dir),
                                 # 'writer': " / ".join(temp_writer),
                                 'genre':        "..." if skip else temp_genre,
-                                'duration':      duration,  # TODO detect kodi 18 - str(datetime.timedelta(seconds=duration)),
+                                # TODO detect kodi 18: str(datetime.timedelta(seconds=duration))
+                                'duration':      duration,
                                 # 'mpaa':          video.get('contentRating', ''), <--
                                 'year':          safeInt(video['year']),
                                 'tagline':       "..." if skip else temp_genre,
@@ -1264,7 +1313,7 @@ def build_serie_episodes(params):
                                 video_file_information(video['files'][0]['media'], extra_data)
 
                             # Determine what type of watched flag [overlay] to use
-                            if int(safeInt(video.get("view",'0'))) > 0:
+                            if int(safeInt(video.get("view", '0'))) > 0:
                                 details['playcount'] = 1
                                 # details['overlay'] = 5
                             else:
@@ -1283,10 +1332,9 @@ def build_serie_episodes(params):
                                     extra_data['fanart_image'] = fanart
 
                             context = None
-                            url = key
 
                             u = sys.argv[0]
-                            u = set_parameter(u, 'url', url)
+                            u = set_parameter(u, 'url', key)
                             u = set_parameter(u, 'mode', 1)
                             u = set_parameter(u, 'file', key)
                             u = set_parameter(u, 'ep_id', video.get("id", ''))
@@ -1443,6 +1491,10 @@ def build_raw_list(params):
 
 
 def build_network_menu():
+    """
+    Build fake menu that will alert user about network error (unable to connect to api)
+    """
+
     network_url = _server_ + "/api/version"
     title = "Network connection error"
     liz = xbmcgui.ListItem(label=title, label2=title, path=network_url)
@@ -1484,7 +1536,7 @@ def play_video(ep_id, raw_id, movie):
         'votes':         xbmc.getInfoLabel('ListItem.Votes'),
         'originaltitle': xbmc.getInfoLabel('ListItem.OriginalTitle'),
         'size':          xbmc.getInfoLabel('ListItem.Size'),
-        'season':        xbmc.getInfoLabel('ListItem.Season')
+        'season':        xbmc.getInfoLabel('ListItem.Season'),
     }
 
     file_url = ''
@@ -1504,6 +1556,7 @@ def play_video(ep_id, raw_id, movie):
         else:
             file_id = raw_id
 
+        offset = 0
         if file_id is not None and file_id != 0:
             file_url = _server_ + "/api/file?id=" + str(file_id)
             file_body = json.loads(get_json(file_url))
@@ -1524,36 +1577,43 @@ def play_video(ep_id, raw_id, movie):
             item.setInfo(type='Video', infoLabels=details)
             item.setProperty('IsPlayable', 'true')
 
+            if 'offset' in file_body:
+                offset = file_body['offset']
+                offset = int(offset) / 1000
+                item.setProperty('ResumeTime', str(offset))
+
             for stream_index in codecs["VideoStreams"]:
-                if not isinstance(codecs["VideoStreams"][stream_index], dict): continue
+                if not isinstance(codecs["VideoStreams"][stream_index], dict):
+                    continue
                 item.addStreamInfo('video', codecs["VideoStreams"][stream_index])
             for stream_index in codecs["AudioStreams"]:
-                if not isinstance(codecs["AudioStreams"][stream_index], dict): continue
+                if not isinstance(codecs["AudioStreams"][stream_index], dict):
+                    continue
                 item.addStreamInfo('audio', codecs["AudioStreams"][stream_index])
             for stream_index in codecs["SubStreams"]:
-                if not isinstance(codecs["SubStreams"][stream_index], dict): continue
+                if not isinstance(codecs["SubStreams"][stream_index], dict):
+                    continue
                 item.addStreamInfo('subtitle', codecs["SubStreams"][stream_index])
         else:
             error("file_id not retrieved")
     except Exception as exc:
         error('Error getting episode info', str(exc))
 
-    player = xbmc.Player()
-
     try:
+        player = xbmc.Player()
         player.play(item=file_url, listitem=item, windowed=False)
         xbmcplugin.setResolvedUrl(handle, True, item)
-        # TODO make a yes/no dialog
+
         if __addon__.getSetting("file_resume") == "true":
-            if "offset" in file_body:
-                if file_body['offset'] != 0:
-                    xbmc.sleep(100)
-                    player.pause()  # pause
-                    xbmc.sleep(100)
-                    player.seekTime(int(file_body['offset']) / 1000)
-                    xbmc.sleep(100)
-                    player.pause()  # un-pause
-    except:
+            if offset > 0:
+                xbmc.sleep(100)
+                player.pause()  # pause
+                xbmc.sleep(100)
+                player.seekTime(offset)  # seek + unpause
+                xbmc.sleep(100)
+
+    except Exception as player_ex:
+        xbmc.log(str(player_ex), xbmc.LOGWARNING)
         pass
 
     # wait for player (network issue etc)
@@ -1564,9 +1624,11 @@ def play_video(ep_id, raw_id, movie):
     trakt_404 = False
     # hack for slow connection and buffering time
     xbmc.sleep(int(__addon__.getSetting("player_sleep")))
+
     try:
         if raw_id == "0":  # skip for raw_file
             clock_tick = -1
+
             while player.isPlaying():
                 try:
                     if clock_tick == -1:
@@ -1581,12 +1643,11 @@ def play_video(ep_id, raw_id, movie):
                     total_time = player.getTotalTime()
                     current_time = player.getTime()
 
-                    # this does not appear to work
-                    # region Resume support
-                    # we'll sync the offset if it's set to track watched states, and leave file_resume to auto resuming
-                    if __addon__.getSetting("watched_mark") == "true":
+                    # region Resume support (work with shoko 3.6.0.7+)
+                    # we'll sync the offset if it's set to sync watched states, and leave file_resume to auto resuming
+                    if __addon__.getSetting("syncwatched") == "true":
                         offset_url = _server_ + "/api/file/offset"
-                        offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time)
+                        offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time * 1000)
                         try:
                             post_json(offset_url, offset_body)
                         except:
@@ -1622,8 +1683,7 @@ def play_video(ep_id, raw_id, movie):
                     xbmc.sleep(60)
                     if not trakt_404:
                         # send 'pause' to trakt
-                        json.loads(get_json(_server_ +
-                                            "/api/ep/scrobble?id=" + str(ep_id) +
+                        json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) +
                                             "&ismovie=" + str(movie) +
                                             "&status=" + str(2) +
                                             "&progress=" + str(progress)))
@@ -1685,7 +1745,7 @@ def vote_series(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select('my_vote', vote_list)
+    my_vote = xbmcgui.Dialog().select('Serie voting', vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -1706,7 +1766,7 @@ def vote_episode(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select('My Vote', vote_list)
+    my_vote = xbmcgui.Dialog().select('Epidose voting', vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -1723,7 +1783,7 @@ def file_list_gui(ep_body):
     """
     Create GUI with file list to pick
     :param ep_body:
-    :return:
+    :return: int (id of picked file or 0 if none)
     """
     pick_filename = []
     get_fileid = []
@@ -1935,7 +1995,8 @@ if valid_connect() is True:
                 watched_mark(parameters)
                 voting = __addon__.getSetting("vote_always")
                 if voting == "true":
-                    vote_episode(parameters)
+                    if parameters.get('userrate', 0) == 0:
+                        vote_episode(parameters)
             elif cmd == "unwatched":
                 parameters['watched'] = False
                 watched_mark(parameters)
@@ -1947,7 +2008,7 @@ if valid_connect() is True:
             elif cmd == "pickFile":
                 if str(parameters['ep_id']) != "0":
                     ep_url = _server_ + "/api/ep?id=" + str(parameters['ep_id']) + "&level=2"
-                file_list_gui(json.loads(get_json(ep_url)))
+                    file_list_gui(json.loads(get_json(ep_url)))
             elif cmd == 'rescan':
                 rescan_file(parameters, True)
             elif cmd == 'rehash':
@@ -1962,16 +2023,22 @@ if valid_connect() is True:
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
-                    if play_video(parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) != 0:
+                    if play_video(parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) > 0:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
                             move_position_on_list(ctl, int(ui_index) + 1)
                         parameters['watched'] = True
                         watched_mark(parameters)
+
                         if __addon__.getSetting('vote_always') == 'true':
-                            if parameters.get('userrate', 0) == 0:
+                            # convert in case shoko give float
+                            if parameters.get('userrate', '0.0') == '0.0':
                                 vote_episode(parameters)
+                            else:
+                                xbmc.log("------- vote_always found 'userrate':" + str(parameters.get('userrate',
+                                                                                                      '0.0')),
+                                         xbmc.LOGNOTICE)
                 except Exception as exp:
                     xbmc.log(str(exp), xbmc.LOGWARNING)
                     pass
