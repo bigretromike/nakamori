@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.4" provider-name="BigRetroMike, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.5" provider-name="BigRetroMike, da3dsoul">
 <requires>
-<import addon="script.module.nakamori" version="1.0.1"/>
-<import addon="service.nakamori" version="1.0.1"/>
+<import addon="script.module.nakamori" version="1.0.2"/>
+<import addon="service.nakamori" version="1.0.3"/>
 </requires>
 <extension point="xbmc.python.pluginsource" library="nakamori.py">
 <provides>video</provides>
@@ -12,8 +12,10 @@
 <description lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
 <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 <news>
-v2.1.4 (20/03/2017)
-- Fix search getting stuck in loop if canceled
+    v2.1.5 (31/03/2017)
+    - Series/episodes not shown in list (#202)
+    - Fix searches with spaces
+    - PEP8
 </news>
 <platform>all</platform>
 <language>en</language>

@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import datetime as datetime
-import json
-import os
-
 import resources.lib.util as util
 import resources.lib.search as search
 
@@ -22,7 +18,7 @@ except:
 
 try:
     import pydevd
-except:
+except ImportError as ie:
     pass
 
 handle = int(sys.argv[1])
@@ -52,16 +48,15 @@ def valid_connect():
 def valid_user():
     """
     Logs into the server and stores the apikey, then checks if the userid is valid
+    reset apikey if user enters new login info
+    if apikey is present login should be empty as its not needed anymore
     :return: bool True if all completes successfully
     """
 
-    # reset apikey if user enters new login info
-    # if apikey is present login should be empty as its not needed anymore
     if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
         return True
     else:
         xbmc.log('-- apikey empty --')
-        # password can be empty as JMM Default account have blank password
         try:
             if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
                 body = '{"user":"' + __addon__.getSetting("login") + '",' + \
@@ -196,7 +191,8 @@ def video_file_information(node, detail_dict):
             stream_id = int(stream_info["Index"])
             streams[stream_id]['AudioCodec'] = stream_info["Codec"]
             streams['xAudioCodec'] = streams[stream_id]['AudioCodec']
-            streams[stream_id]['AudioLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
+            streams[stream_id]['AudioLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
+                else "unk"
             streams[stream_id]['AudioChannels'] = int(stream_info["Channels"]) if "Channels" in stream_info else 1
             streams['xAudioChannels'] = safeInt(streams[stream_id]['AudioChannels'])
             detail_dict['AudioStreams'] = streams
@@ -208,19 +204,20 @@ def video_file_information(node, detail_dict):
             if not isinstance(stream_info, dict): continue
             streams = detail_dict.get('SubStreams', defaultdict(dict))
             stream_id = int(stream_info["Index"])
-            streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info else "unk"
+            streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
+                else "unk"
             detail_dict['SubStreams'] = streams
 
 
-def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
+def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0):
     """Adds an item to the menu and populates its info labels
-    :param url:The URL of the menu or file this item links to
+    :param gui_url:The URL of the menu or file this item links to
     :param details:Data such as info labels
     :param extra_data:Data such as stream info
     :param context:The context menu
     :param folder:Is it a folder or file
     :param index:Index in the list
-    :type url:str
+    :type gui_url:str
     :type details:Union[str,object]
     :type extra_data:Union[str,object]
     :type context:
@@ -242,7 +239,7 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 details['aired'] = details['date']
 
         if __addon__.getSetting("spamLog") == 'true':
-            xbmc.log("add_gui_item - url: " + url, xbmc.LOGWARNING)
+            xbmc.log("add_gui_item - url: " + gui_url, xbmc.LOGWARNING)
             dump_dictionary(details, 'details')
             dump_dictionary(extra_data, 'extra data')
 
@@ -296,7 +293,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
 
                     if len(extra_data.get('AudioStreams', {})) > 0:
                         for stream in extra_data['AudioStreams']:
-                            if not isinstance(extra_data['AudioStreams'][stream], dict): continue
+                            if not isinstance(extra_data['AudioStreams'][stream], dict):
+                                continue
                             liz.setProperty('AudioCodec.' + str(stream), str(extra_data['AudioStreams'][stream]
                                                                              ['AudioCodec']))
                             liz.setProperty('AudioChannels.' + str(stream), str(extra_data['AudioStreams'][stream]
@@ -315,8 +313,8 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                             liz.addStreamInfo('subtitle', subtitle_codec)
 
             # UMS/PSM Jumpy plugin require 'path' to play video
-            partemp = util.parseParameters(input_string=url)
-            liz.setProperty('path', str(partemp.get('file', 'empty')))
+            part_temp = util.parseParameters(input_string=gui_url)
+            liz.setProperty('path', str(part_temp.get('file', 'empty')))
 
         if extra_data and len(extra_data) > 0:
             if extra_data.get('source') == 'serie' or extra_data.get('source') == 'group':
@@ -349,36 +347,57 @@ def add_gui_item(url, details, extra_data, context=None, folder=True, index=0):
                 if extra_data.get('source', 'none') == 'ep':
                     series_id = extra_data.get('serie_id')
                     ep_id = extra_data.get('ep_id')
-                    url_peep = url_peep_base + "&serie_id=" + str(series_id) + "&ep_id=" + str(ep_id) + '&ui_index=' + str(index)
+                    url_peep = url_peep_base
+                    url_peep = set_parameter(url_peep, 'serie_id', str(series_id))
+                    url_peep = set_parameter(url_peep, 'ep_id', str(ep_id))
+                    url_peep = set_parameter(url_peep, 'ui_index', str(index))
 
                     if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                        context.append(('Play (Do not Mark as Watched)', 'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' % (sys.argv[1], url_peep)))
+                        context.append(('Play (Do not Mark as Watched)',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' %
+                                        (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_pick_file') == 'true':
-                        context.append(('Inspect files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=pickFile)' % (sys.argv[1], url_peep)))
+                        context.append(('Inspect files',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=pickFile)' %
+                                        (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_playlist') == 'true':
-                        context.append(('Playlist Mode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=createPlaylist)' % (sys.argv[1], url_peep)))
+                        context.append(('Playlist Mode',
+                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=createPlaylist)' %
+                                        (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_info') == 'true':
                         context.append(('More Info', 'Action(Info)'))
 
                     if __addon__.getSetting('context_show_vote_Series') == 'true':
                         if series_id != '':
-                            context.append(('Vote for Series', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' % (sys.argv[1], url_peep)))
+                            context.append(('Vote for Series',
+                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' %
+                                            (sys.argv[1], url_peep)))
                     if __addon__.getSetting('context_show_vote_Episode') == 'true':
                         if ep_id != '':
-                            context.append(('Vote for Episode', 'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' % (sys.argv[1], url_peep)))
+                            context.append(('Vote for Episode',
+                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' %
+                                            (sys.argv[1], url_peep)))
 
                     if extra_data.get('jmmepisodeid') != '':
                         if __addon__.getSetting('context_krypton_watched') == 'true':
                             if details.get('playcount', 0) == 0:
-                                context.append(('Mark episode as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
+                                context.append(('Mark episode as Watched',
+                                                'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
+                                                (sys.argv[1], url_peep)))
                             else:
-                                context.append(('Mark episode as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)'% (sys.argv[1], url_peep)))
+                                context.append(('Mark episode as Unwatched',
+                                                'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                                (sys.argv[1], url_peep)))
                         else:
-                            context.append(('Mark episode as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
-                            context.append(('Mark episode as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+                            context.append(('Mark episode as Watched',
+                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
+                                            (sys.argv[1], url_peep)))
+                            context.append(('Mark episode as Unwatched',
+                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                                            (sys.argv[1], url_peep)))
 
         liz.addContextMenuItems(context)
-        return xbmcplugin.addDirectoryItem(handle, url, listitem=liz, isFolder=folder)
+        return xbmcplugin.addDirectoryItem(handle, gui_url, listitem=liz, isFolder=folder)
     except Exception as e:
         error("Error during add_gui_item", str(e))
 
@@ -400,7 +419,6 @@ def set_watch_flag(extra_data, details):
         extra_data['partialTV'] = 1
 
 
-# TODO: to-check [if working correctly]
 def get_title(data):
     """
     Get the new title
@@ -563,7 +581,7 @@ def add_raw_files(node):
                    ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
         liz.addContextMenuItems(context)
         xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
-    except: # Sometimes a file is deleted or invalid, but we should just skip it
+    except:  # Sometimes a file is deleted or invalid, but we should just skip it
         pass
 
 
@@ -574,9 +592,9 @@ def add_content_typ_dir(name, serie_id):
     :param serie_id: id that the content belong too
     :return: add new directory
     """
-    url = _server_ + "/api/serie"
-    url = set_parameter(url, 'id', str(serie_id))
-    url = set_parameter(url, 'level', 4)
+    dir_url = _server_ + "/api/serie"
+    dir_url = set_parameter(dir_url, 'id', str(serie_id))
+    dir_url = set_parameter(dir_url, 'level', 4)
     title = str(name)
     thumb = _server_ + "/api/image/support/"
 
@@ -607,18 +625,18 @@ def add_content_typ_dir(name, serie_id):
     else:
         thumb += "plex_others.png"
 
-    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
+    liz = xbmcgui.ListItem(label=title, label2=title, path=dir_url)
     liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'url', dir_url)
     u = set_parameter(u, 'mode', str(6))
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     u = set_parameter(u, 'type', name)
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
 
 
-def add_serie_item(node, parent_title, destination_playlist = False):
+def add_serie_item(node, parent_title, destination_playlist=False):
     # xbmcgui.Dialog().ok('series', 'series')
     temp_genre = ''
     if 'tags' in node:
@@ -671,7 +689,7 @@ def add_serie_item(node, parent_title, destination_playlist = False):
         'cast':             list_cast,  # cast : list (Michal C. Hall,
         'castandrole':      list_cast_and_role,
         # director       : string (Dagur Kari,
-        ### 'mpaa':             directory.get('contentRating', ''),
+        # 'mpaa':             directory.get('contentRating', ''),
         'plot':             remove_anidb_links(encode(node.get("summary", '...'))),
         # 'plotoutline'  : plotoutline,
         'originaltitle':    title,
@@ -688,9 +706,9 @@ def add_serie_item(node, parent_title, destination_playlist = False):
         'aired':            air,
         # credits        : string (Andy Kaufman, - writing credits
         # 'Lastplayed'   : lastplayed,
-        ### 'votes':            directory.get('votes'),
+        # 'votes':            directory.get('votes'),
         # trailer        : string (/home/user/trailer.avi,
-        ### 'dateadded':        directory.get('addedAt')
+        # 'dateadded':        directory.get('addedAt')
     }
     temp_date = str(node.get('air', '')).split('-')
     if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
@@ -728,23 +746,26 @@ def add_serie_item(node, parent_title, destination_playlist = False):
         'serie_id':             key_id
     }
 
-    url = key
+    serie_url = key
     set_watch_flag(extra_data, details)
     use_mode = 5
 
     u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'url', serie_url)
     u = set_parameter(u, 'mode', use_mode)
-    u = set_parameter(u, 'movie', node.get('ismovie','0'))
+    u = set_parameter(u, 'movie', node.get('ismovie', '0'))
 
     context = []
     url_peep = sys.argv[2] + "&serie_id=" + key_id
     if __addon__.getSetting('context_show_info') == 'true':
         context.append(('More Info', 'Action(Info)'))
     if __addon__.getSetting('context_show_vote_Series') == 'true':
-        context.append(('Vote on serie', 'RunScript(plugin.video.nakamori, %s, %s)' % (sys.argv[1], url_peep + "&cmd=voteSer")))
-    context.append(('Mark serie as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
-    context.append(('Mark serie as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+        context.append(('Vote on serie', 'RunScript(plugin.video.nakamori, %s, %s)' %
+                        (sys.argv[1], url_peep + "&cmd=voteSer")))
+    context.append(('Mark serie as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
+                    (sys.argv[1], url_peep)))
+    context.append(('Mark serie as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                    (sys.argv[1], url_peep)))
 
     if destination_playlist:
         return details
@@ -810,12 +831,12 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'UnWatchedEpisodes':    size
     }
 
-    url = key
+    group_url = key
     set_watch_flag(extra_data, details)
     use_mode = 4 if not is_filter else 4
 
     u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'url', group_url)
     u = set_parameter(u, 'mode', str(use_mode))
     if filter_id != '':
         u = set_parameter(u, 'filter', filter_id)
@@ -826,8 +847,10 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     if __addon__.getSetting('context_show_info') == 'true' and not is_filter:
         context.append(('More Info', 'Action(Info)'))
         url_peep = sys.argv[2] + "&group_id=" + key_id
-        context.append(('Mark group as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' % (sys.argv[1], url_peep)))
-        context.append(('Mark group as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' % (sys.argv[1], url_peep)))
+        context.append(('Mark group as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
+                        (sys.argv[1], url_peep)))
+        context.append(('Mark group as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
+                        (sys.argv[1], url_peep)))
 
     add_gui_item(u, details, extra_data, context)
 
@@ -859,7 +882,7 @@ def build_filters_menu():
                 if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
                     key = set_parameter(key, 'nocast', 1)
                 key = set_parameter(key, 'level', 2)
-                url = key
+                filter_url = key
 
                 thumb = ''
                 try:
@@ -888,13 +911,20 @@ def build_filters_menu():
                     pass
 
                 u = sys.argv[0]
-                u = set_parameter(u, 'url', url)
+                u = set_parameter(u, 'url', filter_url)
                 u = set_parameter(u, 'mode', use_mode)
                 u = set_parameter(u, 'name', urllib.quote_plus(title))
                 u = set_parameter(u, 'filter_id', menu["id"])
 
-                liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-                liz.setArt({'icon': thumb, 'thumb': thumb, 'fanart': fanart, 'poster': thumb, 'banner': banner, 'clearart': fanart})
+                liz = xbmcgui.ListItem(label=title, label2=title, path=filter_url)
+                liz.setArt({
+                    'icon': thumb,
+                    'thumb': thumb,
+                    'fanart': fanart,
+                    'poster': thumb,
+                    'banner': banner,
+                    'clearart': fanart
+                })
                 if thumb == '':
                     liz.setIconImage('DefaultVideo.png')
                 liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
@@ -905,13 +935,14 @@ def build_filters_menu():
         error("Invalid JSON Received in build_filters_menu", str(e))
 
     # region Start Add_Search
-    url = _server_ + "/api/search"
+    search_url = _server_ + "/api/search"
     title = "Search"
-    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'), "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
+    liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
+    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'),
+                "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'url', search_url)
     u = set_parameter(u, 'mode', str(3))
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
@@ -940,11 +971,11 @@ def build_groups_menu(params, json_body=None):
 
     try:
         if json_body is None:
-            tempurl = params['url']
-            tempurl = set_parameter(tempurl, 'nocast', 1)
-            tempurl = set_parameter(tempurl, 'notag', 1)
-            tempurl = set_parameter(tempurl, 'level', 1)
-            html = get_json(tempurl)
+            temp_url = params['url']
+            temp_url = set_parameter(temp_url, 'nocast', 1)
+            temp_url = set_parameter(temp_url, 'notag', 1)
+            temp_url = set_parameter(temp_url, 'level', 1)
+            html = get_json(temp_url)
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'], xbmc.LOGWARNING)
                 xbmc.log(html, xbmc.LOGWARNING)
@@ -952,9 +983,9 @@ def build_groups_menu(params, json_body=None):
             directory_type = html_body['type']
             if directory_type != "filters":
                 # level 3 will fill group and series (for filter)
-                tempurl = params['url']
-                tempurl = set_parameter(tempurl, 'level', 3)
-                html = get_json(tempurl)
+                temp_url = params['url']
+                temp_url = set_parameter(temp_url, 'level', 3)
+                html = get_json(temp_url)
                 body = json.loads(html)
             else:
                 body = html_body
@@ -965,10 +996,10 @@ def build_groups_menu(params, json_body=None):
         try:
             set_window_heading(body.get('name',''))
         except:
-            try: # this might not be a filter
+            try:  # this might not be a filter
                 # it isn't single filter
                 for nest_filter in body:
-                    add_group_item(nest_filter, '', body.get('id',''), True)
+                    add_group_item(nest_filter, '', body.get('id', ''), True)
                 xbmcplugin.endOfDirectory(handle)
                 return
             except:
@@ -1029,7 +1060,7 @@ def build_serie_episodes_types(params):
         try:
             parent_title = ''
             try:
-                parent_title = body.get('name','')
+                parent_title = body.get('name', '')
             except Exception as exc:
                 error("Unable to get parent title in buildTVSeasons", str(exc))
 
@@ -1039,7 +1070,8 @@ def build_serie_episodes_types(params):
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
                             # TODO add image for those without thumb
-                            content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"] if len(ep["art"]["thumb"]) > 0 else ''
+                            content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"] if len(ep["art"]["thumb"]) > 0 \
+                                else ''
             # no matter what type is its only one type, flat directory
             if len(content_type) == 1:
                 build_serie_episodes(params)
@@ -1133,7 +1165,9 @@ def build_serie_episodes(params):
                 # add item to move to next not played item (not marked as watched)
                 if __addon__.getSetting("show_continue") == "true":
                     if str(parent_title).lower() != "unsort":
-                        util.addDir("-continue-", '', '7', _server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
+                        util.addDir("-continue-", '', '7', 
+                                    _server_ + "/image/support/plex_others.png", 
+                                    "Next episode", "3", "4", str(next_episode))
 
                 for video in body['eps']:
                     # check if episode have files
@@ -1170,7 +1204,7 @@ def build_serie_episodes(params):
                                 # 'director': " / ".join(temp_dir),
                                 # 'writer': " / ".join(temp_writer),
                                 'genre':        "..." if skip else temp_genre,
-                                'duration':      duration, # TODO detect kodi 18 - str(datetime.timedelta(seconds=duration)),
+                                'duration':      duration,  # TODO detect kodi 18 - str(datetime.timedelta(seconds=duration)),
                                 # 'mpaa':          video.get('contentRating', ''), <--
                                 'year':          safeInt(video['year']),
                                 'tagline':       "..." if skip else temp_genre,
@@ -1255,8 +1289,8 @@ def build_serie_episodes(params):
                             u = set_parameter(u, 'url', url)
                             u = set_parameter(u, 'mode', 1)
                             u = set_parameter(u, 'file', key)
-                            u = set_parameter(u, 'ep_id', video.get("id",''))
-                            u = set_parameter(u, 'serie_id', body.get("id",''))
+                            u = set_parameter(u, 'ep_id', video.get("id", ''))
+                            u = set_parameter(u, 'serie_id', body.get("id", ''))
                             u = set_parameter(u, 'userrate', details["userrating"])
                             u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
@@ -1336,27 +1370,31 @@ def build_search_directory():
         if 'query' in detail:
             u = set_parameter(u, 'query', detail['query'])
         liz = xbmcgui.ListItem(encode(detail['title']))
-        liz.setArt({'thumb': detail['icon'], 'poster': detail['poster'], 'icon': detail['icon'], 'fanart': detail['fanart']})
+        liz.setArt({'thumb': detail['icon'],
+                    'poster': detail['poster'],
+                    'icon': detail['icon'],
+                    'fanart': detail['fanart']})
         liz.setInfo(type=detail['type'], infoLabels={"Title": encode(detail['title']), "Plot": detail['plot']})
         xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle)
 
 
-def search_for(url):
+def search_for(search_url):
     """
     Actually do the search and build the result
-    :param url: search url with query
+    :param search_url: search url with query
     """
     try:
-        url = set_parameter(url, 'tags', 2)
-        url = set_parameter(url, 'level', 1)
-        url = set_parameter(url, 'limit', __addon__.getSetting('maxlimit'))
-        url = set_parameter(url, 'limit_tag', __addon__.getSetting('maxlimit_tag'))
-        json_body = json.loads(get_json(url))
+        search_url = set_parameter(search_url, 'tags', 2)
+        search_url = set_parameter(search_url, 'level', 1)
+        search_url = set_parameter(search_url, 'limit', __addon__.getSetting('maxlimit'))
+        search_url = set_parameter(search_url, 'limit_tag', __addon__.getSetting('maxlimit_tag'))
+        json_body = json.loads(get_json(search_url))
         if json_body["groups"][0]["size"] == 0:
-            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('No results', 'No items found', '!', __addon__.getAddonInfo('icon')))
+            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('No results', 'No items found',
+                                                                            '!', __addon__.getAddonInfo('icon')))
         else:
-            build_groups_menu(url, json_body)
+            build_groups_menu(search_url, json_body)
     except:
         error("error in findVideo")
 
@@ -1374,9 +1412,9 @@ def execute_search_and_add_query():
         # if its not add to history & refresh
         search.add_search_history(find)
         xbmc.executebuiltin('Container.Refresh')
-    url = _server_ + "/api/search"
-    url = set_parameter(url, "query", find)
-    search_for(url)
+    search_url = _server_ + "/api/search"
+    search_url = set_parameter(search_url, "query", find)
+    search_for(search_url)
 
 
 def build_raw_list(params):
@@ -1405,13 +1443,14 @@ def build_raw_list(params):
 
 
 def build_network_menu():
-    url = _server_ + "/api/version"
+    network_url = _server_ + "/api/version"
     title = "Network connection error"
-    liz = xbmcgui.ListItem(label=title, label2=title, path=url)
-    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'), "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
+    liz = xbmcgui.ListItem(label=title, label2=title, path=network_url)
+    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'),
+                "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
-    u = set_parameter(u, 'url', url)
+    u = set_parameter(u, 'url', network_url)
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
     xbmcplugin.endOfDirectory(handle, True, False, False)
@@ -1479,7 +1518,9 @@ def play_video(ep_id, raw_id, movie):
             details['duration'] = file_body['duration']
             details['size'] = file_body['size']
 
-            item = xbmcgui.ListItem(details.get('title', 'Unknown'), thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'), path=file_url)
+            item = xbmcgui.ListItem(details.get('title', 'Unknown'),
+                                    thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
+                                    path=file_url)
             item.setInfo(type='Video', infoLabels=details)
             item.setProperty('IsPlayable', 'true')
 
@@ -1531,7 +1572,9 @@ def play_video(ep_id, raw_id, movie):
                     if clock_tick == -1:
                         if __addon__.getSetting("trakt_scrobble") == "true":
                             if __addon__.getSetting("trakt_scrobble_notification") == "true":
-                                xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Starting Scrobble', '', __addon__.getAddonInfo('icon')))
+                                xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)"
+                                                    % ('Trakt.tv', 'Starting Scrobble',
+                                                       '', __addon__.getAddonInfo('icon')))
                     clock_tick += 1
 
                     xbmc.sleep(1000)  # 1sec
@@ -1559,7 +1602,11 @@ def play_video(ep_id, raw_id, movie):
                                 try:
                                     if not trakt_404:
                                         # status: 1-start,2-pause,3-stop
-                                        trakt_body = json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(1) + "&progress=" + str(progress)))
+                                        trakt_body = json.loads(get_json(_server_ +
+                                                                         "/api/ep/scrobble?id=" + str(ep_id) +
+                                                                         "&ismovie=" + str(movie) +
+                                                                         "&status=" + str(1) +
+                                                                         "&progress=" + str(progress)))
                                         if str(trakt_body.get('code','')) != str(200):
                                             trakt_404 = True
                                 except Exception as trakt_ex:
@@ -1575,7 +1622,11 @@ def play_video(ep_id, raw_id, movie):
                     xbmc.sleep(60)
                     if not trakt_404:
                         # send 'pause' to trakt
-                        json.loads(get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(2) + "&progress=" + str(progress)))
+                        json.loads(get_json(_server_ +
+                                            "/api/ep/scrobble?id=" + str(ep_id) +
+                                            "&ismovie=" + str(movie) +
+                                            "&status=" + str(2) +
+                                            "&progress=" + str(progress)))
                     break
     except Exception as ops_ex:
         dbg(ops_ex)
@@ -1591,9 +1642,14 @@ def play_video(ep_id, raw_id, movie):
         if file_fin is True:
             if __addon__.getSetting("trakt_scrobble") == "true":
                 if not trakt_404:
-                    get_json(_server_ + "/api/ep/scrobble?id=" + str(ep_id) + "&ismovie=" + str(movie) + "&status=" + str(3) + "&progress=" + str(100))
+                    get_json(_server_ +
+                             "/api/ep/scrobble?id=" + str(ep_id) +
+                             "&ismovie=" + str(movie) +
+                             "&status=" + str(3) + "&progress=" + str(100))
                     if __addon__.getSetting("trakt_scrobble_notification") == "true":
-                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Stopping scrobble', '', __addon__.getAddonInfo('icon')))
+                        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Trakt.tv', 'Stopping scrobble',
+                                                                                        '',
+                                                                                        __addon__.getAddonInfo('icon')))
 
             if no_watch_status is False:
                 return ep_id
@@ -1638,7 +1694,8 @@ def vote_series(params):
         series_id = params['serie_id']
         body = '?id=' + series_id + '&score=' + vote_value
         get_json(_server_ + "/api/serie/vote" + body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Serie voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Serie voting', 'You voted',
+                                                                        vote_value, __addon__.getAddonInfo('icon')))
 
 
 def vote_episode(params):
@@ -1658,7 +1715,8 @@ def vote_episode(params):
         ep_id = params['ep_id']
         body = '?id=' + ep_id + '&score=' + vote_value
         get_json(_server_ + "/api/ep/vote" + body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Episode voting', 'You voted', vote_value, __addon__.getAddonInfo('icon')))
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Episode voting', 'You voted',
+                                                                        vote_value, __addon__.getAddonInfo('icon')))
 
 
 def file_list_gui(ep_body):
@@ -1735,7 +1793,8 @@ def watched_mark(params):
 
     box = __addon__.getSetting("watchedbox")
     if box == "true":
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ', watched_msg, __addon__.getAddonInfo('icon')))
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ',
+                                                                        watched_msg, __addon__.getAddonInfo('icon')))
     refresh()
 
 
@@ -1760,7 +1819,10 @@ def rescan_file(params, rescan):
 
     get_json(key_url)
 
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Queued file for ' + ('Rescan' if rescan else 'Rehash'), 'Refreshing in 10 seconds', __addon__.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Queued file for ' +
+                                                                 ('Rescan' if rescan else 'Rehash'),
+                                                                 'Refreshing in 10 seconds',
+                                                                 __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
     refresh()
 
@@ -1776,7 +1838,8 @@ def remove_missing_files():
         xbmc.log('key: ' + key, xbmc.LOGWARNING)
 
     get_json(key)
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Removing missing files...', 'This can take some time', __addon__.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Removing missing files...', 'This can take some time',
+                                                                 __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
     refresh()
 
@@ -1825,7 +1888,6 @@ if __addon__.getSetting('remote_debug') == 'true':
 
 # Script run from here
 
-# I discovered this exists. Useful!
 global __tagSettingFlags__
 __tagSettingFlags__ = populate_tag_setting_flags()
 
@@ -1940,8 +2002,8 @@ if valid_connect() is True:
                 search.clear_search_history(parameters)
             else:
                 try:
-                    faketags = []
-                    faketags = TagFilter.processTags(__tagSettingFlags__, faketags)
+                    fake_tags = []
+                    fake_tags = TagFilter.processTags(__tagSettingFlags__, fake_tags)
                 except:
                     error('Module Missing', 'Install Nakamori Scripts from repo')
                 build_filters_menu()

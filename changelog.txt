@@ -1,3 +1,8 @@
+v2.1.5 (31/03/2017)
+- Series/episodes not shown in list (#202)
+- Fix searches with spaces
+- PEP8
+
 v2.1.4 (20/03/2017)
 - Fix search getting stuck in loop if canceled
 
