@@ -1609,8 +1609,9 @@ def play_video(ep_id, raw_id, movie):
                 xbmc.sleep(100)
                 player.pause()  # pause
                 xbmc.sleep(100)
-                player.seekTime(offset)  # seek + unpause
+                player.seekTime(offset)  # seek
                 xbmc.sleep(100)
+                player.pause()  # play
 
     except Exception as player_ex:
         xbmc.log(str(player_ex), xbmc.LOGWARNING)
