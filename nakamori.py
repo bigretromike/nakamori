@@ -1608,8 +1608,16 @@ def play_video(ep_id, raw_id, movie):
             if offset > 0:
                 xbmc.sleep(100)
                 player.pause()  # pause
-                xbmc.sleep(100)
-                player.seekTime(offset)  # seek
+
+                # format a nice time to resume to for the yesno
+                m, s = divmod(offset, 60)
+                h, m = divmod(m, 60)
+                if h > 0: timestring = "%d:%02d:%02d" % (h, m, s)
+                else: timestring = "%d:%02d" % (m, s)
+
+                if xbmcgui.Dialog().yesno("Resume?", "Resume from " + timestring):
+                    xbmc.sleep(100)
+                    player.seekTime(offset)  # seek
                 xbmc.sleep(100)
                 player.pause()  # play
 
@@ -1794,7 +1802,7 @@ def file_list_gui(ep_body):
             pick_filename.append(filename)
             get_fileid.append(str(body['id']))
         my_file = xbmcgui.Dialog().select('Files', pick_filename)
-        if my_file > 0:
+        if my_file > -1:
             return get_fileid[my_file]
         else:
             # cancel -1,0
