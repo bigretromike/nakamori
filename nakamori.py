@@ -194,7 +194,7 @@ def video_file_information(node, detail_dict):
             streams['xVideoResolution'] = stream_info['Width']
             streams[stream_id]['height'] = stream_info['Height']
             streams['xVideoResolution'] += "x" + stream_info['Height']
-            streams[stream_id]['duration'] = int(round(float(stream_info['Duration']) / 1000, 0))
+            streams[stream_id]['duration'] = int(round(float(stream_info.get('Duration', 0)) / 1000, 0))
             detail_dict['VideoStreams'] = streams
 
     # Audio
@@ -1568,7 +1568,7 @@ def play_video(ep_id, raw_id, movie):
             codecs = dict()
             video_file_information(file_body["media"], codecs)
 
-            details['duration'] = file_body['duration']
+            details['duration'] = file_body.get('duration', 0)
             details['size'] = file_body['size']
 
             item = xbmcgui.ListItem(details.get('title', 'Unknown'),
