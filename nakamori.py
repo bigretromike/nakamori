@@ -680,7 +680,12 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     temp_genre = ''
     if 'tags' in node:
         temp_genre = get_tags(node.get("tags", {}))
-    watched = int(node.get("viewed", '0'))
+
+    watched_sizes = node.get("watched_sizes", {});
+    if len(watched_sizes) > 0:
+        watched = safeInt(watched_sizes.get("Episodes", 0)) + safeInt(watched_sizes.get("Specials", 0))
+    else:
+        watched = safeInt(node.get("watchedsize", ''))
 
     list_cast = []
     list_cast_and_role = []
@@ -694,9 +699,18 @@ def add_serie_item(node, parent_title, destination_playlist=False):
             list_cast_and_role = result_list[1]
 
     if __addon__.getSetting("local_total") == "true":
-        total = safeInt(node.get("localsize", ''))
+        local_sizes = node.get("local_sizes", {});
+        if len(local_sizes) > 0:
+            total = safeInt(local_sizes.get("Episodes", 0)) + safeInt(local_sizes.get("Specials", 0))
+        else:
+            total = safeInt(node.get("localsize", ''))
     else:
-        total = safeInt(node.get("size", ''))
+        sizes = node.get("total_sizes", {});
+        if len(sizes) > 0:
+            total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
+        else:
+            total = safeInt(node.get("localsize", ''))
+    
     title = get_title(node)
     if "userrating" in node:
         userrating = str(node.get("userrating", '0')).replace(',', '.')
@@ -723,7 +737,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'Date':             node.get("air", ''),
         'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
         'userrating':       float(userrating),
-        'playcount':        int(node.get("viewed", '0')),
+        'playcount':        watched,
         # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
         'cast':             list_cast,  # cast : list (Michal C. Hall,
         'castandrole':      list_cast_and_role,
@@ -774,9 +788,9 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     extra_data = {
         'type':                 'video',
         'source':               directory_type,
-        'UnWatchedEpisodes':    int(details['episode']) - watched,
+        'UnWatchedEpisodes':    int(total) - watched,
         'WatchedEpisodes':      watched,
-        'TotalEpisodes':        details['episode'],
+        'TotalEpisodes':        total,
         'thumb':                thumb,
         'fanart_image':         fanart,
         'banner':               banner,
@@ -823,7 +837,26 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     """
     temp_genre = get_tags(node.get("tags", {}))
     title = get_title(node)
-    size = node.get("size", '')
+
+    watched_sizes = node.get("watched_sizes", {});
+    if len(watched_sizes) > 0:
+        watched = safeInt(watched_sizes.get("Episodes", 0)) + safeInt(watched_sizes.get("Specials", 0))
+    else:
+        watched = safeInt(node.get("watchedsize", ''))
+
+    if __addon__.getSetting("local_total") == "true":
+        local_sizes = node.get("local_sizes", {});
+        if len(local_sizes) > 0:
+            total = safeInt(local_sizes.get("Episodes", 0)) + safeInt(local_sizes.get("Specials", 0))
+        else:
+            total = safeInt(node.get("localsize", ''))
+    else:
+        sizes = node.get("total_sizes", {});
+        if len(sizes) > 0:
+            total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
+        else:
+            total = safeInt(node.get("localsize", ''))
+
     content_type = node.get("type", '') if not is_filter else "filter"
     details = {
         'mediatype':        'tvshow',
@@ -831,12 +864,12 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'parenttitle':      encode(parent_title),
         'genre':            temp_genre,
         'year':             node.get('year', ''),
-        'episode':          size,
+        'episode':          total,
         'season':           safeInt(node.get('season', '1')),
-        'size':             size,
+        'size':             total,
         'rating':           float(str(node.get('rating', '0')).replace(',', '.')),
         'userrating':       float(str(node.get('userrating', '0')).replace(',', '.')),
-        'playcount':        int(node.get('viewed', '0')),
+        'playcount':        watched,
         'plot':             remove_anidb_links(encode(node.get('summary', '...'))),
         'originaltitle':    title,
         'sorttitle':        title,
@@ -873,9 +906,9 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'banner':               banner,
         'key':                  key,
         'group_id':             key_id,
-        'WatchedEpisodes':      0,  # TODO check this one
-        'TotalEpisodes':        size,
-        'UnWatchedEpisodes':    size
+        'WatchedEpisodes':      watched,
+        'TotalEpisodes':        total,
+        'UnWatchedEpisodes':    total - watched
     }
 
     group_url = key

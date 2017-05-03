@@ -2,7 +2,6 @@
 <addon id="plugin.video.nakamori" name="Nakamori" version="2.1.7" provider-name="BigRetroMike, da3dsoul">
 <requires>
 <import addon="script.module.nakamori" version="1.0.2"/>
-<import addon="service.nakamori" version="1.0.3"/>
 </requires>
 <extension point="xbmc.python.pluginsource" library="nakamori.py">
 <provides>video</provides>
