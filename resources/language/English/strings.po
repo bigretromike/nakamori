@@ -278,3 +278,7 @@ msgstr ""
 msgctxt "#30067"
 msgid "Use the source thumbnail ratio instead of 16:9"
 msgstr ""
+
+msgctxt "#30068"
+msgid "Ignore Specials for Watched States"
+msgstr ""

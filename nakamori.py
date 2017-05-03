@@ -12,12 +12,14 @@ import xbmcgui
 import xbmc
 
 try:
+    # noinspection PyUnresolvedReferences
     import TagBlacklist as TagFilter
 except Exception as tag_ex:
     error("Nakamori.script is missing", str(tag_ex))
     pass
 
 try:
+    # noinspection PyUnresolvedReferences
     import pydevd
 except ImportError as ie:
     pass
@@ -612,7 +614,7 @@ def add_raw_files(node):
                    ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
                    ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
         liz.addContextMenuItems(context)
-        xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=False)
+        xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz)
     except:  # Sometimes a file is deleted or invalid, but we should just skip it
         pass
 
@@ -683,7 +685,9 @@ def add_serie_item(node, parent_title, destination_playlist=False):
 
     watched_sizes = node.get("watched_sizes", {});
     if len(watched_sizes) > 0:
-        watched = safeInt(watched_sizes.get("Episodes", 0)) + safeInt(watched_sizes.get("Specials", 0))
+        watched = safeInt(watched_sizes.get("Episodes", 0))
+        if not get_kodi_setting_bool("ignore_specials_watched"):
+            watched += safeInt(watched_sizes.get("Specials", 0))
     else:
         watched = safeInt(node.get("watchedsize", ''))
 
@@ -840,7 +844,9 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
 
     watched_sizes = node.get("watched_sizes", {});
     if len(watched_sizes) > 0:
-        watched = safeInt(watched_sizes.get("Episodes", 0)) + safeInt(watched_sizes.get("Specials", 0))
+        watched = safeInt(watched_sizes.get("Episodes", 0))
+        if not get_kodi_setting_bool("ignore_specials_watched"):
+            watched += safeInt(watched_sizes.get("Specials", 0))
     else:
         watched = safeInt(node.get("watchedsize", ''))
 
@@ -1028,7 +1034,7 @@ def build_filters_menu():
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
     # endregion
 
-    xbmcplugin.endOfDirectory(handle, True, False, False)
+    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
 
 
 def build_groups_menu(params, json_body=None):
@@ -1520,7 +1526,7 @@ def build_raw_list(params):
     except Exception as exc:
         error("Error during build_raw_list", str(exc))
 
-    xbmcplugin.endOfDirectory(handle, True, False, False)
+    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
 
 
 def build_network_menu():
@@ -1538,7 +1544,7 @@ def build_network_menu():
     u = set_parameter(u, 'url', network_url)
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
-    xbmcplugin.endOfDirectory(handle, True, False, False)
+    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
 
 # endregion
 
@@ -1634,7 +1640,7 @@ def play_video(ep_id, raw_id, movie):
 
     try:
         player = xbmc.Player()
-        player.play(item=file_url, listitem=item, windowed=False)
+        player.play(item=file_url, listitem=item)
         xbmcplugin.setResolvedUrl(handle, True, item)
 
         if __addon__.getSetting("file_resume") == "true":

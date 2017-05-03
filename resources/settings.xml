@@ -15,6 +15,7 @@
     <category label="30054">
         <setting label="30039" type="bool" id="show_continue" default="true"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
+        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
         <setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false"/>
         <setting label="30053" type="bool" id="use_server_sort" default="false" />
