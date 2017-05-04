@@ -1278,8 +1278,8 @@ def build_serie_episodes(params):
                             details = {
                                 'mediatype':     'episode',
                                 'plot':          "..." if skip else remove_anidb_links(encode(video['summary'])),
-                                'title':         encode(video['name']),
-                                'sorttitle':     str(video['epnumber']) + " " + encode(video['name']),
+                                'title':         encode(video.get('name', 'Parse Error')),
+                                'sorttitle':     str(video.get('epnumber', '')) + " " + encode(video.get('name', 'Parse Error')),
                                 'parenttitle':   encode(parent_title),
                                 'rating':        float(str(video.get('rating', '0')).replace(',', '.')),
                                 'userrating':    float(str(video.get('UserRating', '0')).replace(',', '.')),
@@ -1294,13 +1294,13 @@ def build_serie_episodes(params):
                                 # TODO detect kodi 18: str(datetime.timedelta(seconds=duration))
                                 'duration':      duration,
                                 # 'mpaa':          video.get('contentRating', ''), <--
-                                'year':          safeInt(video['year']),
+                                'year':          safeInt(video.get('year', '')),
                                 'tagline':       "..." if skip else temp_genre,
-                                'episode':       safeInt(video['epnumber']),
+                                'episode':       safeInt(video.get('epnumber', '')),
                                 'aired':         video.get('air', ''),
                                 'tvshowtitle':   grandparent_title,
-                                'votes':         safeInt(video['votes']),
-                                'originaltitle': encode(video['name']),
+                                'votes':         safeInt(video.get('votes', '')),
+                                'originaltitle': encode(video.get('name', '')),
                                 'size': safeInt(video['files'][0].get('size', '0'))
                             }
 
