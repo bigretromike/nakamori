@@ -1640,7 +1640,7 @@ def play_video(ep_id, raw_id, movie):
 
     try:
         player = xbmc.Player()
-        player.play(item=file_url, listitem=item)
+        #player.play(item=file_url, listitem=item)  # <-- this line made external player fail
         xbmcplugin.setResolvedUrl(handle, True, item)
 
         if __addon__.getSetting("file_resume") == "true":
