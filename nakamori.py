@@ -1617,7 +1617,7 @@ def play_video(ep_id, raw_id, movie):
             item.setProperty('IsPlayable', 'true')
 
             if 'offset' in file_body:
-                offset = file_body['offset']
+                offset = file_body.get('offset', 0)
                 offset = int(offset) / 1000
                 item.setProperty('ResumeTime', str(offset))
 
@@ -1644,21 +1644,28 @@ def play_video(ep_id, raw_id, movie):
         xbmcplugin.setResolvedUrl(handle, True, item)
 
         if __addon__.getSetting("file_resume") == "true":
+            # if offset > 0:
+            #    xbmc.sleep(100)
+            #    player.pause()  # pause
+            #   # format a nice time to resume to for the yesno
+            #    m, s = divmod(offset, 60)
+            #    h, m = divmod(m, 60)
+            #    if h > 0: timestring = "%d:%02d:%02d" % (h, m, s)
+            #    else: timestring = "%d:%02d" % (m, s)
+            #    if xbmcgui.Dialog().yesno("Resume?", "Resume from " + timestring):
+            #        xbmc.sleep(100)
+            #        player.seekTime(offset)  # seek
+            #    xbmc.sleep(100)
+            #    player.pause()  # play
+
             if offset > 0:
-                xbmc.sleep(100)
-                player.pause()  # pause
-
-                # format a nice time to resume to for the yesno
-                m, s = divmod(offset, 60)
-                h, m = divmod(m, 60)
-                if h > 0: timestring = "%d:%02d:%02d" % (h, m, s)
-                else: timestring = "%d:%02d" % (m, s)
-
-                if xbmcgui.Dialog().yesno("Resume?", "Resume from " + timestring):
-                    xbmc.sleep(100)
-                    player.seekTime(offset)  # seek
-                xbmc.sleep(100)
-                player.pause()  # play
+                for i in range(0, 1000):  # wait up to 10 secs for the video to start playing before we try to seek
+                    if not player.isPlayingVideo():  # and not xbmc.abortRequested:
+                        xbmc.sleep(100)
+                    else:
+                        xbmc.Player().seekTime(offset)
+                        xbmc.log("-----player: seek_time offset:" + str(offset), xbmc.LOGNOTICE)
+                        break
 
     except Exception as player_ex:
         xbmc.log(str(player_ex), xbmc.LOGWARNING)
