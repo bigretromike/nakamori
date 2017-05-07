@@ -251,9 +251,11 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
-            if details.get('year', '') != '' and details['year'] != 0:
-                details['date'] = '01.01.' + str(details['year'])
-                details['aired'] = details['date']
+            if details.get('year', '') != '' and details.get('year', '0') != 0:
+                # todo: do we need fallback with date?
+                details['date'] = '01.01.' + str(details['year'])  # date d.m.y
+                f_data = str(details['date']).split('.')
+                details['aired'] = f_data[2] + '-' + f_data[1] + '-' + f_data[0] # aired y-m-d
 
         if __addon__.getSetting("spamLog") == 'true':
             xbmc.log("add_gui_item - url: " + gui_url, xbmc.LOGWARNING)
@@ -722,11 +724,15 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         userrating = 0.0
 
     # filter out invalid date
-    air = node.get("air", '')
+    air = node.get('air', '')
     if air != '':
         # air=0001-01-01
-        if air == '0001-01-01':
+        if air == '0001-01-01' or air == '01-01-0001':
             air = ''
+    proper_date = air
+    temp_date = str(node.get('air', '')).split('-')
+    if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
+        proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
     details = {
         'mediatype':        'episode',
@@ -738,11 +744,10 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'season':           safeInt(node.get("season",'1')),
         # 'count'        : count,
         'size':             total,
-        'Date':             node.get("air", ''),
+        'date':             str(proper_date),
         'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
         'userrating':       float(userrating),
         'playcount':        watched,
-        # overlay        : integer (2, - range is 0..8. See GUIListItem.h for values
         'cast':             list_cast,  # cast : list (Michal C. Hall,
         'castandrole':      list_cast_and_role,
         # director       : string (Dagur Kari,
@@ -760,16 +765,13 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         # 'premiered'    : premiered,
         # 'Status'       : status,
         # code           : string (tt0110293, - IMDb code
-        'aired':            air,
+        'aired':            str(air),
         # credits        : string (Andy Kaufman, - writing credits
         # 'Lastplayed'   : lastplayed,
         # 'votes':            directory.get('votes'),
         # trailer        : string (/home/user/trailer.avi,
-        # 'dateadded':        directory.get('addedAt')
+        'dateadded':        node.get('added', '')
     }
-    temp_date = str(node.get('air', '')).split('-')
-    if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
-        details['date'] = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
     directory_type = str(node.get('type', ''))
     key_id = str(node.get('id', ''))
@@ -833,7 +835,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
 def add_group_item(node, parent_title, filter_id, is_filter=False):
     """
     Processing group 'node' into series (serie grouping)
-    :param node: 
+    :param node:
     :param parent_title: 
     :param filter_id: 
     :param is_filter: 
@@ -1274,6 +1276,18 @@ def build_serie_episodes(params):
                                 duration = 1
                             else:
                                 duration = int(tmp_duration) / 1000
+
+                            # filter out invalid date
+                            air = video.get('air', '')
+                            if air != '':
+                                # air=0001-01-01
+                                if air == '0001-01-01' or air == '01-01-0001':
+                                    air = ''
+                            proper_date = air
+                            temp_date = str(video.get('air', '')).split('-')
+                            if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
+                                proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
+
                             # Required listItem entries for XBMC
                             details = {
                                 'mediatype':     'episode',
@@ -1297,11 +1311,12 @@ def build_serie_episodes(params):
                                 'year':          safeInt(video.get('year', '')),
                                 'tagline':       "..." if skip else temp_genre,
                                 'episode':       safeInt(video.get('epnumber', '')),
-                                'aired':         video.get('air', ''),
+                                'aired':         air,
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         safeInt(video.get('votes', '')),
                                 'originaltitle': encode(video.get('name', '')),
-                                'size': safeInt(video['files'][0].get('size', '0'))
+                                'size': safeInt(video['files'][0].get('size', '0')),
+                                'date': proper_date
                             }
 
                             season = str(body.get('season', '1'))
