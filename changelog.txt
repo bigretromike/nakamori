@@ -3,6 +3,7 @@ v2.1.8 (07/05/2017)
 - Series in groups are not marked as watched (#207)
 - Resume not working correctly. (#208)
 - Nancy 1.x doesn't support asynchronous requests (#204)
+- 'air' wasn't populate properly (linux)
 
 v2.1.7 (02/04/2017)
 - play after resume wouldn't work correctly (tested on kodi 17.1)
