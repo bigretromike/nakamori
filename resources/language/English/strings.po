@@ -120,7 +120,7 @@ msgid "Max time to wait for buffer (in ms)"
 msgstr ""
 
 msgctxt "#30028"
-msgid "UNUSED"
+msgid "Use short Tag list"
 msgstr ""
 
 msgctxt "#30029"

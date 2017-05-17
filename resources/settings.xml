@@ -19,6 +19,7 @@
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
         <setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false"/>
         <setting label="30053" type="bool" id="use_server_sort" default="false" />
+        <setting label="30028" type="bool" id="short_tag_list" default="true" />
         <setting label="30056" type="lsep"/>
         <setting label="30052" type="bool" id="use_server_title" default="false" />
         <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)"/>

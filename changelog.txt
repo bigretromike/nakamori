@@ -1,3 +1,7 @@
+v2.1.9 (17/05/2017)
+- Clamp watched to never be greater than total
+- Make TAG shorter so it wont overlap plot #211
+
 v2.1.8 (07/05/2017)
 - possible problem with external player (#206)
 - Series in groups are not marked as watched (#207)

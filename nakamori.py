@@ -255,7 +255,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                 # todo: do we need fallback with date?
                 details['date'] = '01.01.' + str(details['year'])  # date d.m.y
                 f_data = str(details['date']).split('.')
-                details['aired'] = f_data[2] + '-' + f_data[1] + '-' + f_data[0] # aired y-m-d
+                details['aired'] = f_data[2] + '-' + f_data[1] + '-' + f_data[0]  # aired y-m-d
 
         if __addon__.getSetting("spamLog") == 'true':
             xbmc.log("add_gui_item - url: " + gui_url, xbmc.LOGWARNING)
@@ -1250,7 +1250,10 @@ def build_serie_episodes(params):
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
+                short_tag = __addon__.getSetting("short_tag_list") == "true"
                 temp_genre = get_tags(body.get('tags', {}))
+                if short_tag:
+                    temp_genre = temp_genre[:50]
                 parent_key = body.get('id', '')
                 grandparent_title = encode(body.get('name', ''))
 
@@ -1291,13 +1294,14 @@ def build_serie_episodes(params):
                             temp_date = str(video.get('air', '')).split('-')
                             if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
                                 proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
+                            title = encode(video.get('name', 'Parse Error'))
 
                             # Required listItem entries for XBMC
                             details = {
                                 'mediatype':     'episode',
                                 'plot':          "..." if skip else remove_anidb_links(encode(video['summary'])),
-                                'title':         encode(video.get('name', 'Parse Error')),
-                                'sorttitle':     str(video.get('epnumber', '')) + " " + encode(video.get('name', 'Parse Error')),
+                                'title':         title,
+                                'sorttitle':     str(video.get('epnumber', '')) + " " + title,
                                 'parenttitle':   encode(parent_title),
                                 'rating':        float(str(video.get('rating', '0')).replace(',', '.')),
                                 'userrating':    float(str(video.get('UserRating', '0')).replace(',', '.')),
@@ -1308,7 +1312,7 @@ def build_serie_episodes(params):
                                 'cast':          list_cast,
                                 # 'director': " / ".join(temp_dir),
                                 # 'writer': " / ".join(temp_writer),
-                                'genre':        "..." if skip else temp_genre,
+                                'genre':         "..." if skip else temp_genre,
                                 # TODO detect kodi 18: str(datetime.timedelta(seconds=duration))
                                 'duration':      duration,
                                 # 'mpaa':          video.get('contentRating', ''), <--
