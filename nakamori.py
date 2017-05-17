@@ -716,7 +716,9 @@ def add_serie_item(node, parent_title, destination_playlist=False):
             total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
-    
+
+    if watched > total: watched = total
+
     title = get_title(node)
     if "userrating" in node:
         userrating = str(node.get("userrating", '0')).replace(',', '.')
@@ -864,6 +866,8 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
             total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
+
+    if watched > total: watched = total
 
     content_type = node.get("type", '') if not is_filter else "filter"
     details = {
