@@ -33,6 +33,8 @@ __addonid__ = __addon__.getAddonInfo('id')
 _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
 _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
+busy = xbmcgui.DialogProgress()
+
 
 def populate_tag_setting_flags():
     """
@@ -1062,16 +1064,21 @@ def build_groups_menu(params, json_body=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
+        busy.create('Getting', 'Filter...')
         if json_body is None:
+            busy.update(10)
             temp_url = params['url']
             temp_url = set_parameter(temp_url, 'nocast', 1)
             temp_url = set_parameter(temp_url, 'notag', 1)
             temp_url = set_parameter(temp_url, 'level', 1)
+            busy.update(20)
             html = get_json(temp_url)
+            busy.update(50)
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'], xbmc.LOGWARNING)
                 xbmc.log(html, xbmc.LOGWARNING)
             html_body = json.loads(html)
+            busy.update(70)
             directory_type = html_body['type']
             if directory_type != "filters":
                 # level 3 will fill group and series (for filter)
@@ -1083,13 +1090,15 @@ def build_groups_menu(params, json_body=None):
                 body = html_body
         else:
             body = json_body
+        busy.update(100)
+        busy.close()
 
         # check if this is maybe filter-inception
         try:
-            set_window_heading(body.get('name',''))
+            set_window_heading(body.get('name', ''))
         except:
             try:  # this might not be a filter
-                # it isn't single filter
+                # it isn't single filter)
                 for nest_filter in body:
                     add_group_item(nest_filter, '', body.get('id', ''), True)
                 xbmcplugin.endOfDirectory(handle)
@@ -1098,9 +1107,9 @@ def build_groups_menu(params, json_body=None):
                 pass
 
         try:
-            parent_title = body.get('name','')
-
-            directory_type = body.get('type','')
+            item_count = 0
+            parent_title = body.get('name', '')
+            directory_type = body.get('type', '')
             filter_id = ''
             if directory_type != 'ep' and directory_type != 'serie':
                 if 'filter' in params:
@@ -1109,7 +1118,9 @@ def build_groups_menu(params, json_body=None):
                         filter_id = body.get('id', '')
 
             if directory_type == 'filter':
+                busy.create('Opening filter...')
                 for grp in body["groups"]:
+                    busy.update(min(int((float(item_count)/float(len(body["groups"])))*100.0), 100), 'adding...')
                     if len(grp["series"]) > 0:
                         if len(grp["series"]) == 1:
                             add_serie_item(grp["series"][0], parent_title)
@@ -1119,18 +1130,26 @@ def build_groups_menu(params, json_body=None):
                                     add_serie_item(srg, parent_title)
                             else:
                                 add_group_item(grp, parent_title, filter_id)
+                    item_count += 1
             elif directory_type == 'filters':
+                busy.create('Opening filters...')
                 for flt in body["filters"]:
+                    busy.update(min(int((float(item_count)/float(len(body["filters"])))*100.0), 100), 'adding...')
                     add_group_item(flt, parent_title, filter_id, True)
+                    item_count += 1
             elif directory_type == 'group':
+                busy.create('Opening group...')
                 for sers in body['series']:
+                    busy.update(min(int((float(item_count)/float(len(body["series"])))*100.0), 100), 'adding...')
                     add_serie_item(sers, parent_title)
+                    item_count += 1
 
         except Exception as e:
             error("Error during build_groups_menu", str(e))
     except Exception as e:
         error("Invalid JSON Received in build_groups_menu", str(e))
     xbmcplugin.endOfDirectory(handle)
+    busy.close()
 
 
 def build_serie_episodes_types(params):
@@ -1158,7 +1177,7 @@ def build_serie_episodes_types(params):
 
             content_type = dict()
             if "eps" in body:
-                if len(body.get("eps",{})) >= 1:
+                if len(body.get("eps", {})) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
                             # TODO add image for those without thumb
@@ -1204,7 +1223,9 @@ def build_serie_episodes(params):
     # value to hold position of not seen episode
     next_episode = -1
     episode_count = 0
+    busy.create('Loading', '...')
     try:
+        item_count = 0
         html = get_json(params['url'])
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
@@ -1264,8 +1285,9 @@ def build_serie_episodes(params):
                         util.addDir("-continue-", '', '7', 
                                     _server_ + "/image/support/plex_others.png", 
                                     "Next episode", "3", "4", str(next_episode))
-
                 for video in body['eps']:
+                    item_count += 1
+                    busy.update(min(int((float(item_count)/float(len(body["eps"])))*100.0), 100), 'adding...')
                     # check if episode have files
                     episode_type = True
                     if "type" in params:
@@ -1405,12 +1427,12 @@ def build_serie_episodes(params):
                             u = set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
                             add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
-
         except Exception as exc:
             error("Error during build_serie_episodes", str(exc))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes", str(exc))
     xbmcplugin.endOfDirectory(handle)
+    busy.close()
 
     if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
         try:
@@ -2152,6 +2174,7 @@ if valid_connect() is True:
                 except:
                     error('Module Missing', 'Install Nakamori Scripts from repo')
                 build_filters_menu()
+
     else:
         error("Incorrect Credentials", "Please change them in Settings")
 else:
