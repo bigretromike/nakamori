@@ -1064,7 +1064,7 @@ def build_groups_menu(params, json_body=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        busy.create('Getting', 'Filter...')
+        busy.create('Please Wait', 'Getting Filter from Server...')
         if json_body is None:
             busy.update(10)
             temp_url = params['url']
@@ -1118,9 +1118,9 @@ def build_groups_menu(params, json_body=None):
                         filter_id = body.get('id', '')
 
             if directory_type == 'filter':
-                busy.create('Opening filter...')
+                busy.create('Opening Filter...')
                 for grp in body["groups"]:
-                    busy.update(min(int((float(item_count)/float(len(body["groups"])))*100.0), 100), 'adding...')
+                    busy.update(min(int((float(item_count)/float(len(body["groups"])))*100.0), 100), 'Adding Items...')
                     if len(grp["series"]) > 0:
                         if len(grp["series"]) == 1:
                             add_serie_item(grp["series"][0], parent_title)
@@ -1132,15 +1132,15 @@ def build_groups_menu(params, json_body=None):
                                 add_group_item(grp, parent_title, filter_id)
                     item_count += 1
             elif directory_type == 'filters':
-                busy.create('Opening filters...')
+                busy.create('Opening Filters...')
                 for flt in body["filters"]:
-                    busy.update(min(int((float(item_count)/float(len(body["filters"])))*100.0), 100), 'adding...')
+                    busy.update(min(int((float(item_count)/float(len(body["filters"])))*100.0), 100), 'Adding Items...')
                     add_group_item(flt, parent_title, filter_id, True)
                     item_count += 1
             elif directory_type == 'group':
-                busy.create('Opening group...')
+                busy.create('Opening Group...')
                 for sers in body['series']:
-                    busy.update(min(int((float(item_count)/float(len(body["series"])))*100.0), 100), 'adding...')
+                    busy.update(min(int((float(item_count)/float(len(body["series"])))*100.0), 100), 'Adding Items...')
                     add_serie_item(sers, parent_title)
                     item_count += 1
 
@@ -1223,7 +1223,7 @@ def build_serie_episodes(params):
     # value to hold position of not seen episode
     next_episode = -1
     episode_count = 0
-    busy.create('Loading', '...')
+    busy.create('Please Wait', 'Getting Episodes from Server...')
     try:
         item_count = 0
         html = get_json(params['url'])
@@ -1287,7 +1287,7 @@ def build_serie_episodes(params):
                                     "Next episode", "3", "4", str(next_episode))
                 for video in body['eps']:
                     item_count += 1
-                    busy.update(min(int((float(item_count)/float(len(body["eps"])))*100.0), 100), 'adding...')
+                    busy.update(min(int((float(item_count)/float(len(body["eps"])))*100.0), 100), 'Adding Items...')
                     # check if episode have files
                     episode_type = True
                     if "type" in params:
