@@ -11,8 +11,9 @@
 <description lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
 <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 <news>
-    v2.1.10 (-)
-    - Added Progress bar with time consuming tasks
+v2.1.10 (25/05/2017)
+- Added Progress bar with time consuming tasks
+- Make progress messages more user friendly
 </news>
 <platform>all</platform>
 <language>en</language>
