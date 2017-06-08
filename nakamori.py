@@ -1950,6 +1950,8 @@ def watched_mark(params):
         elif group_id != '':
             body = '?id=' + group_id
             get_json(key + body)
+    else:
+        xbmc.executebuiltin('XBMC.Action(ToggleWatched)')
 
     box = __addon__.getSetting("watchedbox")
     if box == "true":
