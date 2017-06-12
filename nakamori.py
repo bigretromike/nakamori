@@ -1681,6 +1681,7 @@ def play_video(ep_id, raw_id, movie):
         else:
             if __addon__.getSetting("pick_file") == "false":
                 error("file_id not retrieved")
+            return 0
     except Exception as exc:
         error('Error getting episode info', str(exc))
 
