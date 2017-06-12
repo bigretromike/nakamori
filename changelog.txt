@@ -1,3 +1,7 @@
+v2.1.11 (12/06/2017)
+- Use toggle watched if no sync
+- multifile for episode throw error on cancel #212
+
 v2.1.10 (25/05/2017)
 - Added Progress bar with time consuming tasks
 - Make progress messages more user friendly

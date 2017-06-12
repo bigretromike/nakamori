@@ -1679,30 +1679,16 @@ def play_video(ep_id, raw_id, movie):
                     continue
                 item.addStreamInfo('subtitle', codecs["SubStreams"][stream_index])
         else:
-            error("file_id not retrieved")
+            if __addon__.getSetting("pick_file") == "false":
+                error("file_id not retrieved")
     except Exception as exc:
         error('Error getting episode info', str(exc))
 
     try:
         player = xbmc.Player()
-        #player.play(item=file_url, listitem=item)  # <-- this line made external player fail
         xbmcplugin.setResolvedUrl(handle, True, item)
 
         if __addon__.getSetting("file_resume") == "true":
-            # if offset > 0:
-            #    xbmc.sleep(100)
-            #    player.pause()  # pause
-            #   # format a nice time to resume to for the yesno
-            #    m, s = divmod(offset, 60)
-            #    h, m = divmod(m, 60)
-            #    if h > 0: timestring = "%d:%02d:%02d" % (h, m, s)
-            #    else: timestring = "%d:%02d" % (m, s)
-            #    if xbmcgui.Dialog().yesno("Resume?", "Resume from " + timestring):
-            #        xbmc.sleep(100)
-            #        player.seekTime(offset)  # seek
-            #    xbmc.sleep(100)
-            #    player.pause()  # play
-
             if offset > 0:
                 for i in range(0, 1000):  # wait up to 10 secs for the video to start playing before we try to seek
                     if not player.isPlayingVideo():  # and not xbmc.abortRequested:
