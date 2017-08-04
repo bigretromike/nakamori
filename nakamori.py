@@ -788,17 +788,17 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
         thumb = node["art"]["thumb"][0]["url"]
-        if ":" not in thumb:
+        if thumb is not None and ":" not in thumb:
             thumb = _server_ + thumb
     fanart = ''
     if len(node["art"]["fanart"]) > 0:
         fanart = node["art"]["fanart"][0]["url"]
-        if ":" not in fanart:
+        if fanart is not None and ":" not in fanart:
             fanart = _server_ + fanart
     banner = ''
     if len(node["art"]["banner"]) > 0:
         banner = node["art"]["banner"][0]["url"]
-        if ":" not in banner:
+        if banner is not None and ":" not in banner:
             banner = _server_ + banner
 
     extra_data = {
@@ -911,17 +911,17 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
         thumb = node["art"]["thumb"][0]["url"]
-        if ":" not in thumb:
+        if thumb is not None and ":" not in thumb:
             thumb = _server_ + thumb
     fanart = ''
     if len(node["art"]["fanart"]) > 0:
         fanart = node["art"]["fanart"][0]["url"]
-        if ":" not in fanart:
+        if fanart is not None and ":" not in fanart:
             fanart = _server_ + fanart
     banner = ''
     if len(node["art"]["banner"]) > 0:
         banner = node["art"]["banner"][0]["url"]
-        if ":" not in banner:
+        if banner is not None and ":" not in banner:
             banner = _server_ + banner
 
     extra_data = {
@@ -1382,17 +1382,17 @@ def build_serie_episodes(params):
                             thumb = ''
                             if len(video["art"]["thumb"]) > 0:
                                 thumb = video["art"]["thumb"][0]["url"]
-                                if ":" not in thumb:
+                                if thumb is not None and ":" not in thumb:
                                     thumb = _server_ + thumb
                             fanart = ''
                             if len(video["art"]["fanart"]) > 0:
                                 fanart = video["art"]["fanart"][0]["url"]
-                                if ":" not in fanart:
+                                if fanart is not None and ":" not in fanart:
                                     fanart = _server_ + fanart
                             banner = ''
                             if len(video["art"]["banner"]) > 0:
                                 banner = video["art"]["banner"][0]["url"]
-                                if ":" not in banner:
+                                if banner is not None and ":" not in banner:
                                     banner = _server_ + banner
 
                             key = video["files"][0]["url"]
