@@ -788,12 +788,18 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
         thumb = node["art"]["thumb"][0]["url"]
+        if ":" not in thumb:
+            thumb = _server_ + thumb
     fanart = ''
     if len(node["art"]["fanart"]) > 0:
         fanart = node["art"]["fanart"][0]["url"]
+        if ":" not in fanart:
+            fanart = _server_ + fanart
     banner = ''
     if len(node["art"]["banner"]) > 0:
         banner = node["art"]["banner"][0]["url"]
+        if ":" not in banner:
+            banner = _server_ + banner
 
     extra_data = {
         'type':                 'video',
@@ -905,12 +911,18 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     thumb = ''
     if len(node["art"]["thumb"]) > 0:
         thumb = node["art"]["thumb"][0]["url"]
+        if ":" not in thumb:
+            thumb = _server_ + thumb
     fanart = ''
     if len(node["art"]["fanart"]) > 0:
         fanart = node["art"]["fanart"][0]["url"]
+        if ":" not in fanart:
+            fanart = _server_ + fanart
     banner = ''
     if len(node["art"]["banner"]) > 0:
         banner = node["art"]["banner"][0]["url"]
+        if ":" not in banner:
+            banner = _server_ + banner
 
     extra_data = {
         'type':                 'video',
@@ -982,6 +994,8 @@ def build_filters_menu():
                 try:
                     if len(menu["art"]["thumb"]) > 0:
                         thumb = menu["art"]["thumb"][0]["url"]
+                        if ":" not in thumb:
+                            thumb = _server_ + thumb
                     if "Year" in title:
                         thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
                     elif "Tag" in title:
@@ -995,12 +1009,16 @@ def build_filters_menu():
                 try:
                     if len(menu["art"]["fanart"]) > 0:
                         fanart = menu["art"]["fanart"][0]["url"]
+                        if ":" not in fanart:
+                            fanart = _server_ + fanart
                 except:
                     pass
                 banner = ''
                 try:
                     if len(menu["art"]["banner"]) > 0:
                         banner = menu["art"]["banner"][0]["url"]
+                        if ":" not in banner:
+                            banner = _server_ + banner
                 except:
                     pass
 
@@ -1364,12 +1382,18 @@ def build_serie_episodes(params):
                             thumb = ''
                             if len(video["art"]["thumb"]) > 0:
                                 thumb = video["art"]["thumb"][0]["url"]
+                                if ":" not in thumb:
+                                    thumb = _server_ + thumb
                             fanart = ''
                             if len(video["art"]["fanart"]) > 0:
                                 fanart = video["art"]["fanart"][0]["url"]
+                                if ":" not in fanart:
+                                    fanart = _server_ + fanart
                             banner = ''
                             if len(video["art"]["banner"]) > 0:
                                 banner = video["art"]["banner"][0]["url"]
+                                if ":" not in banner:
+                                    banner = _server_ + banner
 
                             key = video["files"][0]["url"]
 
