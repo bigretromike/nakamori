@@ -430,6 +430,9 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                             context.append(('Mark episode as Unwatched',
                                             'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
                                             (sys.argv[1], url_peep)))
+                    context.append(('Refresh',
+                                    'RunScript(plugin.video.nakamori, %s, %s&cmd=refresh)' %
+                                    (sys.argv[1], url_peep)))
 
         liz.addContextMenuItems(context)
         return xbmcplugin.addDirectoryItem(handle, gui_url, listitem=liz, isFolder=folder)
@@ -2156,6 +2159,8 @@ if valid_connect() is True:
                 remove_missing_files()
             elif cmd == 'createPlaylist':
                 create_playlist(parameters['serie_id'])
+            elif cmd == 'refresh':
+                refresh()
         else:
             # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
             if mode == 1:  # play_file
