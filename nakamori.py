@@ -1335,6 +1335,8 @@ def build_serie_episodes(params):
                             if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
                                 proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
                             title = encode(video.get('name', 'Parse Error'))
+                            if title is None:
+                                title = ''
 
                             # Required listItem entries for XBMC
                             details = {
