@@ -177,7 +177,6 @@ def video_file_information(node, detail_dict):
     :param detail_dict: dictionary for output
     :return: dict
     """
-    # extra_data['xVideoAspect'] = float(video.find('Media').get('aspectRatio', 0))
     # Video
     if 'VideoStreams' not in detail_dict:
         detail_dict['VideoStreams'] = defaultdict(dict)
@@ -195,8 +194,13 @@ def video_file_information(node, detail_dict):
             streams[stream_id]['VideoCodec'] = stream_info['Codec']
             streams['xVideoCodec'] = stream_info['Codec']
             streams[stream_id]['width'] = stream_info['Width']
+            if 'width' not in streams:
+                streams['width'] = stream_info['Width']
             streams['xVideoResolution'] = stream_info['Width']
             streams[stream_id]['height'] = stream_info['Height']
+            if 'height' not in streams:
+                streams['height'] = stream_info['Height']
+                streams[stream_id]['aspect'] = round(int(streams['width']) / int(streams['height']), 2)
             streams['xVideoResolution'] += "x" + stream_info['Height']
             streams[stream_id]['duration'] = int(round(float(stream_info.get('Duration', 0)) / 1000, 0))
             detail_dict['VideoStreams'] = streams
@@ -302,18 +306,18 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     if __addon__.getSetting("file_resume") == "true":
                         liz.setProperty('ResumeTime', str(extra_data.get('resume')))
 
-                    liz.setProperty('VideoResolution', str(extra_data.get('xVideoResolution', '')))
-                    liz.setProperty('VideoCodec', extra_data.get('xVideoCodec', ''))
-                    liz.setProperty('AudioCodec', extra_data.get('xAudioCodec', ''))
-                    liz.setProperty('AudioChannels', str(extra_data.get('xAudioChannels', '')))
-                    liz.setProperty('VideoAspect', str(extra_data.get('xVideoAspect', '')))
-
                     video_codec = extra_data.get('VideoStreams', {})
                     if len(video_codec) > 0:
                         video_codec = video_codec[0]
                         liz.addStreamInfo('video', video_codec)
+                        liz.setProperty('VideoResolution', str(video_codec.get('xVideoResolution', '')))
+                        liz.setProperty('VideoCodec', video_codec.get('xVideoCodec', ''))
+                        liz.setProperty('VideoAspect', str(video_codec.get('aspect', '')))
 
                     if len(extra_data.get('AudioStreams', {})) > 0:
+                        audio = extra_data.get('AudioStreams')
+                        liz.setProperty('AudioCodec', audio.get('xAudioCodec', ''))
+                        liz.setProperty('AudioChannels', str(audio.get('xAudioChannels', '')))
                         for stream in extra_data['AudioStreams']:
                             if not isinstance(extra_data['AudioStreams'][stream], dict):
                                 continue
@@ -326,6 +330,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                             audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
                             audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
                             liz.addStreamInfo('audio', audio_codec)
+
                     if len(extra_data.get('SubStreams', {})) > 0:
                         for stream2 in extra_data['SubStreams']:
                             liz.setProperty('SubtitleLanguage.' + str(stream2), str(extra_data['SubStreams'][stream2]
@@ -375,10 +380,12 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                 if extra_data.get('source', 'none') == 'ep':
                     series_id = extra_data.get('serie_id')
                     ep_id = extra_data.get('ep_id')
+                    file_id = extra_data.get('file_id', 0)
                     url_peep = url_peep_base
                     url_peep = set_parameter(url_peep, 'serie_id', str(series_id))
                     url_peep = set_parameter(url_peep, 'ep_id', str(ep_id))
                     url_peep = set_parameter(url_peep, 'ui_index', str(index))
+                    url_peep = set_parameter(url_peep, 'file_id', str(file_id))
 
                     if __addon__.getSetting('context_show_play_no_watch') == 'true':
                         context.append(('Play (Do not Mark as Watched)',
@@ -1415,7 +1422,8 @@ def build_serie_episodes(params):
                                 'AudioStreams':     defaultdict(dict),
                                 'SubStreams':       defaultdict(dict),
                                 'ep_id':            safeInt(video.get('id', '')),
-                                'serie_id':         safeInt(body.get('id', ''))
+                                'serie_id':         safeInt(body.get('id', '')),
+                                'file_id':          video['files'][0].get('offset', '0')
                             }
 
                             # Information about streams inside video file
@@ -1425,10 +1433,10 @@ def build_serie_episodes(params):
                             # Determine what type of watched flag [overlay] to use
                             if int(safeInt(video.get("view", '0'))) > 0:
                                 details['playcount'] = 1
-                                # details['overlay'] = 5
+                                details['overlay'] = 5
                             else:
                                 details['playcount'] = 0
-                                # details['overlay'] = 0
+                                details['overlay'] = 4
                                 if next_episode == -1:
                                     next_episode = episode_count - 1
 
@@ -1444,9 +1452,10 @@ def build_serie_episodes(params):
                             context = None
 
                             u = sys.argv[0]
-                            u = set_parameter(u, 'url', key)
+                            # u = set_parameter(u, 'url', key)
                             u = set_parameter(u, 'mode', 1)
-                            u = set_parameter(u, 'file', key)
+                            # u = set_parameter(u, 'file', key)
+                            u = set_parameter(u, 'file_id', video["files"][0].get("id", 0))
                             u = set_parameter(u, 'ep_id', video.get("id", ''))
                             u = set_parameter(u, 'serie_id', body.get("id", ''))
                             u = set_parameter(u, 'userrate', details["userrating"])
@@ -1689,8 +1698,9 @@ def play_video(ep_id, raw_id, movie):
 
             if 'offset' in file_body:
                 offset = file_body.get('offset', 0)
-                offset = int(offset) / 1000
-                item.setProperty('ResumeTime', str(offset))
+                if offset != 0:
+                    offset = int(offset) / 1000
+                    item.setProperty('ResumeTime', str(offset))
 
             for stream_index in codecs["VideoStreams"]:
                 if not isinstance(codecs["VideoStreams"][stream_index], dict):
@@ -1759,12 +1769,7 @@ def play_video(ep_id, raw_id, movie):
                     # region Resume support (work with shoko 3.6.0.7+)
                     # we'll sync the offset if it's set to sync watched states, and leave file_resume to auto resuming
                     if __addon__.getSetting("syncwatched") == "true":
-                        offset_url = _server_ + "/api/file/offset"
-                        offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time * 1000)
-                        try:
-                            post_json(offset_url, offset_body)
-                        except:
-                            error("Error while updating Resume status.", '', True)
+                        sync_offset(file_id, current_time)
                     # endregion
 
                     # region Trakt support
@@ -1892,6 +1897,21 @@ def vote_episode(params):
                                                                         vote_value, __addon__.getAddonInfo('icon')))
 
 
+def sync_offset(file_id, current_time):
+    """
+    sync offset of played file
+    :param file_id: id
+    :param current_time: current time in seconds
+    """
+
+    offset_url = _server_ + "/api/file/offset"
+    offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time * 1000)
+    try:
+        post_json(offset_url, offset_body)
+    except:
+        error("Error while updating Resume status.", '', True)
+
+
 def file_list_gui(ep_body):
     """
     Create GUI with file list to pick
@@ -1919,13 +1939,14 @@ def file_list_gui(ep_body):
 
 def watched_mark(params):
     """
-    Marks an episode, series, or group as either watched or unwatched
+    Marks an episode, series, or group as either watched (offset = 0) or unwatched
     Args:
         params: must contain either an episode, series, or group id, and a watched value to mark
     """
     episode_id = params.get('ep_id', '')
     anime_id = params.get('serie_id', '')
     group_id = params.get('group_id', '')
+    file_id = params.get('file_id', 0)
     watched = bool(params['watched'])
     key = _server_ + "/api"
     if watched is True:
@@ -1945,7 +1966,11 @@ def watched_mark(params):
         elif group_id != '':
             key += "/group/unwatch"
 
+    if file_id != 0:
+        sync_offset(file_id, 0)
+
     if __addon__.getSetting('log_spam') == 'true':
+        xbmc.log('file_d: ' + str(file_id), xbmc.LOGWARNING)
         xbmc.log('epid: ' + str(episode_id), xbmc.LOGWARNING)
         xbmc.log('anime_id: ' + str(anime_id), xbmc.LOGWARNING)
         xbmc.log('group_id: ' + str(group_id), xbmc.LOGWARNING)
@@ -2108,8 +2133,7 @@ if valid_connect() is True:
                         pass
                 parameters['watched'] = True
                 watched_mark(parameters)
-                voting = __addon__.getSetting("vote_always")
-                if voting == "true":
+                if __addon__.getSetting("vote_always") == "true":
                     if parameters.get('userrate', 0) == 0:
                         vote_episode(parameters)
             elif cmd == "unwatched":
