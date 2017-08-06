@@ -359,17 +359,17 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     else:
                         liz.setProperty('TotalTime', '100')
                         liz.setProperty('ResumeTime', '50')
-                if extra_data.get('thumb'):
-                    liz.setArt({"thumb": extra_data.get('thumb', '')})
-                    liz.setArt({"icon": extra_data.get('thumb', '')})
-                    liz.setArt({"poster": extra_data.get('thumb', '')})
-                if extra_data.get('fanart_image'):
-                    liz.setArt({"fanart": extra_data.get('fanart_image', '')})
-                    liz.setArt({"clearart": extra_data.get('fanart_image', '')})
-                if extra_data.get('banner'):
-                    liz.setArt({'banner': extra_data.get('banner', '')})
-                if extra_data.get('season_thumb'):
-                    liz.setArt({'seasonThumb': extra_data.get('season_thumb', '')})
+            if extra_data.get('thumb'):
+                liz.setArt({"thumb": extra_data.get('thumb', '')})
+                liz.setArt({"icon": extra_data.get('thumb', '')})
+                liz.setArt({"poster": extra_data.get('thumb', '')})
+            if extra_data.get('fanart_image'):
+                liz.setArt({"fanart": extra_data.get('fanart_image', '')})
+                liz.setArt({"clearart": extra_data.get('fanart_image', '')})
+            if extra_data.get('banner'):
+                liz.setArt({'banner': extra_data.get('banner', '')})
+            if extra_data.get('season_thumb'):
+                liz.setArt({'seasonThumb': extra_data.get('season_thumb', '')})
 
         if context is None:
             if extra_data and len(extra_data) > 0:
@@ -1443,6 +1443,8 @@ def build_serie_episodes(params):
                             if int(safeInt(video.get("view", '0'))) > 0:
                                 details['playcount'] = 1
                                 details['overlay'] = 5
+                                # fake this test
+                                # details['lastplayed'] = '2010-10-10 11:00:00'
                             else:
                                 details['playcount'] = 0
                                 details['overlay'] = 4
@@ -2005,6 +2007,11 @@ def watched_mark(params):
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ',
                                                                         watched_msg, __addon__.getAddonInfo('icon')))
+    # test
+    # win2 = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+    # ctl2 = win2.getControl(win2.getFocusId())
+    # ctl2.reset()
+    # end test
     refresh()
 
 
