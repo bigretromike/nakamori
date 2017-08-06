@@ -1750,13 +1750,14 @@ def play_video(ep_id, raw_id, movie):
                                                        '', __addon__.getAddonInfo('icon')))
                     clock_tick += 1
 
-                    xbmc.sleep(1000)  # 1sec
+                    xbmc.sleep(2500)  # 2.5sec this will make the server handle it better
                     total_time = player.getTotalTime()
                     current_time = player.getTime()
 
                     # region Resume support (work with shoko 3.6.0.7+)
+                    # don't sync until the files is playing and more than 10 seconds in
                     # we'll sync the offset if it's set to sync watched states, and leave file_resume to auto resuming
-                    if __addon__.getSetting("syncwatched") == "true":
+                    if __addon__.getSetting("syncwatched") == "true" and current_time > 10:
                         offset_url = _server_ + "/api/file/offset"
                         offset_body = '"id":' + str(file_id) + ',"offset":' + str(current_time * 1000)
                         try:
