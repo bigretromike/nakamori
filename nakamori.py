@@ -1352,7 +1352,7 @@ def build_serie_episodes(params):
                                 proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
                             title = encode(video.get('name', 'Parse Error'))
                             if title is None:
-                                title = ''
+                                title = 'Episode' + str(video.get('epnumber', '??'))
 
                             # Required listItem entries for XBMC
                             details = {
