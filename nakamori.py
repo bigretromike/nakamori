@@ -298,7 +298,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         # TODO Refactor this out into the above method
         # For all video items
         if not folder:
-            liz.setProperty('IsPlayable', 'true')
+            # liz.setProperty('IsPlayable', 'true')
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
@@ -614,7 +614,7 @@ def add_raw_files(node):
         liz = xbmcgui.ListItem(label=title, label2=title, path=raw_url)
         liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        liz.setProperty('IsPlayable', 'true')
+        # liz.setProperty('IsPlayable', 'true')
         u = sys.argv[0]
         u = set_parameter(u, 'url', raw_url)
         u = set_parameter(u, 'mode', 1)
@@ -1705,7 +1705,8 @@ def play_video(ep_id, raw_id, movie):
                                     thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
                                     path=file_url)
             item.setInfo(type='Video', infoLabels=details)
-            item.setProperty('IsPlayable', 'true')
+
+            # item.setProperty('IsPlayable', 'true')
 
             if 'offset' in file_body:
                 offset = file_body.get('offset', 0)
@@ -1733,8 +1734,11 @@ def play_video(ep_id, raw_id, movie):
         error('Error getting episode info', str(exc))
 
     try:
+        # xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=item)
+
         player = xbmc.Player()
-        xbmcplugin.setResolvedUrl(handle, True, item)
+        # xbmcplugin.setResolvedUrl(handle, True, item)
+        player.play(item=file_url, listitem=item)
 
         if __addon__.getSetting("file_resume") == "true":
             if offset > 0:
@@ -2112,6 +2116,7 @@ if valid_connect() is True:
     if valid_user() is True:
         try:
             parameters = util.parseParameters()
+            # xbmcgui.Dialog().ok('params=', str(parameters))
         except Exception as exp:
             error('valid_userid parseParameters() error', str(exp))
             parameters = {'mode': 2}
