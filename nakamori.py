@@ -974,6 +974,84 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     add_gui_item(u, details, extra_data, context)
 
 
+def add_filter_item(menu):
+    """
+    adds a filter item from json
+    :param menu: json tree
+    """
+    use_mode = 4
+    key = menu["url"]
+    size = safeInt(menu.get("size"))
+    title = menu['name']
+
+    if title == 'Continue Watching (SYSTEM)':
+        title = 'Continue Watching'
+    elif title == 'Unsort':
+        title = 'Unsorted'
+        use_mode = 8
+
+    if __addon__.getSetting("spamLog") == "true":
+        xbmc.log("build_filters_menu - key = " + key, xbmc.LOGWARNING)
+
+    if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
+        key = set_parameter(key, 'nocast', 1)
+    key = set_parameter(key, 'level', 2)
+    if title == "Airing Today":
+        key = set_parameter(key, 'level', 0)
+    filter_url = key
+
+    thumb = ''
+    try:
+        if len(menu["art"]["thumb"]) > 0:
+            thumb = menu["art"]["thumb"][0]["url"]
+            if ":" not in thumb:
+                thumb = _server_ + thumb
+        if "Year" in title or "Airing Today" in title:
+            thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
+        elif "Tag" in title:
+            thumb = os.path.join(_home_, 'resources/media/icons', 'tag.png')
+    except:
+        if "Year" in title or "Airing Today" in title:
+            thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
+        elif "Tag" in title:
+            thumb = os.path.join(_home_, 'resources/media/icons', 'tag.png')
+    fanart = ''
+    try:
+        if len(menu["art"]["fanart"]) > 0:
+            fanart = menu["art"]["fanart"][0]["url"]
+            if ":" not in fanart:
+                fanart = _server_ + fanart
+    except:
+        pass
+    banner = ''
+    try:
+        if len(menu["art"]["banner"]) > 0:
+            banner = menu["art"]["banner"][0]["url"]
+            if ":" not in banner:
+                banner = _server_ + banner
+    except:
+        pass
+
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', filter_url)
+    u = set_parameter(u, 'mode', use_mode)
+    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'filter_id', menu.get("id", ""))
+
+    liz = xbmcgui.ListItem(label=title, label2=title, path=filter_url)
+    liz.setArt({
+        'icon': thumb,
+        'thumb': thumb,
+        'fanart': fanart,
+        'poster': thumb,
+        'banner': banner,
+        'clearart': fanart
+    })
+    if thumb == '':
+        liz.setIconImage('DefaultVideo.png')
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
+    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+
 def build_filters_menu():
     """
     Builds the list of items (filters) in the Main Menu
@@ -984,77 +1062,39 @@ def build_filters_menu():
         json_menu = json.loads(get_json(_server_ + "/api/filter"))
         set_window_heading(json_menu['name'])
         try:
+            menu_append = []
             for menu in json_menu["filters"]:
                 title = menu['name']
-                use_mode = 4
-                key = menu["url"]
-                size = safeInt(menu["size"])
-
-                if title == 'Continue Watching (SYSTEM)':
-                    title = 'Continue Watching'
+                if title == 'Seasons':
+                    airing = {
+                        "name": "Airing Today",
+                        "url":  _server_ + "/api/serie/today"
+                    }
+                    if get_version() >= LooseVersion("3.8.0.0"):
+                        menu_append.append(airing)
+                    menu_append.append(menu)
+                elif title == 'Tags':
+                    menu_append.append(menu)
                 elif title == 'Unsort':
-                    title = 'Unsorted'
-                    use_mode = 8
+                    menu_append.append(menu)
+                elif title == 'Years':
+                    menu_append.append(menu)
+            for menu in json_menu["filters"]:
+                title = menu['name']
 
-                if __addon__.getSetting("spamLog") == "true":
-                    xbmc.log("build_filters_menu - key = " + key, xbmc.LOGWARNING)
+                if title == 'Unsort':
+                    continue
+                elif title == 'Tags':
+                    continue
+                elif title == 'Seasons':
+                    continue
+                elif title == 'Years':
+                    continue
+                add_filter_item(menu)
 
-                if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
-                    key = set_parameter(key, 'nocast', 1)
-                key = set_parameter(key, 'level', 2)
-                filter_url = key
+            for menu in menu_append:
+                add_filter_item(menu)
 
-                thumb = ''
-                try:
-                    if len(menu["art"]["thumb"]) > 0:
-                        thumb = menu["art"]["thumb"][0]["url"]
-                        if ":" not in thumb:
-                            thumb = _server_ + thumb
-                    if "Year" in title:
-                        thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
-                    elif "Tag" in title:
-                        thumb = os.path.join(_home_, 'resources/media/icons', 'tag.png')
-                except:
-                    if "Year" in title:
-                        thumb = os.path.join(_home_, 'resources/media/icons', 'year.png')
-                    elif "Tag" in title:
-                        thumb = os.path.join(_home_, 'resources/media/icons', 'tag.png')
-                fanart = ''
-                try:
-                    if len(menu["art"]["fanart"]) > 0:
-                        fanart = menu["art"]["fanart"][0]["url"]
-                        if ":" not in fanart:
-                            fanart = _server_ + fanart
-                except:
-                    pass
-                banner = ''
-                try:
-                    if len(menu["art"]["banner"]) > 0:
-                        banner = menu["art"]["banner"][0]["url"]
-                        if ":" not in banner:
-                            banner = _server_ + banner
-                except:
-                    pass
-
-                u = sys.argv[0]
-                u = set_parameter(u, 'url', filter_url)
-                u = set_parameter(u, 'mode', use_mode)
-                u = set_parameter(u, 'name', urllib.quote_plus(title))
-                u = set_parameter(u, 'filter_id', menu["id"])
-
-                liz = xbmcgui.ListItem(label=title, label2=title, path=filter_url)
-                liz.setArt({
-                    'icon': thumb,
-                    'thumb': thumb,
-                    'fanart': fanart,
-                    'poster': thumb,
-                    'banner': banner,
-                    'clearart': fanart
-                })
-                if thumb == '':
-                    liz.setIconImage('DefaultVideo.png')
-                liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
-                xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
         except Exception as e:
             error("Error during build_filters_menu", str(e))
     except Exception as e:
@@ -1352,7 +1392,7 @@ def build_serie_episodes(params):
                                 proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
                             title = encode(video.get('name', 'Parse Error'))
                             if title is None:
-                                title = ''
+                                title = 'Episode ' + str(video.get('epnumber', '??'))
 
                             # Required listItem entries for XBMC
                             details = {
