@@ -996,6 +996,8 @@ def add_filter_item(menu):
     if __addon__.getSetting('request_nocast') == 'true' and title != 'Unsorted':
         key = set_parameter(key, 'nocast', 1)
     key = set_parameter(key, 'level', 2)
+    if title == "Airing Today":
+        key = set_parameter(key, 'level', 0)
     filter_url = key
 
     thumb = ''
