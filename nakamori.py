@@ -1732,6 +1732,9 @@ def play_video(ep_id, raw_id, movie):
             file_body = json.loads(get_json(file_url))
 
             file_url = file_body['url']
+            serverpath = file_body.get('server_path', '')
+            if serverpath != '' and os.path.isfile(serverpath):
+                file_url = serverpath
 
             # Information about streams inside video file
             # Video
