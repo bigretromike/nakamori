@@ -11,6 +11,15 @@ import xbmcaddon
 import xbmcgui
 import xbmc
 
+has_pydev = False
+has_line_profiler = False
+try:
+    # noinspection PyUnresolvedReferences
+    import line_profiler
+    has_line_profiler = True
+except ImportError:
+    pass
+
 try:
     # noinspection PyUnresolvedReferences
     import TagBlacklist as TagFilter
@@ -21,7 +30,8 @@ except Exception as tag_ex:
 try:
     # noinspection PyUnresolvedReferences
     import pydevd
-except ImportError as ie:
+    has_pydev = True
+except ImportError:
     pass
 
 handle = int(sys.argv[1])
@@ -2140,13 +2150,14 @@ def create_playlist(serie_id):
 # region Setting up Remote Debug
 if __addon__.getSetting('remote_debug') == 'true':
     try:
-        if pydevd:
+        if has_pydev:
             pydevd.settrace(__addon__.getSetting('ide_ip'), port=int(__addon__.getSetting('ide_port')),
-                            stdoutToServer=False, stderrToServer=False, suspend=False)
+                            stdoutToServer=True, stderrToServer=True, suspend=False)
         else:
-            error('Unable to start debugger')
+            error('pydevd not found, disabling remote_debug')
+            __addon__.setSetting('remote_debug', 'false')
     except Exception as ex:
-        error('pydevd not found, disabling remote_debug', str(ex))
+        error('Unable to start debugger, disabling', str(ex))
         __addon__.setSetting('remote_debug', 'false')
 # endregion
 
@@ -2262,7 +2273,15 @@ if valid_connect() is True:
                 except:
                     build_search_directory()
             elif mode == 4:  # Group/Serie
-                build_groups_menu(parameters)
+                try:
+                    if has_line_profiler:
+                        profiler = line_profiler.LineProfiler()
+                        profiler.add_function(build_groups_menu)
+                        profiler.enable_by_count()
+                    build_groups_menu(parameters)
+                finally:
+                    if has_line_profiler:
+                        profiler.print_stats(open('stats.txt', 'w'))
             elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
                 build_serie_episodes_types(parameters)
             elif mode == 6:  # Serie Episodes (list of episodes)
@@ -2288,7 +2307,7 @@ else:
 
 if __addon__.getSetting('remote_debug') == 'true':
     try:
-        if pydevd:
+        if has_pydev:
             pydevd.stoptrace()
     except Exception as remote_exc:
         xbmc.log(str(remote_exc), xbmc.LOGWARNING)
