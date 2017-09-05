@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.12" provider-name="BigRetroMike, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.13" provider-name="BigRetroMike, da3dsoul">
 <requires>
-<import addon="script.module.nakamori" version="1.0.2"/>
+<import addon="script.module.nakamori" version="1.0.3"/>
 </requires>
 <extension point="xbmc.python.pluginsource" library="nakamori.py">
 <provides>video</provides>
@@ -11,8 +11,13 @@
 <description lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
 <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 <news>
-v2.1.12 (12/06/2017)
-- fix for multifile for episode throw error on cancel #212 fix
+v2.1.13 (05/09/2017)
+- new way we handle video play
+- improve debug loading
+- speed up some subfolders
+- better default title
+- handle syncing resume better
+- support more shoko 3.8.x.x changes
 </news>
 <platform>all</platform>
 <language>en</language>
