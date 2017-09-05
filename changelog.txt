@@ -1,9 +1,17 @@
+v2.1.13 (05/09/2017)
+- new way we handle video play
+- improve debug loading
+- speed up some subfolders
+- better default title
+- handle syncing resume better
+- support more shoko 3.8.x.x changes
+
 v2.1.12 (12/06/2017)
-- fix for multifile for episode throw error on cancel #212 fix
+- fix for multifile for episode throw error on cancel (#212) fix
 
 v2.1.11 (12/06/2017)
 - Use toggle watched if no sync
-- multifile for episode throw error on cancel #212
+- multifile for episode throw error on cancel (#212)
 
 v2.1.10 (25/05/2017)
 - Added Progress bar with time consuming tasks
