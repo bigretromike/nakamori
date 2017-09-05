@@ -1163,9 +1163,9 @@ def build_groups_menu(params, json_body=None):
             busy.update(70)
             directory_type = html_body['type']
             if directory_type != "filters":
-                # level 3 will fill group and series (for filter)
+                # level 2 will fill group and series (for filter)
                 temp_url = params['url']
-                temp_url = set_parameter(temp_url, 'level', 3)
+                temp_url = set_parameter(temp_url, 'level', 2)
                 html = get_json(temp_url)
                 body = json.loads(html)
             else:
