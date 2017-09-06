@@ -533,18 +533,18 @@ def get_tags(tag_node):
     """
     try:
         if tag_node is None:
-            return
+            return ''
         if len(tag_node) > 0:
             temp_genres = []
-            temp_genre = ''
             for tag in tag_node:
                 temp_genre = encode(tag["tag"]).strip()
                 temp_genres.append(temp_genre)
+            if get_version() <= LooseVersion('3.8.0.0'):
                 try:
                     temp_genres = TagFilter.processTags(__tagSettingFlags__, temp_genres)
                 except:
                     pass
-                temp_genre = " | ".join(temp_genres)
+            temp_genre = " | ".join(temp_genres)
             return temp_genre
         else:
             return ''
@@ -803,6 +803,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     key = _server_ + "/api/serie"
     key = set_parameter(key, 'id', key_id)
     key = set_parameter(key, 'level', 2)
+    key = set_parameter(key, 'tagfilter', __tagSettingFlags__)
     if __addon__.getSetting('request_nocast') == 'true':
         key = set_parameter(key, 'nocast', 1)
 
@@ -928,6 +929,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     key = set_parameter(key, 'id', key_id)
     key = set_parameter(key, 'filter', filter_id)
     key = set_parameter(key, 'level', 1)
+    key = set_parameter(key, 'tagfilter', __tagSettingFlags__)
     if __addon__.getSetting('request_nocast') == 'true':
         key = set_parameter(key, 'nocast', 1)
 
@@ -1008,6 +1010,7 @@ def add_filter_item(menu):
     key = set_parameter(key, 'level', 2)
     if title == "Airing Today":
         key = set_parameter(key, 'level', 0)
+    key = set_parameter(key, 'tagfilter', __tagSettingFlags__)
     filter_url = key
 
     thumb = ''
