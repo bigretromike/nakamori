@@ -1072,7 +1072,9 @@ def build_filters_menu():
     xbmcplugin.setPluginCategory(handle, 'Filters')
     xbmcplugin.setContent(handle, content='tvshows')
     try:
-        json_menu = json.loads(get_json(_server_ + "/api/filter"))
+        filters_key = _server_ + "/api/filter"
+        filters_key = set_parameter(filters_key, "level", 0)
+        json_menu = json.loads(get_json(filters_key))
         set_window_heading(json_menu['name'])
         try:
             menu_append = []
