@@ -286,7 +286,7 @@ def get_json(url_in, direct=False):
         body = get_data(url_in, None, "json")
         # xbmcgui.Dialog().ok("direct", str(body))
     else:
-        if __addon__.getSetting("enableCache") == "true":
+        if (__addon__.getSetting("enableCache") == "true") and ("file?id" not in url_in):
             # xbmcgui.Dialog().ok("cache", "ENABLED")
             # xbmcgui.Dialog().ok("cache url", str(url_in))
             db_row = cache.check_in_database(url_in)
@@ -318,6 +318,7 @@ def get_json(url_in, direct=False):
                 body = get_data(url_in, None, "json")
                 cache.add_cache(url_in, json.dumps(body))
         else:
+            # xbmcgui.Dialog().ok("direct because of check", str(body))
             body = get_data(url_in, None, "json")
     return body
 

@@ -1629,7 +1629,7 @@ def play_video(ep_id, raw_id, movie):
                 file_id = episode_body["files"][0]["id"]
         else:
             file_id = raw_id
-
+        # xbmcgui.Dialog().ok('PLAY_VIDEO_1 ' + str(ep_id), str(file_id))
         offset = 0
         if file_id is not None and file_id != 0:
             file_url = _server_ + "/api/file?id=" + str(file_id)
@@ -1638,6 +1638,8 @@ def play_video(ep_id, raw_id, movie):
             file_url = file_body['url']
             serverpath = file_body.get('server_path', '')
             if serverpath != '' and os.path.isfile(serverpath):
+                if str(serverpath).startswith('\\\\'):
+                    serverpath = "smb:"+serverpath
                 file_url = serverpath
 
             # Information about streams inside video file
@@ -1679,12 +1681,13 @@ def play_video(ep_id, raw_id, movie):
             return 0
     except Exception as exc:
         error('Error getting episode info', str(exc))
-
+    # xbmcgui.Dialog().ok('PLAY_VIDEO_2 ' + str(ep_id), str(file_id))
     try:
         # xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=item)
-
+        # xbmcgui.Dialog().ok('PLAY_VIDEO_3' + str(file_url), str(item))
         player = xbmc.Player()
         # xbmcplugin.setResolvedUrl(handle, True, item)
+        # xbmcgui.Dialog().ok('PLAY_VIDEO_4' + str(file_url), str(item))
         player.play(item=file_url, listitem=item)
 
         if __addon__.getSetting("file_resume") == "true":
