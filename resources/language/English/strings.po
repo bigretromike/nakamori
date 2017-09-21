@@ -124,11 +124,11 @@ msgid "Use short Tag list"
 msgstr ""
 
 msgctxt "#30029"
-msgid "UNUSED"
+msgid "Cache"
 msgstr ""
 
 msgctxt "#30030"
-msgid "UNUSED"
+msgid "Enable Cache"
 msgstr ""
 
 msgctxt "#30031"
@@ -281,4 +281,8 @@ msgstr ""
 
 msgctxt "#30068"
 msgid "Ignore Specials for Watched States"
+msgstr ""
+
+msgctxt "#30069"
+msgid "Cache data expire after (s)"
 msgstr ""

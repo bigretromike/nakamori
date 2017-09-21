@@ -8,6 +8,7 @@ import re
 import gzip
 import traceback
 import json
+import time
 from distutils.version import LooseVersion
 
 import collections
@@ -19,6 +20,8 @@ import xbmcplugin
 
 from StringIO import StringIO
 import xml.etree.ElementTree as Tree
+
+import resources.lib.cache as cache
 
 # get addon info
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
@@ -277,8 +280,43 @@ def parse_possible_error(data, data_type):
 
 # Internal function
 # json
-def get_json(url_in):
-    return get_data(url_in, None, "json")
+def get_json(url_in, direct=False):
+    body = ""
+    if direct:
+        body = get_data(url_in, None, "json")
+        # xbmcgui.Dialog().ok("direct", str(body))
+    else:
+        if __addon__.getSetting("enableCache") == "true":
+            # xbmcgui.Dialog().ok("cache", "ENABLED")
+            db_row = cache.check_in_database(url_in)
+            if len(db_row) > 0:
+                # why I get response as (xxx.xx,) I dont know i leave this as
+                db_row = str(db_row).replace('(', '')
+                db_row = str(db_row).replace(')', '')
+                db_row = str(db_row).replace(',', '')
+                expire_second = time.time() - float(db_row)
+                if expire_second > int(__addon__.getSetting("expireCache")):
+                    # expire, get new date
+                    # xbmcgui.Dialog().ok("cache", "data expired")
+                    body = get_data(url_in, None, "json")
+                    params = {}
+                    params['extras'] = 'single-delete'
+                    params['name'] = url_in
+                    cache.remove_cache(params)
+                    cache.add_cache(url_in, str(body))
+                else:
+                    # xbmcgui.Dialog().ok("cache", "not expire")
+                    body = str(cache.get_data_from_cache(url_in)[0])
+                    # why I get response as ({},) I dont know i leave this as
+                    body = body[3:]
+                    body = body[:-3]
+            else:
+                # xbmcgui.Dialog().ok("cache", "not cached")
+                body = get_data(url_in, None, "json")
+                cache.add_cache(url_in, str(body))
+        else:
+            body = get_data(url_in, None, "json")
+    return body
 
 
 # legacy
@@ -469,7 +507,7 @@ def get_server_status():
 # json - ok
 def get_version():
     legacy = LooseVersion('0.0')
-    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version")
+    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version", direct=True)
     if json_file is None:
         return legacy
     try:

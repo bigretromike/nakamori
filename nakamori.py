@@ -594,7 +594,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     watched_sizes = node.get("watched_sizes", {});
     if len(watched_sizes) > 0:
         watched = safeInt(watched_sizes.get("Episodes", 0))
-        if not get_kodi_setting_bool("ignore_specials_watched"):
+        if not util.get_kodi_setting_bool("ignore_specials_watched"):
             watched += safeInt(watched_sizes.get("Specials", 0))
     else:
         watched = safeInt(node.get("watchedsize", ''))
@@ -764,7 +764,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     watched_sizes = node.get("watched_sizes", {});
     if len(watched_sizes) > 0:
         watched = safeInt(watched_sizes.get("Episodes", 0))
-        if not get_kodi_setting_bool("ignore_specials_watched"):
+        if not util.get_kodi_setting_bool("ignore_specials_watched"):
             watched += safeInt(watched_sizes.get("Specials", 0))
     else:
         watched = safeInt(node.get("watchedsize", ''))
@@ -1392,7 +1392,7 @@ def build_serie_episodes(params):
 
                             if details['playcount'] == 0:
                                 # Hide plot and thumb for unwatched by kodi setting
-                                if not get_kodi_setting_bool("videolibrary.showunwatchedplots"):
+                                if not util.get_kodi_setting_bool("videolibrary.showunwatchedplots"):
                                     details['plot'] \
                                         = "Hidden due to user setting.\nCheck Show Plot" + \
                                           " for Unwatched Items in the Video Library Settings."
