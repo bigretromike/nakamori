@@ -46,123 +46,6 @@ _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 busy = xbmcgui.DialogProgress()
 
 
-def populate_tag_setting_flags():
-    """
-    Get user settings from local Kodi, and use them with Nakamori
-    :return: setting_flags 
-    """
-    tag_setting_flags = 0
-    tag_setting_flags = tag_setting_flags | (0b00001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b00010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b00100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b01000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b10000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
-    return tag_setting_flags
-
-
-def valid_connect():
-    """
-    Try to query server for version, if kodi get version respond then shoko server is running
-    :return: bool
-    """
-    return util.get_server_status()
-
-
-def valid_user():
-    """
-    Logs into the server and stores the apikey, then checks if the userid is valid
-    reset apikey if user enters new login info
-    if apikey is present login should be empty as its not needed anymore
-    :return: bool True if all completes successfully
-    """
-
-    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
-        return True
-    else:
-        xbmc.log('-- apikey empty --')
-        try:
-            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
-                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
-                       '"device":"' + __addon__.getSetting("device") + '",' + \
-                       '"pass":"' + __addon__.getSetting("password") + '"}'
-                post_body = post_data(_server_ + "/api/auth", body)
-                auth = json.loads(post_body)
-                if "apikey" in auth:
-                    xbmc.log('-- save apikey and reset user credentials --')
-                    __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
-                    __addon__.setSetting(id='login', value='')
-                    __addon__.setSetting(id='password', value='')
-                    return True
-                else:
-                    raise Exception('Error Getting apikey')
-            else:
-                xbmc.log('-- Login and Device Empty --')
-                return False
-        except Exception as exc:
-            error('Error in Valid_User', str(exc))
-            return False
-
-
-def refresh():
-    """
-    Refresh and re-request data from server
-    refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
-    Allow time for the ui to reload
-    """
-    xbmc.executebuiltin('Container.Refresh')
-    xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
-
-
-def move_position_on_list(control_list, position=0):
-    """
-    Move to the position in a list - use episode number for position
-    Args:
-        control_list: the list control
-        position: the index of the item not including settings
-    """
-    if position < 0:
-        position = 0
-    if __addon__.getSetting('show_continue') == 'true':
-        position = int(position + 1)
-
-    if get_kodi_setting_bool("filelists.showparentdiritems"):
-        position = int(position + 1)
-
-    try:
-        control_list.selectItem(position)
-    except:
-        try:
-            control_list.selectItem(position - 1)
-        except Exception as e:
-            error('Unable to reselect item', str(e))
-            xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
-            xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
-
-
-def set_window_heading(window_name):
-    """
-    Sets the window titles
-    Args:
-        window_name: name to put in titles
-    """
-    if window_name == 'Continue Watching (SYSTEM)':
-        window_name = 'Continue Watching'
-    elif window_name == 'Unsort':
-        window_name = 'Unsorted'
-
-    window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-    try:
-        window_obj.setProperty("heading", str(window_name))
-    except Exception as e:
-        error('set_window_heading Exception', str(e))
-        window_obj.clearProperty("heading")
-    try:
-        window_obj.setProperty("heading2", str(window_name))
-    except Exception as e:
-        error('set_window_heading2 Exception', str(e))
-        window_obj.clearProperty("heading2")
-
-
 def filter_gui_item_by_tag(title):
     """
     Remove list items from the tag group filter by the tag blacklist in settings
@@ -1065,6 +948,7 @@ def add_filter_item(menu):
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
 
+
 def build_filters_menu():
     """
     Builds the list of items (filters) in the Main Menu
@@ -1075,7 +959,7 @@ def build_filters_menu():
         filters_key = _server_ + "/api/filter"
         filters_key = set_parameter(filters_key, "level", 0)
         json_menu = json.loads(get_json(filters_key))
-        set_window_heading(json_menu['name'])
+        util.set_window_heading(json_menu['name'])
         try:
             menu_append = []
             for menu in json_menu["filters"]:
@@ -1182,7 +1066,7 @@ def build_groups_menu(params, json_body=None):
 
         # check if this is maybe filter-inception
         try:
-            set_window_heading(body.get('name', ''))
+            util.set_window_heading(body.get('name', ''))
         except:
             try:  # this might not be a filter
                 # it isn't single filter)
@@ -1276,7 +1160,7 @@ def build_serie_episodes_types(params):
                 build_serie_episodes(params)
                 return
             else:
-                set_window_heading(parent_title)
+                util.set_window_heading(parent_title)
 
                 if __addon__.getSetting('use_server_sort') == 'false':
                     # Apparently date sorting in Kodi has been broken for years
@@ -1323,7 +1207,7 @@ def build_serie_episodes(params):
             parent_title = ''
             try:
                 parent_title = body.get('name', '')
-                set_window_heading(parent_title)
+                util.set_window_heading(parent_title)
                 xbmcplugin.setPluginCategory(handle, parent_title)
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
@@ -1540,7 +1424,7 @@ def build_serie_episodes(params):
             xbmc.sleep(150)
             new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             new_control = new_window.getControl(new_window.getFocusId())
-            move_position_on_list(new_control, next_episode)
+            util.move_position_on_list(new_control, next_episode)
         except:
             pass
 
@@ -1657,7 +1541,7 @@ def build_raw_list(params):
     :return:
     """
     xbmcplugin.setContent(handle, 'files')
-    set_window_heading('Unsort')
+    util.set_window_heading('Unsort')
     try:
         html = get_json(params['url'])
         body = json.loads(html)
@@ -1923,7 +1807,7 @@ def play_continue_item():
             wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             control_id = wind.getFocusId()
             control_list = wind.getControl(control_id)
-            move_position_on_list(control_list, pos)
+            util.move_position_on_list(control_list, pos)
             xbmc.sleep(1000)
     else:
         pass
@@ -2074,7 +1958,7 @@ def watched_mark(params):
     # ctl2 = win2.getControl(win2.getFocusId())
     # ctl2.reset()
     # end test
-    refresh()
+    util.refresh()
 
 
 def rescan_file(params, rescan):
@@ -2103,7 +1987,7 @@ def rescan_file(params, rescan):
                                                                  'Refreshing in 10 seconds',
                                                                  __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
-    refresh()
+    util.refresh()
 
 
 def remove_missing_files():
@@ -2120,7 +2004,7 @@ def remove_missing_files():
     xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Removing missing files...', 'This can take some time',
                                                                  __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
-    refresh()
+    util.refresh()
 
 
 def create_playlist(serie_id):
@@ -2168,16 +2052,15 @@ if __addon__.getSetting('remote_debug') == 'true':
 
 # Script run from here
 
-global __tagSettingFlags__
-__tagSettingFlags__ = populate_tag_setting_flags()
+__tagSettingFlags__ = util.populate_tag_setting_flags()
 
-if valid_connect() is True:
-    if valid_user() is True:
+if util.get_server_status() is True:
+    if util.valid_user() is True:
         try:
             parameters = util.parseParameters()
             # xbmcgui.Dialog().ok('params=', str(parameters))
         except Exception as exp:
-            error('valid_userid parseParameters() error', str(exp))
+            error('valid_userid_1 parseParameters() error', str(exp))
             parameters = {'mode': 2}
         if parameters:
             try:
@@ -2192,7 +2075,8 @@ if valid_connect() is True:
                 cmd = parameters['cmd']
             else:
                 cmd = None
-        except:
+        except Exception as exp:
+            error('valid_userid_2 parseParameters() error', str(exp))
             cmd = None
 
         if cmd is not None:
@@ -2208,7 +2092,7 @@ if valid_connect() is True:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
-                            move_position_on_list(ctl, int(ui_index) + 1)
+                            util.move_position_on_list(ctl, int(ui_index) + 1)
                     except Exception as exp:
                         xbmc.log(str(exp), xbmc.LOGWARNING)
                         pass
@@ -2238,7 +2122,7 @@ if valid_connect() is True:
             elif cmd == 'createPlaylist':
                 create_playlist(parameters['serie_id'])
             elif cmd == 'refresh':
-                refresh()
+                util.refresh()
         else:
             # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
             if mode == 1:  # play_file
@@ -2249,7 +2133,7 @@ if valid_connect() is True:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
-                            move_position_on_list(ctl, int(ui_index) + 1)
+                            util.move_position_on_list(ctl, int(ui_index) + 1)
                         parameters['watched'] = True
                         watched_mark(parameters)
 
