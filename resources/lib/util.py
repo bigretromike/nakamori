@@ -288,12 +288,12 @@ def get_json(url_in, direct=False):
     else:
         if __addon__.getSetting("enableCache") == "true":
             # xbmcgui.Dialog().ok("cache", "ENABLED")
+            # xbmcgui.Dialog().ok("cache url", str(url_in))
             db_row = cache.check_in_database(url_in)
-            if len(db_row) > 0:
-                # why I get response as (xxx.xx,) I dont know i leave this as
-                db_row = str(db_row).replace('(', '')
-                db_row = str(db_row).replace(')', '')
-                db_row = str(db_row).replace(',', '')
+            if db_row is None:
+                db_row = 0
+            # xbmcgui.Dialog().ok("cache db_row", str(db_row))
+            if db_row > 0:
                 expire_second = time.time() - float(db_row)
                 if expire_second > int(__addon__.getSetting("expireCache")):
                     # expire, get new date
@@ -303,17 +303,20 @@ def get_json(url_in, direct=False):
                     params['extras'] = 'single-delete'
                     params['name'] = url_in
                     cache.remove_cache(params)
-                    cache.add_cache(url_in, str(body))
+                    cache.add_cache(url_in, json.dumps(body))
                 else:
                     # xbmcgui.Dialog().ok("cache", "not expire")
-                    body = str(cache.get_data_from_cache(url_in)[0])
+                    body = cache.get_data_from_cache(url_in)
+                    # xbmcgui.Dialog().ok("cache-body", str(body))
+                    # body = str(body)
                     # why I get response as ({},) I dont know i leave this as
-                    body = body[3:]
-                    body = body[:-3]
+                    # body = body[4:]
+                    # body = body[:-4]
+                    # xbmcgui.Dialog().ok("cache-body", str(body))
             else:
                 # xbmcgui.Dialog().ok("cache", "not cached")
                 body = get_data(url_in, None, "json")
-                cache.add_cache(url_in, str(body))
+                cache.add_cache(url_in, json.dumps(body))
         else:
             body = get_data(url_in, None, "json")
     return body

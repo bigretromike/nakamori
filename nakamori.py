@@ -958,7 +958,11 @@ def build_filters_menu():
     try:
         filters_key = _server_ + "/api/filter"
         filters_key = set_parameter(filters_key, "level", 0)
-        json_menu = json.loads(get_json(filters_key))
+        body = get_json(filters_key)
+        # error(body)
+        json_menu = json.loads(body)
+        # error(str(json_menu))
+
         util.set_window_heading(json_menu['name'])
         try:
             menu_append = []
@@ -1048,6 +1052,7 @@ def build_groups_menu(params, json_body=None):
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'], xbmc.LOGWARNING)
                 xbmc.log(html, xbmc.LOGWARNING)
+            # error(html)
             html_body = json.loads(html)
             busy.update(70)
             directory_type = html_body['type']

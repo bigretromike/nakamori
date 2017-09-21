@@ -7,6 +7,7 @@ except:
 
 import os.path
 import time
+import json
 
 import xbmc
 import xbmcaddon
@@ -59,14 +60,14 @@ def get_cached_data():
 
 
 def get_data_from_cache(url):
-    items = []
+    items = ''
+    url = str(url)
     try:
         db_connection = database.connect(db_file)
         db_cursor = db_connection.cursor()
-        db_cursor.execute("SELECT json FROM cache WHERE url=?", url)
-        faves = db_cursor.fetchone()
-        if len(faves) > 0:
-            items = faves
+        db_cursor.execute("SELECT json FROM cache WHERE url=?", (url,))
+        items = db_cursor.fetchone()
+        items = json.loads(items[0])
     except:
         pass
     return items
@@ -82,7 +83,7 @@ def add_cache(url, json):
     date = time.time()
     db_connection = database.connect(db_file)
     db_cursor = db_connection.cursor()
-    db_cursor.execute("INSERT INTO cache (url, json, created) VALUES (?, ?, ?)", (url, unicode(json.decode('utf-8')), date))
+    db_cursor.execute("INSERT INTO cache (url, json, created) VALUES (?, ?, ?)", (url, json, date))
     db_connection.commit()
     db_connection.close()
 
@@ -110,14 +111,13 @@ def check_in_database(term):
     :param term: string that you check for
     :return: True if exist in database, False if not
     """
-    items = []
+    items = ''
     try:
         db_connection = database.connect(db_file)
         db_cursor = db_connection.cursor()
-        db_cursor.execute("SELECT created FROM cache WHERE url=?", term)
-        faves = db_cursor.fetchone()
-        if len(faves) > 0:
-            items = faves
+        db_cursor.execute("SELECT created FROM cache WHERE url=?", (term,))
+        items = db_cursor.fetchone()
+        items = items[0]
     except:
         pass
     return items
