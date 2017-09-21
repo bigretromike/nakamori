@@ -102,7 +102,8 @@ def video_file_information(node, detail_dict):
     if "audios" in node:
         for stream_node in node["audios"]:
             stream_info = node["audios"][stream_node]
-            if not isinstance(stream_info, dict): continue
+            if not isinstance(stream_info, dict):
+                continue
             streams = detail_dict.get('AudioStreams', defaultdict(dict))
             stream_id = int(stream_info["Index"])
             streams[stream_id]['AudioCodec'] = stream_info["Codec"]
@@ -117,7 +118,8 @@ def video_file_information(node, detail_dict):
     if "subtitles" in node:
         for stream_node in node["subtitles"]:
             stream_info = node["audios"][stream_node]
-            if not isinstance(stream_info, dict): continue
+            if not isinstance(stream_info, dict):
+                continue
             streams = detail_dict.get('SubStreams', defaultdict(dict))
             stream_id = int(stream_info["Index"])
             streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
@@ -151,7 +153,6 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
             if details.get('year', '') != '' and details.get('year', '0') != 0:
-                # todo: do we need fallback with date?
                 details['date'] = '01.01.' + str(details['year'])  # date d.m.y
                 f_data = str(details['date']).split('.')
                 details['aired'] = f_data[2] + '-' + f_data[1] + '-' + f_data[0]  # aired y-m-d
@@ -507,7 +508,6 @@ def add_raw_files(node):
         liz = xbmcgui.ListItem(label=title, label2=title, path=raw_url)
         liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        # liz.setProperty('IsPlayable', 'true')
         u = sys.argv[0]
         u = set_parameter(u, 'url', raw_url)
         u = set_parameter(u, 'mode', 1)
@@ -591,7 +591,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     if 'tags' in node:
         temp_genre = get_tags(node.get("tags", {}))
 
-    watched_sizes = node.get("watched_sizes", {});
+    watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
         watched = safeInt(watched_sizes.get("Episodes", 0))
         if not util.get_kodi_setting_bool("ignore_specials_watched"):
@@ -603,7 +603,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     list_cast_and_role = []
     actors = []
     if len(list_cast) == 0 and 'roles' in node:
-        result_list = get_cast_and_role(node.get("roles",{}))
+        result_list = get_cast_and_role(node.get("roles", {}))
         actors = result_list
         if result_list is not None:
             result_list = convert_cast_and_role_to_legacy(result_list)
@@ -611,19 +611,20 @@ def add_serie_item(node, parent_title, destination_playlist=False):
             list_cast_and_role = result_list[1]
 
     if __addon__.getSetting("local_total") == "true":
-        local_sizes = node.get("local_sizes", {});
+        local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
             total = safeInt(local_sizes.get("Episodes", 0)) + safeInt(local_sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
     else:
-        sizes = node.get("total_sizes", {});
+        sizes = node.get("total_sizes", {})
         if len(sizes) > 0:
             total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
 
-    if watched > total: watched = total
+    if watched > total:
+        watched = total
 
     title = get_title(node)
     if "userrating" in node:
@@ -649,7 +650,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'genre':            temp_genre,
         'year':             node.get("year", ''),
         'episode':          total,
-        'season':           safeInt(node.get("season",'1')),
+        'season':           safeInt(node.get("season", '1')),
         # 'count'        : count,
         'size':             total,
         'date':             str(proper_date),
@@ -761,7 +762,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     temp_genre = get_tags(node.get("tags", {}))
     title = get_title(node)
 
-    watched_sizes = node.get("watched_sizes", {});
+    watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
         watched = safeInt(watched_sizes.get("Episodes", 0))
         if not util.get_kodi_setting_bool("ignore_specials_watched"):
@@ -770,19 +771,20 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         watched = safeInt(node.get("watchedsize", ''))
 
     if __addon__.getSetting("local_total") == "true":
-        local_sizes = node.get("local_sizes", {});
+        local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
             total = safeInt(local_sizes.get("Episodes", 0)) + safeInt(local_sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
     else:
-        sizes = node.get("total_sizes", {});
+        sizes = node.get("total_sizes", {})
         if len(sizes) > 0:
             total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
 
-    if watched > total: watched = total
+    if watched > total:
+        watched = total
 
     content_type = node.get("type", '') if not is_filter else "filter"
     details = {
@@ -1157,7 +1159,6 @@ def build_serie_episodes_types(params):
                 if len(body.get("eps", {})) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
-                            # TODO add image for those without thumb
                             content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"] if len(ep["art"]["thumb"]) > 0 \
                                 else ''
             # no matter what type is its only one type, flat directory
@@ -1176,7 +1177,7 @@ def build_serie_episodes_types(params):
                     xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
                 for content in content_type:
-                    add_content_typ_dir(content, body.get("id",''))
+                    add_content_typ_dir(content, body.get("id", ''))
                 xbmcplugin.endOfDirectory(handle)
                 return
 
@@ -1613,7 +1614,10 @@ def play_video(ep_id, raw_id, movie):
         'season':        xbmc.getInfoLabel('ListItem.Season'),
     }
 
+    file_id = ''
     file_url = ''
+    offset = 0
+    item = ''
 
     try:
         if ep_id != "0":
@@ -1630,7 +1634,7 @@ def play_video(ep_id, raw_id, movie):
         else:
             file_id = raw_id
         # xbmcgui.Dialog().ok('PLAY_VIDEO_1 ' + str(ep_id), str(file_id))
-        offset = 0
+
         if file_id is not None and file_id != 0:
             file_url = _server_ + "/api/file?id=" + str(file_id)
             file_body = json.loads(get_json(file_url))
@@ -1681,13 +1685,9 @@ def play_video(ep_id, raw_id, movie):
             return 0
     except Exception as exc:
         error('Error getting episode info', str(exc))
-    # xbmcgui.Dialog().ok('PLAY_VIDEO_2 ' + str(ep_id), str(file_id))
+
     try:
-        # xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=item)
-        # xbmcgui.Dialog().ok('PLAY_VIDEO_3' + str(file_url), str(item))
         player = xbmc.Player()
-        # xbmcplugin.setResolvedUrl(handle, True, item)
-        # xbmcgui.Dialog().ok('PLAY_VIDEO_4' + str(file_url), str(item))
         player.play(item=file_url, listitem=item)
 
         if __addon__.getSetting("file_resume") == "true":
@@ -1716,7 +1716,7 @@ def play_video(ep_id, raw_id, movie):
     try:
         if raw_id == "0":  # skip for raw_file
             clock_tick = -1
-
+            progress = 0
             while player.isPlaying():
                 try:
                     if clock_tick == -1:
@@ -1752,7 +1752,7 @@ def play_video(ep_id, raw_id, movie):
                                                                          "&ismovie=" + str(movie) +
                                                                          "&status=" + str(1) +
                                                                          "&progress=" + str(progress)))
-                                        if str(trakt_body.get('code','')) != str(200):
+                                        if str(trakt_body.get('code', '')) != str(200):
                                             trakt_404 = True
                                 except Exception as trakt_ex:
                                     dbg(str(trakt_ex))
@@ -2137,7 +2137,9 @@ if util.get_server_status() is True:
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
-                    if play_video(parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) > 0:
+                    if play_video(parameters['ep_id'],
+                                  parameters['raw_id'] if 'raw_id' in parameters else "0",
+                                  parameters['movie'] if 'movie' in parameters else 0) > 0:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
@@ -2170,6 +2172,7 @@ if util.get_server_status() is True:
                 except:
                     build_search_directory()
             elif mode == 4:  # Group/Serie
+                profiler = ''
                 try:
                     if has_line_profiler:
                         profiler = line_profiler.LineProfiler()
