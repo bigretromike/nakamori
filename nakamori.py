@@ -11,6 +11,10 @@ import xbmcaddon
 import xbmcgui
 import xbmc
 
+import StringIO
+import pstats
+import cProfile
+
 has_pydev = False
 has_line_profiler = False
 try:
@@ -46,6 +50,34 @@ _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 busy = xbmcgui.DialogProgress()
 
 
+def profile_this(func):
+    """
+    This can be used to profile any function.
+    Usage:
+    @profile_this
+    def function_to_profile(arg, arg2):
+        pass
+    """
+
+    def profiled_func(*args, **kwargs):
+        """
+        a small wrapper
+        """
+        profile = cProfile.Profile()
+        try:
+            profile.enable()
+            result = func(*args, **kwargs)
+            profile.disable()
+            return result
+        finally:
+            stream = StringIO.StringIO()
+            sortby = 'time'
+            ps = pstats.Stats(profile, stream=stream).sort_stats(sortby)
+            ps.print_stats()
+            xbmc.log('Profiled Function: ' + func.__name__ + '\n' + stream.getvalue(), xbmc.LOGWARNING)
+    return profiled_func
+
+
 def populate_tag_setting_flags():
     """
     Get user settings from local Kodi, and use them with Nakamori
@@ -79,7 +111,7 @@ def valid_user():
     if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
         return True
     else:
-        xbmc.log('-- apikey empty --')
+        xbmc.log('-- apikey empty --', xbmc.LOGERROR)
         try:
             if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
                 body = '{"user":"' + __addon__.getSetting("login") + '",' + \
@@ -96,7 +128,7 @@ def valid_user():
                 else:
                     raise Exception('Error Getting apikey')
             else:
-                xbmc.log('-- Login and Device Empty --')
+                xbmc.log('-- Login and Device Empty --', xbmc.LOGERROR)
                 return False
         except Exception as exc:
             error('Error in Valid_User', str(exc))
