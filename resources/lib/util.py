@@ -8,6 +8,7 @@ import re
 import gzip
 import traceback
 import json
+import time
 from distutils.version import LooseVersion
 
 import collections
@@ -20,6 +21,8 @@ import xbmcplugin
 from StringIO import StringIO
 import xml.etree.ElementTree as Tree
 
+import resources.lib.cache as cache
+
 # get addon info
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonversion__ = __addon__.getAddonInfo('version')
@@ -27,7 +30,7 @@ __addonid__ = __addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
-
+_server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
 ADDON_ID = 'plugin.video.nakamori'
 
 try:
@@ -37,6 +40,115 @@ except:
     # kodi < 17
     UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
+
+
+def valid_user():
+    """
+    Logs into the server and stores the apikey, then checks if the userid is valid
+    reset apikey if user enters new login info
+    if apikey is present login should be empty as its not needed anymore
+    :return: bool True if all completes successfully
+    """
+
+    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
+        return True
+    else:
+        xbmc.log('-- apikey empty --')
+        try:
+            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
+                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
+                       '"device":"' + __addon__.getSetting("device") + '",' + \
+                       '"pass":"' + __addon__.getSetting("password") + '"}'
+                post_body = post_data(_server_ + "/api/auth", body)
+                auth = json.loads(post_body)
+                if "apikey" in auth:
+                    xbmc.log('-- save apikey and reset user credentials --')
+                    __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
+                    __addon__.setSetting(id='login', value='')
+                    __addon__.setSetting(id='password', value='')
+                    return True
+                else:
+                    raise Exception('Error Getting apikey')
+            else:
+                xbmc.log('-- Login and Device Empty --')
+                return False
+        except Exception as exc:
+            error('Error in Valid_User', str(exc))
+            return False
+
+
+def move_position_on_list(control_list, position=0):
+    """
+    Move to the position in a list - use episode number for position
+    Args:
+        control_list: the list control
+        position: the index of the item not including settings
+    """
+    if position < 0:
+        position = 0
+    if __addon__.getSetting('show_continue') == 'true':
+        position = int(position + 1)
+
+    if get_kodi_setting_bool("filelists.showparentdiritems"):
+        position = int(position + 1)
+
+    try:
+        control_list.selectItem(position)
+    except:
+        try:
+            control_list.selectItem(position - 1)
+        except Exception as e:
+            error('Unable to reselect item', str(e))
+            xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
+            xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
+
+
+def set_window_heading(window_name):
+    """
+    Sets the window titles
+    Args:
+        window_name: name to put in titles
+    """
+    if window_name == 'Continue Watching (SYSTEM)':
+        window_name = 'Continue Watching'
+    elif window_name == 'Unsort':
+        window_name = 'Unsorted'
+
+    window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+    try:
+        window_obj.setProperty("heading", str(window_name))
+    except Exception as e:
+        error('set_window_heading Exception', str(e))
+        window_obj.clearProperty("heading")
+    try:
+        window_obj.setProperty("heading2", str(window_name))
+    except Exception as e:
+        error('set_window_heading2 Exception', str(e))
+        window_obj.clearProperty("heading2")
+
+
+def populate_tag_setting_flags():
+    """
+    Get user settings from local Kodi, and use them with Nakamori
+    :return: setting_flags
+    """
+    tag_setting_flags = 0
+    tag_setting_flags = tag_setting_flags | (0b00001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b00010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b00100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b01000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b10000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
+    return tag_setting_flags
+
+
+def refresh():
+    """
+    Refresh and re-request data from server
+    refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
+    Allow time for the ui to reload
+    """
+    xbmc.executebuiltin('Container.Refresh')
+    xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
 
 
 def dump_dictionary(details, name):
@@ -168,8 +280,47 @@ def parse_possible_error(data, data_type):
 
 # Internal function
 # json
-def get_json(url_in):
-    return get_data(url_in, None, "json")
+def get_json(url_in, direct=False):
+    body = ""
+    if direct:
+        body = get_data(url_in, None, "json")
+        # xbmcgui.Dialog().ok("direct", str(body))
+    else:
+        if (__addon__.getSetting("enableCache") == "true") and ("file?id" not in url_in):
+            # xbmcgui.Dialog().ok("cache", "ENABLED")
+            # xbmcgui.Dialog().ok("cache url", str(url_in))
+            db_row = cache.check_in_database(url_in)
+            if db_row is None:
+                db_row = 0
+            # xbmcgui.Dialog().ok("cache db_row", str(db_row))
+            if db_row > 0:
+                expire_second = time.time() - float(db_row)
+                if expire_second > int(__addon__.getSetting("expireCache")):
+                    # expire, get new date
+                    # xbmcgui.Dialog().ok("cache", "data expired")
+                    body = get_data(url_in, None, "json")
+                    params = {}
+                    params['extras'] = 'single-delete'
+                    params['name'] = url_in
+                    cache.remove_cache(params)
+                    cache.add_cache(url_in, json.dumps(body))
+                else:
+                    # xbmcgui.Dialog().ok("cache", "not expire")
+                    body = cache.get_data_from_cache(url_in)
+                    # xbmcgui.Dialog().ok("cache-body", str(body))
+                    # body = str(body)
+                    # why I get response as ({},) I dont know i leave this as
+                    # body = body[4:]
+                    # body = body[:-4]
+                    # xbmcgui.Dialog().ok("cache-body", str(body))
+            else:
+                # xbmcgui.Dialog().ok("cache", "not cached")
+                body = get_data(url_in, None, "json")
+                cache.add_cache(url_in, json.dumps(body))
+        else:
+            # xbmcgui.Dialog().ok("direct because of check", str(body))
+            body = get_data(url_in, None, "json")
+    return body
 
 
 # legacy
@@ -360,7 +511,7 @@ def get_server_status():
 # json - ok
 def get_version():
     legacy = LooseVersion('0.0')
-    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version")
+    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version", direct=True)
     if json_file is None:
         return legacy
     try:

@@ -73,4 +73,8 @@
         <setting label="30064" type="text" id="ide_ip" default="localhost" visible="eq(-1,true)"/>
         <setting label="30065" type="number" id="ide_port" default="5376" visible="eq(-2,true)"/>
     </category>
+    <category label="30029">
+        <setting label="30030" type="bool" id="enableCache" default="false"/>
+        <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true"/>
+    </category>
 </settings>

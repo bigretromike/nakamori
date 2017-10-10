@@ -49,7 +49,6 @@ _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 busy = xbmcgui.DialogProgress()
 
-
 def profile_this(func):
     """
     This can be used to profile any function.
@@ -76,123 +75,6 @@ def profile_this(func):
             ps.print_stats()
             xbmc.log('Profiled Function: ' + func.__name__ + '\n' + stream.getvalue(), xbmc.LOGWARNING)
     return profiled_func
-
-
-def populate_tag_setting_flags():
-    """
-    Get user settings from local Kodi, and use them with Nakamori
-    :return: setting_flags 
-    """
-    tag_setting_flags = 0
-    tag_setting_flags = tag_setting_flags | (0b00001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b00010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b00100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b01000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b10000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
-    return tag_setting_flags
-
-
-def valid_connect():
-    """
-    Try to query server for version, if kodi get version respond then shoko server is running
-    :return: bool
-    """
-    return util.get_server_status()
-
-
-def valid_user():
-    """
-    Logs into the server and stores the apikey, then checks if the userid is valid
-    reset apikey if user enters new login info
-    if apikey is present login should be empty as its not needed anymore
-    :return: bool True if all completes successfully
-    """
-
-    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
-        return True
-    else:
-        xbmc.log('-- apikey empty --', xbmc.LOGERROR)
-        try:
-            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
-                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
-                       '"device":"' + __addon__.getSetting("device") + '",' + \
-                       '"pass":"' + __addon__.getSetting("password") + '"}'
-                post_body = post_data(_server_ + "/api/auth", body)
-                auth = json.loads(post_body)
-                if "apikey" in auth:
-                    xbmc.log('-- save apikey and reset user credentials --')
-                    __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
-                    __addon__.setSetting(id='login', value='')
-                    __addon__.setSetting(id='password', value='')
-                    return True
-                else:
-                    raise Exception('Error Getting apikey')
-            else:
-                xbmc.log('-- Login and Device Empty --', xbmc.LOGERROR)
-                return False
-        except Exception as exc:
-            error('Error in Valid_User', str(exc))
-            return False
-
-
-def refresh():
-    """
-    Refresh and re-request data from server
-    refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
-    Allow time for the ui to reload
-    """
-    xbmc.executebuiltin('Container.Refresh')
-    xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
-
-
-def move_position_on_list(control_list, position=0):
-    """
-    Move to the position in a list - use episode number for position
-    Args:
-        control_list: the list control
-        position: the index of the item not including settings
-    """
-    if position < 0:
-        position = 0
-    if __addon__.getSetting('show_continue') == 'true':
-        position = int(position + 1)
-
-    if get_kodi_setting_bool("filelists.showparentdiritems"):
-        position = int(position + 1)
-
-    try:
-        control_list.selectItem(position)
-    except:
-        try:
-            control_list.selectItem(position - 1)
-        except Exception as e:
-            error('Unable to reselect item', str(e))
-            xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
-            xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
-
-
-def set_window_heading(window_name):
-    """
-    Sets the window titles
-    Args:
-        window_name: name to put in titles
-    """
-    if window_name == 'Continue Watching (SYSTEM)':
-        window_name = 'Continue Watching'
-    elif window_name == 'Unsort':
-        window_name = 'Unsorted'
-
-    window_obj = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-    try:
-        window_obj.setProperty("heading", str(window_name))
-    except Exception as e:
-        error('set_window_heading Exception', str(e))
-        window_obj.clearProperty("heading")
-    try:
-        window_obj.setProperty("heading2", str(window_name))
-    except Exception as e:
-        error('set_window_heading2 Exception', str(e))
-        window_obj.clearProperty("heading2")
 
 
 def filter_gui_item_by_tag(title):
@@ -251,7 +133,8 @@ def video_file_information(node, detail_dict):
     if "audios" in node:
         for stream_node in node["audios"]:
             stream_info = node["audios"][stream_node]
-            if not isinstance(stream_info, dict): continue
+            if not isinstance(stream_info, dict):
+                continue
             streams = detail_dict.get('AudioStreams', defaultdict(dict))
             stream_id = int(stream_info["Index"])
             streams[stream_id]['AudioCodec'] = stream_info["Codec"]
@@ -266,7 +149,8 @@ def video_file_information(node, detail_dict):
     if "subtitles" in node:
         for stream_node in node["subtitles"]:
             stream_info = node["audios"][stream_node]
-            if not isinstance(stream_info, dict): continue
+            if not isinstance(stream_info, dict):
+                continue
             streams = detail_dict.get('SubStreams', defaultdict(dict))
             stream_id = int(stream_info["Index"])
             streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
@@ -300,7 +184,6 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
             if details.get('year', '') != '' and details.get('year', '0') != 0:
-                # todo: do we need fallback with date?
                 details['date'] = '01.01.' + str(details['year'])  # date d.m.y
                 f_data = str(details['date']).split('.')
                 details['aired'] = f_data[2] + '-' + f_data[1] + '-' + f_data[0]  # aired y-m-d
@@ -656,7 +539,6 @@ def add_raw_files(node):
         liz = xbmcgui.ListItem(label=title, label2=title, path=raw_url)
         liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        # liz.setProperty('IsPlayable', 'true')
         u = sys.argv[0]
         u = set_parameter(u, 'url', raw_url)
         u = set_parameter(u, 'mode', 1)
@@ -740,7 +622,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     if 'tags' in node:
         temp_genre = get_tags(node.get("tags", {}))
 
-    watched_sizes = node.get("watched_sizes", {});
+    watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
         watched = safeInt(watched_sizes.get("Episodes", 0))
         if not get_kodi_setting_bool("ignore_specials_watched"):
@@ -752,7 +634,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     list_cast_and_role = []
     actors = []
     if len(list_cast) == 0 and 'roles' in node:
-        result_list = get_cast_and_role(node.get("roles",{}))
+        result_list = get_cast_and_role(node.get("roles", {}))
         actors = result_list
         if result_list is not None:
             result_list = convert_cast_and_role_to_legacy(result_list)
@@ -760,19 +642,20 @@ def add_serie_item(node, parent_title, destination_playlist=False):
             list_cast_and_role = result_list[1]
 
     if __addon__.getSetting("local_total") == "true":
-        local_sizes = node.get("local_sizes", {});
+        local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
             total = safeInt(local_sizes.get("Episodes", 0)) + safeInt(local_sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
     else:
-        sizes = node.get("total_sizes", {});
+        sizes = node.get("total_sizes", {})
         if len(sizes) > 0:
             total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
 
-    if watched > total: watched = total
+    if watched > total:
+        watched = total
 
     title = get_title(node)
     if "userrating" in node:
@@ -798,7 +681,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'genre':            temp_genre,
         'year':             node.get("year", ''),
         'episode':          total,
-        'season':           safeInt(node.get("season",'1')),
+        'season':           safeInt(node.get("season", '1')),
         # 'count'        : count,
         'size':             total,
         'date':             str(proper_date),
@@ -910,7 +793,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     temp_genre = get_tags(node.get("tags", {}))
     title = get_title(node)
 
-    watched_sizes = node.get("watched_sizes", {});
+    watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
         watched = safeInt(watched_sizes.get("Episodes", 0))
         if not get_kodi_setting_bool("ignore_specials_watched"):
@@ -919,19 +802,20 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         watched = safeInt(node.get("watchedsize", ''))
 
     if __addon__.getSetting("local_total") == "true":
-        local_sizes = node.get("local_sizes", {});
+        local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
             total = safeInt(local_sizes.get("Episodes", 0)) + safeInt(local_sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
     else:
-        sizes = node.get("total_sizes", {});
+        sizes = node.get("total_sizes", {})
         if len(sizes) > 0:
             total = safeInt(sizes.get("Episodes", 0)) + safeInt(sizes.get("Specials", 0))
         else:
             total = safeInt(node.get("localsize", ''))
 
-    if watched > total: watched = total
+    if watched > total:
+        watched = total
 
     content_type = node.get("type", '') if not is_filter else "filter"
     details = {
@@ -1096,6 +980,7 @@ def add_filter_item(menu):
         liz.setIconImage('DefaultVideo.png')
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
     xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+
 
 def build_filters_menu():
     """
@@ -1300,7 +1185,6 @@ def build_serie_episodes_types(params):
                 if len(body.get("eps", {})) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
-                            # TODO add image for those without thumb
                             content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"] if len(ep["art"]["thumb"]) > 0 \
                                 else ''
             # no matter what type is its only one type, flat directory
@@ -1319,7 +1203,7 @@ def build_serie_episodes_types(params):
                     xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
                 for content in content_type:
-                    add_content_typ_dir(content, body.get("id",''))
+                    add_content_typ_dir(content, body.get("id", ''))
                 xbmcplugin.endOfDirectory(handle)
                 return
 
@@ -1689,7 +1573,7 @@ def build_raw_list(params):
     :return:
     """
     xbmcplugin.setContent(handle, 'files')
-    set_window_heading('Unsort')
+    set_window_heading('Unsorted')
     try:
         html = get_json(params['url'])
         body = json.loads(html)
@@ -1756,7 +1640,10 @@ def play_video(ep_id, raw_id, movie):
         'season':        xbmc.getInfoLabel('ListItem.Season'),
     }
 
+    file_id = ''
     file_url = ''
+    offset = 0
+    item = ''
 
     try:
         if ep_id != "0":
@@ -1773,7 +1660,6 @@ def play_video(ep_id, raw_id, movie):
         else:
             file_id = raw_id
 
-        offset = 0
         if file_id is not None and file_id != 0:
             file_url = _server_ + "/api/file?id=" + str(file_id)
             file_body = json.loads(get_json(file_url))
@@ -1781,6 +1667,8 @@ def play_video(ep_id, raw_id, movie):
             file_url = file_body['url']
             serverpath = file_body.get('server_path', '')
             if serverpath != '' and os.path.isfile(serverpath):
+                if str(serverpath).startswith('\\\\'):
+                    serverpath = "smb:"+serverpath
                 file_url = serverpath
 
             # Information about streams inside video file
@@ -1824,10 +1712,7 @@ def play_video(ep_id, raw_id, movie):
         error('Error getting episode info', str(exc))
 
     try:
-        # xbmcplugin.setResolvedUrl(handle=handle, succeeded=True, listitem=item)
-
         player = xbmc.Player()
-        # xbmcplugin.setResolvedUrl(handle, True, item)
         player.play(item=file_url, listitem=item)
 
         if __addon__.getSetting("file_resume") == "true":
@@ -1856,7 +1741,7 @@ def play_video(ep_id, raw_id, movie):
     try:
         if raw_id == "0":  # skip for raw_file
             clock_tick = -1
-
+            progress = 0
             while player.isPlaying():
                 try:
                     if clock_tick == -1:
@@ -1892,7 +1777,7 @@ def play_video(ep_id, raw_id, movie):
                                                                          "&ismovie=" + str(movie) +
                                                                          "&status=" + str(1) +
                                                                          "&progress=" + str(progress)))
-                                        if str(trakt_body.get('code','')) != str(200):
+                                        if str(trakt_body.get('code', '')) != str(200):
                                             trakt_404 = True
                                 except Exception as trakt_ex:
                                     dbg(str(trakt_ex))
@@ -2203,13 +2088,13 @@ if __addon__.getSetting('remote_debug') == 'true':
 global __tagSettingFlags__
 __tagSettingFlags__ = populate_tag_setting_flags()
 
-if valid_connect() is True:
+if get_server_status() is True:
     if valid_user() is True:
         try:
             parameters = util.parseParameters()
             # xbmcgui.Dialog().ok('params=', str(parameters))
         except Exception as exp:
-            error('valid_userid parseParameters() error', str(exp))
+            error('valid_userid_1 parseParameters() error', str(exp))
             parameters = {'mode': 2}
         if parameters:
             try:
@@ -2224,7 +2109,8 @@ if valid_connect() is True:
                 cmd = parameters['cmd']
             else:
                 cmd = None
-        except:
+        except Exception as exp:
+            error('valid_userid_2 parseParameters() error', str(exp))
             cmd = None
 
         if cmd is not None:
@@ -2277,7 +2163,9 @@ if valid_connect() is True:
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
-                    if play_video(parameters['ep_id'], parameters['raw_id'] if 'raw_id' in parameters else "0", parameters['movie'] if 'movie' in parameters else 0) > 0:
+                    if play_video(parameters['ep_id'],
+                                  parameters['raw_id'] if 'raw_id' in parameters else "0",
+                                  parameters['movie'] if 'movie' in parameters else 0) > 0:
                         # noinspection PyTypeChecker
                         ui_index = parameters.get('ui_index', '')
                         if ui_index != '':
