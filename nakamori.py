@@ -1286,7 +1286,7 @@ def build_serie_episodes(params):
             if len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
                 if __addon__.getSetting("show_continue") == "true":
-                    if str(parent_title).lower() != "unsort":
+                    if unicode(parent_title).lower() != "unsort":
                         util.addDir("-continue-", '', '7', 
                                     _server_ + "/image/support/plex_others.png", 
                                     "Next episode", "3", "4", str(next_episode))
@@ -1667,7 +1667,7 @@ def play_video(ep_id, raw_id, movie):
             file_url = file_body['url']
             serverpath = file_body.get('server_path', '')
             if serverpath != '' and os.path.isfile(serverpath):
-                if str(serverpath).startswith('\\\\'):
+                if unicode(serverpath).startswith('\\\\'):
                     serverpath = "smb:"+serverpath
                 file_url = serverpath
 
