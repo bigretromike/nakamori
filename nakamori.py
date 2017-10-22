@@ -617,7 +617,6 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     :return: 
     """
     # xbmcgui.Dialog().ok('series', 'series')
-    xbmcplugin.setPluginCategory(handle, 'Serie')
     temp_genre = ''
     if 'tags' in node:
         temp_genre = get_tags(node.get("tags", {}))
@@ -789,7 +788,6 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     :return: 
     """
 
-    xbmcplugin.setPluginCategory(handle, 'Groups')
     temp_genre = get_tags(node.get("tags", {}))
     title = get_title(node)
 
@@ -986,7 +984,6 @@ def build_filters_menu():
     """
     Builds the list of items (filters) in the Main Menu
     """
-    xbmcplugin.setPluginCategory(handle, 'Filters')
     xbmcplugin.setContent(handle, content='tvshows')
     try:
         filters_key = _server_ + "/api/filter"
@@ -1166,8 +1163,6 @@ def build_serie_episodes_types(params):
     """
 
     # xbmcgui.Dialog().ok('MODE=5', str(params['url']))
-    xbmcplugin.setPluginCategory(handle, 'Types')
-    xbmcplugin.setContent(handle, 'seasons')
     try:
         html = get_json(params['url'])
         if __addon__.getSetting("spamLog") == "true":
@@ -1192,7 +1187,9 @@ def build_serie_episodes_types(params):
                 build_serie_episodes(params)
                 return
             else:
-                set_window_heading(parent_title)
+                xbmcplugin.setPluginCategory(handle, parent_title)
+                xbmcplugin.setContent(handle, 'seasons')
+                set_window_heading('Types')
 
                 if __addon__.getSetting('use_server_sort') == 'false':
                     # Apparently date sorting in Kodi has been broken for years
@@ -1207,8 +1204,8 @@ def build_serie_episodes_types(params):
                 xbmcplugin.endOfDirectory(handle)
                 return
 
-        except Exception as exc:
-            error("Error during build_serie_episodes_types", str(exc))
+        except Exception as ex:
+            error("Error during build_serie_episodes_types", str(ex))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes_types", str(exc))
     xbmcplugin.endOfDirectory(handle)
@@ -1240,7 +1237,6 @@ def build_serie_episodes(params):
             try:
                 parent_title = body.get('name', '')
                 set_window_heading(parent_title)
-                xbmcplugin.setPluginCategory(handle, parent_title)
             except Exception as exc:
                 error("Unable to get parent title in buildTVEpisodes", str(exc))
 
