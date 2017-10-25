@@ -183,7 +183,16 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         # do this before so it'll log
         # use the year as a fallback in case the date is unavailable
         if details.get('date', '') == '':
-            if details.get('year', '') != '' and details.get('year', '0') != 0:
+            if details.get('aired', '') != '':
+                f_data = str(details['aired']).split('-') # aired y-m-d
+                if len(f_data) == 3:
+                    if len(f_data[2]) == 1:
+                        f_data[2] = '0' + f_data[2]
+                    if len(f_data[1]) == 1:
+                        f_data[1] = '0' + f_data[1]
+                    details['date'] = f_data[2] + '.' + f_data[1] + '.' + f_data[0] # date d.m.y
+                    details['aired'] = f_data[0] + '-' + f_data[1] + '-' + f_data[2] # aired y-m-d
+            elif details.get('year', '') != '' and details.get('year', '0') != 0:
                 details['date'] = '01.01.' + str(details['year'])  # date d.m.y
                 f_data = str(details['date']).split('.')
                 details['aired'] = f_data[2] + '-' + f_data[1] + '-' + f_data[0]  # aired y-m-d
@@ -683,7 +692,6 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'season':           safeInt(node.get("season", '1')),
         # 'count'        : count,
         'size':             total,
-        'date':             str(proper_date),
         'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
         'userrating':       float(userrating),
         'playcount':        watched,
@@ -816,6 +824,18 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         watched = total
 
     content_type = node.get("type", '') if not is_filter else "filter"
+
+    # filter out invalid date
+    air = node.get('air', '')
+    if air != '':
+        # air=0001-01-01
+        if air == '0001-01-01' or air == '01-01-0001':
+            air = ''
+    proper_date = air
+    temp_date = str(node.get('air', '')).split('-')
+    if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
+        proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
+
     details = {
         'mediatype':        'tvshow',
         'title':            title,
@@ -832,7 +852,8 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
-        'dateadded':        node.get('added', '')
+        'dateadded':        node.get('added', ''),
+        'aired':            str(air),
     }
 
     key_id = str(node.get("id", ''))
