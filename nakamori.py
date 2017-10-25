@@ -1103,7 +1103,7 @@ def build_groups_menu(params, json_body=None):
             temp_url = params['url']
             temp_url = set_parameter(temp_url, 'nocast', 1)
             temp_url = set_parameter(temp_url, 'notag', 1)
-            temp_url = set_parameter(temp_url, 'level', 1)
+            temp_url = set_parameter(temp_url, 'level', 0)
             busy.update(20)
             html = get_json(temp_url)
             busy.update(50, 'Loading Result...')
@@ -1120,7 +1120,11 @@ def build_groups_menu(params, json_body=None):
                 html = get_json(temp_url)
                 body = json.loads(html)
             else:
-                body = html_body
+                # level 2 will fill group and series (for filter)
+                temp_url = params['url']
+                temp_url = set_parameter(temp_url, 'level', 1)
+                html = get_json(temp_url)
+                body = json.loads(html)
         else:
             body = json_body
         busy.update(100)
