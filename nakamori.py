@@ -40,6 +40,8 @@ except ImportError:
 
 handle = int(sys.argv[1])
 
+listitems = []
+
 __addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
 __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
@@ -77,6 +79,15 @@ def profile_this(func):
     return profiled_func
 
 
+def end_of_directory(cache = True):
+    """
+    Leave this here! It needs to be here to access listitems properly
+    Adds all items to the list in batch, and then finalizes it
+    """
+    xbmcplugin.addDirectoryItems(handle, listitems, len(listitems))
+    xbmcplugin.endOfDirectory(handle, cacheToDisc=cache)
+
+
 def filter_gui_item_by_tag(title):
     """
     Remove list items from the tag group filter by the tag blacklist in settings
@@ -96,7 +107,7 @@ def filter_gui_item_by_tag(title):
 
 def video_file_information(node, detail_dict):
     """
-    Process given 'node' and parse it to create proper file information dictionary 'detail_dict' 
+    Process given 'node' and parse it to create proper file information dictionary 'detail_dict'
     :param node: node that contains file
     :param detail_dict: dictionary for output
     :return: dict
@@ -369,7 +380,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                                     (sys.argv[1], url_peep)))
 
         liz.addContextMenuItems(context)
-        return xbmcplugin.addDirectoryItem(handle, gui_url, listitem=liz, isFolder=folder)
+        listitems.append((gui_url, liz, folder))
     except Exception as e:
         error("Error during add_gui_item", str(e))
 
@@ -510,7 +521,7 @@ def get_cast_and_role(data):
 def convert_cast_and_role_to_legacy(list_of_dicts):
     """
     Convert standard cast_and_role to version supported by Kodi16 and lower
-    :param list_of_dicts: 
+    :param list_of_dicts:
     :return: list
     """
 
@@ -561,7 +572,7 @@ def add_raw_files(node):
                    ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
                    ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
         liz.addContextMenuItems(context)
-        xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz)
+        listitems.append((u, liz, False))
     except:  # Sometimes a file is deleted or invalid, but we should just skip it
         pass
 
@@ -614,16 +625,16 @@ def add_content_typ_dir(name, serie_id):
     u = set_parameter(u, 'mode', str(6))
     u = set_parameter(u, 'name', urllib.quote_plus(title))
     u = set_parameter(u, 'type', name)
-    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+    listitems.append((u, liz, True))
 
 
 def add_serie_item(node, parent_title, destination_playlist=False):
     """
     Processing serie/content_directory 'node' into episode list
-    :param node: 
-    :param parent_title: 
-    :param destination_playlist: 
-    :return: 
+    :param node:
+    :param parent_title:
+    :param destination_playlist:
+    :return:
     """
     # xbmcgui.Dialog().ok('series', 'series')
     temp_genre = ''
@@ -790,10 +801,10 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     """
     Processing group 'node' into series (serie grouping)
     :param node:
-    :param parent_title: 
-    :param filter_id: 
-    :param is_filter: 
-    :return: 
+    :param parent_title:
+    :param filter_id:
+    :param is_filter:
+    :return:
     """
 
     temp_genre = get_tags(node.get("tags", {}))
@@ -998,7 +1009,7 @@ def add_filter_item(menu):
     if thumb == '':
         liz.setIconImage('DefaultVideo.png')
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
-    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+    listitems.append((u, liz, True))
 
 
 def build_filters_menu():
@@ -1061,10 +1072,10 @@ def build_filters_menu():
     u = set_parameter(u, 'url', search_url)
     u = set_parameter(u, 'mode', str(3))
     u = set_parameter(u, 'name', urllib.quote_plus(title))
-    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
+    listitems.append((u, liz, True))
     # endregion
 
-    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
+    end_of_directory(False)
 
 
 def build_groups_menu(params, json_body=None):
@@ -1086,7 +1097,7 @@ def build_groups_menu(params, json_body=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        busy.create('Please Wait', 'Getting Filter from Server...')
+        busy.create('Please Wait', 'Getting from Server...')
         if json_body is None:
             busy.update(10)
             temp_url = params['url']
@@ -1095,7 +1106,7 @@ def build_groups_menu(params, json_body=None):
             temp_url = set_parameter(temp_url, 'level', 1)
             busy.update(20)
             html = get_json(temp_url)
-            busy.update(50)
+            busy.update(50, 'Loading Result...')
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'], xbmc.LOGWARNING)
                 xbmc.log(html, xbmc.LOGWARNING)
@@ -1123,7 +1134,7 @@ def build_groups_menu(params, json_body=None):
                 # it isn't single filter)
                 for nest_filter in body:
                     add_group_item(nest_filter, '', body.get('id', ''), True)
-                xbmcplugin.endOfDirectory(handle)
+                end_of_directory()
                 return
             except:
                 pass
@@ -1140,9 +1151,7 @@ def build_groups_menu(params, json_body=None):
                         filter_id = body.get('id', '')
 
             if directory_type == 'filter':
-                busy.create('Opening Filter...')
                 for grp in body["groups"]:
-                    busy.update(min(int((float(item_count)/float(len(body["groups"])))*100.0), 100), 'Adding Items...')
                     if len(grp["series"]) > 0:
                         if len(grp["series"]) == 1:
                             add_serie_item(grp["series"][0], parent_title)
@@ -1154,15 +1163,11 @@ def build_groups_menu(params, json_body=None):
                                 add_group_item(grp, parent_title, filter_id)
                     item_count += 1
             elif directory_type == 'filters':
-                busy.create('Opening Filters...')
                 for flt in body["filters"]:
-                    busy.update(min(int((float(item_count)/float(len(body["filters"])))*100.0), 100), 'Adding Items...')
                     add_group_item(flt, parent_title, filter_id, True)
                     item_count += 1
             elif directory_type == 'group':
-                busy.create('Opening Group...')
                 for sers in body['series']:
-                    busy.update(min(int((float(item_count)/float(len(body["series"])))*100.0), 100), 'Adding Items...')
                     add_serie_item(sers, parent_title)
                     item_count += 1
 
@@ -1170,8 +1175,7 @@ def build_groups_menu(params, json_body=None):
             error("Error during build_groups_menu", str(e))
     except Exception as e:
         error("Invalid JSON Received in build_groups_menu", str(e))
-    xbmcplugin.endOfDirectory(handle)
-    busy.close()
+    end_of_directory()
 
 
 def build_serie_episodes_types(params):
@@ -1222,14 +1226,14 @@ def build_serie_episodes_types(params):
 
                 for content in content_type:
                     add_content_typ_dir(content, body.get("id", ''))
-                xbmcplugin.endOfDirectory(handle)
+                end_of_directory()
                 return
 
         except Exception as ex:
             error("Error during build_serie_episodes_types", str(ex))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes_types", str(exc))
-    xbmcplugin.endOfDirectory(handle)
+    end_of_directory()
 
 
 def build_serie_episodes(params):
@@ -1249,6 +1253,7 @@ def build_serie_episodes(params):
     try:
         item_count = 0
         html = get_json(params['url'])
+        busy.update(50, 'Loading Results...')
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html, xbmc.LOGWARNING)
@@ -1304,12 +1309,11 @@ def build_serie_episodes(params):
                 # add item to move to next not played item (not marked as watched)
                 if __addon__.getSetting("show_continue") == "true":
                     if unicode(parent_title).lower() != "unsort":
-                        util.addDir("-continue-", '', '7', 
-                                    _server_ + "/image/support/plex_others.png", 
+                        util.addDir("-continue-", '', '7',
+                                    _server_ + "/image/support/plex_others.png",
                                     "Next episode", "3", "4", str(next_episode))
                 for video in body['eps']:
                     item_count += 1
-                    busy.update(min(int((float(item_count)/float(len(body["eps"])))*100.0), 100), 'Adding Items...')
                     # check if episode have files
                     episode_type = True
                     if "type" in params:
@@ -1465,8 +1469,8 @@ def build_serie_episodes(params):
             error("Error during build_serie_episodes", str(exc))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes", str(exc))
-    xbmcplugin.endOfDirectory(handle)
     busy.close()
+    end_of_directory()
 
     if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
         try:
@@ -1541,8 +1545,8 @@ def build_search_directory():
                     'icon': detail['icon'],
                     'fanart': detail['fanart']})
         liz.setInfo(type=detail['type'], infoLabels={"Title": encode(detail['title']), "Plot": detail['plot']})
-        xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-    xbmcplugin.endOfDirectory(handle)
+        listitems.append((u, liz, True))
+    end_of_directory(False)
 
 
 def search_for(search_url):
@@ -1605,14 +1609,13 @@ def build_raw_list(params):
     except Exception as exc:
         error("Error during build_raw_list", str(exc))
 
-    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
+    end_of_directory(False)
 
 
 def build_network_menu():
     """
     Build fake menu that will alert user about network error (unable to connect to api)
     """
-
     network_url = _server_ + "/api/version"
     title = "Network connection error"
     liz = xbmcgui.ListItem(label=title, label2=title, path=network_url)
@@ -1622,8 +1625,8 @@ def build_network_menu():
     u = sys.argv[0]
     u = set_parameter(u, 'url', network_url)
     u = set_parameter(u, 'name', urllib.quote_plus(title))
-    xbmcplugin.addDirectoryItem(handle, url=u, listitem=liz, isFolder=True)
-    xbmcplugin.endOfDirectory(handle, cacheToDisc=False)
+    listitems.append((u, liz, True))
+    end_of_directory(False)
 
 # endregion
 

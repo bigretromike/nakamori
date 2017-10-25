@@ -33,6 +33,8 @@ __localize__ = __addon__.getLocalizedString
 _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
 ADDON_ID = 'plugin.video.nakamori'
 
+__shoko_version__ = LooseVersion('0.1')
+
 try:
     # kodi 17+
     UA = xbmc.getUserAgent()
@@ -510,22 +512,32 @@ def get_server_status():
 
 # json - ok
 def get_version():
-    legacy = LooseVersion('0.0')
-    json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version", direct=True)
-    if json_file is None:
-        return legacy
     try:
-        data = json.loads(json_file)
+        global __shoko_version__
+        if __shoko_version__ != LooseVersion('0.1'):
+            return __shoko_version__
+        legacy = LooseVersion('0.0')
+        json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version", direct=True)
+        if json_file is None:
+            return legacy
+        try:
+            data = json.loads(json_file)
+        except:
+            return legacy
+
+        for module in data:
+            if module["name"] == "server":
+                version = module["version"]
+                break
+
+        if version != '':
+            try:
+                __shoko_version__ = LooseVersion(version)
+            except:
+                return legacy
+            return __shoko_version__
     except:
-        return legacy
-
-    for module in data:
-        if module["name"] == "server":
-            version = module["version"]
-            break
-
-    if version != '':
-        return LooseVersion(version)
+        pass
     return legacy
 
 
