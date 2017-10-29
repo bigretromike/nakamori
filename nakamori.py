@@ -488,6 +488,36 @@ def get_tags(tag_node):
         return ''
 
 
+def get_cast_and_role_new(data):
+    """
+    Get cast from the json and arrange in the new setCast format
+    Args:
+        data: json node containing 'roles'
+
+    Returns: a list of dictionaries for the cast
+    """
+    result_list = []
+    if data is not None and len(data) > 0:
+        for char in data:
+            char_charname = char["character"]
+            char_seiyuuname = char["staff"]
+            char_seiyuupic = char["character_image"]
+
+            # only add it if it has data
+            # reorder these to match the convention (Actor is cast, character is role, in that order)
+            if len(char_charname) != 0:
+                actor = {
+                    'name':         char_seiyuuname,
+                    'role':         char_charname,
+                    'thumbnail':    char_seiyuupic
+                }
+                result_list.append(actor)
+        if len(result_list) == 0:
+            return None
+        return result_list
+    return None
+
+
 def get_cast_and_role(data):
     """
     Get cast from the json and arrange in the new setCast format
@@ -653,12 +683,17 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     list_cast_and_role = []
     actors = []
     if len(list_cast) == 0 and 'roles' in node:
-        result_list = get_cast_and_role(node.get("roles", {}))
-        actors = result_list
-        if result_list is not None:
-            result_list = convert_cast_and_role_to_legacy(result_list)
-            list_cast = result_list[0]
-            list_cast_and_role = result_list[1]
+        cast_nodes = node.get("roles", {})
+        if len(cast_nodes) > 0:
+            if cast_nodes[0].get("character", "") != "":
+                result_list = get_cast_and_role_new(cast_nodes)
+            else:
+                result_list = get_cast_and_role(cast_nodes)
+            actors = result_list
+            if result_list is not None:
+                result_list = convert_cast_and_role_to_legacy(result_list)
+                list_cast = result_list[0]
+                list_cast_and_role = result_list[1]
 
     if __addon__.getSetting("local_total") == "true":
         local_sizes = node.get("local_sizes", {})
