@@ -499,9 +499,9 @@ def get_cast_and_role_new(data):
     result_list = []
     if data is not None and len(data) > 0:
         for char in data:
-            char_charname = char["character"]
-            char_seiyuuname = char["staff"]
-            char_seiyuupic = char["character_image"]
+            char_charname = char.get("character", "")
+            char_seiyuuname = char.get("staff", "")
+            char_seiyuupic = _server_ + char.get("character_image", "")
 
             # only add it if it has data
             # reorder these to match the convention (Actor is cast, character is role, in that order)
@@ -1330,12 +1330,17 @@ def build_serie_episodes(params):
             actors = []
             if not skip:
                 if len(list_cast) == 0:
-                    result_list = get_cast_and_role(body.get('roles', {}))
-                    actors = result_list
-                    if result_list is not None:
-                        result_list = convert_cast_and_role_to_legacy(result_list)
-                        list_cast = result_list[0]
-                        list_cast_and_role = result_list[1]
+                    cast_nodes = body.get('roles', {})
+                    if len(cast_nodes) > 0:
+                        if cast_nodes[0].get("character", "") != "":
+                            result_list = get_cast_and_role_new(cast_nodes)
+                        else:
+                            result_list = get_cast_and_role(cast_nodes)
+                        actors = result_list
+                        if result_list is not None:
+                            result_list = convert_cast_and_role_to_legacy(result_list)
+                            list_cast = result_list[0]
+                            list_cast_and_role = result_list[1]
 
                 short_tag = __addon__.getSetting("short_tag_list") == "true"
                 temp_genre = get_tags(body.get('tags', {}))
