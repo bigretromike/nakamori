@@ -11,6 +11,8 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#---------------Start-Settings------------------------
+
 msgctxt "#30001"
 msgid "Shoko Settings"
 msgstr ""
@@ -55,10 +57,6 @@ msgctxt "#30011"
 msgid "Shoko User"
 msgstr ""
 
-msgctxt "#30012"
-msgid "Inspect files"
-msgstr ""
-
 msgctxt "#30013"
 msgid "Use gzip"
 msgstr ""
@@ -81,10 +79,6 @@ msgstr ""
 
 msgctxt "#30018"
 msgid "API Key"
-msgstr ""
-
-msgctxt "#30019"
-msgid "Playlist Mode"
 msgstr ""
 
 msgctxt "#30020"
@@ -188,7 +182,7 @@ msgid "Advanced"
 msgstr ""
 
 msgctxt "#30045"
-msgid "Hide AniDB helper or otherwise useless tags"
+msgid "Hide AniDB Helper or Otherwise Useless Tags"
 msgstr ""
 
 msgctxt "#30046"
@@ -239,22 +233,6 @@ msgctxt "#30057"
 msgid "Context Menu Settings"
 msgstr ""
 
-msgctxt "#30058"
-msgid "More Info"
-msgstr ""
-
-msgctxt "#30059"
-msgid "Vote Episode"
-msgstr ""
-
-msgctxt "#30060"
-msgid "Vote Series"
-msgstr ""
-
-msgctxt "#30061"
-msgid "Play (Do not Mark as Watched)"
-msgstr ""
-
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
 msgstr ""
@@ -284,5 +262,163 @@ msgid "Ignore Specials for Watched States"
 msgstr ""
 
 msgctxt "#30069"
-msgid "Cache data expire after (s)"
+msgid "Cached data expiration time (s)"
 msgstr ""
+
+#---------------End-Settings--------------------------
+
+#---------------Start-Context-Menu--------------------
+
+msgctxt "#30120"
+msgid "Rescan File"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Rehash File"
+msgstr ""
+
+msgctxt "#30122"
+msgid "Remove Missing Files"
+msgstr ""
+
+msgctxt "#30123"
+msgid "More Info"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Vote (Series)"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Vote (Episode)"
+msgstr ""
+
+msgctxt "#30126"
+msgid "Mark Series as Watched"
+msgstr ""
+
+msgctxt "#30127"
+msgid "Mark Series as Unwatched"
+msgstr ""
+
+msgctxt "#30128"
+msgid "Mark Episode as Watched"
+msgstr ""
+
+msgctxt "#30129"
+msgid "Mark Episode as Unwatched"
+msgstr ""
+
+msgctxt "#30130"
+msgid "Playlist Mode"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Refresh"
+msgstr ""
+
+msgctxt "#30132"
+msgid "Play (No Scrobble)"
+msgstr ""
+
+msgctxt "#30133"
+msgid "Inspect Files"
+msgstr ""
+
+msgctxt "#30134"
+msgid "View Cast"
+msgstr ""
+
+#---------------End-Context-Menu----------------------
+
+#---------------Start-Progress------------------------
+
+msgctxt "#30160"
+msgid "Please Wait"
+msgstr ""
+
+msgctxt "#30161"
+msgid "Getting from Server..."
+msgstr ""
+
+msgctxt "#30162"
+msgid "Loading Results..."
+msgstr ""
+
+msgctxt "#30163"
+msgid "Getting Episodes from Server..."
+msgstr ""
+
+#---------------End-Progress--------------------------
+
+#---------------Start-Windows-------------------------
+
+msgctxt "#30180"
+msgid "No Results Found"
+msgstr ""
+
+msgctxt "#30181"
+msgid "Try a Different Query"
+msgstr ""
+
+msgctxt "#30182"
+msgid "Finished"
+msgstr ""
+
+msgctxt "#30183"
+msgid "You already finished this."
+msgstr ""
+
+msgctxt "#30184"
+msgid "Series Voting"
+msgstr ""
+
+msgctxt "#30185"
+msgid "You Voted"
+msgstr ""
+
+msgctxt "#30186"
+msgid "Episode Voting"
+msgstr ""
+
+msgctxt "#30187"
+msgid "Watched Status Changed"
+msgstr ""
+
+msgctxt "#30188"
+msgid "Marked as"
+msgstr ""
+
+msgctxt "#30189"
+msgid "Queued File for Rehash"
+msgstr ""
+
+msgctxt "#30190"
+msgid "Queued File for Rescan"
+msgstr ""
+
+msgctxt "#30191"
+msgid "Refreshing in 10 seconds"
+msgstr ""
+
+msgctxt "#30192"
+msgid "Queued Remove Missing Files"
+msgstr ""
+
+msgctxt "#30193"
+msgid "It may take some time."
+msgstr ""
+
+msgctxt "#30194"
+msgid "Incorrect Credentials"
+msgstr ""
+
+msgctxt "#30195"
+msgid "Please change them in Settings"
+msgstr ""
+
+msgctxt "#30196"
+msgid "Files"
+msgstr ""
+
+#---------------End-Windows--------------------------

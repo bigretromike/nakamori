@@ -81,7 +81,7 @@ def profile_this(func):
 
 def end_of_directory(cache = True):
     """
-    Leave this here! It needs to be here to access listitems properly
+    Leave this in nakamori.py! It needs to be here to access listitems properly
     Adds all items to the list in batch, and then finalizes it
     """
     xbmcplugin.addDirectoryItems(handle, listitems, len(listitems))
@@ -319,7 +319,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         if context is None:
             if extra_data and len(extra_data) > 0:
                 context = []
-                url_peep_base = sys.argv[2]
+                url_peep_base = sys.argv[0]
 
                 # menu for episode
                 if extra_data.get('source', 'none') == 'ep':
@@ -327,57 +327,41 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     ep_id = extra_data.get('ep_id')
                     file_id = extra_data.get('file_id', 0)
                     url_peep = url_peep_base
+                    url_peep = set_parameter(url_peep, 'mode', 1)
                     url_peep = set_parameter(url_peep, 'serie_id', str(series_id))
                     url_peep = set_parameter(url_peep, 'ep_id', str(ep_id))
                     url_peep = set_parameter(url_peep, 'ui_index', str(index))
                     url_peep = set_parameter(url_peep, 'file_id', str(file_id))
 
                     if __addon__.getSetting('context_show_play_no_watch') == 'true':
-                        context.append(('Play (Do not Mark as Watched)',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=no_mark)' %
-                                        (sys.argv[1], url_peep)))
+                        context.append((__addon__.getLocalizedString(30132), 'RunPlugin(%s&cmd=no_mark)' % url_peep))
                     if __addon__.getSetting('context_pick_file') == 'true':
-                        context.append(('Inspect files',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=pickFile)' %
-                                        (sys.argv[1], url_peep)))
+                        context.append((__addon__.getLocalizedString(30133), 'RunPlugin(%s&cmd=pickFile)' % url_peep))
                     if __addon__.getSetting('context_playlist') == 'true':
-                        context.append(('Playlist Mode',
-                                        'RunScript(plugin.video.nakamori, %s, %s&cmd=createPlaylist)' %
-                                        (sys.argv[1], url_peep)))
+                        context.append((__addon__.getLocalizedString(30130), 'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
                     if __addon__.getSetting('context_show_info') == 'true':
-                        context.append(('More Info', 'Action(Info)'))
+                        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
 
                     if __addon__.getSetting('context_show_vote_Series') == 'true':
                         if series_id != '':
-                            context.append(('Vote for Series',
-                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=voteSer)' %
-                                            (sys.argv[1], url_peep)))
+                            context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
                     if __addon__.getSetting('context_show_vote_Episode') == 'true':
                         if ep_id != '':
-                            context.append(('Vote for Episode',
-                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=voteEp)' %
-                                            (sys.argv[1], url_peep)))
+                            context.append((__addon__.getLocalizedString(30125), 'RunPlugin(%s&cmd=voteEp)' % url_peep))
 
                     if extra_data.get('jmmepisodeid') != '':
                         if __addon__.getSetting('context_krypton_watched') == 'true':
                             if details.get('playcount', 0) == 0:
-                                context.append(('Mark episode as Watched',
-                                                'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
-                                                (sys.argv[1], url_peep)))
+                                context.append((__addon__.getLocalizedString(30128), 'RunPlugin(%s&cmd=watched)' % url_peep))
                             else:
-                                context.append(('Mark episode as Unwatched',
-                                                'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                                (sys.argv[1], url_peep)))
+                                context.append((__addon__.getLocalizedString(30129), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
                         else:
-                            context.append(('Mark episode as Watched',
-                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
-                                            (sys.argv[1], url_peep)))
-                            context.append(('Mark episode as Unwatched',
-                                            'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                                            (sys.argv[1], url_peep)))
-                    context.append(('Refresh',
-                                    'RunScript(plugin.video.nakamori, %s, %s&cmd=refresh)' %
-                                    (sys.argv[1], url_peep)))
+                            context.append((__addon__.getLocalizedString(30128), 'RunPlugin(%s&cmd=watched)' % url_peep))
+                            context.append((__addon__.getLocalizedString(30129), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+                    if __addon__.getSetting('context_view_cast') == 'true':
+                        if series_id != '':
+                            context.append((__addon__.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
+                    context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
         liz.addContextMenuItems(context)
         listitems.append((gui_url, liz, folder))
@@ -592,15 +576,15 @@ def add_raw_files(node):
         u = sys.argv[0]
         u = set_parameter(u, 'url', raw_url)
         u = set_parameter(u, 'mode', 1)
-        u = set_parameter(u, 'raw_id', file_id)
         u = set_parameter(u, 'name', urllib.quote_plus(title))
+        u = set_parameter(u, 'raw_id', file_id)
         u = set_parameter(u, 'type', "raw")
         u = set_parameter(u, 'file', key)
         u = set_parameter(u, 'ep_id', '0')
         u = set_parameter(u, 'vl', node["import_folder_id"])
-        context = [('Rescan File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rescan)' % (sys.argv[1], u)),
-                   ('Rehash File', 'RunScript(plugin.video.nakamori, %s, %s&cmd=rehash)' % (sys.argv[1], u)),
-                   ('Remove missing files', 'RunScript(plugin.video.nakamori, %s, %s&cmd=missing)' % (sys.argv[1], u))]
+        context = [(__addon__.getLocalizedString(30120), 'RunPlugin(%s&cmd=rescan)' % u),
+                   (__addon__.getLocalizedString(30121), 'RunPlugin(%s&cmd=rehash)' % u),
+                   (__addon__.getLocalizedString(30122), 'RunPlugin(%s&cmd=missing)' % u)]
         liz.addContextMenuItems(context)
         listitems.append((u, liz, False))
     except:  # Sometimes a file is deleted or invalid, but we should just skip it
@@ -723,10 +707,6 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         # air=0001-01-01
         if air == '0001-01-01' or air == '01-01-0001':
             air = ''
-    proper_date = air
-    temp_date = str(node.get('air', '')).split('-')
-    if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
-        proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
     details = {
         'mediatype':        'episode',
@@ -815,16 +795,18 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     u = set_parameter(u, 'movie', node.get('ismovie', '0'))
 
     context = []
-    url_peep = sys.argv[2] + "&serie_id=" + key_id
+    url_peep = sys.argv[0]
+    url_peep = set_parameter(url_peep, 'mode', 1)
+    url_peep = set_parameter(url_peep, 'serie_id', key_id)
+
     if __addon__.getSetting('context_show_info') == 'true':
-        context.append(('More Info', 'Action(Info)'))
+        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
     if __addon__.getSetting('context_show_vote_Series') == 'true':
-        context.append(('Vote on serie', 'RunScript(plugin.video.nakamori, %s, %s)' %
-                        (sys.argv[1], url_peep + "&cmd=voteSer")))
-    context.append(('Mark serie as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
-                    (sys.argv[1], url_peep)))
-    context.append(('Mark serie as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                    (sys.argv[1], url_peep)))
+        context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
+    context.append((__addon__.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
+    context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+    if __addon__.getSetting('context_view_cast') == 'true':
+        context.append((__addon__.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
 
     if destination_playlist:
         return details
@@ -877,10 +859,6 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         # air=0001-01-01
         if air == '0001-01-01' or air == '01-01-0001':
             air = ''
-    proper_date = air
-    temp_date = str(node.get('air', '')).split('-')
-    if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
-        proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
 
     details = {
         'mediatype':        'tvshow',
@@ -957,12 +935,13 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
 
     context = []
     if __addon__.getSetting('context_show_info') == 'true' and not is_filter:
-        context.append(('More Info', 'Action(Info)'))
-        url_peep = sys.argv[2] + "&group_id=" + key_id
-        context.append(('Mark group as Watched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=watched)' %
-                        (sys.argv[1], url_peep)))
-        context.append(('Mark group as Unwatched', 'RunScript(plugin.video.nakamori, %s, %s&cmd=unwatched)' %
-                        (sys.argv[1], url_peep)))
+        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
+    url_peep = sys.argv[0]
+    url_peep = set_parameter(url_peep, 'mode', 1)
+    url_peep = set_parameter(url_peep, 'group_id', key_id)
+
+    context.append((__addon__.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
+    context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
 
     add_gui_item(u, details, extra_data, context)
 
@@ -1132,7 +1111,7 @@ def build_groups_menu(params, json_body=None):
         xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
     try:
-        busy.create('Please Wait', 'Getting from Server...')
+        busy.create(__addon__.getLocalizedString(30160), __addon__.getLocalizedString(30161))
         if json_body is None:
             busy.update(10)
             temp_url = params['url']
@@ -1141,7 +1120,7 @@ def build_groups_menu(params, json_body=None):
             temp_url = set_parameter(temp_url, 'level', 0)
             busy.update(20)
             html = get_json(temp_url)
-            busy.update(50, 'Loading Result...')
+            busy.update(50, __addon__.getLocalizedString(30162))
             if __addon__.getSetting("spamLog") == "true":
                 xbmc.log(params['url'], xbmc.LOGWARNING)
                 xbmc.log(html, xbmc.LOGWARNING)
@@ -1288,11 +1267,11 @@ def build_serie_episodes(params):
     # value to hold position of not seen episode
     next_episode = -1
     episode_count = 0
-    busy.create('Please Wait', 'Getting Episodes from Server...')
+    busy.create(__addon__.getLocalizedString(30160), __addon__.getLocalizedString(30163))
     try:
         item_count = 0
         html = get_json(params['url'])
-        busy.update(50, 'Loading Results...')
+        busy.update(50, __addon__.getLocalizedString(30162))
         body = json.loads(html)
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html, xbmc.LOGWARNING)
@@ -1382,10 +1361,6 @@ def build_serie_episodes(params):
                                 # air=0001-01-01
                                 if air == '0001-01-01' or air == '01-01-0001':
                                     air = ''
-                            proper_date = air
-                            temp_date = str(video.get('air', '')).split('-')
-                            if len(temp_date) == 3:  # format is 24-01-2016, we want it 24.01.2016
-                                proper_date = temp_date[0] + '.' + temp_date[1] + '.' + temp_date[2]
                             title = encode(video.get('name', 'Parse Error'))
                             if title is None:
                                 title = 'Episode ' + str(video.get('epnumber', '??'))
@@ -1418,7 +1393,6 @@ def build_serie_episodes(params):
                                 'votes':         safeInt(video.get('votes', '')),
                                 'originaltitle': encode(video.get('name', '')),
                                 'size': safeInt(video['files'][0].get('size', '0')),
-                                'date': proper_date
                             }
 
                             season = str(body.get('season', '1'))
@@ -1526,6 +1500,74 @@ def build_serie_episodes(params):
             pass
 
 
+def build_cast_menu(params):
+    """
+    Build the cast menu for 3.8.2+
+    :param params:
+    :return:
+    """
+    try:
+        search_url = _server_ + "/api/cast/byseries"
+        if params.get("serie_id", "") == "":
+            return
+        search_url = set_parameter(search_url, 'id', params.get("serie_id", ""))
+        search_url = set_parameter(search_url, 'notag', 1)
+        search_url = set_parameter(search_url, 'level', 0)
+        cast_nodes = json.loads(get_json(search_url))
+        if __addon__.getSetting("spamLog") == "true":
+            dump_dictionary(cast_nodes, "cast_nodes")
+
+        base_search_url = _server_ + "/api/cast/search"
+        base_search_url = set_parameter(base_search_url, "fuzzy", 0)
+
+        if len(cast_nodes) > 0:
+            if cast_nodes[0].get("character", "") == "":
+                return
+
+            xbmcplugin.setContent(handle, 'tvshows')
+            for cast in cast_nodes:
+                character = cast.get(u"character", u"")
+                character_image = _server_ + cast.get("character_image", "")
+                character_description = cast.get("character_description")
+                staff = cast.get("staff", "")
+                staff_image = _server_ + cast.get("staff_image", "")
+
+                liz = xbmcgui.ListItem(staff)
+                new_search_url = set_parameter(base_search_url, "query", staff)
+
+                plot = '[COLOR yellow]' + character + '[/COLOR]'
+                if character_description is not None:
+                    plot = plot + '\n' + remove_anidb_links(encode(character_description))
+
+                details = {
+                    'mediatype': 'tvshow',
+                    'title': staff,
+                    'plot': plot,
+                }
+
+                liz.setInfo(type="tvshow", infoLabels=details)
+
+                if staff_image != "":
+                    liz.setArt({"thumb": staff_image,
+                                "icon": staff_image,
+                                "poster": staff_image})
+                if character_image != "":
+                    liz.setArt({"fanart": character_image,
+                                "clearart": character_image})
+
+                u = sys.argv[0]
+                u = set_parameter(u, 'mode', 1)
+                u = set_parameter(u, 'name', params.get('name', 'Cast'))
+                u = set_parameter(u, 'url', new_search_url)
+                u = set_parameter(u, 'cmd', 'searchCast')
+
+                listitems.append((u, liz, True))
+
+            end_of_directory()
+    except:
+        error("error in build_cast_menu")
+
+
 def build_search_directory():
     """
     Build Search directory 'New Search' and read Search History
@@ -1605,7 +1647,8 @@ def search_for(search_url):
         search_url = set_parameter(search_url, 'limit_tag', __addon__.getSetting('maxlimit_tag'))
         json_body = json.loads(get_json(search_url))
         if json_body["groups"][0]["size"] == 0:
-            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('No results', 'No items found',
+            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(300180),
+                                                                            __addon__.getLocalizedString(300181),
                                                                             '!', __addon__.getAddonInfo('icon')))
         else:
             build_groups_menu(search_url, json_body)
@@ -1900,7 +1943,7 @@ def play_continue_item():
         offset = params['offset']
         pos = int(offset)
         if pos == 1:
-            xbmcgui.Dialog().ok('Finished', 'You already finished this')
+            xbmcgui.Dialog().ok(__addon__.getLocalizedString(300182), __addon__.getLocalizedString(300183))
         else:
             wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             control_id = wind.getFocusId()
@@ -1919,7 +1962,7 @@ def vote_series(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select('Serie voting', vote_list)
+    my_vote = xbmcgui.Dialog().select(__addon__.getLocalizedString(300184), vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -1928,7 +1971,8 @@ def vote_series(params):
         series_id = params['serie_id']
         body = '?id=' + series_id + '&score=' + vote_value
         get_json(_server_ + "/api/serie/vote" + body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Serie voting', 'You voted',
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(300184),
+                                                                        __addon__.getLocalizedString(300185),
                                                                         vote_value, __addon__.getAddonInfo('icon')))
 
 
@@ -1940,7 +1984,7 @@ def vote_episode(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select('Epidose voting', vote_list)
+    my_vote = xbmcgui.Dialog().select(__addon__.getLocalizedString(300186), vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -1949,7 +1993,8 @@ def vote_episode(params):
         ep_id = params['ep_id']
         body = '?id=' + ep_id + '&score=' + vote_value
         get_json(_server_ + "/api/ep/vote" + body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % ('Episode voting', 'You voted',
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(300186),
+                                                                        __addon__.getLocalizedString(300185),
                                                                         vote_value, __addon__.getAddonInfo('icon')))
 
 
@@ -1965,7 +2010,7 @@ def sync_offset(file_id, current_time):
     try:
         post_json(offset_url, offset_body)
     except:
-        error("Error while updating Resume status.", '', True)
+        error("Error Scrobbling.", '', True)
 
 
 def file_list_gui(ep_body):
@@ -1981,7 +2026,7 @@ def file_list_gui(ep_body):
             filename = os.path.basename(body['filename'])
             pick_filename.append(filename)
             get_fileid.append(str(body['id']))
-        my_file = xbmcgui.Dialog().select('Files', pick_filename)
+        my_file = xbmcgui.Dialog().select(__addon__.getLocalizedString(30196), pick_filename)
         if my_file > -1:
             return get_fileid[my_file]
         else:
@@ -2049,7 +2094,8 @@ def watched_mark(params):
 
     box = __addon__.getSetting("watchedbox")
     if box == "true":
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % ('Watched status changed', 'Mark as ',
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (__addon__.getLocalizedString(300187),
+                                                                        __addon__.getLocalizedString(300188),
                                                                         watched_msg, __addon__.getAddonInfo('icon')))
     # test
     # win2 = xbmcgui.Window(xbmcgui.getCurrentWindowId())
@@ -2080,10 +2126,9 @@ def rescan_file(params, rescan):
 
     get_json(key_url)
 
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Queued file for ' +
-                                                                 ('Rescan' if rescan else 'Rehash'),
-                                                                 'Refreshing in 10 seconds',
-                                                                 __addon__.getAddonInfo('icon')))
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
+                __addon__.getLocalizedString(30190) if rescan else __addon__.getLocalizedString(30189),
+                __addon__.getLocalizedString(30191), __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
     refresh()
 
@@ -2099,7 +2144,8 @@ def remove_missing_files():
         xbmc.log('key: ' + key, xbmc.LOGWARNING)
 
     get_json(key)
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % ('Removing missing files...', 'This can take some time',
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (__addon__.getLocalizedString(30192),
+                                                                 __addon__.getLocalizedString(30193),
                                                                  __addon__.getAddonInfo('icon')))
     xbmc.sleep(10000)
     refresh()
@@ -2153,6 +2199,9 @@ if __addon__.getSetting('remote_debug') == 'true':
 global __tagSettingFlags__
 __tagSettingFlags__ = populate_tag_setting_flags()
 
+if __addon__.getSetting('spamLog') == "true":
+    dump_dictionary(sys.argv, 'sys.argv')
+
 if get_server_status() is True:
     if valid_user() is True:
         try:
@@ -2183,6 +2232,10 @@ if get_server_status() is True:
                 vote_series(parameters)
             elif cmd == "voteEp":
                 vote_episode(parameters)
+            elif cmd == "viewCast":
+                build_cast_menu(parameters)
+            elif cmd == "searchCast":
+                search_for(parameters.get('url', ''))
             elif cmd == "watched":
                 if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0:
                     try:
@@ -2291,7 +2344,7 @@ if get_server_status() is True:
                 build_filters_menu()
 
     else:
-        error("Incorrect Credentials", "Please change them in Settings")
+        error(__addon__.getLocalizedString(30194), __addon__.getLocalizedString(30195))
 else:
     build_network_menu()
 

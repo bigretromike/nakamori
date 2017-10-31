@@ -160,15 +160,19 @@ def dump_dictionary(details, name):
 
             for i in details:
                 temp_log = ""
-                a = details.get(encode(i))
-                if a is None:
-                    temp_log = "\'unset\'"
-                elif isinstance(a, collections.Iterable):
-                    # easier for recursion and pretty
-                    temp_log = json.dumps(a, sort_keys=True, indent=4, separators=(',', ': '))
-                else:
-                    temp_log = str(a)
-                xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+                if isinstance(details, dict):
+                    a = details.get(encode(i))
+                    if a is None:
+                        temp_log = "\'unset\'"
+                    elif isinstance(a, collections.Iterable):
+                        # easier for recursion and pretty
+                        temp_log = json.dumps(a, sort_keys=True, indent=4, separators=(',', ': '))
+                    else:
+                        temp_log = str(a)
+                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
+                elif isinstance(details, collections.Iterable):
+                    temp_log = json.dumps(i, sort_keys=True, indent=4, separators=(',', ': '))
+                    xbmc.log("-" + temp_log, xbmc.LOGWARNING)
 
 
 def remove_anidb_links(data=""):
