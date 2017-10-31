@@ -1535,25 +1535,27 @@ def build_cast_menu(params):
                 liz = xbmcgui.ListItem(staff)
                 new_search_url = set_parameter(base_search_url, "query", staff)
 
-                plot = '[COLOR yellow]' + character + '[/COLOR]'
-                if character_description is not None:
-                    plot = plot + '\n' + remove_anidb_links(encode(character_description))
-
                 details = {
-                    'mediatype': 'tvshow',
+                    'mediatype': 'episode',
                     'title': staff,
-                    'plot': plot,
+                    'originaltitle': staff,
+                    'sorttitle': staff,
+                    'genre': character,
+
                 }
 
-                liz.setInfo(type="tvshow", infoLabels=details)
+                if character_description is not None:
+                    character_description = remove_anidb_links(character_description)
+                    details['plot'] = character_description
+
+                liz.setInfo(type="video", infoLabels=details)
 
                 if staff_image != "":
                     liz.setArt({"thumb": staff_image,
                                 "icon": staff_image,
                                 "poster": staff_image})
                 if character_image != "":
-                    liz.setArt({"fanart": character_image,
-                                "clearart": character_image})
+                    liz.setArt({"fanart": character_image})
 
                 u = sys.argv[0]
                 u = set_parameter(u, 'mode', 1)
