@@ -4,7 +4,11 @@
 # Addon Provider: BigRetroMike
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Addons\n"
+"Project-Id-Version: nakamori\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-11-01 11:51+0200\n"
+"Last-Translator: da3dsoul\n"
+"Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
