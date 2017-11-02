@@ -1,3 +1,18 @@
+v2.1.18 (02/11/2017)
+- fix unicode error
+- date sorting fix
+- major speedup by batch adding list items
+- better filters optimalization
+- support new cast search
+- handling missing files
+- major edit for localization support
+- RunScript error fix
+- group contex menu fix
+- new cast menu (req. shokoserver 3.8.2+)
+- more information about cast
+- Hebrew language added (Eng2Heb)
+- kodi18 detection and duration fix
+
 v2.1.17 (29/10/2017)
 - no time to explain ;-)
 

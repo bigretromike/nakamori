@@ -11,6 +11,7 @@
         <setting label="30017" type="text" id="device" default="nakamori"/>
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
+        <setting type="number" id="kodi18" default="3" visible="false"/>
     </category>
     <category label="30054">
         <setting label="30039" type="bool" id="show_continue" default="true"/>
@@ -32,7 +33,7 @@
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
         <setting label="30133" type="bool" id="context_pick_file" default="true" />
         <setting label="30130" type="bool" id="context_playlist" default="true" />
-        <setting label="30134" type="bool" id="context_view_cast" default="true" />
+        <setting label="30134" type="bool" id="context_view_cast" default="false" />
     </category>
     <category label="30023">
         <setting label="30007" type="lsep"/>
