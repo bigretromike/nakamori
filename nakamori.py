@@ -456,8 +456,11 @@ def get_tags(tag_node):
         if len(tag_node) > 0:
             temp_genres = []
             for tag in tag_node:
-                temp_genre = encode(tag["tag"]).strip()
-                temp_genres.append(temp_genre)
+                if isinstance(tag, str) or isinstance(tag, unicode):
+                    temp_genres.append(tag)
+                else:
+                    temp_genre = encode(tag["tag"]).strip()
+                    temp_genres.append(temp_genre)
             if get_version() <= LooseVersion('3.8.0.0'):
                 try:
                     temp_genres = TagFilter.processTags(__tagSettingFlags__, temp_genres)
