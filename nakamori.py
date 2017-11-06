@@ -15,6 +15,8 @@ import StringIO
 import pstats
 import cProfile
 
+import datetime
+
 has_pydev = False
 has_line_profiler = False
 try:
@@ -51,6 +53,7 @@ _home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
 
 busy = xbmcgui.DialogProgress()
 
+
 def profile_this(func):
     """
     This can be used to profile any function.
@@ -79,7 +82,7 @@ def profile_this(func):
     return profiled_func
 
 
-def end_of_directory(cache = True):
+def end_of_directory(cache=True):
     """
     Leave this in nakamori.py! It needs to be here to access listitems properly
     Adds all items to the list in batch, and then finalizes it
@@ -1250,8 +1253,8 @@ def build_serie_episodes_types(params):
                 end_of_directory()
                 return
 
-        except Exception as ex:
-            error("Error during build_serie_episodes_types", str(ex))
+        except Exception as exs:
+            error("Error during build_serie_episodes_types", str(exs))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes_types", str(exc))
     end_of_directory()
@@ -1358,6 +1361,9 @@ def build_serie_episodes(params):
                             else:
                                 duration = int(tmp_duration) / 1000
 
+                            if __addon__.getSetting('kodi18') == 1:
+                                duration = str(datetime.timedelta(seconds=duration))
+
                             # filter out invalid date
                             air = video.get('air', '')
                             if air != '':
@@ -1385,7 +1391,6 @@ def build_serie_episodes(params):
                                 # 'director': " / ".join(temp_dir),
                                 # 'writer': " / ".join(temp_writer),
                                 'genre':         "..." if skip else temp_genre,
-                                # TODO detect kodi 18: str(datetime.timedelta(seconds=duration))
                                 'duration':      duration,
                                 # 'mpaa':          video.get('contentRating', ''), <--
                                 'year':          safeInt(video.get('year', '')),
@@ -2206,6 +2211,17 @@ __tagSettingFlags__ = populate_tag_setting_flags()
 
 if __addon__.getSetting('spamLog') == "true":
     dump_dictionary(sys.argv, 'sys.argv')
+
+# 3 is not checked
+if __addon__.getSetting('kodi18') == '3':
+    python = xbmcaddon.Addon('xbmc.addon')
+    if python is not None:
+        # kodi18 return 17.9.701 as for now
+        if str(python.getAddonInfo('version')) == '17.9.701':
+            __addon__.setSetting(id='kodi18', value='1')
+        else:
+            __addon__.setSetting(id='kodi18', value='0')
+
 
 if get_server_status() is True:
     if valid_user() is True:

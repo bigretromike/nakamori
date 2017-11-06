@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.17" provider-name="BigRetroMike, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.18" provider-name="BigRetroMike, da3dsoul">
 <requires>
 <import addon="script.module.nakamori" version="1.0.3"/>
 </requires>
@@ -8,11 +8,26 @@
 </extension>
 <extension point="xbmc.addon.metadata">
 <summary lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection</summary>
+<summary lang="he_il">Nakamori נותן לך את היכולת לקיים אינטראקציה עם אוסף Shoko שלך</summary>  
 <description lang="en_GB">Nakamori gives you the ability to interact with your Shoko collection for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
+<description lang="he_il">Nakamori נותן לך את היכולת לתקשר עם אוסף Shoko שלך עבור התקנים התומכים ב- Kodi. אתה יכול להשתמש בפקודות רבות זמינות משולחן העבודה ממש מתוך Kodi, כגון סימון מצב נצפה, הצבעה, סריקה, עיבוד קבצים, ועוד!</description>
 <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
+<disclaimer lang="he_il">אם שרת Shoko נמצא במחשב אחר, הגדר את כתובת ה- IP בהגדרות של Nakamori לפני שתתחיל</disclaimer>
 <news>
-v2.1.17 (29/10/2017)
-- no time to explain ;-)
+    v2.1.18 (02/11/2017)
+    - fix unicode error
+    - date sorting fix
+    - major speedup by batch adding list items
+    - better filters optimalization
+    - support new cast search
+    - handling missing files
+    - major edit for localization support
+    - RunScript error fix
+    - group contex menu fix
+    - new cast menu (req. shokoserver 3.8.2+)
+    - more information about cast
+    - Hebrew language added (Eng2Heb)
+    - kodi18 detection and duration fix
 </news>
 <platform>all</platform>
 <language>en</language>

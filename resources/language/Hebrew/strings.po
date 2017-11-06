@@ -4,9 +4,9 @@
 # Addon Provider: BigRetroMike
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi Addons\n"
-"POT-Creation-Date: \n"
-"PO-Revision-Date: 2017-10-30 11:07+0200\n"
+"Project-Id-Version: nakamori\n"
+"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2017-11-01 11:51+0200\n"
 "Last-Translator: A. Dambledore\n"
 "Language-Team: Eng2Heb\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Language: he_IL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-
+# ---------------Start-Settings------------------------
 msgctxt "#30001"
 msgid "Shoko Settings"
 msgstr "הגדרות Shoko"
@@ -60,10 +60,6 @@ msgctxt "#30011"
 msgid "Shoko User"
 msgstr "משתמש Shoko"
 
-msgctxt "#30012"
-msgid "Inspect files"
-msgstr "בדיקת קבצים"
-
 msgctxt "#30013"
 msgid "Use gzip"
 msgstr "תשתמש ב-gzip"
@@ -87,10 +83,6 @@ msgstr "שם מכשיר"
 msgctxt "#30018"
 msgid "API Key"
 msgstr "מפתח API"
-
-msgctxt "#30019"
-msgid "Playlist Mode"
-msgstr "מצב רשימת ניגון"
 
 msgctxt "#30020"
 msgid "Enable 'Resume'"
@@ -193,7 +185,7 @@ msgid "Advanced"
 msgstr "מתקדם"
 
 msgctxt "#30045"
-msgid "Hide AniDB helper or otherwise useless tags"
+msgid "Hide AniDB Helper or Otherwise Useless Tags"
 msgstr "הסתר עוזר AniDB או תגים אחרים חסרי תועלת"
 
 msgctxt "#30046"
@@ -218,7 +210,7 @@ msgstr "הסתר תגי ספוילר של העלילה (מת / ניצח וכדו
 
 msgctxt "#30051"
 msgid "Treat Subgroups as 'Seasons'"
-msgstr "תייחס לקבוצות משנה בתור\\ 'עונות\\'"
+msgstr "תייחס לקבוצות משנה בתור\\'עונות\\'"
 
 msgctxt "#30052"
 msgid "Use Server Title"
@@ -234,7 +226,7 @@ msgstr "עיון"
 
 msgctxt "#30055"
 msgid "Time to wait for refresh to move selection (adjust for sync)"
-msgstr "זמן ההמתנה לריענון כדי הזיז בחירה (התאם עבור סינכרון)"
+msgstr "זמן ההמתנה לריענון כדי להזיז בחירה (התאם עבור סינכרון)"
 
 msgctxt "#30056"
 msgid "Title Settings"
@@ -243,22 +235,6 @@ msgstr "הגדרות הכותרת"
 msgctxt "#30057"
 msgid "Context Menu Settings"
 msgstr "הגדרות תפריט הקישור"
-
-msgctxt "#30058"
-msgid "More Info"
-msgstr "מידע נוסף"
-
-msgctxt "#30059"
-msgid "Vote Episode"
-msgstr "הצבע לפרק"
-
-msgctxt "#30060"
-msgid "Vote Series"
-msgstr "הצבע לסדרה"
-
-msgctxt "#30061"
-msgid "Play (Do not Mark as Watched)"
-msgstr "נגן (אל תסמן כנצפה)"
 
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
@@ -289,5 +265,155 @@ msgid "Ignore Specials for Watched States"
 msgstr "תתעלם ממיוחדים עבור מצבי נצפה"
 
 msgctxt "#30069"
-msgid "Cache data expire after (s)"
-msgstr "מטמון הנתונים יפוג לאחר (s)"
+msgid "Cached data expiration time (s)"
+msgstr "שעת תפוגה למידע במטמון (s)"
+
+# ---------------End-Settings--------------------------
+# ---------------Start-Context-Menu--------------------
+msgctxt "#30120"
+msgid "Rescan File"
+msgstr "סרוק קובץ מחדש"
+
+msgctxt "#30121"
+msgid "Rehash File"
+msgstr "עבד קובץ מחדש"
+
+msgctxt "#30122"
+msgid "Remove Missing Files"
+msgstr "הסר קבצים חסרים"
+
+msgctxt "#30123"
+msgid "More Info"
+msgstr "מידע נוסף"
+
+msgctxt "#30124"
+msgid "Vote (Series)"
+msgstr "הצבע לסדרה"
+
+msgctxt "#30125"
+msgid "Vote (Episode)"
+msgstr "הצבע לפרק"
+
+msgctxt "#30126"
+msgid "Mark Series as Watched"
+msgstr "סמן סדרה כנצפה"
+
+msgctxt "#30127"
+msgid "Mark Series as Unwatched"
+msgstr "סמן סדרה כלא נצפה"
+
+msgctxt "#30128"
+msgid "Mark Episode as Watched"
+msgstr "סמן פרק כנצפה"
+
+msgctxt "#30129"
+msgid "Mark Episode as Unwatched"
+msgstr "סמן פרק כלא כנצפה"
+
+msgctxt "#30130"
+msgid "Playlist Mode"
+msgstr "מצב רשימת ניגון"
+
+msgctxt "#30131"
+msgid "Refresh"
+msgstr "רענן"
+
+msgctxt "#30132"
+msgid "Play (No Scrobble)"
+msgstr "נגן (ללא שיבוץ)"
+
+msgctxt "#30133"
+msgid "Inspect Files"
+msgstr "בדיקת קבצים"
+
+msgctxt "#30134"
+msgid "View Cast"
+msgstr "הצג שידור"
+
+# ---------------End-Context-Menu----------------------
+# ---------------Start-Progress------------------------
+msgctxt "#30160"
+msgid "Please Wait"
+msgstr "אנא המתן"
+
+msgctxt "#30161"
+msgid "Getting from Server..."
+msgstr "מקבל מהשרת..."
+
+msgctxt "#30162"
+msgid "Loading Results..."
+msgstr "טוען תוצאות..."
+
+msgctxt "#30163"
+msgid "Getting Episodes from Server..."
+msgstr "מקבל פרקים מהשרת..."
+
+# ---------------End-Progress--------------------------
+# ---------------Start-Windows-------------------------
+msgctxt "#30180"
+msgid "No Results Found"
+msgstr "לא נמצאו תוצאות"
+
+msgctxt "#30181"
+msgid "Try a Different Query"
+msgstr "נסה שאילתה אחרת"
+
+msgctxt "#30182"
+msgid "Finished"
+msgstr "הסתיים"
+
+msgctxt "#30183"
+msgid "You already finished this."
+msgstr "אתה כבר סיימת את זה."
+
+msgctxt "#30184"
+msgid "Series Voting"
+msgstr "הצבעות לסדרות"
+
+msgctxt "#30185"
+msgid "You Voted"
+msgstr "אתה הצבעת"
+
+msgctxt "#30186"
+msgid "Episode Voting"
+msgstr "הצבעה לפרק"
+
+msgctxt "#30187"
+msgid "Watched Status Changed"
+msgstr "מצב נצפה השתנה"
+
+msgctxt "#30188"
+msgid "Marked as"
+msgstr "סמן כ"
+
+msgctxt "#30189"
+msgid "Queued File for Rehash"
+msgstr "קבצים בתור לעיבוד"
+
+msgctxt "#30190"
+msgid "Queued File for Rescan"
+msgstr "קבצים בתור לסריקה"
+
+msgctxt "#30191"
+msgid "Refreshing in 10 seconds"
+msgstr "מרענן בעוד 10 שניות"
+
+msgctxt "#30192"
+msgid "Queued Remove Missing Files"
+msgstr "מסיר קבצים חסרים בתור"
+
+msgctxt "#30193"
+msgid "It may take some time."
+msgstr "הפעולה עשויה לארוך זמן מה."
+
+msgctxt "#30194"
+msgid "Incorrect Credentials"
+msgstr "אישורים שגויים"
+
+msgctxt "#30195"
+msgid "Please change them in Settings"
+msgstr "אנא שנה אותם בתפריט הגדרות"
+
+msgctxt "#30196"
+msgid "Files"
+msgstr "קבצים"
