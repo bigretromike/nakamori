@@ -364,7 +364,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     if __addon__.getSetting('context_view_cast') == 'true':
                         if series_id != '':
                             context.append((__addon__.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
-                    context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
+                    if __addon__.getSetting('context_refresh') == 'true':
+                        context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
         liz.addContextMenuItems(context)
         listitems.append((gui_url, liz, folder))
@@ -813,6 +814,8 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
     if __addon__.getSetting('context_view_cast') == 'true':
         context.append((__addon__.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
+    if __addon__.getSetting('context_refresh') == 'true':
+        context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
     if destination_playlist:
         return details
@@ -948,6 +951,8 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
 
     context.append((__addon__.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
     context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+    if __addon__.getSetting('context_refresh') == 'true':
+        context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
     add_gui_item(u, details, extra_data, context)
 
@@ -1657,8 +1662,8 @@ def search_for(search_url):
         search_url = set_parameter(search_url, 'limit_tag', __addon__.getSetting('maxlimit_tag'))
         json_body = json.loads(get_json(search_url))
         if json_body["groups"][0]["size"] == 0:
-            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(300180),
-                                                                            __addon__.getLocalizedString(300181),
+            xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(30180),
+                                                                            __addon__.getLocalizedString(30181),
                                                                             '!', __addon__.getAddonInfo('icon')))
         else:
             build_groups_menu(search_url, json_body)
@@ -1953,7 +1958,7 @@ def play_continue_item():
         offset = params['offset']
         pos = int(offset)
         if pos == 1:
-            xbmcgui.Dialog().ok(__addon__.getLocalizedString(300182), __addon__.getLocalizedString(300183))
+            xbmcgui.Dialog().ok(__addon__.getLocalizedString(30182), __addon__.getLocalizedString(30183))
         else:
             wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
             control_id = wind.getFocusId()
@@ -1972,7 +1977,7 @@ def vote_series(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select(__addon__.getLocalizedString(300184), vote_list)
+    my_vote = xbmcgui.Dialog().select(__addon__.getLocalizedString(30184), vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -1981,8 +1986,8 @@ def vote_series(params):
         series_id = params['serie_id']
         body = '?id=' + series_id + '&score=' + vote_value
         get_json(_server_ + "/api/serie/vote" + body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(300184),
-                                                                        __addon__.getLocalizedString(300185),
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(30184),
+                                                                        __addon__.getLocalizedString(30185),
                                                                         vote_value, __addon__.getAddonInfo('icon')))
 
 
@@ -1994,7 +1999,7 @@ def vote_episode(params):
 
     """
     vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
-    my_vote = xbmcgui.Dialog().select(__addon__.getLocalizedString(300186), vote_list)
+    my_vote = xbmcgui.Dialog().select(__addon__.getLocalizedString(30186), vote_list)
     if my_vote == -1:
         return
     elif my_vote != 0:
@@ -2003,8 +2008,8 @@ def vote_episode(params):
         ep_id = params['ep_id']
         body = '?id=' + ep_id + '&score=' + vote_value
         get_json(_server_ + "/api/ep/vote" + body)
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(300186),
-                                                                        __addon__.getLocalizedString(300185),
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 7500, %s)" % (__addon__.getLocalizedString(30186),
+                                                                        __addon__.getLocalizedString(30185),
                                                                         vote_value, __addon__.getAddonInfo('icon')))
 
 
@@ -2104,8 +2109,8 @@ def watched_mark(params):
 
     box = __addon__.getSetting("watchedbox")
     if box == "true":
-        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (__addon__.getLocalizedString(300187),
-                                                                        __addon__.getLocalizedString(300188),
+        xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (__addon__.getLocalizedString(30187),
+                                                                        __addon__.getLocalizedString(30188),
                                                                         watched_msg, __addon__.getAddonInfo('icon')))
     # test
     # win2 = xbmcgui.Window(xbmcgui.getCurrentWindowId())

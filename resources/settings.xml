@@ -34,6 +34,7 @@
         <setting label="30133" type="bool" id="context_pick_file" default="true" />
         <setting label="30130" type="bool" id="context_playlist" default="true" />
         <setting label="30134" type="bool" id="context_view_cast" default="false" />
+        <setting label="30131" type="bool" id="context_refresh" default="true" />
     </category>
     <category label="30023">
         <setting label="30007" type="lsep"/>
