@@ -336,21 +336,12 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = set_parameter(url_peep, 'ui_index', str(index))
                     url_peep = set_parameter(url_peep, 'file_id', str(file_id))
 
+                    # Play and Watch
                     if __addon__.getSetting('context_show_play_no_watch') == 'true':
                         context.append((__addon__.getLocalizedString(30132), 'RunPlugin(%s&cmd=no_mark)' % url_peep))
+
                     if __addon__.getSetting('context_pick_file') == 'true':
                         context.append((__addon__.getLocalizedString(30133), 'RunPlugin(%s&cmd=pickFile)' % url_peep))
-                    if __addon__.getSetting('context_playlist') == 'true':
-                        context.append((__addon__.getLocalizedString(30130), 'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
-                    if __addon__.getSetting('context_show_info') == 'true':
-                        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
-
-                    if __addon__.getSetting('context_show_vote_Series') == 'true':
-                        if series_id != '':
-                            context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
-                    if __addon__.getSetting('context_show_vote_Episode') == 'true':
-                        if ep_id != '':
-                            context.append((__addon__.getLocalizedString(30125), 'RunPlugin(%s&cmd=voteEp)' % url_peep))
 
                     if extra_data.get('jmmepisodeid') != '':
                         if __addon__.getSetting('context_krypton_watched') == 'true':
@@ -361,6 +352,20 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                         else:
                             context.append((__addon__.getLocalizedString(30128), 'RunPlugin(%s&cmd=watched)' % url_peep))
                             context.append((__addon__.getLocalizedString(30129), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+
+                    if __addon__.getSetting('context_playlist') == 'true':
+                        context.append((__addon__.getLocalizedString(30130), 'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
+
+                    # Vote
+                    if __addon__.getSetting('context_show_vote_Episode') == 'true' and ep_id != '':
+                        context.append((__addon__.getLocalizedString(30125), 'RunPlugin(%s&cmd=voteEp)' % url_peep))
+                    if __addon__.getSetting('context_show_vote_Series') == 'true' and series_id != '':
+                        context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
+
+                    # Metadata
+                    if __addon__.getSetting('context_show_info') == 'true':
+                        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
+
                     if __addon__.getSetting('context_view_cast') == 'true':
                         if series_id != '':
                             context.append((__addon__.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
@@ -806,14 +811,21 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     url_peep = set_parameter(url_peep, 'mode', 1)
     url_peep = set_parameter(url_peep, 'serie_id', key_id)
 
-    if __addon__.getSetting('context_show_info') == 'true':
-        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
-    if __addon__.getSetting('context_show_vote_Series') == 'true':
-        context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
+    # Watch
     context.append((__addon__.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
     context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+
+    #Vote
+    if __addon__.getSetting('context_show_vote_Series') == 'true':
+        context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
+
+    # Metadata
+    if __addon__.getSetting('context_show_info') == 'true':
+        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
+
     if __addon__.getSetting('context_view_cast') == 'true':
         context.append((__addon__.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
+
     if __addon__.getSetting('context_refresh') == 'true':
         context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
@@ -942,15 +954,20 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     else:
         u = set_parameter(u, 'filter', None)
 
-    context = []
-    if __addon__.getSetting('context_show_info') == 'true' and not is_filter:
-        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
+
     url_peep = sys.argv[0]
     url_peep = set_parameter(url_peep, 'mode', 1)
     url_peep = set_parameter(url_peep, 'group_id', key_id)
 
+    context = []
+    # Watch
     context.append((__addon__.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
     context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+
+    # Metadata
+    if __addon__.getSetting('context_show_info') == 'true' and not is_filter:
+        context.append((__addon__.getLocalizedString(30123), 'Action(Info)'))
+
     if __addon__.getSetting('context_refresh') == 'true':
         context.append((__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
