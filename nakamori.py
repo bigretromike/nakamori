@@ -161,15 +161,20 @@ def video_file_information(node, detail_dict):
 
     # Subtitle
     if "subtitles" in node:
+        i = 1
         for stream_node in node["subtitles"]:
             stream_info = node["subtitles"][stream_node]
             if not isinstance(stream_info, dict):
                 continue
             streams = detail_dict.get('SubStreams', defaultdict(dict))
-            stream_id = int(stream_info["Index"])
+            try:
+                stream_id = int(stream_node)
+            except:
+                stream_id = i
             streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
                 else "unk"
             detail_dict['SubStreams'] = streams
+            i += 1
 
 
 def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0):
