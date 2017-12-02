@@ -1,3 +1,11 @@
+v2.1.19 (02/12/2017)
+- support changes in API
+- fix a reoeated kicakuzatuib typo
+- add a setting for refresh
+- reorder context menu
+- fix a typo
+- added fake subtitle index if theres any
+
 v2.1.18 (02/11/2017)
 - fix unicode error
 - date sorting fix
