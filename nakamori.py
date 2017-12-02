@@ -161,7 +161,7 @@ def video_file_information(node, detail_dict):
 
     # Subtitle
     if "subtitles" in node:
-        i = 1
+        i = 0
         for stream_node in node["subtitles"]:
             stream_info = node["subtitles"][stream_node]
             if not isinstance(stream_info, dict):
