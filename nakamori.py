@@ -1810,11 +1810,14 @@ def play_video(ep_id, raw_id, movie):
 
             file_url = file_body['url']
             serverpath = file_body.get('server_path', '')
-            if serverpath is not None:
-                if serverpath != '' and os.path.isfile(serverpath):
-                    if unicode(serverpath).startswith('\\\\'):
-                        serverpath = "smb:"+serverpath
-                    file_url = serverpath
+            if serverpath is not None and serverpath != '':
+                try:
+                    if os.path.isfile(serverpath):
+                        if unicode(serverpath).startswith('\\\\'):
+                            serverpath = "smb:"+serverpath
+                        file_url = serverpath
+                except:
+                    pass
 
             # Information about streams inside video file
             # Video
