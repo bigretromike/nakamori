@@ -1108,6 +1108,20 @@ def build_filters_menu():
     except Exception as e:
         error("Invalid JSON Received in build_filters_menu", str(e))
 
+    # region Start Add_Calendar
+    soon_url = _server_ + "/api/serie/soon"
+    title = "Calendar"
+    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
+    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'year.png'),
+                "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', soon_url)
+    u = set_parameter(u, 'mode', str(9))
+    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    listitems.append((u, liz, True))
+    # endregion
+
     # region Start Add_Search
     search_url = _server_ + "/api/search"
     title = "Search"
@@ -1167,7 +1181,7 @@ def build_groups_menu(params, json_body=None):
                 html = get_json(temp_url)
                 body = json.loads(html)
             else:
-                # level 2 will fill group and series (for filter)
+                # level 1 will fill group and series (for filter)
                 temp_url = params['url']
                 temp_url = set_parameter(temp_url, 'level', 1)
                 html = get_json(temp_url)
@@ -1670,6 +1684,87 @@ def build_search_directory():
         liz.setInfo(type=detail['type'], infoLabels={"Title": encode(detail['title']), "Plot": detail['plot']})
         listitems.append((u, liz, True))
     end_of_directory(False)
+
+
+def build_serie_soon(params):
+    """
+        Builds the list of items for Calendar
+        Args:
+            params:
+        Returns:
+
+        """
+    xbmcplugin.setContent(handle, 'tvshows')
+    if __addon__.getSetting('use_server_sort') == 'false':
+        xbmcplugin.addSortMethod(handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)  # None
+
+    try:
+        busy.create(__addon__.getLocalizedString(30160), __addon__.getLocalizedString(30161))
+
+        busy.update(10)
+        temp_url = params['url']
+        temp_url = set_parameter(temp_url, 'nocast', 0)
+        temp_url = set_parameter(temp_url, 'notag', 0)
+        temp_url = set_parameter(temp_url, 'level', 0)
+        busy.update(20)
+        html = get_json(temp_url)
+        busy.update(50, __addon__.getLocalizedString(30162))
+        if __addon__.getSetting("spamLog") == "true":
+            xbmc.log(params['url'], xbmc.LOGWARNING)
+            xbmc.log(html, xbmc.LOGWARNING)
+        html_body = json.loads(html)
+        busy.update(70)
+        directory_type = html_body['type']
+        temp_url = params['url']
+        temp_url = set_parameter(temp_url, 'level', 2)
+        html = get_json(temp_url)
+        body = json.loads(html)
+        busy.update(100)
+        busy.close()
+
+        # check if this is maybe filter-inception
+        try:
+            set_window_heading(body.get('name', ''))
+        except:
+            try:  # this might not be a filter
+                # it isn't single filter)
+                for nest_filter in body:
+                    add_group_item(nest_filter, '', body.get('id', ''), True)
+                end_of_directory()
+                return
+            except:
+                pass
+
+        try:
+            item_count = 0
+            parent_title = body.get('name', '')
+            used_dates = []
+            for sers in body['series']:
+                # region add_date
+                if sers.get('air', '') in used_dates:
+                    pass
+                else:
+                    used_dates.append(sers.get('air', ''))
+                    soon_url = _server_ + "/api/serie/soon"
+                    details = {}
+                    details['aired'] = sers.get('air', '')
+                    details['title'] = sers.get('air', '')
+                    u = sys.argv[0]
+                    u = set_parameter(u, 'url', soon_url)
+                    u = set_parameter(u, 'mode', str(0))
+                    u = set_parameter(u, 'name', urllib.quote_plus(details.get('title', '')))
+                    extra_data = {'type': 'pictures'}
+                    add_gui_item(u, details, extra_data)
+                # endregion
+
+                add_serie_item(sers, parent_title)
+                item_count += 1
+
+        except Exception as e:
+            error("Error during build_serie_soon date_air", str(e))
+    except Exception as e:
+        error("Invalid JSON Received in build_serie_soon", str(e))
+    end_of_directory()
 
 
 def search_for(search_url):
@@ -2257,7 +2352,6 @@ if get_server_status() is True:
     if valid_user() is True:
         try:
             parameters = util.parseParameters()
-            # xbmcgui.Dialog().ok('params=', str(parameters))
         except Exception as exp:
             error('valid_userid_1 parseParameters() error', str(exp))
             parameters = {'mode': 2}
@@ -2327,8 +2421,9 @@ if get_server_status() is True:
             elif cmd == 'refresh':
                 refresh()
         else:
-            # xbmcgui.Dialog().ok('MODE=' + str(mode), str(parameters))
-            if mode == 1:  # play_file
+            if mode == 0:  # string label
+                pass
+            elif mode == 1:  # play_file
                 try:
                     win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                     ctl = win.getControl(win.getFocusId())
@@ -2384,6 +2479,8 @@ if get_server_status() is True:
                 play_continue_item()
             elif mode == 8:  # File List
                 build_raw_list(parameters)
+            elif mode == 9:  # Calendar
+                build_serie_soon(parameters)
             elif mode == 31:
                 search.clear_search_history(parameters)
             else:
