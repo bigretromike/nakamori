@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, unicode_literals
+
 import resources.lib.util as util
 import resources.lib.search as search
 
@@ -312,12 +314,22 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                 if extra_data.get('partialTV') == 1:
                     total = str(extra_data['TotalEpisodes'])
                     watched = str(extra_data['WatchedEpisodes'])
-                    if unicode(total).isnumeric() and unicode(watched).isnumeric():
-                        liz.setProperty('TotalTime', total)
-                        liz.setProperty('ResumeTime', watched)
+                    if sys.version_info < (3, 0):
+                        if unicode(total).isnumeric() and unicode(watched).isnumeric():
+                            liz.setProperty('TotalTime', total)
+                            liz.setProperty('ResumeTime', watched)
+                        else:
+                            liz.setProperty('TotalTime', '100')
+                            liz.setProperty('ResumeTime', '50')
                     else:
-                        liz.setProperty('TotalTime', '100')
-                        liz.setProperty('ResumeTime', '50')
+                        if total.isnumeric() and watched.isnumeric():
+                            liz.setProperty('TotalTime', total)
+                            liz.setProperty('ResumeTime', watched)
+                        else:
+                            liz.setProperty('TotalTime', '100')
+                            liz.setProperty('ResumeTime', '50')
+
+
             if extra_data.get('thumb'):
                 liz.setArt({"thumb": extra_data.get('thumb', '')})
                 liz.setArt({"icon": extra_data.get('thumb', '')})
@@ -1384,10 +1396,12 @@ def build_serie_episodes(params):
             if len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
                 if __addon__.getSetting("show_continue") == "true":
-                    if unicode(parent_title).lower() != "unsort":
-                        util.addDir("-continue-", '', '7',
-                                    _server_ + "/image/support/plex_others.png",
-                                    "Next episode", "3", "4", str(next_episode))
+                    if sys.version_info < (3, 0):
+                        if unicode(parent_title).lower() != "unsort":
+                            util.addDir("-continue-", '', '7',_server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
+                    else:
+                        if parent_title.lower() != "unsort":
+                            util.addDir("-continue-", '', '7',_server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
                 for video in body['eps']:
                     item_count += 1
                     # check if episode have files
@@ -1914,8 +1928,12 @@ def play_video(ep_id, raw_id, movie):
             if serverpath is not None and serverpath != '':
                 try:
                     if os.path.isfile(serverpath):
-                        if unicode(serverpath).startswith('\\\\'):
-                            serverpath = "smb:"+serverpath
+                        if sys.version_info < (3, 0):
+                            if unicode(serverpath).startswith('\\\\'):
+                                serverpath = "smb:"+serverpath
+                        else:
+                            if serverpath.startswith('\\\\'):
+                                serverpath = "smb:"+serverpath
                         file_url = serverpath
                 except:
                     pass

@@ -5,16 +5,15 @@ import sys
 
 if sys.version_info < (3, 0):
     from urllib2 import urlopen
-    from urllib import quote, quote_plus
+    from urllib import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib2 import Request
     from StringIO import StringIO
 else:
     # For Python 3.0 and later
     from urllib.request import urlopen
-    from urllib.parse import quote, quote_plus
+    from urllib.parse import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib.request import Request
-    from io import StringIO
-import urllib
+    from io import StringIO, BytesIO
 import re
 import gzip
 import traceback
@@ -257,7 +256,7 @@ def error(msg, error_type='Error', silent=False):
     key = sys.argv[0]
     if len(sys.argv) > 2 and sys.argv[2] != '':
         key += sys.argv[2]
-    xbmc.log('On url: ' + urllib.unquote(key), xbmc.LOGERROR)
+    xbmc.log('On url: ' + unquote(key), xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         if exc_type is not None and exc_obj is not None and exc_tb is not None:
@@ -394,11 +393,14 @@ def get_data(url_in, referer, data_type):
             response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             if response.info().get('Content-Encoding') == 'gzip':
                 try:
-                    buf = StringIO(response.read())
+                    if sys.version_info < (3, 0):
+                        buf = StringIO(response.read())
+                    else:
+                        buf = BytesIO(response.read())
                     f = gzip.GzipFile(fileobj=buf)
                     data = f.read()
                 except Exception as ex:
-                    error('Decompresing gzip respond failed', str(ex))
+                    error('Decompresing gzip respond failed: ' + str(ex))
             else:
                 data = response.read()
             response.close()
@@ -444,7 +446,7 @@ def post_data(url, data_in):
     Returns: The response from the server
     """
     if data_in is not None:
-        req = Request(encode(url), data_in, {'Content-Type': 'application/json'})
+        req = Request(encode(url), data_in.encode('utf-8'), {'Content-Type': 'application/json'})
         req.add_header('apikey', __addon__.getSetting("apikey"))
         req.add_header('Accept', 'application/json')
         data_out = None
@@ -516,7 +518,7 @@ def encode(i=''):
 
 
 def post(url, data, headers={}):
-    postdata = urllib.urlencode(data)
+    postdata = urlencode(data)
     req = Request(url, postdata, headers)
     req.add_header('User-Agent', UA)
     response = urlopen(req)
@@ -799,7 +801,7 @@ def parseParameters(input_string=sys.argv[2]):
             if (len(name_value_pair) > 0) & ("=" in name_value_pair):
                 pair = name_value_pair.split('=')
                 key = pair[0]
-                value = decode(urllib.unquote_plus(pair[1]))
+                value = decode(unquote_plus(pair[1]))
                 parameters[key] = value
     return parameters
 
@@ -894,7 +896,7 @@ def makeLink(params, baseUrl=sys.argv[0]):
     params: the params to be added to the URL
     BaseURL: the base URL, sys.argv[0] by default
     """
-    return baseUrl + '?' + urllib.urlencode(
+    return baseUrl + '?' + urlencode(
         dict([encode(k), encode(decode(v))] for k, v in params.items()))
 
 
