@@ -2,8 +2,19 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+
+if sys.version_info < (3, 0):
+    from urllib2 import urlopen
+    from urllib import quote, quote_plus
+    from urllib2 import Request
+    from StringIO import StringIO
+else:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+    from urllib.parse import quote, quote_plus
+    from urllib.request import Request
+    from io import StringIO
 import urllib
-import urllib2
 import re
 import gzip
 import traceback
@@ -18,7 +29,7 @@ import xbmcgui
 import xbmcaddon
 import xbmcplugin
 
-from StringIO import StringIO
+
 import xml.etree.ElementTree as Tree
 
 import resources.lib.cache as cache
@@ -42,6 +53,20 @@ except:
     # kodi < 17
     UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
 pDialog = ''
+
+
+def encode_utf8(_string):
+    if sys.version_info < (3, 0):
+        return _string.encode('utf-8')
+    else:
+        return _string
+
+
+def decode_utf8(_string):
+    if sys.version_info < (3, 0):
+        return _string.decode('utf-8')
+    else:
+        return _string
 
 
 def valid_user():
@@ -352,12 +377,12 @@ def get_data(url_in, referer, data_type):
 
         url = url_in
 
-        req = urllib2.Request(encode(url))
+        req = Request(encode(url))
         req.add_header('Accept', 'application/' + data_type)
         req.add_header('apikey', __addon__.getSetting("apikey"))
 
         if referer is not None:
-            referer = urllib2.quote(encode(referer)).replace("%3A", ":")
+            referer = quote(encode(referer)).replace("%3A", ":")
             if len(referer) > 1:
                 req.add_header('Referer', referer)
         use_gzip = __addon__.getSetting("use_gzip")
@@ -366,7 +391,7 @@ def get_data(url_in, referer, data_type):
                 req.add_header('Accept-encoding', 'gzip')
         data = None
         try:
-            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             if response.info().get('Content-Encoding') == 'gzip':
                 try:
                     buf = StringIO(response.read())
@@ -419,12 +444,12 @@ def post_data(url, data_in):
     Returns: The response from the server
     """
     if data_in is not None:
-        req = urllib2.Request(encode(url), data_in, {'Content-Type': 'application/json'})
+        req = Request(encode(url), data_in, {'Content-Type': 'application/json'})
         req.add_header('apikey', __addon__.getSetting("apikey"))
         req.add_header('Accept', 'application/json')
         data_out = None
         try:
-            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             data_out = response.read()
             response.close()
         except Exception as ex:
@@ -463,7 +488,7 @@ def decode(i=''):
     """
     try:
         if isinstance(i, str):
-            return i.decode('utf-8')
+            return decode_utf8(i)
         elif isinstance(i, unicode):
             return i
     except:
@@ -492,9 +517,9 @@ def encode(i=''):
 
 def post(url, data, headers={}):
     postdata = urllib.urlencode(data)
-    req = urllib2.Request(url, postdata, headers)
+    req = Request(url, postdata, headers)
     req.add_header('User-Agent', UA)
-    response = urllib2.urlopen(req)
+    response = urlopen(req)
     data = response.read()
     response.close()
     return data
@@ -547,8 +572,8 @@ def get_version():
 
 def getURL(url, header):
     try:
-        req = urllib2.Request(url, headers=header)
-        response = urllib2.urlopen(req)
+        req = Request(url, headers=header)
+        response = urlopen(req)
         if response and response.getcode() == 200:
             if response.info().get('Content-Encoding') == 'gzip':
                 buf = StringIO.StringIO(response.read())
@@ -556,7 +581,7 @@ def getURL(url, header):
                 content = gzip_f.read()
             else:
                 content = response.read()
-            content = content.decode('utf-8', 'ignore')
+            content = decode_utf8(content)
             return content
         return False
     except:
@@ -677,7 +702,7 @@ def set_parameter(url, parameter, value):
                 continue
             url += array3[0] + '=' + array3[1] + '&'
         return url[:-1]
-    value = urllib.quote_plus(value)
+    value = quote_plus(value)
     if '?' not in url:
         return url + '?' + parameter + '=' + value
 
@@ -713,14 +738,14 @@ def searchBox():
 
 def addDir(name, url, mode, iconimage='DefaultTVShows.png', plot="", poster="DefaultVideo.png", filename="none",
            offset=''):
-    # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
+    # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+quote_plus(name)+"&poster_file="+quote_plus(poster)+"&filename="+quote_plus(filename)
     u = sys.argv[0]
     if mode is not '':
         u = set_parameter(u, 'mode', str(mode))
     if name is not '':
-        u = set_parameter(u, 'name', urllib.quote_plus(name))
-    u = set_parameter(u, 'poster_file', urllib.quote_plus(poster))
-    u = set_parameter(u, 'filename', urllib.quote_plus(filename))
+        u = set_parameter(u, 'name', quote_plus(name))
+    u = set_parameter(u, 'poster_file', quote_plus(poster))
+    u = set_parameter(u, 'filename', quote_plus(filename))
     if offset is not '':
         u = set_parameter(u, 'offset', offset)
     if url is not '':
@@ -848,9 +873,9 @@ def extract(text, startText, endText):
 
 def request(url, headers={}):
     debug('request: %s' % url)
-    req = urllib2.Request(url, headers=headers)
+    req = Request(url, headers=headers)
     req.add_header('User-Agent', UA)
-    response = urllib2.urlopen(req)
+    response = urlopen(req)
     data = response.read()
     response.close()
     debug('len(data) %s' % len(data))
@@ -930,13 +955,13 @@ def makeUTF8(data):
     # log(repr(data), 5)
     # return data
     try:
-        return data.decode('utf8', 'xmlcharrefreplace')  # was 'ignore'
+        return decode_utf8(data)  # was 'ignore'
     except:
         # log("Hit except on : " + repr(data))
         s = u""
         for i in data:
             try:
-                i.decode("utf8", "xmlcharrefreplace")
+                decode_utf8(i)
             except:
                 # log("Can't convert character", 4)
                 continue

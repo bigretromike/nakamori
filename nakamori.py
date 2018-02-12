@@ -11,7 +11,13 @@ import xbmcaddon
 import xbmcgui
 import xbmc
 
-import StringIO
+if sys.version_info < (3, 0):
+    # For Python 2.7
+    from StringIO import StringIO
+else:
+    # For Python 3.0 and later
+    from io import StringIO
+
 import pstats
 import cProfile
 
@@ -49,7 +55,7 @@ __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 
 _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-_home_ = xbmc.translatePath(__addon__.getAddonInfo('path').decode('utf-8'))
+_home_ = decode_utf8(xbmc.translatePath(__addon__.getAddonInfo('path')))
 
 busy = xbmcgui.DialogProgress()
 
@@ -224,7 +230,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         if extra_data is not None and len(extra_data) > 0:
             if extra_data.get('parameters'):
                 for argument, value in extra_data.get('parameters').items():
-                    link_url = "%s&%s=%s" % (link_url, argument, urllib.quote(value))
+                    link_url = "%s&%s=%s" % (link_url, argument, quote(value))
             tbi = extra_data.get('thumb', '')
             tp = extra_data.get('type', 'Video')
         if details.get('parenttitle', '').lower() == 'tags':
@@ -593,7 +599,7 @@ def add_raw_files(node):
         u = sys.argv[0]
         u = set_parameter(u, 'url', raw_url)
         u = set_parameter(u, 'mode', 1)
-        u = set_parameter(u, 'name', urllib.quote_plus(title))
+        u = set_parameter(u, 'name', quote_plus(title))
         u = set_parameter(u, 'raw_id', file_id)
         u = set_parameter(u, 'type', "raw")
         u = set_parameter(u, 'file', key)
@@ -654,7 +660,7 @@ def add_content_typ_dir(name, serie_id):
     u = sys.argv[0]
     u = set_parameter(u, 'url', dir_url)
     u = set_parameter(u, 'mode', str(6))
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'name', quote_plus(title))
     u = set_parameter(u, 'type', name)
     listitems.append((u, liz, True))
 
@@ -1041,7 +1047,7 @@ def add_filter_item(menu):
     u = sys.argv[0]
     u = set_parameter(u, 'url', filter_url)
     u = set_parameter(u, 'mode', use_mode)
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'name', quote_plus(title))
     u = set_parameter(u, 'filter_id', menu.get("id", ""))
 
     liz = xbmcgui.ListItem(label=title, label2=title, path=filter_url)
@@ -1118,7 +1124,7 @@ def build_filters_menu():
     u = sys.argv[0]
     u = set_parameter(u, 'url', soon_url)
     u = set_parameter(u, 'mode', str(9))
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'name', quote_plus(title))
     listitems.append((u, liz, True))
     # endregion
 
@@ -1132,7 +1138,7 @@ def build_filters_menu():
     u = sys.argv[0]
     u = set_parameter(u, 'url', search_url)
     u = set_parameter(u, 'mode', str(3))
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'name', quote_plus(title))
     listitems.append((u, liz, True))
     # endregion
 
@@ -1752,7 +1758,7 @@ def build_serie_soon(params):
                     u = sys.argv[0]
                     u = set_parameter(u, 'url', soon_url)
                     u = set_parameter(u, 'mode', str(0))
-                    u = set_parameter(u, 'name', urllib.quote_plus(details.get('title', '')))
+                    u = set_parameter(u, 'name', quote_plus(details.get('title', '')))
                     extra_data = {'type': 'pictures'}
                     add_gui_item(u, details, extra_data)
                 # endregion
@@ -1843,7 +1849,7 @@ def build_network_menu():
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = set_parameter(u, 'url', network_url)
-    u = set_parameter(u, 'name', urllib.quote_plus(title))
+    u = set_parameter(u, 'name', quote_plus(title))
     listitems.append((u, liz, True))
     end_of_directory(False)
 
