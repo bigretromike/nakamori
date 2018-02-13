@@ -36,13 +36,6 @@ except ImportError:
 
 try:
     # noinspection PyUnresolvedReferences
-    import TagBlacklist as TagFilter
-except Exception as tag_ex:
-    error("Nakamori.script is missing", str(tag_ex))
-    pass
-
-try:
-    # noinspection PyUnresolvedReferences
     import pydevd
     has_pydev = True
 except ImportError:
@@ -97,23 +90,6 @@ def end_of_directory(cache=True):
     """
     xbmcplugin.addDirectoryItems(handle, listitems, len(listitems))
     xbmcplugin.endOfDirectory(handle, cacheToDisc=cache)
-
-
-def filter_gui_item_by_tag(title):
-    """
-    Remove list items from the tag group filter by the tag blacklist in settings
-    Args:
-        title: the title of the list item
-
-    Returns: Whether or not to remove it (true is yes)
-    :rtype: bool
-    """
-    str1 = [title]
-    try:
-        str1 = TagFilter.processTags(__tagSettingFlags__, str1)
-    except:
-        pass
-    return len(str1) > 0
 
 
 def video_file_information(node, detail_dict):
@@ -235,9 +211,9 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     link_url = "%s&%s=%s" % (link_url, argument, quote(value))
             tbi = extra_data.get('thumb', '')
             tp = extra_data.get('type', 'Video')
-        if details.get('parenttitle', '').lower() == 'tags':
-            if not filter_gui_item_by_tag(details.get('title', '')):
-                return
+        # if details.get('parenttitle', '').lower() == 'tags':
+        #     if not filter_gui_item_by_tag(details.get('title', '')):
+        #         return
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
@@ -493,11 +469,6 @@ def get_tags(tag_node):
                 else:
                     temp_genre = encode(tag["tag"]).strip()
                     temp_genres.append(temp_genre)
-            if get_version() <= LooseVersion('3.8.0.0'):
-                try:
-                    temp_genres = TagFilter.processTags(__tagSettingFlags__, temp_genres)
-                except:
-                    pass
             temp_genre = " | ".join(temp_genres)
             return temp_genre
         else:
@@ -2508,11 +2479,6 @@ if get_server_status() is True:
             elif mode == 31:
                 search.clear_search_history(parameters)
             else:
-                try:
-                    fake_tags = []
-                    fake_tags = TagFilter.processTags(__tagSettingFlags__, fake_tags)
-                except:
-                    error('Module Missing', 'Install Nakamori Scripts from repo')
                 build_filters_menu()
 
     else:
