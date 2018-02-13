@@ -14,7 +14,7 @@
         <setting type="number" id="kodi18" default="3" visible="false"/>
     </category>
     <category label="30054">
-        <setting label="30039" type="bool" id="show_continue" default="true"/>
+        <setting label="30039" type="bool" id="show_continue" default="false"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
         <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
@@ -78,8 +78,7 @@
         <setting label="30063" type="bool" id="remote_debug" default="false"/>
         <setting label="30064" type="text" id="ide_ip" default="localhost" visible="eq(-1,true)"/>
         <setting label="30065" type="number" id="ide_port" default="5376" visible="eq(-2,true)"/>
-    </category>
-    <category label="30029">
+        <setting label="30029" type="lsep"/>
         <setting label="30030" type="bool" id="enableCache" default="false"/>
         <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true"/>
     </category>

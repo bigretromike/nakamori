@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.util as util
 import resources.lib.search as search
+from resources.lib.calendar import Calendar
 
 from resources.lib.util import *
 from collections import defaultdict
@@ -809,7 +810,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     context.append((__addon__.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
     context.append((__addon__.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
 
-    #Vote
+    # Vote
     if __addon__.getSetting('context_show_vote_Series') == 'true':
         context.append((__addon__.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
 
@@ -1107,6 +1108,20 @@ def build_filters_menu():
     u = sys.argv[0]
     u = set_parameter(u, 'url', soon_url)
     u = set_parameter(u, 'mode', str(9))
+    u = set_parameter(u, 'name', quote_plus(title))
+    listitems.append((u, liz, True))
+    # endregion
+
+    # region Start Add_NEW_Calendar
+    soon_url = _server_ + "/api/serie/soon"
+    title = "Calendar v2"
+    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
+    liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'year.png'),
+                "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
+    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+    u = sys.argv[0]
+    u = set_parameter(u, 'url', soon_url)
+    u = set_parameter(u, 'mode', str(10))
     u = set_parameter(u, 'name', quote_plus(title))
     listitems.append((u, liz, True))
     # endregion
@@ -1675,6 +1690,48 @@ def build_search_directory():
         liz.setInfo(type=detail['type'], infoLabels={"Title": encode(detail['title']), "Plot": detail['plot']})
         listitems.append((u, liz, True))
     end_of_directory(False)
+
+
+def build_serie_soon_new(params):
+    """
+            Builds the list of items for newCalendar
+            Args:
+                params:
+            Returns:
+
+            """
+    try:
+        busy.create(__addon__.getLocalizedString(30160), __addon__.getLocalizedString(30161))
+        busy.update(10)
+        temp_url = params['url']
+        temp_url = set_parameter(temp_url, 'nocast', 0)
+        temp_url = set_parameter(temp_url, 'notag', 0)
+        temp_url = set_parameter(temp_url, 'level', 0)
+        busy.update(20)
+        html = get_json(temp_url)
+        busy.update(50, __addon__.getLocalizedString(30162))
+        if __addon__.getSetting("spamLog") == "true":
+            xbmc.log(params['url'], xbmc.LOGWARNING)
+            xbmc.log(html, xbmc.LOGWARNING)
+        html_body = json.loads(html)
+        busy.update(70)
+        directory_type = html_body['type']
+        temp_url = params['url']
+        temp_url = set_parameter(temp_url, 'level', 2)
+        html = get_json(temp_url)
+        body = json.loads(html)
+        busy.update(100)
+        busy.close()
+
+        try:
+            window = Calendar(data=body)
+            window.doModal()
+            del window
+            return
+        except Exception as e:
+            error("Error during build_serie_soon date_air", str(e))
+    except Exception as e:
+        error("Invalid JSON Received in build_serie_soon", str(e))
 
 
 def build_serie_soon(params):
@@ -2476,6 +2533,8 @@ if get_server_status() is True:
                 build_raw_list(parameters)
             elif mode == 9:  # Calendar
                 build_serie_soon(parameters)
+            elif mode == 10:  # newCalendar
+                build_serie_soon_new(parameters)
             elif mode == 31:
                 search.clear_search_history(parameters)
             else:
