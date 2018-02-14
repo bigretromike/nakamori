@@ -20,18 +20,19 @@ image_row_span = 4
 image_col_span = 2
 
 
-class Calendar(pyxbmct.BlankFullWindow):
-    def __init__(self, data, page=0):
+class Calendar(pyxbmct.BlankDialogWindow):
+    def __init__(self, data, handle, page=0):
         super(Calendar, self).__init__()
         self.setGeometry(1280, 720, max_row_count, max_col_count)
         self.__draw = False
         self.controls = []
         self.items = []
         self.items_cord = []
+        self.window_handle = handle
         self.json_data = data
         self.start_page = 0
         self.prev_count = page
-        #if self.__draw is False:
+        self.urls = []
         self.draw()
 
     def setAnimation(self, control):
@@ -43,13 +44,10 @@ class Calendar(pyxbmct.BlankFullWindow):
             initialize built-in functions
             this automatically called.
         """
+        bg = pyxbmct.Image(os.path.join(_home_, 'resources/media', 'black_dot.png'), aspectRatio=0)
+        self.placeControl(bg, 0, 0, rowspan=max_row_count, columnspan=max_col_count, pad_x=0, pad_y=0)
         self.set_active_controls(self.json_data, self.start_page)
         self.set_navigation()
-        #self.__draw = True
-
-    #def show(self):
-    #    # xbmcplugin.endOfDirectory(int(sys.argv[1]))
-    #    self.doModal()
 
     def _cancel(self):
         self.close()
@@ -122,18 +120,20 @@ class Calendar(pyxbmct.BlankFullWindow):
                 # endregion
 
                 # region anime-url
-                # key_id = str(sers.get('id', ''))
-                # key = _server_ + "/api/serie"
-                # key = set_parameter(key, 'id', key_id)
-                # key = set_parameter(key, 'level', 2)
-                # if _addon.getSetting('request_nocast') == 'true':
-                #     key = set_parameter(key, 'nocast', 1)
-                # u = sys.argv[0]
-                # u = set_parameter(u, 'url', key)
-                # u = set_parameter(u, 'mode', 5)
-                # u = set_parameter(u, 'movie', sers.get('ismovie', '0'))
-                # u = "plugin://plugin.video.nakamori"
-                # self.connect(imageclick, lambda: self.serie(u))
+                key_id = str(sers.get('id', ''))
+                key = _server_ + "/api/serie"
+                key = set_parameter(key, 'id', key_id)
+                key = set_parameter(key, 'level', 2)
+                if _addon.getSetting('request_nocast') == 'true':
+                    key = set_parameter(key, 'nocast', 1)
+
+                u = sys.argv[0]
+                u = set_parameter(u, 'url', key)
+                u = set_parameter(u, 'mode', 6)
+                u = set_parameter(u, 'fake', 1)
+                u = set_parameter(u, 'movie', sers.get('ismovie', '0'))
+                self.connect(imageclick, lambda: self.serie())
+                self.urls.append(str(u))
                 # endregion
 
     def set_active_controls(self, _data, _start_page):
@@ -157,6 +157,11 @@ class Calendar(pyxbmct.BlankFullWindow):
         self.connectEventList(
             [pyxbmct.ACTION_MOVE_LEFT],
             self.list_update_left)
+
+        self.connectEventList(
+            [pyxbmct.ACTION_PREVIOUS_MENU,
+             pyxbmct.ACTION_NAV_BACK],
+            self._cancel)
 
     def list_update_up(self):
         try:
@@ -255,7 +260,16 @@ class Calendar(pyxbmct.BlankFullWindow):
         self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self._cancel)
         self.setFocus(self.items[0])
 
-    def serie(self, url):
-        xbmc.executebuiltin('Notification(URL,{0})'.format(url))
-        xbmc.executebuiltin('RunPlugin("plugin://plugin.video.nakamori")')  # not working
-
+    def serie(self):
+        try:
+            url = self.items.index(self.getFocus())
+            xbmc.log('---------- oooo -----> url {0}'.format(self.urls[url]), xbmc.LOGWARNING)
+            handle = xbmcgui.getCurrentWindowId()
+            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            ctl = win.getControl(win.getFocusId())
+            self.close()
+            xbmc.executebuiltin('ActivateWindow({1},"{0}")'.format(self.urls[url], handle))
+            xbmc.sleep(2000)
+            xbmc.executebuiltin('Action(Info)')
+        except Exception as ex:
+            xbmc.log('>>>>>>>>>>>>>>>>>>not working {0}'.format(str(ex.message)), xbmc.LOGWARNING)

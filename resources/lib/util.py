@@ -103,20 +103,21 @@ def valid_user():
             return False
 
 
-def move_position_on_list(control_list, position=0):
+def move_position_on_list(control_list, position=0, force=False):
     """
     Move to the position in a list - use episode number for position
     Args:
         control_list: the list control
         position: the index of the item not including settings
     """
-    if position < 0:
-        position = 0
-    if __addon__.getSetting('show_continue') == 'true':
-        position = int(position + 1)
+    if not force:
+        if position < 0:
+            position = 0
+        if __addon__.getSetting('show_continue') == 'true':
+            position = int(position + 1)
 
-    if get_kodi_setting_bool("filelists.showparentdiritems"):
-        position = int(position + 1)
+        if get_kodi_setting_bool("filelists.showparentdiritems"):
+            position = int(position + 1)
 
     try:
         control_list.selectItem(position)

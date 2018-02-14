@@ -326,8 +326,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
 
                 # menu for episode
                 if extra_data.get('source', 'none') == 'ep':
-                    series_id = extra_data.get('serie_id')
-                    ep_id = extra_data.get('ep_id')
+                    series_id = extra_data.get('serie_id', 0)
+                    ep_id = extra_data.get('ep_id', 0)
                     file_id = extra_data.get('file_id', 0)
                     url_peep = url_peep_base
                     url_peep = set_parameter(url_peep, 'mode', 1)
@@ -1262,6 +1262,7 @@ def build_serie_episodes_types(params):
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(html, xbmc.LOGWARNING)
         body = json.loads(html)
+
         try:
             parent_title = ''
             try:
@@ -1318,8 +1319,11 @@ def build_serie_episodes(params):
     # value to hold position of not seen episode
     next_episode = -1
     episode_count = 0
+    is_fake = 0
     busy.create(__addon__.getLocalizedString(30160), __addon__.getLocalizedString(30163))
     try:
+        if 'fake' in params:
+            is_fake = params['fake']
         item_count = 0
         html = get_json(params['url'])
         busy.update(50, __addon__.getLocalizedString(30162))
@@ -1346,11 +1350,8 @@ def build_serie_episodes(params):
                 xbmcplugin.addSortMethod(handle, 29)  # runtime
                 xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
-            if len(body.get('eps', {})) <= 0:
-                error("No episodes in list")
             skip = __addon__.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body.get('eps', {})) > int(
                 __addon__.getSetting("skipExtraInfoMaxEpisodes"))
-
             # keep this init out of the loop, as we only provide this once
             temp_genre = ""
             parent_key = ""
@@ -1379,7 +1380,50 @@ def build_serie_episodes(params):
                 parent_key = body.get('id', '')
                 grandparent_title = encode(body.get('name', ''))
 
-            if len(body.get('eps', {})) > 0:
+            if len(body.get('eps', {})) <= 0:
+                if is_fake == 0:
+                    error("No episodes in list")
+                else:
+                    thumb = ''
+                    if len(body["art"]["thumb"]) > 0:
+                        thumb = body["art"]["thumb"][0]["url"]
+                        if thumb is not None and ":" not in thumb:
+                            thumb = _server_ + thumb
+                    details = {
+                        'mediatype': 'episode',
+                        'plot': remove_anidb_links(encode(body['summary'])),
+                        'title': body['name'],
+                        'rating': float(str(body.get('rating', '0')).replace(',', '.')),
+                        'castandrole': list_cast_and_role,
+                        'cast': list_cast,
+                        'aired': body['air'],
+                        'tvshowtitle': body['name'],
+                        'size': safeInt(body.get('size', '0')),
+                        'genre': "..." if skip else temp_genre,
+                        'tagline': "..." if skip else temp_genre
+                    }
+                    extra_data = {
+                        'source': 'ep',
+                        'VideoStreams': defaultdict(dict),
+                        'thumb': None if skip else thumb,
+                    }
+                    extra_data['VideoStreams'][0]['duration'] = 0
+                    u = sys.argv[0]
+                    add_gui_item(u, details, extra_data, None, folder=False, index=int(episode_count - 1))
+                    busy.close()
+                    end_of_directory()
+
+                    win_id = xbmcgui.getCurrentWindowId()
+                    xbmc.log(' ------ win_id: {0}'.format(str(win_id)), xbmc.LOGWARNING)
+                    wind = xbmcgui.Window(win_id)
+                    xbmc.sleep(1000)
+                    control_id = wind.getFocusId()
+                    xbmc.log(' ------ control_id: {0}'.format(str(control_id)), xbmc.LOGWARNING)
+                    control_list = wind.getControl(control_id)
+                    xbmc.log(' ------ control_list: {0}'.format(str(type(control_list))), xbmc.LOGWARNING)
+                    control_list.selectItem(1)
+
+            elif len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
                 if __addon__.getSetting("show_continue") == "true":
                     if sys.version_info < (3, 0):
@@ -1542,8 +1586,9 @@ def build_serie_episodes(params):
             error("Error during build_serie_episodes", str(exc))
     except Exception as exc:
         error("Invalid JSON Received in build_serie_episodes", str(exc))
-    busy.close()
-    end_of_directory()
+    if is_fake == 0:
+        busy.close()
+        end_of_directory()
 
     if get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
         try:
@@ -1715,7 +1760,6 @@ def build_serie_soon_new(params):
             xbmc.log(html, xbmc.LOGWARNING)
         html_body = json.loads(html)
         busy.update(70)
-        directory_type = html_body['type']
         temp_url = params['url']
         temp_url = set_parameter(temp_url, 'level', 2)
         html = get_json(temp_url)
@@ -1724,11 +1768,11 @@ def build_serie_soon_new(params):
         busy.close()
 
         try:
-            window = Calendar(data=body)
+            window = Calendar(data=body, handle=handle)
             # xbmcplugin.endOfDirectory(int(sys.argv[1]))
             window.doModal()
             del window
-            return
+            # return
         except Exception as e:
             error("Error during build_serie_soon date_air", str(e))
     except Exception as e:
@@ -2400,14 +2444,15 @@ if __addon__.getSetting('kodi18') == '3':
         else:
             __addon__.setSetting(id='kodi18', value='0')
 
-
 if get_server_status() is True:
     if valid_user() is True:
+
         try:
             parameters = util.parseParameters()
         except Exception as exp:
             error('valid_userid_1 parseParameters() error', str(exp))
             parameters = {'mode': 2}
+
         if parameters:
             try:
                 mode = int(parameters['mode'])
@@ -2416,6 +2461,7 @@ if get_server_status() is True:
                 mode = None
         else:
             mode = None
+
         try:
             if 'cmd' in parameters:
                 cmd = parameters['cmd']
@@ -2424,7 +2470,6 @@ if get_server_status() is True:
         except Exception as exp:
             error('valid_userid_2 parseParameters() error', str(exp))
             cmd = None
-
         if cmd is not None:
             if cmd == "voteSer":
                 vote_series(parameters)
