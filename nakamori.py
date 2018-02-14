@@ -1725,6 +1725,7 @@ def build_serie_soon_new(params):
 
         try:
             window = Calendar(data=body)
+            # xbmcplugin.endOfDirectory(int(sys.argv[1]))
             window.doModal()
             del window
             return
