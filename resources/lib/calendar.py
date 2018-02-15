@@ -35,9 +35,9 @@ class Calendar(pyxbmct.BlankDialogWindow):
         self.urls = []
         self.draw()
 
-    def setAnimation(self, control):
-        control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=200'),
-                               ('WindowClose', 'effect=fade start=100 end=0 time=200')])
+    #def setAnimation(self, control):
+    #    control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=200'),
+    #                           ('WindowClose', 'effect=fade start=100 end=0 time=200')])
 
     def draw(self):
         """ Function draw
@@ -59,12 +59,8 @@ class Calendar(pyxbmct.BlankDialogWindow):
         used_dates = []
         continue_day = False
         page_count_ = 0
-        # test = 1
+
         for sers in _data['series']:
-            # if test == 2:
-            #     break
-            # else:
-            #     test = 2
             if page_count_ < _start_page:
                 page_count_ += 1
             else:
@@ -111,7 +107,9 @@ class Calendar(pyxbmct.BlankDialogWindow):
                     fanart = sers["art"]["thumb"][0]["url"]
                     if fanart is not None and ":" not in fanart:
                         fanart = _server_ + fanart
-                imageclick = pyxbmct.Button(label=sers["titles"][0]["Title"], focusTexture=fanart, noFocusTexture=fanart, focusedColor='0xFF00FFFF', font='font10', alignment=pyxbmct.ALIGN_CENTER)
+                imageclick = pyxbmct.Button(label=sers["titles"][0]["Title"],
+                                            focusTexture=fanart, noFocusTexture=fanart,
+                                            focusedColor='0xFF000000', font='font10', alignment=pyxbmct.ALIGN_CENTER)
                 self.controls.append(imageclick)
                 self.items.append(imageclick)
                 self.items_cord.append(str(row_idx) + ";" + str(col_idx))
@@ -133,6 +131,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
                 u = set_parameter(u, 'fake', 1)
                 u = set_parameter(u, 'movie', sers.get('ismovie', '0'))
                 self.connect(imageclick, lambda: self.serie())
+                imageclick.setAnimations([('focus', 'effect=zoom center=auto start=100 end=110 time=100 delay=10',)])
                 self.urls.append(str(u))
                 # endregion
 
