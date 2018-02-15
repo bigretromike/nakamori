@@ -50,9 +50,10 @@
         <setting label="30026" type="lsep"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
-    <category label="30021">
-        <setting label="30022" type="number" id="maxlimit" default="20"/>
-        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
+    <category label="30012">
+        <setting label="30058" type="select" id="calendar_format" default="%d-%m" values="%d-%m|%d-%m-%y|%m-%d|%m-%d-%y"/>
+        <setting label="30059" type="number" id="calendar_rows" default="4"/>
+        <setting label="30060" type="number" id="calendar_cols" default="10"/>
     </category>
     <category label="30031">
         <setting label="30032" type="bool" id="vote_always" default="false"/>
@@ -70,6 +71,10 @@
         <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
     </category>
     <category label="30044">
+        <setting label="30021" type="lsep"/>
+        <setting label="30022" type="number" id="maxlimit" default="20"/>
+        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
+        <setting label="30044" type="lsep"/>
         <setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
         <setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
         <setting label="30042" type="bool" id="spamLog" default="false"/>

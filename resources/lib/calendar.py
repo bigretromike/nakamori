@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import pyxbmct
+import datetime
 import xbmc
 import xbmcaddon
 import xbmcgui
@@ -12,12 +13,12 @@ _addon = xbmcaddon.Addon()
 _addon_path = _addon.getAddonInfo('path')
 _home_ = decode_utf8(xbmc.translatePath(_addon.getAddonInfo('path')))
 _server_ = "http://" + _addon.getSetting("ipaddress") + ":" + _addon.getSetting("port")
-day_images = {1: "day1.jpg", 2: "day2.jpg"}
+day_images = {1: "day1.png", 2: "day2.png", 3: "day3.png", 4: "day4.png", 5: "day5.png"}
 
-max_row_count = 18
-max_col_count = 20
-image_row_span = 4
-image_col_span = 2
+image_row_span = 8
+image_col_span = 4
+max_row_count = (image_row_span * int(_addon.getSetting("calendar_rows"))) + 2
+max_col_count = (image_col_span * int(_addon.getSetting("calendar_cols")))
 
 
 class Calendar(pyxbmct.BlankDialogWindow):
@@ -35,9 +36,9 @@ class Calendar(pyxbmct.BlankDialogWindow):
         self.urls = []
         self.draw()
 
-    #def setAnimation(self, control):
-    #    control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=200'),
-    #                           ('WindowClose', 'effect=fade start=100 end=0 time=200')])
+    def setAnimation(self, control):
+        control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=200'),
+                               ('WindowClose', 'effect=fade start=100 end=0 time=200')])
 
     def draw(self):
         """ Function draw
@@ -84,18 +85,25 @@ class Calendar(pyxbmct.BlankDialogWindow):
                 else:
                     continue_day = False
                     if day_count != 0:
-                        col_idx += 2  # was 3
+                        col_idx += image_col_span
                         row_idx = 0
                         if col_idx > max_col_count - image_col_span:
                             break
                     day_count += 1
-                    if day_count > 2:
+                    if day_count > len(day_images):
                         day_count = 1
                     used_dates.append(air_date)
-                    label = pyxbmct.Label(air_date)
+
+                    try:  # python bug workaround
+                        your_label = datetime.datetime.strptime(air_date, '%Y-%m-%d')
+                    except TypeError:
+                        your_label = datetime.datetime(*(time.strptime(air_date, '%Y-%m-%d')[0:6]))
+
+                    your_label = your_label.strftime(_addon.getSetting("calendar_format"))
+                    label = pyxbmct.Label(your_label)
                     self.controls.append(label)
                     self.placeControl(label, row_idx, col_idx, rowspan=1, columnspan=image_col_span)
-                    image0 = pyxbmct.Image(os.path.join(_home_, 'resources/media', day_images[day_count]), aspectRatio=0)
+                    image0 = pyxbmct.Image(os.path.join(_home_, 'resources/media', day_images[day_count]), aspectRatio=2)
                     self.controls.append(image0)
                     row_idx += 1
                     self.placeControl(image0, row_idx, col_idx, rowspan=1, columnspan=image_col_span, pad_x=0, pad_y=0)
@@ -190,9 +198,8 @@ class Calendar(pyxbmct.BlankDialogWindow):
                 cords = str.split(self.items_cord[item_idx], ';')
                 new_r = int(cords[0])
                 new_c = int(cords[1])
-                # xbmc.log('-------->>>---------- (max_cords[1] {0} max_col_count {1})'.format(str(max_cords[1]), str(max_col_count)), xbmc.LOGWARNING)
-                if int(max_cords[1]) > max_col_count - 2:  # 18 > 20-2
-                    max_cords[1] = max_col_count - 2
+                if int(max_cords[1]) > max_col_count - image_col_span:
+                    max_cords[1] = max_col_count - image_col_span
 
                 if new_c >= int(max_cords[1]):
                     for c in self.controls:
@@ -206,7 +213,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
                     self.add_control_items(self.json_data, self.start_page)
                     item_idx = 0
                 else:
-                    new_c += 2
+                    new_c += image_col_span
 
                     while new_r > 0:
                         try:
@@ -226,8 +233,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
                 cords = str.split(self.items_cord[item_idx], ';')
                 new_r = int(cords[0])
                 new_c = int(cords[1])
-                new_c -= 2
-                # xbmc.log('--------<<<---------- ((new_c {0} items {1} start_page {2})'.format(str(new_c), str(len(self.items)), str(self.start_page)), xbmc.LOGWARNING)
+                new_c -= image_col_span
                 if new_c < 0:
                     for c in self.controls:
                         self.removeControl(c)
@@ -265,8 +271,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
             xbmc.log('---------- oooo -----> url {0}'.format(self.urls[url]), xbmc.LOGWARNING)
             handle = xbmcgui.getCurrentWindowId()
             win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-            ctl = win.getControl(win.getFocusId())
-            self.close()
+            self.close()  # crash kodi without
             xbmc.executebuiltin('ActivateWindow({1},"{0}")'.format(self.urls[url], handle))
             xbmc.sleep(2000)
             xbmc.executebuiltin('Action(Info)')

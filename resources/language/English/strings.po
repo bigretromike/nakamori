@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2017-11-01 11:51+0200\n"
-"Last-Translator: da3dsoul\n"
+"PO-Revision-Date: 2018-02-15 11:51+0200\n"
+"Last-Translator: bigretromike\n"
 "Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,6 +59,10 @@ msgstr ""
 
 msgctxt "#30011"
 msgid "Shoko User"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Calendar"
 msgstr ""
 
 msgctxt "#30013"
@@ -236,6 +240,20 @@ msgstr ""
 msgctxt "#30057"
 msgid "Context Menu Settings"
 msgstr ""
+
+msgctxt "#30058"
+msgid "Date format"
+msgstr ""
+
+msgctxt "#30059"
+msgid "Serie per column"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Columns to show"
+msgstr ""
+
+# 61
 
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
