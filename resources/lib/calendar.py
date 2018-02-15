@@ -338,18 +338,13 @@ class Calendar(pyxbmct.BlankDialogWindow):
         self.connect(xbmcgui.ACTION_MOUSE_RIGHT_CLICK, lambda: self._run_context())
         self.connect(xbmcgui.ACTION_CONTEXT_MENU, lambda: self._run_context())
 
-    def onAction(self, action):
-        KEY_BUTTON_BACK = 275
-        KEY_KEYBOARD_ESC = 61467
-        ACTION_PREVIOUS_MENU = 10
-        ACTION_SELECT_ITEM = 7
-        ACTION_BACKSPACE = 92
-        buttonCod = action.getButtonCode()
-        actionID = action.getId()
-        if action == ACTION_PREVIOUS_MENU:
-            self.close()
-        elif action == ACTION_BACKSPACE:
-            self.close()
+    #def onAction(self, action):
+    #    ACTION_PREVIOUS_MENU = 10
+    #    ACTION_BACKSPACE = 92
+    #    if action == ACTION_PREVIOUS_MENU:
+    #        self.close()
+    #    elif action == ACTION_BACKSPACE:
+    #        self.close()
 
     def serie(self):
         try:
