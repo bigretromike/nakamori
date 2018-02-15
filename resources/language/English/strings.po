@@ -253,7 +253,9 @@ msgctxt "#30060"
 msgid "Columns to show"
 msgstr ""
 
-# 61
+msgctxt "#30061"
+msgid "Advance settings"
+msgstr ""
 
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
@@ -285,6 +287,14 @@ msgstr ""
 
 msgctxt "#30069"
 msgid "Cached data expiration time (s)"
+msgstr ""
+
+msgctxt "#30070"
+msgid "Rows span"
+msgstr ""
+
+msgctxt "#30071"
+msgid "Columns span"
 msgstr ""
 
 #---------------End-Settings--------------------------

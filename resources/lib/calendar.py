@@ -6,7 +6,6 @@ import datetime
 import xbmc
 import xbmcaddon
 import xbmcgui
-import xbmcplugin
 from resources.lib.util import *
 
 _addon = xbmcaddon.Addon()
@@ -15,10 +14,76 @@ _home_ = decode_utf8(xbmc.translatePath(_addon.getAddonInfo('path')))
 _server_ = "http://" + _addon.getSetting("ipaddress") + ":" + _addon.getSetting("port")
 day_images = {1: "day1.png", 2: "day2.png", 3: "day3.png", 4: "day4.png", 5: "day5.png"}
 
-image_row_span = 8
-image_col_span = 4
+if str(_addon.getSetting("calendar_adv")) == "True":
+    image_row_span = int(_addon.getSetting("calendar_rows_span"))
+    image_col_span = int(_addon.getSetting("calendar_cols_span"))
+else:
+    image_row_span = 8
+    image_col_span = 4
 max_row_count = (image_row_span * int(_addon.getSetting("calendar_rows"))) + 2
 max_col_count = (image_col_span * int(_addon.getSetting("calendar_cols")))
+
+
+class Context(pyxbmct.AddonDialogWindow):
+    def __init__(self, title, serie_id):
+        super(Context, self).__init__(serie_id)
+        self.setGeometry(640, 360, 6, 8)
+        self.setWindowTitle(title=title)
+        self.__draw = False
+        self.serie_id = serie_id
+        self.button_add = pyxbmct.Button(label='Add', textColor='0xFFFFFFFF', focusedColor='0xFF00FFFF')
+        self.button_del = pyxbmct.Button(label='Del', textColor='0xFFFFFFFF', focusedColor='0xFF00FFFF')
+        self.button_close = pyxbmct.Button(label='Close', textColor='0xFFFFFFFF', focusedColor='0xFF00FFFF')
+        self.label_id = pyxbmct.Label(label=serie_id, textColor='0xFFFFFFFF')
+        self.draw()
+
+    def setAnimation(self, control):
+        control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=200'),
+                               ('WindowClose', 'effect=fade start=100 end=0 time=200')])
+
+    def draw(self):
+        self.set_active_controls()
+        self.set_navigation()
+
+    def _cancel(self):
+        self.close()
+
+    def set_active_controls(self):
+        self.placeControl(self.button_add, 1, 1, rowspan=2, columnspan=2)
+        self.placeControl(self.label_id, 4, 1, rowspan=2, columnspan=2)
+        self.placeControl(self.button_del, 1, 5, rowspan=2, columnspan=2)
+        self.placeControl(self.button_close, 4, 5, rowspan=2, columnspan=2)
+        self.connect(self.button_add, lambda: self.btn_add)
+        self.connect(self.button_del, lambda: self.btn_del)
+        self.connect(self.button_close, lambda: self._cancel)
+
+    def btn_add(self):
+        return
+
+    def btn_dell(self):
+        return
+
+    def set_navigation(self):
+        """Set up keyboard/remote navigation between controls."""
+        self.connect(pyxbmct.ACTION_NAV_BACK, self._cancel)
+        self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self._cancel)
+        self.connect(pyxbmct.ACTION_MOVE_UP, self.list_update_up)
+        self.connect(pyxbmct.ACTION_MOVE_DOWN, self.list_update_down)
+        self.connect(pyxbmct.ACTION_MOVE_RIGHT, self.list_update_right)
+        self.connect(pyxbmct.ACTION_MOVE_LEFT, self.list_update_left)
+        self.setFocus(self.button_add)
+
+    def list_update_up(self):
+        self.setFocus(self.button_add)
+
+    def list_update_down(self):
+        self.setFocus(self.button_close)
+
+    def list_update_left(self):
+        self.setFocus(self.button_add)
+
+    def list_update_right(self):
+        self.setFocus(self.button_del)
 
 
 class Calendar(pyxbmct.BlankDialogWindow):
@@ -29,22 +94,21 @@ class Calendar(pyxbmct.BlankDialogWindow):
         self.controls = []
         self.items = []
         self.items_cord = []
+        self.serie_index = []
         self.window_handle = handle
         self.json_data = data
         self.start_page = 0
         self.prev_count = page
         self.urls = []
         self.draw()
+        if len(self.items) > 0:
+            self.setFocus(self.items[0])
 
     def setAnimation(self, control):
         control.setAnimations([('WindowOpen', 'effect=fade start=0 end=100 time=200'),
                                ('WindowClose', 'effect=fade start=100 end=0 time=200')])
 
     def draw(self):
-        """ Function draw
-            initialize built-in functions
-            this automatically called.
-        """
         bg = pyxbmct.Image(os.path.join(_home_, 'resources/media', 'black_dot.png'), aspectRatio=0)
         self.placeControl(bg, 0, 0, rowspan=max_row_count, columnspan=max_col_count, pad_x=0, pad_y=0)
         self.set_active_controls(self.json_data, self.start_page)
@@ -52,6 +116,12 @@ class Calendar(pyxbmct.BlankDialogWindow):
 
     def _cancel(self):
         self.close()
+
+    def _run_context(self):
+        idx = self.items.index(self.getFocus())
+        window = Context(title='Add to wanted', serie_id=self.serie_index[idx])
+        window.doModal()
+        del window
 
     def add_control_items(self, _data, _start_page):
         day_count = 0
@@ -141,6 +211,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
                 self.connect(imageclick, lambda: self.serie())
                 imageclick.setAnimations([('focus', 'effect=zoom center=auto start=100 end=110 time=100 delay=10',)])
                 self.urls.append(str(u))
+                self.serie_index.append(str(key_id))
                 # endregion
 
     def set_active_controls(self, _data, _start_page):
@@ -261,9 +332,24 @@ class Calendar(pyxbmct.BlankDialogWindow):
 
     def set_navigation(self):
         """Set up keyboard/remote navigation between controls."""
-        self.connect(pyxbmct.ACTION_NAV_BACK, self._cancel)
-        self.connect(pyxbmct.ACTION_PREVIOUS_MENU, self._cancel)
-        self.setFocus(self.items[0])
+        self.connect(pyxbmct.ACTION_NAV_BACK, lambda: self._cancel())
+        self.connect(xbmcgui.ACTION_BACKSPACE, lambda: self._cancel())
+        self.connect(pyxbmct.ACTION_PREVIOUS_MENU, lambda: self._cancel())
+        self.connect(xbmcgui.ACTION_MOUSE_RIGHT_CLICK, lambda: self._run_context())
+        self.connect(xbmcgui.ACTION_CONTEXT_MENU, lambda: self._run_context())
+
+    def onAction(self, action):
+        KEY_BUTTON_BACK = 275
+        KEY_KEYBOARD_ESC = 61467
+        ACTION_PREVIOUS_MENU = 10
+        ACTION_SELECT_ITEM = 7
+        ACTION_BACKSPACE = 92
+        buttonCod = action.getButtonCode()
+        actionID = action.getId()
+        if action == ACTION_PREVIOUS_MENU:
+            self.close()
+        elif action == ACTION_BACKSPACE:
+            self.close()
 
     def serie(self):
         try:

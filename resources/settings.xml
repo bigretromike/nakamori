@@ -51,9 +51,12 @@
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
     <category label="30012">
-        <setting label="30058" type="select" id="calendar_format" default="%d-%m" values="%d-%m|%d-%m-%y|%m-%d|%m-%d-%y"/>
+        <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
         <setting label="30059" type="number" id="calendar_rows" default="4"/>
         <setting label="30060" type="number" id="calendar_cols" default="10"/>
+        <setting label="30061" type="bool" id="calendar_adv" default="false"/>
+        <setting label="30070" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
     </category>
     <category label="30031">
         <setting label="30032" type="bool" id="vote_always" default="false"/>
