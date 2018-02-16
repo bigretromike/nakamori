@@ -2,6 +2,19 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import re
+import gzip
+import traceback
+import json
+import time
+from distutils.version import LooseVersion
+import collections
+import xbmc
+import xbmcgui
+import xbmcaddon
+import xbmcplugin
+import xml.etree.ElementTree as Tree
+import resources.lib.cache as cache
 
 if sys.version_info < (3, 0):
     from urllib2 import urlopen
@@ -14,44 +27,15 @@ else:
     from urllib.parse import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib.request import Request
     from io import StringIO, BytesIO
-import re
-import gzip
-import traceback
-import json
-import time
-from distutils.version import LooseVersion
 
-import collections
-
-import xbmc
-import xbmcgui
-import xbmcaddon
-import xbmcplugin
-
-
-import xml.etree.ElementTree as Tree
-
-import resources.lib.cache as cache
-
-# get addon info
-__addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
-__addonversion__ = __addon__.getAddonInfo('version')
-__addonid__ = __addon__.getAddonInfo('id')
-__addonname__ = __addon__.getAddonInfo('name')
-__icon__ = __addon__.getAddonInfo('icon')
-__localize__ = __addon__.getLocalizedString
-_server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-ADDON_ID = 'plugin.video.nakamori'
-
-__shoko_version__ = LooseVersion('0.1')
-
-try:
-    # kodi 17+
-    UA = xbmc.getUserAgent()
-except:
-    # kodi < 17
-    UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
-pDialog = ''
+global __addon__
+global __addonversion__
+global __addonid__
+global __addonname__
+global __icon__
+global __localize__
+global _server_
+global _home_
 
 
 def encode_utf8(_string):
@@ -68,15 +52,32 @@ def decode_utf8(_string):
         return _string
 
 
+__addon__ = xbmcaddon.Addon()
+__addonversion__ = __addon__.getAddonInfo('version')
+__addonid__ = __addon__.getAddonInfo('id')
+__addonname__ = __addon__.getAddonInfo('name')
+__icon__ = __addon__.getAddonInfo('icon')
+__localize__ = __addon__.getLocalizedString
+_server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+_home_ = decode_utf8(xbmc.translatePath(__addon__.getAddonInfo('path')))
+__shoko_version__ = LooseVersion('0.1')
+
+try:
+    # kodi 17+
+    UA = xbmc.getUserAgent()
+except:
+    # kodi < 17
+    UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
+pDialog = ''
+
+
 def valid_user():
     """
     Logs into the server and stores the apikey, then checks if the userid is valid
-    reset apikey if user enters new login info
-    if apikey is present login should be empty as its not needed anymore
     :return: bool True if all completes successfully
     """
 
-    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
+    if __addon__.getSetting("apikey") != "":
         return True
     else:
         xbmc.log('-- apikey empty --')
@@ -90,8 +91,6 @@ def valid_user():
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user credentials --')
                     __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
-                    __addon__.setSetting(id='login', value='')
-                    __addon__.setSetting(id='password', value='')
                     return True
                 else:
                     raise Exception('Error Getting apikey')
@@ -157,6 +156,7 @@ def set_window_heading(window_name):
 def populate_tag_setting_flags():
     """
     Get user settings from local Kodi, and use them with Nakamori
+    :rtype: object
     :return: setting_flags
     """
     tag_setting_flags = 0
@@ -528,13 +528,13 @@ def post(url, data, headers={}):
     return data
 
 
-def get_server_status():
+def get_server_status(ip, port):
     """
     Try to query server for version, if kodi get version respond then shoko server is running
     :return: bool
     """
     try:
-        if get_version() != LooseVersion('0.0'):
+        if get_version(ip, port) != LooseVersion('0.0'):
             return True
         else:
             return False
@@ -543,13 +543,15 @@ def get_server_status():
 
 
 # json - ok
-def get_version():
+def get_version(ip, port):
+    legacy = ''
+    version = ''
     try:
         global __shoko_version__
         if __shoko_version__ != LooseVersion('0.1'):
             return __shoko_version__
         legacy = LooseVersion('0.0')
-        json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version", direct=True)
+        json_file = get_json("http://" + str(ip) + ":" + str(port) + "/api/version", direct=True)
         if json_file is None:
             return legacy
         try:
@@ -579,7 +581,7 @@ def getURL(url, header):
         response = urlopen(req)
         if response and response.getcode() == 200:
             if response.info().get('Content-Encoding') == 'gzip':
-                buf = StringIO.StringIO(response.read())
+                buf = StringIO(response.read())
                 gzip_f = gzip.GzipFile(fileobj=buf)
                 content = gzip_f.read()
             else:
@@ -658,12 +660,12 @@ def urlSafe(name):
 
 def alert(alertText):
     dialog = xbmcgui.Dialog()
-    ret = dialog.ok(ADDON_ID, alertText)
+    ret = dialog.ok(__addonid__, alertText)
 
 
 def fakeError(alertText):
     dialog = xbmcgui.Dialog()
-    ret = dialog.ok(ADDON_ID + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
+    ret = dialog.ok(__addonid__ + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
 
 
 def progressStart(title, status):

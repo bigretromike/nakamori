@@ -12,6 +12,7 @@
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
         <setting type="number" id="kodi18" default="3" visible="false"/>
+        <setting type="number" id="wizard" default="0" visible="false"/>
     </category>
     <category label="30054">
         <setting label="30039" type="bool" id="show_continue" default="false"/>
