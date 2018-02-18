@@ -341,6 +341,10 @@ msgctxt "#30082"
 msgid "Setup Wizard"
 msgstr ""
 
+msgctxt "#30083"
+msgid "Select first unwatched episode"
+msgstr ""
+
 #---------------End-Settings--------------------------
 
 #---------------Start-Context-Menu--------------------

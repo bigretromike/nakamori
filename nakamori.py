@@ -148,7 +148,7 @@ def video_file_information(node, detail_dict):
             i += 1
 
 
-def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0):
+def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0, force_select=False):
     """Adds an item to the menu and populates its info labels
     :param gui_url:The URL of the menu or file this item links to
     :param details:Data such as info labels
@@ -198,15 +198,14 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     link_url = "%s&%s=%s" % (link_url, argument, util.quote(value))
             tbi = extra_data.get('thumb', '')
             tp = extra_data.get('type', 'Video')
-        # if details.get('parenttitle', '').lower() == 'tags':
-        #     if not filter_gui_item_by_tag(details.get('title', '')):
-        #         return
 
         liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
         if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi, 'icon': tbi, 'poster': tbi})
 
         if extra_data is not None and len(extra_data) > 0:
+            liz.setUniqueIDs({'anidb': extra_data.get('serie_id', 0)})
+            liz.setRating("anidb", details.get('rating', 0), details.get('votes', 0), True)
             actors = extra_data.get('actors', None)
             if actors is not None:
                 if len(actors) > 0:
@@ -358,7 +357,9 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                         context.append((util.__addon__.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
 
         liz.addContextMenuItems(context)
+        liz.select(force_select)
         listitems.append((gui_url, liz, folder))
+        return liz
     except Exception as e:
         util.error("util.error during add_gui_item", str(e))
 
@@ -733,7 +734,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'aired':            str(air),
         # credits        : string (Andy Kaufman, - writing credits
         # 'Lastplayed'   : lastplayed,
-        # 'votes':            directory.get('votes'),
+        'votes':            node.get('votes', 0),
         # trailer        : string (/home/user/trailer.avi,
         'dateadded':        node.get('added', '')
     }
@@ -1306,6 +1307,7 @@ def build_serie_episodes(params):
     next_episode = -1
     episode_count = 0
     is_fake = 0
+
     busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30163))
     try:
         if 'fake' in params:
@@ -1400,13 +1402,10 @@ def build_serie_episodes(params):
                     end_of_directory()
 
                     win_id = xbmcgui.getCurrentWindowId()
-                    xbmc.log(' ------ win_id: {0}'.format(str(win_id)), xbmc.LOGWARNING)
                     wind = xbmcgui.Window(win_id)
                     xbmc.sleep(1000)
                     control_id = wind.getFocusId()
-                    xbmc.log(' ------ control_id: {0}'.format(str(control_id)), xbmc.LOGWARNING)
                     control_list = wind.getControl(control_id)
-                    xbmc.log(' ------ control_list: {0}'.format(str(type(control_list))), xbmc.LOGWARNING)
                     control_list.selectItem(1)
 
             elif len(body.get('eps', {})) > 0:
@@ -1418,6 +1417,7 @@ def build_serie_episodes(params):
                     else:
                         if parent_title.lower() != "unsort":
                             util.addDir("-continue-", '', '7',util._server_ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
+                selected_list_item = False
                 for video in body['eps']:
                     item_count += 1
                     # check if episode have files
@@ -1538,7 +1538,6 @@ def build_serie_episodes(params):
                             if int(util.safeInt(video.get("view", '0'))) > 0:
                                 details['playcount'] = 1
                                 details['overlay'] = 5
-                                # fake this test
                                 # details['lastplayed'] = '2010-10-10 11:00:00'
                             else:
                                 details['playcount'] = 0
@@ -1546,7 +1545,12 @@ def build_serie_episodes(params):
                                 if next_episode == -1:
                                     next_episode = episode_count - 1
 
+                            select_this_item = False
                             if details['playcount'] == 0:
+                                # if there was no other item select this on listitem
+                                if not selected_list_item:
+                                    select_this_item = True
+                                    selected_list_item = True
                                 # Hide plot and thumb for unwatched by kodi setting
                                 if not util.get_kodi_setting_bool("videolibrary.showunwatchedplots"):
                                     details['plot'] \
@@ -1558,16 +1562,17 @@ def build_serie_episodes(params):
                             context = None
 
                             u = sys.argv[0]
-                            # u = util.set_parameter(u, 'url', key)
                             u = util.set_parameter(u, 'mode', 1)
-                            # u = util.set_parameter(u, 'file', key)
                             u = util.set_parameter(u, 'file_id', video["files"][0].get("id", 0))
                             u = util.set_parameter(u, 'ep_id', video.get("id", ''))
                             u = util.set_parameter(u, 'serie_id', body.get("id", ''))
                             u = util.set_parameter(u, 'userrate', details["userrating"])
                             u = util.set_parameter(u, 'ui_index', str(int(episode_count - 1)))
 
-                            add_gui_item(u, details, extra_data, context, folder=False, index=int(episode_count - 1))
+                            add_gui_item(u, details, extra_data, context,
+                                         folder=False, index=int(episode_count - 1),
+                                         force_select=select_this_item)
+
         except Exception as exc:
             util.error("util.error during build_serie_episodes", str(exc))
     except Exception as exc:
@@ -1575,8 +1580,9 @@ def build_serie_episodes(params):
     if is_fake == 0:
         busy.close()
         end_of_directory()
-
-    if util.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0:
+    # settings / media / videos / {advanced} / Select first unwatched tv show season,episode (always)
+    if util.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0 or \
+            util.__addon__.getSetting("select_unwatched") == "true":
         try:
             xbmc.sleep(150)
             new_window = xbmcgui.Window(xbmcgui.getCurrentWindowId())
@@ -2228,7 +2234,7 @@ def sync_offset(file_id, current_time):
     try:
         util.post_json(offset_url, offset_body)
     except:
-        util.error("util.error Scrobbling.", '', True)
+        util.error("error Scrobbling.", '', True)
 
 
 def file_list_gui(ep_body):
@@ -2268,6 +2274,7 @@ def watched_mark(params):
     file_id = params.get('file_id', 0)
     watched = bool(params['watched'])
     key = util._server_ + "/api"
+
     if watched is True:
         watched_msg = "watched"
         if episode_id != '':
@@ -2314,12 +2321,8 @@ def watched_mark(params):
     if box == "true":
         xbmc.executebuiltin("XBMC.Notification(%s, %s %s, 2000, %s)" % (util.__addon__.getLocalizedString(30187),
                                                                         util.__addon__.getLocalizedString(30188),
-                                                                        watched_msg, util.__addon__.getAddonInfo('icon')))
-    # test
-    # win2 = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-    # ctl2 = win2.getControl(win2.getFocusId())
-    # ctl2.reset()
-    # end test
+                                                                        watched_msg,
+                                                                        util.__addon__.getAddonInfo('icon')))
     util.refresh()
 
 
@@ -2472,7 +2475,8 @@ if util.get_server_status(ip=util.__addon__.getSetting('ipaddress'), port=util._
             elif cmd == "searchCast":
                 search_for(parameters.get('url', ''))
             elif cmd == "watched":
-                if util.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0:
+                if util.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0 or \
+                        util.__addon__.getSetting("select_unwatched") == "true":
                     try:
                         win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                         ctl = win.getControl(win.getFocusId())

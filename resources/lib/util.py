@@ -108,6 +108,7 @@ def move_position_on_list(control_list, position=0, force=False):
     Args:
         control_list: the list control
         position: the index of the item not including settings
+        force: bypass setting and set position directly
     """
     if not force:
         if position < 0:

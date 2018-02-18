@@ -51,9 +51,9 @@ class Context(pyxbmct.AddonDialogWindow):
         self.placeControl(self.label_id, 4, 1, rowspan=2, columnspan=2)
         self.placeControl(self.button_del, 1, 5, rowspan=2, columnspan=2)
         self.placeControl(self.button_close, 4, 5, rowspan=2, columnspan=2)
-        self.connect(self.button_add, lambda: self.btn_add)
-        self.connect(self.button_del, lambda: self.btn_del)
-        self.connect(self.button_close, lambda: self._cancel)
+        self.connect(self.button_add, lambda: self.btn_add())
+        self.connect(self.button_del, lambda: self.btn_del())
+        self.connect(self.button_close, lambda: self._cancel())
 
     def btn_add(self):
         return
