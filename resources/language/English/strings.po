@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2017-11-01 11:51+0200\n"
-"Last-Translator: da3dsoul\n"
+"PO-Revision-Date: 2018-02-16 16:52+0200\n"
+"Last-Translator: bigretromike\n"
 "Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,6 +59,10 @@ msgstr ""
 
 msgctxt "#30011"
 msgid "Shoko User"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Calendar"
 msgstr ""
 
 msgctxt "#30013"
@@ -237,6 +241,22 @@ msgctxt "#30057"
 msgid "Context Menu Settings"
 msgstr ""
 
+msgctxt "#30058"
+msgid "Date format"
+msgstr ""
+
+msgctxt "#30059"
+msgid "Serie per column"
+msgstr ""
+
+msgctxt "#30060"
+msgid "Columns to show"
+msgstr ""
+
+msgctxt "#30061"
+msgid "Advance settings"
+msgstr ""
+
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
 msgstr ""
@@ -267,6 +287,62 @@ msgstr ""
 
 msgctxt "#30069"
 msgid "Cached data expiration time (s)"
+msgstr ""
+
+msgctxt "#30070"
+msgid "Rows span"
+msgstr ""
+
+msgctxt "#30071"
+msgid "Columns span"
+msgstr ""
+
+msgctxt "#30072"
+msgid "Test"
+msgstr ""
+
+msgctxt "#30073"
+msgid "Save"
+msgstr ""
+
+msgctxt "#30074"
+msgid "IP Address"
+msgstr ""
+
+msgctxt "#30075"
+msgid "Port"
+msgstr ""
+
+msgctxt "#30076"
+msgid "Login"
+msgstr ""
+
+msgctxt "#30077"
+msgid "Password"
+msgstr ""
+
+msgctxt "#30078"
+msgid "Close"
+msgstr ""
+
+msgctxt "#30079"
+msgid "Warning"
+msgstr ""
+
+msgctxt "#30080"
+msgid "It looks like you didn't successful connect to server."
+msgstr ""
+
+msgctxt "#30081"
+msgid "Would you like to stop setup process and close this window?"
+msgstr ""
+
+msgctxt "#30082"
+msgid "Setup Wizard"
+msgstr ""
+
+msgctxt "#30083"
+msgid "Select first unwatched episode"
 msgstr ""
 
 #---------------End-Settings--------------------------

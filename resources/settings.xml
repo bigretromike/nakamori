@@ -12,9 +12,11 @@
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
         <setting type="number" id="kodi18" default="3" visible="false"/>
+        <setting type="number" id="wizard" default="0" visible="false"/>
     </category>
     <category label="30054">
-        <setting label="30039" type="bool" id="show_continue" default="true"/>
+        <setting label="30039" type="bool" id="show_continue" default="false"/>
+        <setting lable="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
         <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
@@ -50,9 +52,13 @@
         <setting label="30026" type="lsep"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
-    <category label="30021">
-        <setting label="30022" type="number" id="maxlimit" default="20"/>
-        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
+    <category label="30012">
+        <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
+        <setting label="30059" type="number" id="calendar_rows" default="4"/>
+        <setting label="30060" type="number" id="calendar_cols" default="10"/>
+        <setting label="30061" type="bool" id="calendar_adv" default="false"/>
+        <setting label="30070" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
     </category>
     <category label="30031">
         <setting label="30032" type="bool" id="vote_always" default="false"/>
@@ -70,6 +76,10 @@
         <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
     </category>
     <category label="30044">
+        <setting label="30021" type="lsep"/>
+        <setting label="30022" type="number" id="maxlimit" default="20"/>
+        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
+        <setting label="30044" type="lsep"/>
         <setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
         <setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
         <setting label="30042" type="bool" id="spamLog" default="false"/>
@@ -78,8 +88,7 @@
         <setting label="30063" type="bool" id="remote_debug" default="false"/>
         <setting label="30064" type="text" id="ide_ip" default="localhost" visible="eq(-1,true)"/>
         <setting label="30065" type="number" id="ide_port" default="5376" visible="eq(-2,true)"/>
-    </category>
-    <category label="30029">
+        <setting label="30029" type="lsep"/>
         <setting label="30030" type="bool" id="enableCache" default="false"/>
         <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true"/>
     </category>
