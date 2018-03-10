@@ -134,12 +134,12 @@ def video_file_information(node, detail_dict):
             streams[stream_id]['width'] = stream_info['Width']
             if 'width' not in streams:
                 streams['width'] = stream_info['Width']
-            streams['xVideoResolution'] = stream_info['Width']
+            streams['xVideoResolution'] = str(stream_info['Width'])
             streams[stream_id]['height'] = stream_info['Height']
             if 'height' not in streams:
                 streams['height'] = stream_info['Height']
                 streams[stream_id]['aspect'] = round(int(streams['width']) / int(streams['height']), 2)
-            streams['xVideoResolution'] += "x" + stream_info['Height']
+            streams['xVideoResolution'] += "x" + str(stream_info['Height'])
             streams[stream_id]['duration'] = int(round(float(stream_info.get('Duration', 0)) / 1000, 0))
             detail_dict['VideoStreams'] = streams
 
