@@ -269,6 +269,10 @@ msgctxt "#30069"
 msgid "Cached data expiration time (s)"
 msgstr ""
 
+msgctxt "#30070"
+msgid "Hide setting tags (time/place/etc)"
+msgstr ""
+
 #---------------End-Settings--------------------------
 
 #---------------Start-Context-Menu--------------------

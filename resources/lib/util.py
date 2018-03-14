@@ -135,11 +135,12 @@ def populate_tag_setting_flags():
     :return: setting_flags
     """
     tag_setting_flags = 0
-    tag_setting_flags = tag_setting_flags | (0b00001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b00010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b00100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b01000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b10000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b000001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b000010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b000100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b001000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b010000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
+    tag_setting_flags = tag_setting_flags | (0b100000 if __addon__.getSetting('hideSettingTags') == 'true' else 0)
     return tag_setting_flags
 
 
