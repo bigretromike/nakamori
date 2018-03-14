@@ -430,3 +430,22 @@ msgid "Files"
 msgstr ""
 
 #---------------End-Windows--------------------------
+#---------------Start=Items--------------------------
+
+msgctxt "#30221"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30222"
+msgid "Calendar"
+msgstr ""
+
+msgctxt "#30223"
+msgid "Airing Today"
+msgstr ""
+
+msgctxt "#30224"
+msgid "New Search"
+msgstr ""
+
+#---------------End-Items----------------------------

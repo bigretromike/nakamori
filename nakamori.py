@@ -805,6 +805,8 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     serie_url = key
     set_watch_flag(extra_data, details)
     use_mode = 5
+    if key_id == '-1' or key_id == '0':
+        use_mode = 0
 
     u = sys.argv[0]
     u = set_parameter(u, 'url', serie_url)
@@ -950,6 +952,8 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     group_url = key
     set_watch_flag(extra_data, details)
     use_mode = 4 if not is_filter else 4
+    if key_id == '-1' or key_id == '0':
+        use_mode = 0
 
     u = sys.argv[0]
     u = set_parameter(u, 'url', group_url)
@@ -1075,7 +1079,7 @@ def build_filters_menu():
                 title = menu['name']
                 if title == 'Seasons':
                     airing = {
-                        "name": "Airing Today",
+                        "name": __addon__.getLocalizedString(30223),
                         "url":  _server_ + "/api/serie/today"
                     }
                     if get_version() >= LooseVersion("3.8.0.0"):
@@ -1110,7 +1114,7 @@ def build_filters_menu():
 
     # region Start Add_Calendar
     soon_url = _server_ + "/api/serie/soon"
-    title = "Calendar"
+    title = __addon__.getLocalizedString(30222)
     liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
     liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'year.png'),
                 "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
@@ -1124,7 +1128,7 @@ def build_filters_menu():
 
     # region Start Add_Search
     search_url = _server_ + "/api/search"
-    title = "Search"
+    title = __addon__.getLocalizedString(30221)
     liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
     liz.setArt({"icon": os.path.join(_home_, 'resources/media/icons', 'search.png'),
                 "fanart": os.path.join(_home_, 'resources/media', 'new-search.jpg')})
@@ -1625,7 +1629,7 @@ def build_search_directory():
     :return:
     """
     items = [{
-        "title": "New Search",
+        "title": __addon__.getLocalizedString(30224),
         "url": _server_ + "/api/serie",
         "mode": 3,
         "poster": "none",
@@ -1700,24 +1704,17 @@ def build_serie_soon(params):
 
     try:
         busy.create(__addon__.getLocalizedString(30160), __addon__.getLocalizedString(30161))
-
-        busy.update(10)
-        temp_url = params['url']
-        temp_url = set_parameter(temp_url, 'nocast', 0)
-        temp_url = set_parameter(temp_url, 'notag', 0)
-        temp_url = set_parameter(temp_url, 'level', 0)
         busy.update(20)
+        temp_url = params['url']
+        temp_url = set_parameter(temp_url, 'level', 2)
+
         html = get_json(temp_url)
-        busy.update(50, __addon__.getLocalizedString(30162))
+
         if __addon__.getSetting("spamLog") == "true":
             xbmc.log(params['url'], xbmc.LOGWARNING)
             xbmc.log(html, xbmc.LOGWARNING)
-        html_body = json.loads(html)
-        busy.update(70)
-        directory_type = html_body['type']
-        temp_url = params['url']
-        temp_url = set_parameter(temp_url, 'level', 2)
-        html = get_json(temp_url)
+
+        busy.update(70, __addon__.getLocalizedString(30162))
         body = json.loads(html)
         busy.update(100)
         busy.close()
@@ -1726,14 +1723,7 @@ def build_serie_soon(params):
         try:
             set_window_heading(body.get('name', ''))
         except:
-            try:  # this might not be a filter
-                # it isn't single filter)
-                for nest_filter in body:
-                    add_group_item(nest_filter, '', body.get('id', ''), True)
-                end_of_directory()
-                return
-            except:
-                pass
+            set_window_heading(__addon__.getLocalizedString(30222))
 
         try:
             item_count = 0
