@@ -1,20 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, division, print_function, unicode_literals
 try:
     from sqlite3 import dbapi2 as database
 except:
     from pysqlite2 import dbapi2 as database
 
 import os.path
+import sys
 
 import xbmc
 import xbmcaddon
 import xbmcgui
 
+
+def decode_utf8(_string):
+    if sys.version_info < (3, 0):
+        return _string.decode('utf-8')
+    else:
+        return _string
+
+
 ADDON_ID='plugin.video.nakamori'
 addon = xbmcaddon.Addon(id=ADDON_ID)
 profileDir = addon.getAddonInfo('profile')
-profileDir = xbmc.translatePath(profileDir).decode("utf-8")
+profileDir = decode_utf8(xbmc.translatePath(profileDir))
 
 # create profile dirs
 if not os.path.exists(profileDir):

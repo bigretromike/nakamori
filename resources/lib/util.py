@@ -2,37 +2,64 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-import urllib
-import urllib2
 import re
 import gzip
 import traceback
 import json
 import time
 from distutils.version import LooseVersion
-
 import collections
-
 import xbmc
 import xbmcgui
 import xbmcaddon
 import xbmcplugin
-
-from StringIO import StringIO
 import xml.etree.ElementTree as Tree
-
 import resources.lib.cache as cache
 
-# get addon info
-__addon__ = xbmcaddon.Addon(id='plugin.video.nakamori')
+if sys.version_info < (3, 0):
+    from urllib2 import urlopen
+    from urllib import quote, quote_plus, unquote, unquote_plus, urlencode
+    from urllib2 import Request
+    from StringIO import StringIO
+else:
+    # For Python 3.0 and later
+    from urllib.request import urlopen
+    from urllib.parse import quote, quote_plus, unquote, unquote_plus, urlencode
+    from urllib.request import Request
+    from io import StringIO, BytesIO
+
+global __addon__
+global __addonversion__
+global __addonid__
+global __addonname__
+global __icon__
+global __localize__
+global _server_
+global _home_
+
+
+def encode_utf8(_string):
+    if sys.version_info < (3, 0):
+        return _string.encode('utf-8')
+    else:
+        return _string
+
+
+def decode_utf8(_string):
+    if sys.version_info < (3, 0):
+        return _string.decode('utf-8')
+    else:
+        return _string
+
+
+__addon__ = xbmcaddon.Addon()
 __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
 _server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-ADDON_ID = 'plugin.video.nakamori'
-
+_home_ = decode_utf8(xbmc.translatePath(__addon__.getAddonInfo('path')))
 __shoko_version__ = LooseVersion('0.1')
 
 try:
@@ -47,12 +74,10 @@ pDialog = ''
 def valid_user():
     """
     Logs into the server and stores the apikey, then checks if the userid is valid
-    reset apikey if user enters new login info
-    if apikey is present login should be empty as its not needed anymore
     :return: bool True if all completes successfully
     """
 
-    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
+    if __addon__.getSetting("apikey") != "":
         return True
     else:
         xbmc.log('-- apikey empty --')
@@ -66,8 +91,6 @@ def valid_user():
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user credentials --')
                     __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
-                    __addon__.setSetting(id='login', value='')
-                    __addon__.setSetting(id='password', value='')
                     return True
                 else:
                     raise Exception('Error Getting apikey')
@@ -79,20 +102,22 @@ def valid_user():
             return False
 
 
-def move_position_on_list(control_list, position=0):
+def move_position_on_list(control_list, position=0, force=False):
     """
     Move to the position in a list - use episode number for position
     Args:
         control_list: the list control
         position: the index of the item not including settings
+        force: bypass setting and set position directly
     """
-    if position < 0:
-        position = 0
-    if __addon__.getSetting('show_continue') == 'true':
-        position = int(position + 1)
+    if not force:
+        if position < 0:
+            position = 0
+        if __addon__.getSetting('show_continue') == 'true':
+            position = int(position + 1)
 
-    if get_kodi_setting_bool("filelists.showparentdiritems"):
-        position = int(position + 1)
+        if get_kodi_setting_bool("filelists.showparentdiritems"):
+            position = int(position + 1)
 
     try:
         control_list.selectItem(position)
@@ -132,6 +157,7 @@ def set_window_heading(window_name):
 def populate_tag_setting_flags():
     """
     Get user settings from local Kodi, and use them with Nakamori
+    :rtype: object
     :return: setting_flags
     """
     tag_setting_flags = 0
@@ -233,7 +259,7 @@ def error(msg, error_type='Error', silent=False):
     key = sys.argv[0]
     if len(sys.argv) > 2 and sys.argv[2] != '':
         key += sys.argv[2]
-    xbmc.log('On url: ' + urllib.unquote(key), xbmc.LOGERROR)
+    xbmc.log('On url: ' + unquote(key), xbmc.LOGERROR)
     try:
         exc_type, exc_obj, exc_tb = sys.exc_info()
         if exc_type is not None and exc_obj is not None and exc_tb is not None:
@@ -353,12 +379,12 @@ def get_data(url_in, referer, data_type):
 
         url = url_in
 
-        req = urllib2.Request(encode(url))
+        req = Request(encode(url))
         req.add_header('Accept', 'application/' + data_type)
         req.add_header('apikey', __addon__.getSetting("apikey"))
 
         if referer is not None:
-            referer = urllib2.quote(encode(referer)).replace("%3A", ":")
+            referer = quote(encode(referer)).replace("%3A", ":")
             if len(referer) > 1:
                 req.add_header('Referer', referer)
         use_gzip = __addon__.getSetting("use_gzip")
@@ -367,14 +393,17 @@ def get_data(url_in, referer, data_type):
                 req.add_header('Accept-encoding', 'gzip')
         data = None
         try:
-            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             if response.info().get('Content-Encoding') == 'gzip':
                 try:
-                    buf = StringIO(response.read())
+                    if sys.version_info < (3, 0):
+                        buf = StringIO(response.read())
+                    else:
+                        buf = BytesIO(response.read())
                     f = gzip.GzipFile(fileobj=buf)
                     data = f.read()
                 except Exception as ex:
-                    error('Decompresing gzip respond failed', str(ex))
+                    error('Decompresing gzip respond failed: ' + str(ex))
             else:
                 data = response.read()
             response.close()
@@ -420,12 +449,12 @@ def post_data(url, data_in):
     Returns: The response from the server
     """
     if data_in is not None:
-        req = urllib2.Request(encode(url), data_in, {'Content-Type': 'application/json'})
+        req = Request(encode(url), data_in.encode('utf-8'), {'Content-Type': 'application/json'})
         req.add_header('apikey', __addon__.getSetting("apikey"))
         req.add_header('Accept', 'application/json')
         data_out = None
         try:
-            response = urllib2.urlopen(req, timeout=int(__addon__.getSetting('timeout')))
+            response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             data_out = response.read()
             response.close()
         except Exception as ex:
@@ -464,7 +493,7 @@ def decode(i=''):
     """
     try:
         if isinstance(i, str):
-            return i.decode('utf-8')
+            return decode_utf8(i)
         elif isinstance(i, unicode):
             return i
     except:
@@ -492,22 +521,22 @@ def encode(i=''):
 
 
 def post(url, data, headers={}):
-    postdata = urllib.urlencode(data)
-    req = urllib2.Request(url, postdata, headers)
+    postdata = urlencode(data)
+    req = Request(url, postdata, headers)
     req.add_header('User-Agent', UA)
-    response = urllib2.urlopen(req)
+    response = urlopen(req)
     data = response.read()
     response.close()
     return data
 
 
-def get_server_status():
+def get_server_status(ip, port):
     """
     Try to query server for version, if kodi get version respond then shoko server is running
     :return: bool
     """
     try:
-        if get_version() != LooseVersion('0.0'):
+        if get_version(ip, port) != LooseVersion('0.0'):
             return True
         else:
             return False
@@ -516,13 +545,15 @@ def get_server_status():
 
 
 # json - ok
-def get_version():
+def get_version(ip, port):
+    legacy = ''
+    version = ''
     try:
         global __shoko_version__
         if __shoko_version__ != LooseVersion('0.1'):
             return __shoko_version__
         legacy = LooseVersion('0.0')
-        json_file = get_json("http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port") + "/api/version", direct=True)
+        json_file = get_json("http://" + str(ip) + ":" + str(port) + "/api/version", direct=True)
         if json_file is None:
             return legacy
         try:
@@ -548,16 +579,16 @@ def get_version():
 
 def getURL(url, header):
     try:
-        req = urllib2.Request(url, headers=header)
-        response = urllib2.urlopen(req)
+        req = Request(url, headers=header)
+        response = urlopen(req)
         if response and response.getcode() == 200:
             if response.info().get('Content-Encoding') == 'gzip':
-                buf = StringIO.StringIO(response.read())
+                buf = StringIO(response.read())
                 gzip_f = gzip.GzipFile(fileobj=buf)
                 content = gzip_f.read()
             else:
                 content = response.read()
-            content = content.decode('utf-8', 'ignore')
+            content = decode_utf8(content)
             return content
         return False
     except:
@@ -631,12 +662,12 @@ def urlSafe(name):
 
 def alert(alertText):
     dialog = xbmcgui.Dialog()
-    ret = dialog.ok(ADDON_ID, alertText)
+    ret = dialog.ok(__addonid__, alertText)
 
 
 def fakeError(alertText):
     dialog = xbmcgui.Dialog()
-    ret = dialog.ok(ADDON_ID + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
+    ret = dialog.ok(__addonid__ + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
 
 
 def progressStart(title, status):
@@ -678,7 +709,7 @@ def set_parameter(url, parameter, value):
                 continue
             url += array3[0] + '=' + array3[1] + '&'
         return url[:-1]
-    value = urllib.quote_plus(value)
+    value = quote_plus(value)
     if '?' not in url:
         return url + '?' + parameter + '=' + value
 
@@ -714,14 +745,14 @@ def searchBox():
 
 def addDir(name, url, mode, iconimage='DefaultTVShows.png', plot="", poster="DefaultVideo.png", filename="none",
            offset=''):
-    # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&poster_file="+urllib.quote_plus(poster)+"&filename="+urllib.quote_plus(filename)
+    # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+quote_plus(name)+"&poster_file="+quote_plus(poster)+"&filename="+quote_plus(filename)
     u = sys.argv[0]
     if mode is not '':
         u = set_parameter(u, 'mode', str(mode))
     if name is not '':
-        u = set_parameter(u, 'name', urllib.quote_plus(name))
-    u = set_parameter(u, 'poster_file', urllib.quote_plus(poster))
-    u = set_parameter(u, 'filename', urllib.quote_plus(filename))
+        u = set_parameter(u, 'name', quote_plus(name))
+    u = set_parameter(u, 'poster_file', quote_plus(poster))
+    u = set_parameter(u, 'filename', quote_plus(filename))
     if offset is not '':
         u = set_parameter(u, 'offset', offset)
     if url is not '':
@@ -775,7 +806,7 @@ def parseParameters(input_string=sys.argv[2]):
             if (len(name_value_pair) > 0) & ("=" in name_value_pair):
                 pair = name_value_pair.split('=')
                 key = pair[0]
-                value = decode(urllib.unquote_plus(pair[1]))
+                value = decode(unquote_plus(pair[1]))
                 parameters[key] = value
     return parameters
 
@@ -849,9 +880,9 @@ def extract(text, startText, endText):
 
 def request(url, headers={}):
     debug('request: %s' % url)
-    req = urllib2.Request(url, headers=headers)
+    req = Request(url, headers=headers)
     req.add_header('User-Agent', UA)
-    response = urllib2.urlopen(req)
+    response = urlopen(req)
     data = response.read()
     response.close()
     debug('len(data) %s' % len(data))
@@ -870,7 +901,7 @@ def makeLink(params, baseUrl=sys.argv[0]):
     params: the params to be added to the URL
     BaseURL: the base URL, sys.argv[0] by default
     """
-    return baseUrl + '?' + urllib.urlencode(
+    return baseUrl + '?' + urlencode(
         dict([encode(k), encode(decode(v))] for k, v in params.items()))
 
 
@@ -931,13 +962,13 @@ def makeUTF8(data):
     # log(repr(data), 5)
     # return data
     try:
-        return data.decode('utf8', 'xmlcharrefreplace')  # was 'ignore'
+        return decode_utf8(data)  # was 'ignore'
     except:
         # log("Hit except on : " + repr(data))
         s = u""
         for i in data:
             try:
-                i.decode("utf8", "xmlcharrefreplace")
+                decode_utf8(i)
             except:
                 # log("Can't convert character", 4)
                 continue
