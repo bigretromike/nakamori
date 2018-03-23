@@ -20,6 +20,12 @@ import cProfile
 
 import datetime
 
+if sys.version_info < (3, 0):
+    from urllib2 import HTTPError
+else:
+    # For Python 3.0 and later
+    from urllib.error import HTTPError
+
 has_pydev = False
 has_line_profiler = False
 try:
@@ -205,7 +211,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
 
         if extra_data is not None and len(extra_data) > 0:
             liz.setUniqueIDs({'anidb': extra_data.get('serie_id', 0)})
-            liz.setRating("anidb", details.get('rating', 0), details.get('votes', 0), True)
+            liz.setRating('anidb', int(details.get('rating', 0)), int(details.get('votes', 0)), True)
             actors = extra_data.get('actors', None)
             if actors is not None:
                 if len(actors) > 0:
@@ -1055,7 +1061,7 @@ def build_filters_menu():
                 title = menu['name']
                 if title == 'Seasons':
                     airing = {
-                        "name": __addon__.getLocalizedString(30223),
+                        "name": util.__addon__.getLocalizedString(30223),
                         "url":  util._server_ + "/api/serie/today"
                     }
                     if util.get_version(util.__addon__.getSetting("ipaddress"),
@@ -1091,7 +1097,7 @@ def build_filters_menu():
 
     # region Start Add_Calendar
     soon_url = util._server_ + "/api/serie/soon"
-    title = __addon__.getLocalizedString(30222)
+    title = util.__addon__.getLocalizedString(30222)
     liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
     liz.setArt({"icon": os.path.join(util._home_, 'resources/media/icons', 'year.png'),
                 "fanart": os.path.join(util._home_, 'resources/media', 'new-search.jpg')})
@@ -1119,7 +1125,7 @@ def build_filters_menu():
 
     # region Start Add_Search
     search_url = util._server_ + "/api/search"
-    title = __addon__.getLocalizedString(30221)
+    title = util.__addon__.getLocalizedString(30221)
     liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
     liz.setArt({"icon": os.path.join(util._home_, 'resources/media/icons', 'search.png'),
                 "fanart": os.path.join(util._home_, 'resources/media', 'new-search.jpg')})
@@ -1672,7 +1678,7 @@ def build_search_directory():
     :return:
     """
     items = [{
-        "title": __addon__.getLocalizedString(30224),
+        "title": util.__addon__.getLocalizedString(30224),
         "url": util._server_ + "/api/serie",
         "mode": 3,
         "poster": "none",
@@ -1791,7 +1797,7 @@ def build_serie_soon(params):
         busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30161))
         busy.update(20)
         temp_url = params['url']
-        temp_url = set_parameter(temp_url, 'level', 2)
+        temp_url = util.set_parameter(temp_url, 'level', 2)
 
         busy.update(10)
         temp_url = params['url']
@@ -1818,7 +1824,7 @@ def build_serie_soon(params):
         try:
             util.set_window_heading(body.get('name', ''))
         except:
-            set_window_heading(__addon__.getLocalizedString(30222))
+            util.set_window_heading(util.__addon__.getLocalizedString(30222))
 
         try:
             item_count = 0
@@ -2441,148 +2447,152 @@ if util.__addon__.getSetting('wizard') == '0':
     del wizard
 
 if util.get_server_status(ip=util.__addon__.getSetting('ipaddress'), port=util.__addon__.getSetting('port')) is True:
-    if util.valid_user() is True:
-        try:
-            parameters = util.parseParameters()
-        except Exception as exp:
-            util.error('valid_userid_1 parseParameters() util.error', str(exp))
-            parameters = {'mode': 2}
-
-        if parameters:
+    try:
+        if util.valid_user() is True:
             try:
-                mode = int(parameters['mode'])
+                parameters = util.parseParameters()
             except Exception as exp:
-                util.error('valid_userid set \'mode\' util.error', str(exp) + " parameters: " + str(parameters))
-                mode = None
-        else:
-            mode = None
+                util.error('valid_userid_1 parseParameters() util.error', str(exp))
+                parameters = {'mode': 2}
 
-        try:
-            if 'cmd' in parameters:
-                cmd = parameters['cmd']
+            if parameters:
+                try:
+                    mode = int(parameters['mode'])
+                except Exception as exp:
+                    util.error('valid_userid set \'mode\' util.error', str(exp) + " parameters: " + str(parameters))
+                    mode = None
             else:
+                mode = None
+
+            try:
+                if 'cmd' in parameters:
+                    cmd = parameters['cmd']
+                else:
+                    cmd = None
+            except Exception as exp:
+                util.error('valid_userid_2 parseParameters() util.error', str(exp))
                 cmd = None
-        except Exception as exp:
-            util.error('valid_userid_2 parseParameters() util.error', str(exp))
-            cmd = None
-        if cmd is not None:
-            if cmd == "voteSer":
-                vote_series(parameters)
-            elif cmd == "voteEp":
-                vote_episode(parameters)
-            elif cmd == "viewCast":
-                build_cast_menu(parameters)
-            elif cmd == "searchCast":
-                search_for(parameters.get('url', ''))
-            elif cmd == "watched":
-                if util.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0 or \
-                        util.__addon__.getSetting("select_unwatched") == "true":
+            if cmd is not None:
+                if cmd == "voteSer":
+                    vote_series(parameters)
+                elif cmd == "voteEp":
+                    vote_episode(parameters)
+                elif cmd == "viewCast":
+                    build_cast_menu(parameters)
+                elif cmd == "searchCast":
+                    search_for(parameters.get('url', ''))
+                elif cmd == "watched":
+                    if util.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') == 0 or \
+                            util.__addon__.getSetting("select_unwatched") == "true":
+                        try:
+                            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+                            ctl = win.getControl(win.getFocusId())
+                            # noinspection PyTypeChecker
+                            ui_index = parameters.get('ui_index', '')
+                            if ui_index != '':
+                                util.move_position_on_list(ctl, int(ui_index) + 1)
+                        except Exception as exp:
+                            xbmc.log(str(exp), xbmc.LOGWARNING)
+                            pass
+                    parameters['watched'] = True
+                    watched_mark(parameters)
+                    if util.__addon__.getSetting("vote_always") == "true":
+                        if parameters.get('userrate', 0) == 0:
+                            vote_episode(parameters)
+                elif cmd == "unwatched":
+                    parameters['watched'] = False
+                    watched_mark(parameters)
+                elif cmd == "playlist":
+                    play_continue_item()
+                elif cmd == "no_mark":
+                    util.__addon__.setSetting('no_mark', '1')
+                    xbmc.executebuiltin('Action(Select)')
+                elif cmd == "pickFile":
+                    if str(parameters['ep_id']) != "0":
+                        ep_url = util._server_ + "/api/ep?id=" + str(parameters['ep_id']) + "&level=2"
+                        file_list_gui(util.json.loads(util.get_json(ep_url)))
+                elif cmd == 'rescan':
+                    rescan_file(parameters, True)
+                elif cmd == 'rehash':
+                    rescan_file(parameters, False)
+                elif cmd == 'missing':
+                    remove_missing_files()
+                elif cmd == 'createPlaylist':
+                    create_playlist(parameters['serie_id'])
+                elif cmd == 'refresh':
+                    util.refresh()
+            else:
+                if mode == 0:  # string label
+                    pass
+                elif mode == 1:  # play_file
                     try:
                         win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
                         ctl = win.getControl(win.getFocusId())
-                        # noinspection PyTypeChecker
-                        ui_index = parameters.get('ui_index', '')
-                        if ui_index != '':
-                            util.move_position_on_list(ctl, int(ui_index) + 1)
+                        if play_video(parameters['ep_id'],
+                                      parameters['raw_id'] if 'raw_id' in parameters else "0",
+                                      parameters['movie'] if 'movie' in parameters else 0) > 0:
+                            # noinspection PyTypeChecker
+                            ui_index = parameters.get('ui_index', '')
+                            if ui_index != '':
+                                util.move_position_on_list(ctl, int(ui_index) + 1)
+                            parameters['watched'] = True
+                            watched_mark(parameters)
+
+                            if util.__addon__.getSetting('vote_always') == 'true':
+                                # convert in case shoko give float
+                                if parameters.get('userrate', '0.0') == '0.0':
+                                    vote_episode(parameters)
+                                else:
+                                    xbmc.log("------- vote_always found 'userrate':" + str(parameters.get('userrate',
+                                                                                                          '0.0')),
+                                             xbmc.LOGNOTICE)
                     except Exception as exp:
                         xbmc.log(str(exp), xbmc.LOGWARNING)
                         pass
-                parameters['watched'] = True
-                watched_mark(parameters)
-                if util.__addon__.getSetting("vote_always") == "true":
-                    if parameters.get('userrate', 0) == 0:
-                        vote_episode(parameters)
-            elif cmd == "unwatched":
-                parameters['watched'] = False
-                watched_mark(parameters)
-            elif cmd == "playlist":
-                play_continue_item()
-            elif cmd == "no_mark":
-                util.__addon__.setSetting('no_mark', '1')
-                xbmc.executebuiltin('Action(Select)')
-            elif cmd == "pickFile":
-                if str(parameters['ep_id']) != "0":
-                    ep_url = util._server_ + "/api/ep?id=" + str(parameters['ep_id']) + "&level=2"
-                    file_list_gui(util.json.loads(util.get_json(ep_url)))
-            elif cmd == 'rescan':
-                rescan_file(parameters, True)
-            elif cmd == 'rehash':
-                rescan_file(parameters, False)
-            elif cmd == 'missing':
-                remove_missing_files()
-            elif cmd == 'createPlaylist':
-                create_playlist(parameters['serie_id'])
-            elif cmd == 'refresh':
-                util.refresh()
+                elif mode == 2:  # DIRECTORY
+                    xbmcgui.Dialog().ok('MODE=2', 'MODE')
+                elif mode == 3:  # Search
+                    try:
+                        if parameters['extras'] == "force-search" and 'query' in parameters:
+                            url = util._server_ + '/api/search'
+                            url = util.set_parameter(url, 'query', parameters['query'])
+                            search_for(url)
+                        else:
+                            xbmcplugin.setContent(int(handle), "movies")
+                            execute_search_and_add_query()
+                    except:
+                        build_search_directory()
+                elif mode == 4:  # Group/Serie
+                    try:
+                        if has_line_profiler:
+                            profiler = line_profiler.LineProfiler()
+                            profiler.add_function(build_groups_menu)
+                            profiler.enable_by_count()
+                        build_groups_menu(parameters)
+                    finally:
+                        if has_line_profiler:
+                            profiler.print_stats(open('stats.txt', 'w'))
+                elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
+                    build_serie_episodes_types(parameters)
+                elif mode == 6:  # Serie Episodes (list of episodes)
+                    build_serie_episodes(parameters)
+                elif mode == 7:  # Playlist -continue-
+                    play_continue_item()
+                elif mode == 8:  # File List
+                    build_raw_list(parameters)
+                elif mode == 9:  # Calendar
+                    build_serie_soon(parameters)
+                elif mode == 10:  # newCalendar
+                    build_serie_soon_new(parameters)
+                elif mode == 31:
+                    search.clear_search_history(parameters)
+                else:
+                    build_filters_menu()
         else:
-            if mode == 0:  # string label
-                pass
-            elif mode == 1:  # play_file
-                try:
-                    win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-                    ctl = win.getControl(win.getFocusId())
-                    if play_video(parameters['ep_id'],
-                                  parameters['raw_id'] if 'raw_id' in parameters else "0",
-                                  parameters['movie'] if 'movie' in parameters else 0) > 0:
-                        # noinspection PyTypeChecker
-                        ui_index = parameters.get('ui_index', '')
-                        if ui_index != '':
-                            util.move_position_on_list(ctl, int(ui_index) + 1)
-                        parameters['watched'] = True
-                        watched_mark(parameters)
-
-                        if util.__addon__.getSetting('vote_always') == 'true':
-                            # convert in case shoko give float
-                            if parameters.get('userrate', '0.0') == '0.0':
-                                vote_episode(parameters)
-                            else:
-                                xbmc.log("------- vote_always found 'userrate':" + str(parameters.get('userrate',
-                                                                                                      '0.0')),
-                                         xbmc.LOGNOTICE)
-                except Exception as exp:
-                    xbmc.log(str(exp), xbmc.LOGWARNING)
-                    pass
-            elif mode == 2:  # DIRECTORY
-                xbmcgui.Dialog().ok('MODE=2', 'MODE')
-            elif mode == 3:  # Search
-                try:
-                    if parameters['extras'] == "force-search" and 'query' in parameters:
-                        url = util._server_ + '/api/search'
-                        url = util.set_parameter(url, 'query', parameters['query'])
-                        search_for(url)
-                    else:
-                        xbmcplugin.setContent(int(handle), "movies")
-                        execute_search_and_add_query()
-                except:
-                    build_search_directory()
-            elif mode == 4:  # Group/Serie
-                try:
-                    if has_line_profiler:
-                        profiler = line_profiler.LineProfiler()
-                        profiler.add_function(build_groups_menu)
-                        profiler.enable_by_count()
-                    build_groups_menu(parameters)
-                finally:
-                    if has_line_profiler:
-                        profiler.print_stats(open('stats.txt', 'w'))
-            elif mode == 5:  # Serie EpisodeTypes (episodes/ovs/credits)
-                build_serie_episodes_types(parameters)
-            elif mode == 6:  # Serie Episodes (list of episodes)
-                build_serie_episodes(parameters)
-            elif mode == 7:  # Playlist -continue-
-                play_continue_item()
-            elif mode == 8:  # File List
-                build_raw_list(parameters)
-            elif mode == 9:  # Calendar
-                build_serie_soon(parameters)
-            elif mode == 10:  # newCalendar
-                build_serie_soon_new(parameters)
-            elif mode == 31:
-                search.clear_search_history(parameters)
-            else:
-                build_filters_menu()
-    else:
-        util.error(util.__addon__.getLocalizedString(30194), util.__addon__.getLocalizedString(30195))
+            util.error(util.__addon__.getLocalizedString(30194), util.__addon__.getLocalizedString(30195))
+    except HTTPError as err:
+        if err.code == 401:
+            build_network_menu()
 else:
     util.__addon__.setSetting(id='wizard', value='0')
     build_network_menu()

@@ -57,7 +57,7 @@
         <setting label="30059" type="number" id="calendar_rows" default="4"/>
         <setting label="30060" type="number" id="calendar_cols" default="10"/>
         <setting label="30061" type="bool" id="calendar_adv" default="false"/>
-        <setting label="30070" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30019" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
         <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
     </category>
     <category label="30031">

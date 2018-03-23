@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2018-02-16 16:52+0200\n"
+"PO-Revision-Date: 2018-03-23 23:40+0100\n"
 "Last-Translator: bigretromike\n"
 "Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
@@ -87,6 +87,10 @@ msgstr ""
 
 msgctxt "#30018"
 msgid "API Key"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Rows span"
 msgstr ""
 
 msgctxt "#30020"
@@ -290,7 +294,7 @@ msgid "Cached data expiration time (s)"
 msgstr ""
 
 msgctxt "#30070"
-msgid "Rows span/Hide setting tags (time/place/etc)"
+msgid "Hide setting tags (time/place/etc)"
 msgstr ""
 
 msgctxt "#30071"

@@ -20,12 +20,14 @@ if sys.version_info < (3, 0):
     from urllib2 import urlopen
     from urllib import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib2 import Request
+    from urllib2 import HTTPError
     from StringIO import StringIO
 else:
     # For Python 3.0 and later
     from urllib.request import urlopen
     from urllib.parse import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib.request import Request
+    from urllib.error import HTTPError
     from io import StringIO, BytesIO
 
 global __addon__
@@ -393,6 +395,7 @@ def get_data(url_in, referer, data_type):
                 req.add_header('Accept-encoding', 'gzip')
         data = None
         try:
+            xbmc.log("Trying to open url:" + str(url), xbmc.LOGERROR)
             response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             if response.info().get('Content-Encoding') == 'gzip':
                 try:
@@ -408,7 +411,7 @@ def get_data(url_in, referer, data_type):
                 data = response.read()
             response.close()
         except Exception as ex:
-            xbmc.log("url: " + str(url), xbmc.LOGERROR)
+            xbmc.log("url: " + str(url) + " error: " + ex.message, xbmc.LOGERROR)
             error('Connection Failed', str(ex))
             data = None
     except Exception as ex:

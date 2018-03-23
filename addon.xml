@@ -3,6 +3,7 @@
 <requires>
 <import addon="script.module.nakamori" version="1.0.3"/>
 <import addon="script.module.pyxbmct" version="1.2.0"/>
+<import addon="script.module.future" version="0.16.0.4"/>
 </requires>
 <extension point="xbmc.python.pluginsource" library="nakamori.py">
 <provides>video</provides>
