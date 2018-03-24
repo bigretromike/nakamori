@@ -397,7 +397,7 @@ def get_title(data):
 
     """
     try:
-        if 'titles' not in data or util.__addon__.getSetting('useutil._server_title') == 'true':
+        if 'titles' not in data or util.__addon__.getSetting('use_server_title') == 'true':
             return util.encode(data.get('name', ''))
         # xbmc.log(data.get('title', 'Unknown'))
         title = util.encode(data.get('name', '').lower())
@@ -1152,7 +1152,7 @@ def build_groups_menu(params, json_body=None):
     """
     # xbmcgui.Dialog().ok('MODE=4', 'IN')
     xbmcplugin.setContent(handle, 'tvshows')
-    if util.__addon__.getSetting('useutil._server_sort') == 'false':
+    if util.__addon__.getSetting('use_server_sort') == 'false':
         xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
         xbmcplugin.addSortMethod(handle, 3)  # date
         xbmcplugin.addSortMethod(handle, 18)  # rating
@@ -1284,7 +1284,7 @@ def build_serie_episodes_types(params):
                 xbmcplugin.setContent(handle, 'seasons')
                 util.set_window_heading('Types')
 
-                if util.__addon__.getSetting('useutil._server_sort') == 'false':
+                if util.__addon__.getSetting('use_server_sort') == 'false':
                     # Apparently date sorting in Kodi has been broken for years
                     xbmcplugin.addSortMethod(handle, 17)  # year
                     xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
@@ -1338,7 +1338,7 @@ def build_serie_episodes(params):
             except Exception as exc:
                 util.error("Unable to get parent title in buildTVEpisodes", str(exc))
 
-            if util.__addon__.getSetting('useutil._server_sort') == 'false':
+            if util.__addon__.getSetting('use_server_sort') == 'false':
                 # Set Sort Method
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
                 xbmcplugin.addSortMethod(handle, 3)  # date
@@ -1791,7 +1791,7 @@ def build_serie_soon(params):
 
         """
     xbmcplugin.setContent(handle, 'tvshows')
-    if util.__addon__.getSetting('useutil._server_sort') == 'false':
+    if util.__addon__.getSetting('use_server_sort') == 'false':
         xbmcplugin.addSortMethod(handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)  # None
 
     try:
