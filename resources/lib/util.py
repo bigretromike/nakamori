@@ -30,14 +30,15 @@ else:
     from urllib.error import HTTPError
     from io import StringIO, BytesIO
 
+# __ is public, _ is protected
 global __addon__
 global __addonversion__
 global __addonid__
 global __addonname__
 global __icon__
 global __localize__
-global _server_
-global _home_
+global __server__
+global __home__
 
 
 def encode_utf8(_string):
@@ -60,8 +61,8 @@ __addonid__ = __addon__.getAddonInfo('id')
 __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
-_server_ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-_home_ = decode_utf8(xbmc.translatePath(__addon__.getAddonInfo('path')))
+__server__ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
+__home__ = decode_utf8(xbmc.translatePath(__addon__.getAddonInfo('path')))
 __shoko_version__ = LooseVersion('0.1')
 
 try:
@@ -88,7 +89,7 @@ def valid_user():
                 body = '{"user":"' + __addon__.getSetting("login") + '",' + \
                        '"device":"' + __addon__.getSetting("device") + '",' + \
                        '"pass":"' + __addon__.getSetting("password") + '"}'
-                post_body = post_data(_server_ + "/api/auth", body)
+                post_body = post_data(__server__ + "/api/auth", body)
                 auth = json.loads(post_body)
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user credentials --')

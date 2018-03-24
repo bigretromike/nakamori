@@ -107,7 +107,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
                                ('WindowClose', 'effect=fade start=100 end=0 time=200')])
 
     def draw(self):
-        bg = pyxbmct.Image(os.path.join(util._home_, 'resources/media', 'black_dot.png'), aspectRatio=0)
+        bg = pyxbmct.Image(os.path.join(util.__home__, 'resources/media', 'black_dot.png'), aspectRatio=0)
         self.placeControl(bg, 0, 0, rowspan=max_row_count, columnspan=max_col_count, pad_x=0, pad_y=0)
         self.set_active_controls(self.json_data, self.start_page)
         self.set_navigation()
@@ -144,7 +144,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
                 if air_date in used_dates:
                     if continue_day:
                         continue_day = False
-                        image01 = pyxbmct.Image(os.path.join(util._home_, 'resources/media', day_images[day_count]), aspectRatio=0)
+                        image01 = pyxbmct.Image(os.path.join(util.__home__, 'resources/media', day_images[day_count]), aspectRatio=0)
                         self.controls.append(image01)
                         row_idx += 1
                         self.placeControl(image01, row_idx, col_idx, rowspan=1, columnspan=image_col_span, pad_x=0, pad_y=0)
@@ -171,18 +171,18 @@ class Calendar(pyxbmct.BlankDialogWindow):
                     label = pyxbmct.Label(your_label)
                     self.controls.append(label)
                     self.placeControl(label, row_idx, col_idx, rowspan=1, columnspan=image_col_span)
-                    image0 = pyxbmct.Image(os.path.join(util._home_, 'resources/media', day_images[day_count]), aspectRatio=2)
+                    image0 = pyxbmct.Image(os.path.join(util.__home__, 'resources/media', day_images[day_count]), aspectRatio=2)
                     self.controls.append(image0)
                     row_idx += 1
                     self.placeControl(image0, row_idx, col_idx, rowspan=1, columnspan=image_col_span, pad_x=0, pad_y=0)
                     row_idx += 1
 
                 # region anime
-                fanart = os.path.join(util._home_, 'resources/media', 'new-search.jpg')
+                fanart = os.path.join(util.__home__, 'resources/media', 'new-search.jpg')
                 if len(sers["art"]["thumb"]) > 0:
                     fanart = sers["art"]["thumb"][0]["url"]
                     if fanart is not None and ":" not in fanart:
-                        fanart = util._server_ + fanart
+                        fanart = util.__server__ + fanart
                 imageclick = pyxbmct.Button(label=sers["titles"][0]["Title"],
                                             focusTexture=fanart, noFocusTexture=fanart,
                                             focusedColor='0xFF000000', font='font10', alignment=pyxbmct.ALIGN_CENTER)
@@ -195,7 +195,7 @@ class Calendar(pyxbmct.BlankDialogWindow):
 
                 # region anime-url
                 key_id = str(sers.get('id', ''))
-                key = util._server_ + "/api/serie"
+                key = util.__server__ + "/api/serie"
                 key = util.set_parameter(key, 'id', key_id)
                 key = util.set_parameter(key, 'level', 2)
                 if util.__addon__.getSetting('request_nocast') == 'true':
