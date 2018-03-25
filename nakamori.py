@@ -283,7 +283,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                 if extra_data.get('partialTV') == 1:
                     total = str(extra_data['TotalEpisodes'])
                     watched = str(extra_data['WatchedEpisodes'])
-                    if sys.version_info < (3, 0):
+                    if util.__python_two__:
                         if unicode(total).isnumeric() and unicode(watched).isnumeric():
                             liz.setProperty('TotalTime', total)
                             liz.setProperty('ResumeTime', watched)
@@ -398,9 +398,9 @@ def get_title(data):
     """
     try:
         if 'titles' not in data or util.__addon__.getSetting('use_server_title') == 'true':
-            return util.encode(data.get('name', ''))
+            return util.decode(data.get('name', ''))
         # xbmc.log(data.get('title', 'Unknown'))
-        title = util.encode(data.get('name', '').lower())
+        title = util.decode(data.get('name', '').lower())
         if title == 'ova' or title == 'ovas' \
                 or title == 'episode' or title == 'episodes' \
                 or title == 'special' or title == 'specials' \
@@ -408,7 +408,7 @@ def get_title(data):
                 or title == 'credit' or title == 'credits' \
                 or title == 'trailer' or title == 'trailers' \
                 or title == 'other' or title == 'others':
-            return util.encode(data.get('name', ''))
+            return util.decode(data.get('name', ''))
 
         lang = util.__addon__.getSetting("displaylang")
         title_type = util.__addon__.getSetting("title_type")
@@ -416,28 +416,28 @@ def get_title(data):
             for titleTag in data.get("titles", []):
                 if titleTag.get("Type", "").lower() == title_type.lower():
                     if titleTag.get("Language", "").lower() == lang.lower():
-                        if util.encode(titleTag.get("Title", "")) == "":
+                        if util.decode(titleTag.get("Title", "")) == "":
                             continue
-                        return util.encode(titleTag.get("Title", ""))
+                        return util.decode(titleTag.get("Title", ""))
             # fallback on language any title
             for titleTag in data.get("titles", []):
                 if titleTag.get("Type", "").lower() != 'short':
                     if titleTag.get("Language", "").lower() == lang.lower():
-                        if util.encode(titleTag.get("Title", "")) == "":
+                        if util.decode(titleTag.get("Title", "")) == "":
                             continue
-                        return util.encode(titleTag.get("Title", ""))
+                        return util.decode(titleTag.get("Title", ""))
             # fallback on x-jat main title
             for titleTag in data.get("titles", []):
                 if titleTag.get("Type", "").lower() == 'main':
                     if titleTag.get("Language", "").lower() == "x-jat":
-                        if util.encode(titleTag.get("Title", "")) == "":
+                        if util.decode(titleTag.get("Title", "")) == "":
                             continue
-                        return util.encode(titleTag.get("Title", ""))
+                        return util.decode(titleTag.get("Title", ""))
             # fallback on directory title
-            return util.encode(data.get('name', ''))
+            return util.decode(data.get('name', ''))
         except Exception as expc:
             util.error('util.error thrown on getting title', str(expc))
-            return util.encode(data.get('name', ''))
+            return util.decode(data.get('name', ''))
     except Exception as exw:
         util.error("get_title Exception", str(exw))
         return 'util.error'
@@ -461,7 +461,7 @@ def get_tags(tag_node):
                 if isinstance(tag, str) or isinstance(tag, unicode):
                     temp_genres.append(tag)
                 else:
-                    temp_genre = util.encode(tag["tag"]).strip()
+                    temp_genre = util.decode(tag["tag"]).strip()
                     temp_genres.append(temp_genre)
             temp_genre = " | ".join(temp_genres)
             return temp_genre
@@ -564,7 +564,7 @@ def add_raw_files(node):
     :return: add item to listitem
     """
     try:
-        name = util.encode(node.get("filename", ''))
+        name = util.decode(node.get("filename", ''))
         file_id = node["id"]
         key = node["url"]
         raw_url = util.__server__ + "/api/file?id=" + str(file_id)
@@ -711,7 +711,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     details = {
         'mediatype':        'episode',
         'title':            title,
-        'parenttitle':      util.encode(parent_title),
+        'parenttitle':      util.decode(parent_title),
         'genre':            temp_genre,
         'year':             node.get("year", ''),
         'episode':          total,
@@ -725,7 +725,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'castandrole':      list_cast_and_role,
         # director       : string (Dagur Kari,
         # 'mpaa':             directory.get('contentRating', ''),
-        'plot':             util.remove_anidb_links(util.encode(node.get("summary", '...'))),
+        'plot':             util.remove_anidb_links(util.decode(node.get("summary", '...'))),
         # 'plotoutline'  : plotoutline,
         'originaltitle':    title,
         'sorttitle':        title,
@@ -874,7 +874,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     details = {
         'mediatype':        'tvshow',
         'title':            title,
-        'parenttitle':      util.encode(parent_title),
+        'parenttitle':      util.decode(parent_title),
         'genre':            temp_genre,
         'year':             node.get('year', ''),
         'episode':          total,
@@ -883,7 +883,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'rating':           float(str(node.get('rating', '0')).replace(',', '.')),
         'userrating':       float(str(node.get('userrating', '0')).replace(',', '.')),
         'playcount':        watched,
-        'plot':             util.remove_anidb_links(util.encode(node.get('summary', '...'))),
+        'plot':             util.remove_anidb_links(util.decode(node.get('summary', '...'))),
         'originaltitle':    title,
         'sorttitle':        title,
         'tvshowname':       title,
@@ -1377,7 +1377,7 @@ def build_serie_episodes(params):
                 if short_tag:
                     temp_genre = temp_genre[:50]
                 parent_key = body.get('id', '')
-                grandparent_title = util.encode(body.get('name', ''))
+                grandparent_title = util.decode(body.get('name', ''))
 
             if len(body.get('eps', {})) <= 0:
                 if is_fake == 0:
@@ -1390,7 +1390,7 @@ def build_serie_episodes(params):
                             thumb = util.__server__ + thumb
                     details = {
                         'mediatype': 'episode',
-                        'plot': util.remove_anidb_links(util.encode(body['summary'])),
+                        'plot': util.remove_anidb_links(util.decode(body['summary'])),
                         'title': body['name'],
                         'rating': float(str(body.get('rating', '0')).replace(',', '.')),
                         'castandrole': list_cast_and_role,
@@ -1422,12 +1422,8 @@ def build_serie_episodes(params):
             elif len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
                 if util.__addon__.getSetting("show_continue") == "true":
-                    if sys.version_info < (3, 0):
-                        if unicode(parent_title).lower() != "unsort":
-                            util.addDir("-continue-", '', '7', util.__server__ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
-                    else:
-                        if parent_title.lower() != "unsort":
-                            util.addDir("-continue-", '', '7', util.__server__ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
+                    if util.decode(parent_title).lower() != "unsort":
+                        util.addDir("-continue-", '', '7', util.__server__ + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
                 selected_list_item = False
                 for video in body['eps']:
                     item_count += 1
@@ -1458,17 +1454,17 @@ def build_serie_episodes(params):
                                 # air=0001-01-01
                                 if air == '0001-01-01' or air == '01-01-0001':
                                     air = ''
-                            title = util.encode(video.get('name', 'Parse util.error'))
+                            title = util.decode(video.get('name', 'Parse util.error'))
                             if title is None:
                                 title = 'Episode ' + str(video.get('epnumber', '??'))
 
                             # Required listItem entries for XBMC
                             details = {
                                 'mediatype':     'episode',
-                                'plot':          "..." if skip else util.remove_anidb_links(util.encode(video['summary'])),
+                                'plot':          "..." if skip else util.remove_anidb_links(util.decode(video['summary'])),
                                 'title':         title,
                                 'sorttitle':     str(video.get('epnumber', '')) + " " + title,
-                                'parenttitle':   util.encode(parent_title),
+                                'parenttitle':   util.decode(parent_title),
                                 'rating':        float(str(video.get('rating', '0')).replace(',', '.')),
                                 'userrating':    float(str(video.get('UserRating', '0')).replace(',', '.')),
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
@@ -1487,7 +1483,7 @@ def build_serie_episodes(params):
                                 'aired':         air,
                                 'tvshowtitle':   grandparent_title,
                                 'votes':         util.safeInt(video.get('votes', '')),
-                                'originaltitle': util.encode(video.get('name', '')),
+                                'originaltitle': util.decode(video.get('name', '')),
                                 'size': util.safeInt(video['files'][0].get('size', '0')),
                             }
 
@@ -2000,7 +1996,7 @@ def play_video(ep_id, raw_id, movie):
             if serverpath is not None and serverpath != '':
                 try:
                     if os.path.isfile(serverpath):
-                        if sys.version_info < (3, 0):
+                        if util.__python_two__:
                             if unicode(serverpath).startswith('\\\\'):
                                 serverpath = "smb:"+serverpath
                         else:

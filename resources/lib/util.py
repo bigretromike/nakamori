@@ -39,22 +39,10 @@ global __icon__
 global __localize__
 global __server__
 global __home__
+global __python_two__
 
 
-def encode_utf8(_string):
-    if sys.version_info < (3, 0):
-        return _string.encode('utf-8')
-    else:
-        return _string
-
-
-def decode_utf8(_string):
-    if sys.version_info < (3, 0):
-        return _string.decode('utf-8')
-    else:
-        return _string
-
-
+__python_two__ = sys.version_info < (3, 0)
 __addon__ = xbmcaddon.Addon()
 __addonversion__ = __addon__.getAddonInfo('version')
 __addonid__ = __addon__.getAddonInfo('id')
@@ -62,7 +50,68 @@ __addonname__ = __addon__.getAddonInfo('name')
 __icon__ = __addon__.getAddonInfo('icon')
 __localize__ = __addon__.getLocalizedString
 __server__ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-__home__ = decode_utf8(xbmc.translatePath(__addon__.getAddonInfo('path')))
+
+
+def decode(i=''):
+    """
+    decode a string to UTF-8
+    Args:
+        i: string to decode
+
+    Returns: decoded string
+
+    """
+    if __python_two__:
+        try:
+            if isinstance(i, str):
+                return i.decode("utf-8")
+            elif isinstance(i, unicode):
+                return i
+        except:
+            error("Unicode Error", error_type='Unicode Error')
+            return ''
+    else:
+        try:
+            if isinstance(i, bytes):
+                return i.decode("utf-8")
+            elif isinstance(i, str):
+                return i
+        except:
+            error("Unicode Error", error_type='Unicode Error')
+            return ''
+
+
+def encode(i=''):
+    """
+    encode a string from UTF-8 to bytes or safe string
+    Args:
+        i: string to encode
+
+    Returns: encoded string
+
+    """
+
+    if __python_two__:
+        try:
+            if isinstance(i, str):
+                return i
+            elif isinstance(i, unicode):
+                return i.encode('utf-8')
+        except:
+            error("Unicode Error", error_type='Unicode Error')
+            return ''
+    else:
+        try:
+            if isinstance(i, bytes):
+                return i
+            elif isinstance(i, str):
+                return i.encode('utf-8')
+        except:
+            error("Unicode Error", error_type='Unicode Error')
+            return ''
+
+
+__home__ = decode(xbmc.translatePath(__addon__.getAddonInfo('path')))
 __shoko_version__ = LooseVersion('0.1')
 
 try:
@@ -191,7 +240,7 @@ def dump_dictionary(details, name):
             for i in details:
                 temp_log = ""
                 if isinstance(details, dict):
-                    a = details.get(encode(i))
+                    a = details.get(decode(i))
                     if a is None:
                         temp_log = "\'unset\'"
                     elif isinstance(a, collections.Iterable):
@@ -400,7 +449,7 @@ def get_data(url_in, referer, data_type):
             response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
             if response.info().get('Content-Encoding') == 'gzip':
                 try:
-                    if sys.version_info < (3, 0):
+                    if __python_two__:
                         buf = StringIO(response.read())
                     else:
                         buf = BytesIO(response.read())
@@ -453,7 +502,7 @@ def post_data(url, data_in):
     Returns: The response from the server
     """
     if data_in is not None:
-        req = Request(encode(url), data_in.encode('utf-8'), {'Content-Type': 'application/json'})
+        req = Request(encode(url), encode(data_in), {'Content-Type': 'application/json'})
         req.add_header('apikey', __addon__.getSetting("apikey"))
         req.add_header('Accept', 'application/json')
         data_out = None
@@ -484,44 +533,6 @@ def xml(xml_string):
     if e.get('ErrorString', '') != '':
         error(e.get('ErrorString'), 'JMM Error')
     return e
-
-
-def decode(i=''):
-    """
-    decode a string to UTF-8
-    Args:
-        i: string to decode
-
-    Returns: decoded string
-
-    """
-    try:
-        if isinstance(i, str):
-            return decode_utf8(i)
-        elif isinstance(i, unicode):
-            return i
-    except:
-        error("Unicode Error", error_type='Unicode Error')
-        return ''
-
-
-def encode(i=''):
-    """
-    encode a string from UTF-8
-    Args:
-        i: string to encode
-
-    Returns: encoded string
-
-    """
-    try:
-        if isinstance(i, str):
-            return i
-        elif isinstance(i, unicode):
-            return i.encode('utf-8')
-    except:
-        error("Unicode Error", error_type='Unicode Error')
-        return ''
 
 
 def post(url, data, headers={}):
@@ -592,7 +603,7 @@ def getURL(url, header):
                 content = gzip_f.read()
             else:
                 content = response.read()
-            content = decode_utf8(content)
+            content = decode(content)
             return content
         return False
     except:
@@ -934,49 +945,5 @@ def endListing():
     xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 
-def makeAscii(data):
-    # log(repr(data), 5)
-    # if sys.hexversion >= 0x02050000:
-    #        return data
-
-    try:
-        return data.encode('ascii', "ignore")
-    except:
-        # log("Hit except on : " + repr(data))
-        s = u""
-        for i in data:
-            try:
-                i.encode("ascii", "ignore")
-            except:
-                # log("Can't convert character", 4)
-                continue
-            else:
-                s += i
-
-        # log(repr(s), 5)
-        return s
-
-
 def replaceHTMLCodes(txt):
     return txt
-
-
-# This function handles stupid utf handling in python.
-def makeUTF8(data):
-    # log(repr(data), 5)
-    # return data
-    try:
-        return decode_utf8(data)  # was 'ignore'
-    except:
-        # log("Hit except on : " + repr(data))
-        s = u""
-        for i in data:
-            try:
-                decode_utf8(i)
-            except:
-                # log("Can't convert character", 4)
-                continue
-            else:
-                s += i
-        # log(repr(s), 5)
-        return s
