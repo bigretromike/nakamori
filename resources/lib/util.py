@@ -129,7 +129,7 @@ def valid_user():
     :return: bool True if all completes successfully
     """
 
-    if __addon__.getSetting("apikey") != "":
+    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
         return True
     else:
         xbmc.log('-- apikey empty --')
@@ -143,6 +143,8 @@ def valid_user():
                 if "apikey" in auth:
                     xbmc.log('-- save apikey and reset user credentials --')
                     __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
+                    __addon__.setSetting(id='login', value='')
+                    __addon__.setSetting(id='password', value='')
                     return True
                 else:
                     raise Exception('Error Getting apikey')
