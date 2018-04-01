@@ -1,3 +1,9 @@
+v2.1.21 (01/04/2018)
+- merge python3 into main branch
+- fix for kodi 17.6
+- Unicode fix
+- wiping creditentionals when not needed (after succesful connecting to shoko)
+
 v2.1.20 (23/03/2018)
 - added Calendar support
 - more language support
