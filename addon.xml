@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.20" provider-name="BigRetroMike, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="2.1.21" provider-name="BigRetroMike, da3dsoul">
 <requires>
 <import addon="script.module.nakamori" version="1.0.3"/>
 <import addon="script.module.pyxbmct" version="1.2.0"/>
@@ -16,13 +16,11 @@
 <disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 <disclaimer lang="he_il">אם שרת Shoko נמצא במחשב אחר, הגדר את כתובת ה- IP בהגדרות של Nakamori לפני שתתחיל</disclaimer>
 <news>
-v2.1.20 (23/03/2018)
-- added Calendar support
-- more language support
-- minor code cleanups
-- ability to hide setting tags (time/place/etc)
-- fix some errors that could come up with newest shoko version
-- fix issue with android
+v2.1.21 (01/04/2018)
+- merge python3 into main branch
+- fix for kodi 17.6
+- Unicode fix
+- wiping creditentionals when not needed (after succesful connecting to shoko)
 </news>
 <platform>all</platform>
 <language>en</language>
