@@ -2367,7 +2367,7 @@ def remove_missing_files():
     if util.__addon__.getSetting('log_spam') == 'true':
         xbmc.log('key: ' + key, xbmc.LOGWARNING)
 
-        util.get_json(key)
+    util.get_json(key)
     xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (util.__addon__.getLocalizedString(30192),
                                                                  util.__addon__.getLocalizedString(30193),
                                                                  util.__addon__.getAddonInfo('icon')))
