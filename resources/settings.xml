@@ -16,7 +16,7 @@
     </category>
     <category label="30054">
         <setting label="30039" type="bool" id="show_continue" default="false"/>
-        <setting lable="30083" type="bool" id="select_unwatched" default="true"/>
+        <setting label="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
         <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
