@@ -1,3 +1,7 @@
+v2.1.22 (15/07/2018)
+- Fix Remove Missing Files
+- Fix typo
+
 v2.1.21 (01/04/2018)
 - merge python3 into main branch
 - fix for kodi 17.6
