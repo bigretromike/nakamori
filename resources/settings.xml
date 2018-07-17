@@ -92,5 +92,11 @@
         <setting label="30029" type="lsep"/>
         <setting label="30030" type="bool" id="enableCache" default="false"/>
         <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30084" type="lsep"/>
+        <setting label="30085" type="bool" id="enableEigakan" default="false"/>
+        <setting label="30086" type="text" id="ipEigakan" default="127.0.0.1" enable="eq(-1,true)"/>
+        <setting label="30087" type="number" id="portEigakan" default="8000" enable="eq(-2,true)"/>
+        <setting label="30088" type="number" id="tryEigakan" default="10" enable="eq(-3,true)"/>
+        <setting label="30089" type="number" id="postponeEigakan" default="10" enable="eq(-4,true)"/>
     </category>
 </settings>

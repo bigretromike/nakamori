@@ -349,6 +349,31 @@ msgctxt "#30083"
 msgid "Select first unwatched episode"
 msgstr ""
 
+msgctxt "#30084"
+msgid "(WIP) Eigakan"
+msgstr ""
+
+msgctxt "#30085"
+msgid "Enable Eigakan"
+msgstr ""
+
+msgctxt "#30086"
+msgid "ip address"
+msgstr ""
+
+msgctxt "#30087"
+msgid "port"
+msgstr ""
+
+msgctxt "#30088"
+msgid "attempts before giving up"
+msgstr ""
+
+msgctxt "#30089"
+msgid "wait (s) before starting to play (postpone)"
+msgstr ""
+
+
 #---------------End-Settings--------------------------
 
 #---------------Start-Context-Menu--------------------
@@ -432,6 +457,19 @@ msgstr ""
 msgctxt "#30163"
 msgid "Getting Episodes from Server..."
 msgstr ""
+
+msgctxt "#30164"
+msgid "Waiting for respond from Server..."
+msgstr ""
+
+msgctxt "#30165"
+msgid "Sending request to Transcode server..."
+msgstr ""
+
+msgctxt "#30166"
+msgid "Waiting given time (postpone)"
+msgstr ""
+
 
 #---------------End-Progress--------------------------
 

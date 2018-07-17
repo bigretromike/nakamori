@@ -2046,19 +2046,72 @@ def play_video(ep_id, raw_id, movie):
     except Exception as exc:
         util.error('util.error getting episode info', str(exc))
 
-    try:
-        player = xbmc.Player()
-        player.play(item=file_url, listitem=item)
+    is_transcoded = False
+    player = xbmc.Player()
 
-        if util.__addon__.getSetting("file_resume") == "true":
-            if offset > 0:
-                for i in range(0, 1000):  # wait up to 10 secs for the video to start playing before we try to seek
-                    if not player.isPlayingVideo():  # and not xbmc.abortRequested:
-                        xbmc.sleep(100)
+    try:
+        # region Eigakan
+        if util.__addon__.getSetting("enableEigakan") == "true":
+            eigakan_url = util.__addon__.getSetting("ipEigakan")
+            eigakan_port = util.__addon__.getSetting("portEigakan")
+            video_url = 'http://' + eigakan_url + ':' + eigakan_port + '/api/transcode/' + str(file_id)
+            post_data = '"file":"' + file_url + '"'
+            try_count = 0
+            m3u8_url = 'http://' + eigakan_url + ':' + eigakan_port + '/api/video/' + str(file_id) + '/play.m3u8'
+            ts_url = 'http://' + eigakan_url + ':' + eigakan_port + '/api/video/' + str(file_id) + '/play0.ts'
+
+            try:
+                busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30165))
+                util.post_json(video_url, post_data)
+                xbmc.sleep(1000)
+                busy.close()
+
+                busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30164))
+                while True:
+                    if util.head(url_in=ts_url) is False:
+                        x_try = int(util.__addon__.getSetting("tryEigakan"))
+                        if try_count > x_try:
+                            break
+                        if busy.iscanceled():
+                            break
+                        try_count += 1
+                        busy.update(try_count)
+                        xbmc.sleep(1000)
                     else:
-                        xbmc.Player().seekTime(offset)
-                        xbmc.log("-----player: seek_time offset:" + str(offset), xbmc.LOGNOTICE)
                         break
+                busy.close()
+
+                postpone_seconds = int(util.__addon__.getSetting("postponeEigakan"))
+                if postpone_seconds > 0:
+                    busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30166))
+                    while postpone_seconds > 0:
+                        xbmc.sleep(1000)
+                        postpone_seconds -= 1
+                        busy.update(postpone_seconds)
+                        if busy.iscanceled():
+                            break
+                    busy.close()
+
+                if util.head(url_in=ts_url):
+                    is_transcoded = True
+                    player.play(item=m3u8_url, startpos=-1)
+            except Exception as exc:
+                util.error('eigakan.post_json error', str(exc))
+                busy.close()
+        # endregion
+        else:
+            player.play(item=file_url, listitem=item)
+
+        if not is_transcoded:
+            if util.__addon__.getSetting("file_resume") == "true":
+                if offset > 0:
+                    for i in range(0, 1000):  # wait up to 10 secs for the video to start playing before we try to seek
+                        if not player.isPlayingVideo():  # and not xbmc.abortRequested:
+                            xbmc.sleep(100)
+                        else:
+                            xbmc.Player().seekTime(offset)
+                            xbmc.log("-----player: seek_time offset:" + str(offset), xbmc.LOGNOTICE)
+                            break
 
     except Exception as player_ex:
         xbmc.log(str(player_ex), xbmc.LOGWARNING)
@@ -2088,7 +2141,11 @@ def play_video(ep_id, raw_id, movie):
                     clock_tick += 1
 
                     xbmc.sleep(2500)  # 2.5sec this will make the server handle it better
-                    total_time = player.getTotalTime()
+                    if is_transcoded:
+                        # TODO get time from metadata!
+                        total_time = player.getTotalTime()
+                    else:
+                        total_time = player.getTotalTime()
                     current_time = player.getTime()
 
                     # region Resume support (work with shoko 3.6.0.7+)

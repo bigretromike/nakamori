@@ -20,14 +20,14 @@ if sys.version_info < (3, 0):
     from urllib2 import urlopen
     from urllib import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib2 import Request
-    from urllib2 import HTTPError
+    from urllib2 import HTTPError, URLError
     from StringIO import StringIO
 else:
     # For Python 3.0 and later
     from urllib.request import urlopen
     from urllib.parse import quote, quote_plus, unquote, unquote_plus, urlencode
     from urllib.request import Request
-    from urllib.error import HTTPError
+    from urllib.error import HTTPError, URLError
     from io import StringIO, BytesIO
 
 # __ is public, _ is protected
@@ -366,6 +366,21 @@ def parse_possible_error(data, data_type):
 
 
 # Internal function
+
+def head(url_in):
+    try:
+        urlopen(url_in)
+        return True
+    except HTTPError, e:
+        # error('HTTPError', e.code)
+        return False
+    except URLError, e:
+        # error('URLError', str(e.args))
+        return False
+    except Exception, e:
+        # error('Exceptions', str(e.args))
+        return False
+
 # json
 def get_json(url_in, direct=False):
     body = ""
