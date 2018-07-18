@@ -2062,6 +2062,11 @@ def play_video(ep_id, raw_id, movie):
 
             try:
                 busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30165))
+                if util.__addon__.getSetting("advEigakan") == "true":
+                    post_data += ',"resolution":"' + util.__addon__.getSetting("resolutionEigakan") + '"'
+                    post_data += ',"audio_codec":"' + util.__addon__.getSetting("audioEigakan") + '"'
+                    post_data += ',"video_bitrate":"' + util.__addon__.getSetting("vbitrateEigakan") + '"'
+                    post_data += ',"x264_profile":"' + util.__addon__.getSetting("profileEigakan") + '"'
                 util.post_json(video_url, post_data)
                 xbmc.sleep(1000)
                 busy.close()
@@ -2142,8 +2147,7 @@ def play_video(ep_id, raw_id, movie):
 
                     xbmc.sleep(2500)  # 2.5sec this will make the server handle it better
                     if is_transcoded:
-                        # TODO get time from metadata!
-                        total_time = player.getTotalTime()
+                        total_time = details['duration']
                     else:
                         total_time = player.getTotalTime()
                     current_time = player.getTime()
@@ -2189,6 +2193,9 @@ def play_video(ep_id, raw_id, movie):
                                             "&status=" + str(2) +
                                             "&progress=" + str(progress)))
                     break
+
+            if is_transcoded:
+                util.get_json(video_url+'/cancel')
     except Exception as ops_ex:
         util.dbg(ops_ex)
         pass

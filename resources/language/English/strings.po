@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2018-03-23 23:40+0100\n"
+"PO-Revision-Date: 2018-07-18 18:28+0100\n"
 "Last-Translator: bigretromike\n"
 "Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
@@ -371,6 +371,26 @@ msgstr ""
 
 msgctxt "#30089"
 msgid "wait (s) before starting to play (postpone)"
+msgstr ""
+
+msgctxt "#30090"
+msgid "Advance settings"
+msgstr ""
+
+msgctxt "#30091"
+msgid "Resolution (WxH)"
+msgstr ""
+
+msgctxt "#30092"
+msgid "x264 profile"
+msgstr ""
+
+msgctxt "#30093"
+msgid "Audio codec"
+msgstr ""
+
+msgctxt "#30094"
+msgid "Video bitrate"
 msgstr ""
 
 
