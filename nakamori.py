@@ -1969,6 +1969,7 @@ def play_video(ep_id, raw_id, movie):
 
     file_id = ''
     file_url = ''
+    file_body = None
     offset = 0
     item = ''
 
@@ -2054,52 +2055,103 @@ def play_video(ep_id, raw_id, movie):
         if util.__addon__.getSetting("enableEigakan") == "true":
             eigakan_url = util.__addon__.getSetting("ipEigakan")
             eigakan_port = util.__addon__.getSetting("portEigakan")
-            video_url = 'http://' + eigakan_url + ':' + eigakan_port + '/api/transcode/' + str(file_id)
+            eigakan_host = 'http://' + eigakan_url + ':' + eigakan_port
+            video_url = eigakan_host + '/api/transcode/' + str(file_id)
             post_data = '"file":"' + file_url + '"'
             try_count = 0
-            m3u8_url = 'http://' + eigakan_url + ':' + eigakan_port + '/api/video/' + str(file_id) + '/play.m3u8'
-            ts_url = 'http://' + eigakan_url + ':' + eigakan_port + '/api/video/' + str(file_id) + '/play0.ts'
+            m3u8_url = eigakan_host + '/api/video/' + str(file_id) + '/play.m3u8'
+            ts_url = eigakan_host + '/api/video/' + str(file_id) + '/play0.ts'
 
             try:
-                busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30165))
-                if util.__addon__.getSetting("advEigakan") == "true":
-                    post_data += ',"resolution":"' + util.__addon__.getSetting("resolutionEigakan") + '"'
-                    post_data += ',"audio_codec":"' + util.__addon__.getSetting("audioEigakan") + '"'
-                    post_data += ',"video_bitrate":"' + util.__addon__.getSetting("vbitrateEigakan") + '"'
-                    post_data += ',"x264_profile":"' + util.__addon__.getSetting("profileEigakan") + '"'
-                util.post_json(video_url, post_data)
-                xbmc.sleep(1000)
-                busy.close()
-
-                busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30164))
-                while True:
-                    if util.head(url_in=ts_url) is False:
-                        x_try = int(util.__addon__.getSetting("tryEigakan"))
-                        if try_count > x_try:
+                eigakan_data = util.get_json(eigakan_host + '/api/version')
+                if 'eigakan' in eigakan_data:
+                    audio_stream_id = -1
+                    stream_index = -1
+                    for audio_code in util.__addon__.getSetting("audiolangEigakan").split(","):
+                        for audio_stream in file_body['media']['audios']:
+                            stream_index += 1
+                            if 'Language' in file_body['media']['audios'][audio_stream]:
+                                if audio_code in file_body['media']['audios'][audio_stream].get('Language').lower():
+                                    audio_stream_id = stream_index
+                                    break
+                            if 'LanguageCode' in file_body['media']['audios'][audio_stream]:
+                                if audio_code in file_body['media']['audios'][audio_stream].get('LanguageCode').lower():
+                                    audio_stream_id = stream_index
+                                    break
+                            if 'Title' in file_body['media']['audios'][audio_stream]:
+                                if audio_code in file_body['media']['audios'][audio_stream].get('Language').lower():
+                                    audio_stream_id = stream_index
+                                    break
+                        if audio_stream_id != -1:
                             break
-                        if busy.iscanceled():
-                            break
-                        try_count += 1
-                        busy.update(try_count)
-                        xbmc.sleep(1000)
-                    else:
-                        break
-                busy.close()
 
-                postpone_seconds = int(util.__addon__.getSetting("postponeEigakan"))
-                if postpone_seconds > 0:
-                    busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30166))
-                    while postpone_seconds > 0:
-                        xbmc.sleep(1000)
-                        postpone_seconds -= 1
-                        busy.update(postpone_seconds)
-                        if busy.iscanceled():
+                    sub_stream_id = -1
+                    stream_index = -1
+                    for sub_code in util.__addon__.getSetting("subEigakan").split(","):
+                        for sub_stream in file_body['media']['subtitles']:
+                            stream_index += 1
+                            if 'Language' in file_body['media']['subtitles'][sub_stream]:
+                                if sub_code in file_body['media']['subtitles'][sub_stream].get('Language').lower():
+                                    sub_stream_id = stream_index
+                                    break
+                            if 'LanguageCode' in file_body['media']['subtitles'][sub_stream]:
+                                if sub_code in file_body['media']['subtitles'][sub_stream].get('LanguageCode').lower():
+                                    sub_stream_id = stream_index
+                                    break
+                            if 'Title' in file_body['media']['subtitles'][sub_stream]:
+                                if sub_code in file_body['media']['subtitles'][sub_stream].get('Language').lower():
+                                    sub_stream_id = stream_index
+                                    break
+                        if sub_stream_id != -1:
+                            break
+
+                    busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30165))
+
+                    if audio_stream_id != -1:
+                        post_data += ',"audio_stream":"' + str(audio_stream_id) + '"'
+                    if sub_stream_id != -1:
+                        post_data += ',"subtitles_stream":"' + str(sub_stream_id) + '"'
+
+                    if util.__addon__.getSetting("advEigakan") == "true":
+                        post_data += ',"resolution":"' + util.__addon__.getSetting("resolutionEigakan") + '"'
+                        post_data += ',"audio_codec":"' + util.__addon__.getSetting("audioEigakan") + '"'
+                        post_data += ',"video_bitrate":"' + util.__addon__.getSetting("vbitrateEigakan") + '"'
+                        post_data += ',"x264_profile":"' + util.__addon__.getSetting("profileEigakan") + '"'
+                    util.post_json(video_url, post_data)
+                    xbmc.sleep(1000)
+                    busy.close()
+
+                    busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30164))
+                    while True:
+                        if util.head(url_in=ts_url) is False:
+                            x_try = int(util.__addon__.getSetting("tryEigakan"))
+                            if try_count > x_try:
+                                break
+                            if busy.iscanceled():
+                                break
+                            try_count += 1
+                            busy.update(try_count)
+                            xbmc.sleep(1000)
+                        else:
                             break
                     busy.close()
 
-                if util.head(url_in=ts_url):
-                    is_transcoded = True
-                    player.play(item=m3u8_url, startpos=-1)
+                    postpone_seconds = int(util.__addon__.getSetting("postponeEigakan"))
+                    if postpone_seconds > 0:
+                        busy.create(util.__addon__.getLocalizedString(30160), util.__addon__.getLocalizedString(30166))
+                        while postpone_seconds > 0:
+                            xbmc.sleep(1000)
+                            postpone_seconds -= 1
+                            busy.update(postpone_seconds)
+                            if busy.iscanceled():
+                                break
+                        busy.close()
+
+                    if util.head(url_in=ts_url):
+                        is_transcoded = True
+                        player.play(item=m3u8_url, startpos=-1)
+                else:
+                    util.error("Eigakan server is unavailable")
             except Exception as exc:
                 util.error('eigakan.post_json error', str(exc))
                 busy.close()

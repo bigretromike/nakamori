@@ -98,6 +98,8 @@
         <setting label="30087" type="number" id="portEigakan" default="8000" visible="eq(-2,true)"/>
         <setting label="30088" type="number" id="tryEigakan" default="10" visible="eq(-3,true)"/>
         <setting label="30089" type="number" id="postponeEigakan" default="10" visible="eq(-4,true)"/>
+        <setting label="30095" type="text" id="audiolangEigakan" default="eng" visible="eq(-5,true)"/>
+        <setting label="30096" type="text" id="subEigakan" default="eng" visible="eq(-6,true)"/>
         <setting label="30090" type="bool" id="advEigakan" default="false"/>
         <setting label="30091" type="text" id="resolutionEigakan" default="1280x720" visible="eq(-1,true)"/>
         <setting label="30092" type="text" id="profileEigakan" default="main" visible="eq(-2,true)"/>

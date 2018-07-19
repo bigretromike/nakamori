@@ -381,6 +381,7 @@ def head(url_in):
         # error('Exceptions', str(e.args))
         return False
 
+
 # json
 def get_json(url_in, direct=False):
     body = ""

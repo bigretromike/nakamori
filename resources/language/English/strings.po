@@ -393,6 +393,13 @@ msgctxt "#30094"
 msgid "Video bitrate"
 msgstr ""
 
+msgctxt "#30095"
+msgid "Audio language setting"
+msgstr ""
+
+msgctxt "#30096"
+msgid "Subtitles language setting"
+msgstr ""
 
 #---------------End-Settings--------------------------
 
