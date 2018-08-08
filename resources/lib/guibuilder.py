@@ -828,6 +828,17 @@ def build_filters_menu():
     listitems.append((u, liz, True))
     # endregion
 
+    # region Settings
+    liz = xbmcgui.ListItem(label='Settings', label2='Settings')
+    liz.setArt({"icon": os.path.join(img, 'icons', 'search.png'),
+                "fanart": os.path.join(img, 'backgrounds', 'new-search.jpg')})
+    u = sys.argv[0]
+    u = nt.set_parameter(u, 'url', '')
+    u = nt.set_parameter(u, 'mode', str(11))
+    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+    listitems.append((u, liz, True))
+    # endregion
+
     end_of_directory(False)
 
 

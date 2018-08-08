@@ -491,6 +491,8 @@ if nt.get_server_status(ip=nt.addon.getSetting('ipaddress'), port=nt.addon.getSe
                     gb.build_serie_soon(parameters)
                 elif mode == 10:  # newCalendar
                     gb.build_serie_soon_new(parameters)
+                elif mode == 11:  # Settings
+                    xbmcaddon.Addon(id='plugin.video.nakamori').openSettings()
                 elif mode == 31:  # Clear Search History
                     search.clear_search_history(parameters)
                 else:
