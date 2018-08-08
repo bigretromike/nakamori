@@ -1657,7 +1657,7 @@ def create_playlist(serie_id):
                         if serie['view'] == 1:
                             continue
                     video = serie['files'][0]['url']
-                    details = gb.add_serie_item(serie, serie_body['name'], True)
+                    details = add_serie_item(serie, serie_body['name'], True)
                     liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
                     liz.setInfo(type='Video', infoLabels=details)
                     item_count += 1
