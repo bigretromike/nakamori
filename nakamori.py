@@ -8,6 +8,7 @@ import resources.lib.search as search
 import resources.lib.util as util
 
 import nakamoritools as nt
+import nakamoriplayer as nplayer
 from Calendar import Wizard
 
 import xbmcplugin
@@ -52,6 +53,8 @@ def play_video(ep_id, raw_id, movie):
         'originaltitle': xbmc.getInfoLabel('ListItem.OriginalTitle'),
         'size':          xbmc.getInfoLabel('ListItem.Size'),
         'season':        xbmc.getInfoLabel('ListItem.Season'),
+        'epid':          ep_id,  # player
+        'movie':         movie,  # player
     }
 
     file_id = ''
@@ -76,6 +79,7 @@ def play_video(ep_id, raw_id, movie):
             file_id = raw_id
 
         if file_id is not None and file_id != 0:
+            details['fileid'] = file_id
             file_url = nt.server + "/api/file?id=" + str(file_id)
             file_body = nt.json.loads(nt.get_json(file_url))
 
@@ -135,7 +139,9 @@ def play_video(ep_id, raw_id, movie):
         nt.error('util.error getting episode info', str(exc))
 
     is_transcoded = False
-    player = xbmc.Player()
+    # player = xbmc.Player()
+    player = nplayer.Service()
+    player.feed(details)
 
     try:
         # region Eigakan
@@ -475,7 +481,7 @@ if nt.get_server_status(ip=nt.addon.getSetting('ipaddress'), port=nt.addon.getSe
                             profiler = dbg.line_profiler.LineProfiler()
                             profiler.add_function(gb.build_groups_menu)
                             profiler.enable_by_count()
-                            gb.build_groups_menu(parameters)
+                        gb.build_groups_menu(parameters)
                     finally:
                         if dbg.has_line_profiler:
                             profiler.print_stats(open('stats.txt', 'w'))
