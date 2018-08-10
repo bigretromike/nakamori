@@ -1,12 +1,12 @@
 # Kodi Media Center language file
 # Addon Name: Nakamori
 # Addon id: plugin.video.nakamori
-# Addon Provider: BigRetroMike
+# Addon Provider: BigRetroMike, da3dsoul
 msgid ""
 msgstr ""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2018-07-18 18:28+0100\n"
+"PO-Revision-Date: 2018-08-10 12:00+0100\n"
 "Last-Translator: bigretromike\n"
 "Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
@@ -350,7 +350,7 @@ msgid "Select first unwatched episode"
 msgstr ""
 
 msgctxt "#30084"
-msgid "(WIP) Eigakan"
+msgid "Eigakan"
 msgstr ""
 
 msgctxt "#30085"
@@ -400,6 +400,52 @@ msgstr ""
 msgctxt "#30096"
 msgid "Subtitles language setting"
 msgstr ""
+
+msgctxt "#30097"
+msgid "Maintenance"
+msgstr ""
+
+msgctxt "#30098"
+msgid "Folders"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Enable setup-wizard"
+msgstr ""
+
+msgctxt "#30100"
+msgid "More..."
+msgstr ""
+
+msgctxt "#30101"
+msgid "Show Search"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Show Settings"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Show Calendar"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Show Calendarv2"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Show Unsorted"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Unsorted"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Settings"
+msgstr ""
+
+# 108 - 119 empty
 
 #---------------End-Settings--------------------------
 
@@ -465,6 +511,8 @@ msgctxt "#30134"
 msgid "View Cast"
 msgstr ""
 
+# 135 - 159 empty
+
 #---------------End-Context-Menu----------------------
 
 #---------------Start-Progress------------------------
@@ -497,6 +545,7 @@ msgctxt "#30166"
 msgid "Waiting given time (postpone)"
 msgstr ""
 
+# 167 - 179 empty
 
 #---------------End-Progress--------------------------
 
@@ -570,6 +619,12 @@ msgctxt "#30196"
 msgid "Files"
 msgstr ""
 
+msgctxt "#30197"
+msgid "No connection to Shoko server"
+msgstr ""
+
+# 198 - 220 empty
+
 #---------------End-Windows--------------------------
 #---------------Start=Items--------------------------
 
@@ -590,3 +645,5 @@ msgid "New Search"
 msgstr ""
 
 #---------------End-Items----------------------------
+
+# 225 - 999 empty

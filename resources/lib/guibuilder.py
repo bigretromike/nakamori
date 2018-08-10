@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+here are functions needed to create dirs/files
+"""
 
 import resources.lib.util as util
 import resources.lib.search as search
@@ -11,15 +14,16 @@ import xbmcplugin
 import sys
 import os
 import datetime
-import nakamoritools as nt
-from Calendar import Calendar
 from collections import defaultdict
+import nakamoritools as nt
+# noinspection PyUnresolvedReferences
+from Calendar import Calendar
 
-listitems = []
+list_items = []
 handle = int(sys.argv[1])
 busy = xbmcgui.DialogProgress()
 
-img = os.path.join(xbmcaddon.Addon('resource.images.nakamori').getAddonInfo('path'), 'resources', 'media')
+_img = os.path.join(xbmcaddon.Addon('resource.images.nakamori').getAddonInfo('path'), 'resources', 'media')
 
 
 def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0, force_select=False):
@@ -138,7 +142,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                             liz.addStreamInfo('subtitle', subtitle_codec)
 
             # UMS/PSM Jumpy plugin require 'path' to play video
-            part_temp = nt.parseParameters(input_string=gui_url)
+            part_temp = nt.parse_parameters(input_string=gui_url)
             liz.setProperty('path', str(part_temp.get('file', 'empty')))
 
         if extra_data and len(extra_data) > 0:
@@ -152,6 +156,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     total = str(extra_data['TotalEpisodes'])
                     watched = str(extra_data['WatchedEpisodes'])
                     if nt.python_two:
+                        # noinspection PyCompatibility
                         if unicode(total).isnumeric() and unicode(watched).isnumeric():
                             liz.setProperty('TotalTime', total)
                             liz.setProperty('ResumeTime', watched)
@@ -159,6 +164,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                             liz.setProperty('TotalTime', '100')
                             liz.setProperty('ResumeTime', '50')
                     else:
+                        # noinspection PyUnresolvedReferences
                         if total.isnumeric() and watched.isnumeric():
                             liz.setProperty('TotalTime', total)
                             liz.setProperty('ResumeTime', watched)
@@ -197,43 +203,55 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
 
                     # Play and Watch
                     if nt.addon.getSetting('context_show_play_no_watch') == 'true':
-                        context.append((nt.addon.getLocalizedString(30132), 'RunPlugin(%s&cmd=no_mark)' % url_peep))
+                        context.append((nt.addon.getLocalizedString(30132),
+                                        'RunPlugin(%s&cmd=no_mark)' % url_peep))
 
                     if nt.addon.getSetting('context_pick_file') == 'true':
-                        context.append((nt.addon.getLocalizedString(30133), 'RunPlugin(%s&cmd=pickFile)' % url_peep))
+                        context.append((nt.addon.getLocalizedString(30133),
+                                        'RunPlugin(%s&cmd=pickFile)' % url_peep))
 
                     if extra_data.get('jmmepisodeid') != '':
                         if nt.addon.getSetting('context_krypton_watched') == 'true':
                             if details.get('playcount', 0) == 0:
-                                context.append((nt.addon.getLocalizedString(30128), 'RunPlugin(%s&cmd=watched)' % url_peep))
+                                context.append((nt.addon.getLocalizedString(30128),
+                                                'RunPlugin(%s&cmd=watched)' % url_peep))
                             else:
-                                context.append((nt.addon.getLocalizedString(30129), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+                                context.append((nt.addon.getLocalizedString(30129),
+                                                'RunPlugin(%s&cmd=unwatched)' % url_peep))
                         else:
-                            context.append((nt.addon.getLocalizedString(30128), 'RunPlugin(%s&cmd=watched)' % url_peep))
-                            context.append((nt.addon.getLocalizedString(30129), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
+                            context.append((nt.addon.getLocalizedString(30128),
+                                            'RunPlugin(%s&cmd=watched)' % url_peep))
+                            context.append((nt.addon.getLocalizedString(30129),
+                                            'RunPlugin(%s&cmd=unwatched)' % url_peep))
 
                     if nt.addon.getSetting('context_playlist') == 'true':
-                        context.append((nt.addon.getLocalizedString(30130), 'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
+                        context.append((nt.addon.getLocalizedString(30130),
+                                        'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
 
                     # Vote
                     if nt.addon.getSetting('context_show_vote_Episode') == 'true' and ep_id != '':
-                        context.append((nt.addon.getLocalizedString(30125), 'RunPlugin(%s&cmd=voteEp)' % url_peep))
+                        context.append((nt.addon.getLocalizedString(30125),
+                                        'RunPlugin(%s&cmd=voteEp)' % url_peep))
                     if nt.addon.getSetting('context_show_vote_Series') == 'true' and series_id != '':
-                        context.append((nt.addon.getLocalizedString(30124), 'RunPlugin(%s&cmd=voteSer)' % url_peep))
+                        context.append((nt.addon.getLocalizedString(30124),
+                                        'RunPlugin(%s&cmd=voteSer)' % url_peep))
 
                     # Metadata
                     if nt.addon.getSetting('context_show_info') == 'true':
-                        context.append((nt.addon.getLocalizedString(30123), 'Action(Info)'))
+                        context.append((nt.addon.getLocalizedString(30123),
+                                        'Action(Info)'))
 
                     if nt.addon.getSetting('context_view_cast') == 'true':
                         if series_id != '':
-                            context.append((nt.addon.getLocalizedString(30134), 'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
+                            context.append((nt.addon.getLocalizedString(30134),
+                                            'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
                     if nt.addon.getSetting('context_refresh') == 'true':
-                        context.append((nt.addon.getLocalizedString(30131), 'RunPlugin(%s&cmd=refresh)' % url_peep))
+                        context.append((nt.addon.getLocalizedString(30131),
+                                        'RunPlugin(%s&cmd=refresh)' % url_peep))
 
         liz.addContextMenuItems(context)
         liz.select(force_select)
-        listitems.append((gui_url, liz, folder))
+        list_items.append((gui_url, liz, folder))
         return liz
     except Exception as e:
         nt.error("util.error during add_gui_item", str(e))
@@ -244,7 +262,7 @@ def end_of_directory(cache=True):
     Leave this in nakamori.py! It needs to be here to access listitems properly
     Adds all items to the list in batch, and then finalizes it
     """
-    xbmcplugin.addDirectoryItems(handle, listitems, len(listitems))
+    xbmcplugin.addDirectoryItems(handle, list_items, len(list_items))
     xbmcplugin.endOfDirectory(handle, cacheToDisc=cache)
 
 
@@ -277,7 +295,7 @@ def add_raw_files(node):
                    (nt.addon.getLocalizedString(30121), 'RunPlugin(%s&cmd=rehash)' % u),
                    (nt.addon.getLocalizedString(30122), 'RunPlugin(%s&cmd=missing)' % u)]
         liz.addContextMenuItems(context)
-        listitems.append((u, liz, False))
+        list_items.append((u, liz, False))
     except:  # Sometimes a file is deleted or invalid, but we should just skip it
         pass
 
@@ -330,7 +348,7 @@ def add_content_typ_dir(name, serie_id):
     u = nt.set_parameter(u, 'mode', str(6))
     u = nt.set_parameter(u, 'name', nt.quote_plus(title))
     u = nt.set_parameter(u, 'type', name)
-    listitems.append((u, liz, True))
+    list_items.append((u, liz, True))
 
 
 def add_serie_item(node, parent_title, destination_playlist=False):
@@ -348,11 +366,11 @@ def add_serie_item(node, parent_title, destination_playlist=False):
 
     watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
-        watched = nt.safeInt(watched_sizes.get("Episodes", 0))
+        watched = nt.safe_int(watched_sizes.get("Episodes", 0))
         if not nt.get_kodi_setting_bool("ignore_specials_watched"):
-            watched += nt.safeInt(watched_sizes.get("Specials", 0))
+            watched += nt.safe_int(watched_sizes.get("Specials", 0))
     else:
-        watched = nt.safeInt(node.get("watchedsize", ''))
+        watched = nt.safe_int(node.get("watchedsize", ''))
 
     list_cast = []
     list_cast_and_role = []
@@ -373,15 +391,15 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     if nt.addon.getSetting("local_total") == "true":
         local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
-            total = nt.safeInt(local_sizes.get("Episodes", 0)) + nt.safeInt(local_sizes.get("Specials", 0))
+            total = nt.safe_int(local_sizes.get("Episodes", 0)) + nt.safe_int(local_sizes.get("Specials", 0))
         else:
-            total = nt.safeInt(node.get("localsize", ''))
+            total = nt.safe_int(node.get("localsize", ''))
     else:
         sizes = node.get("total_sizes", {})
         if len(sizes) > 0:
-            total = nt.safeInt(sizes.get("Episodes", 0)) + nt.safeInt(sizes.get("Specials", 0))
+            total = nt.safe_int(sizes.get("Episodes", 0)) + nt.safe_int(sizes.get("Specials", 0))
         else:
-            total = nt.safeInt(node.get("localsize", ''))
+            total = nt.safe_int(node.get("localsize", ''))
 
     if watched > total:
         watched = total
@@ -406,7 +424,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'genre':            temp_genre,
         'year':             node.get("year", ''),
         'episode':          total,
-        'season':           nt.safeInt(node.get("season", '1')),
+        'season':           nt.safe_int(node.get("season", '1')),
         # 'count'        : count,
         'size':             total,
         'rating':           float(str(node.get("rating", '0')).replace(',', '.')),
@@ -531,24 +549,24 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
 
     watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
-        watched = nt.safeInt(watched_sizes.get("Episodes", 0))
+        watched = nt.safe_int(watched_sizes.get("Episodes", 0))
         if not nt.get_kodi_setting_bool("ignore_specials_watched"):
-            watched += nt.safeInt(watched_sizes.get("Specials", 0))
+            watched += nt.safe_int(watched_sizes.get("Specials", 0))
     else:
-        watched = nt.safeInt(node.get("watchedsize", ''))
+        watched = nt.safe_int(node.get("watchedsize", ''))
 
     if nt.addon.getSetting("local_total") == "true":
         local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
-            total = nt.safeInt(local_sizes.get("Episodes", 0)) + nt.safeInt(local_sizes.get("Specials", 0))
+            total = nt.safe_int(local_sizes.get("Episodes", 0)) + nt.safe_int(local_sizes.get("Specials", 0))
         else:
-            total = nt.safeInt(node.get("localsize", ''))
+            total = nt.safe_int(node.get("localsize", ''))
     else:
         sizes = node.get("total_sizes", {})
         if len(sizes) > 0:
-            total = nt.safeInt(sizes.get("Episodes", 0)) + nt.safeInt(sizes.get("Specials", 0))
+            total = nt.safe_int(sizes.get("Episodes", 0)) + nt.safe_int(sizes.get("Specials", 0))
         else:
-            total = nt.safeInt(node.get("localsize", ''))
+            total = nt.safe_int(node.get("localsize", ''))
 
     if watched > total:
         watched = total
@@ -569,7 +587,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'genre':            temp_genre,
         'year':             node.get('year', ''),
         'episode':          total,
-        'season':           nt.safeInt(node.get('season', '1')),
+        'season':           nt.safe_int(node.get('season', '1')),
         'size':             total,
         'rating':           float(str(node.get('rating', '0')).replace(',', '.')),
         'userrating':       float(str(node.get('userrating', '0')).replace(',', '.')),
@@ -641,10 +659,9 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     url_peep = nt.set_parameter(url_peep, 'mode', 1)
     url_peep = nt.set_parameter(url_peep, 'group_id', key_id)
 
-    context = []
+    context = [(nt.addon.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep),
+               (nt.addon.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep)]
     # Watch
-    context.append((nt.addon.getLocalizedString(30126), 'RunPlugin(%s&cmd=watched)' % url_peep))
-    context.append((nt.addon.getLocalizedString(30127), 'RunPlugin(%s&cmd=unwatched)' % url_peep))
 
     # Metadata
     if nt.addon.getSetting('context_show_info') == 'true' and not is_filter:
@@ -663,7 +680,7 @@ def add_filter_item(menu):
     """
     use_mode = 4
     key = menu["url"]
-    size = nt.safeInt(menu.get("size"))
+    size = nt.safe_int(menu.get("size"))
     title = menu['name']
 
     if title == 'Continue Watching (SYSTEM)':
@@ -690,14 +707,14 @@ def add_filter_item(menu):
             if ":" not in thumb:
                 thumb = nt.server + thumb
         if "Year" in title or "Airing Today" in title:
-            thumb = os.path.join(img, 'icons', 'year.png')
+            thumb = os.path.join(_img, 'icons', 'year.png')
         elif "Tag" in title:
-            thumb = os.path.join(img, 'icons', 'tag.png')
+            thumb = os.path.join(_img, 'icons', 'tag.png')
     except:
         if "Year" in title or "Airing Today" in title:
-            thumb = os.path.join(img, 'icons', 'year.png')
+            thumb = os.path.join(_img, 'icons', 'year.png')
         elif "Tag" in title:
-            thumb = os.path.join(img, 'icons', 'tag.png')
+            thumb = os.path.join(_img, 'icons', 'tag.png')
     fanart = ''
     try:
         if len(menu["art"]["fanart"]) > 0:
@@ -733,7 +750,7 @@ def add_filter_item(menu):
     if thumb == '':
         liz.setIconImage('DefaultVideo.png')
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title, "count": size})
-    listitems.append((u, liz, True))
+    list_items.append((u, liz, True))
 
 
 def build_filters_menu():
@@ -762,7 +779,8 @@ def build_filters_menu():
                 elif title == 'Tags':
                     menu_append.append(menu)
                 elif title == 'Unsort':
-                    menu_append.append(menu)
+                    if nt.addon.getSetting("show_unsort") == "true":
+                        menu_append.append(menu)
                 elif title == 'Years':
                     menu_append.append(menu)
             for menu in json_menu["filters"]:
@@ -786,57 +804,62 @@ def build_filters_menu():
     except Exception as e:
         nt.error("Invalid JSON Received in build_filters_menu", str(e))
 
-    # region Start Add_Calendar
-    soon_url = nt.server + "/api/serie/soon"
-    title = nt.addon.getLocalizedString(30222)
-    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-    liz.setArt({"icon": os.path.join(img, 'icons', 'year.png'),
-                "fanart": os.path.join(img, 'backgrounds', 'new-search.jpg')})
-    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-    u = sys.argv[0]
-    u = nt.set_parameter(u, 'url', soon_url)
-    u = nt.set_parameter(u, 'mode', str(9))
-    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-    listitems.append((u, liz, True))
+    # region Calendar
+    if nt.addon.getSetting("show_calendar") == "true":
+        soon_url = nt.server + "/api/serie/soon"
+        title = nt.addon.getLocalizedString(30222)
+        liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'year.png'),
+                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+        u = sys.argv[0]
+        u = nt.set_parameter(u, 'url', soon_url)
+        u = nt.set_parameter(u, 'mode', str(9))
+        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+        list_items.append((u, liz, True))
     # endregion
 
-    # region Start Add_NEW_Calendar
-    soon_url = nt.server + "/api/serie/soon"
-    title = "Calendar v2"
-    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-    liz.setArt({"icon": os.path.join(img, 'icons', 'year.png'),
-                "fanart": os.path.join(img, 'backgrounds', 'new-search.jpg')})
-    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-    u = sys.argv[0]
-    u = nt.set_parameter(u, 'url', soon_url)
-    u = nt.set_parameter(u, 'mode', str(10))
-    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-    listitems.append((u, liz, True))
+    # region NEW_Calendar
+    if nt.addon.getSetting("show_extra") == "true":
+        soon_url = nt.server + "/api/serie/soon"
+        title = "Calendar v2"
+        liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'year.png'),
+                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+        u = sys.argv[0]
+        u = nt.set_parameter(u, 'url', soon_url)
+        u = nt.set_parameter(u, 'mode', str(10))
+        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+        list_items.append((u, liz, True))
     # endregion
 
-    # region Start Add_Search
-    search_url = nt.server + "/api/search"
-    title = nt.addon.getLocalizedString(30221)
-    liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
-    liz.setArt({"icon": os.path.join(img, 'icons', 'search.png'),
-                "fanart": os.path.join(img, 'backgrounds', 'new-search.jpg')})
-    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-    u = sys.argv[0]
-    u = nt.set_parameter(u, 'url', search_url)
-    u = nt.set_parameter(u, 'mode', str(3))
-    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-    listitems.append((u, liz, True))
+    # region Search
+    if nt.addon.getSetting("show_search") == "true":
+        search_url = nt.server + "/api/search"
+        title = nt.addon.getLocalizedString(30221)
+        liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+        u = sys.argv[0]
+        u = nt.set_parameter(u, 'url', search_url)
+        u = nt.set_parameter(u, 'mode', str(3))
+        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+        list_items.append((u, liz, True))
     # endregion
 
     # region Settings
-    liz = xbmcgui.ListItem(label='Settings', label2='Settings')
-    liz.setArt({"icon": os.path.join(img, 'icons', 'search.png'),
-                "fanart": os.path.join(img, 'backgrounds', 'new-search.jpg')})
-    u = sys.argv[0]
-    u = nt.set_parameter(u, 'url', '')
-    u = nt.set_parameter(u, 'mode', str(11))
-    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-    listitems.append((u, liz, True))
+    if nt.addon.getSetting("show_settings") == "true":
+        title = nt.addon.getLocalizedString(30107)
+        liz = xbmcgui.ListItem(label=title, label2=title)
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+        u = sys.argv[0]
+        u = nt.set_parameter(u, 'url', '')
+        u = nt.set_parameter(u, 'mode', str(11))
+        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+        list_items.append((u, liz, True))
     # endregion
 
     end_of_directory(False)
@@ -1098,7 +1121,7 @@ def build_serie_episodes(params):
                         'cast': list_cast,
                         'aired': body['air'],
                         'tvshowtitle': body['name'],
-                        'size': nt.safeInt(body.get('size', '0')),
+                        'size': nt.safe_int(body.get('size', '0')),
                         'genre': "..." if skip else temp_genre,
                         'tagline': "..." if skip else temp_genre
                     }
@@ -1109,7 +1132,7 @@ def build_serie_episodes(params):
                     }
                     extra_data['VideoStreams'][0]['duration'] = 0
                     u = sys.argv[0]
-                    add_gui_item(u, details, extra_data, None, folder=False, index=int(episode_count - 1))
+                    add_gui_item(u, details, extra_data, folder=False, index=int(episode_count - 1))
                     busy.close()
                     end_of_directory()
 
@@ -1118,13 +1141,15 @@ def build_serie_episodes(params):
                     xbmc.sleep(1000)
                     control_id = wind.getFocusId()
                     control_list = wind.getControl(control_id)
+                    # noinspection PyUnresolvedReferences
                     control_list.selectItem(1)
 
             elif len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
                 if nt.addon.getSetting("show_continue") == "true":
                     if nt.decode(parent_title).lower() != "unsort":
-                        nt.addDir("-continue-", '', '7', nt.server + "/image/support/plex_others.png", "Next episode", "3", "4", str(next_episode))
+                        nt.addDir("-continue-", '', '7', nt.server + "/image/support/plex_others.png",
+                                  "Next episode", "3", "4", str(next_episode))
                 selected_list_item = False
                 for video in body['eps']:
                     item_count += 1
@@ -1178,14 +1203,14 @@ def build_serie_episodes(params):
                                 'genre':         "..." if skip else temp_genre,
                                 'duration':      duration,
                                 # 'mpaa':          video.get('contentRating', ''), <--
-                                'year':          nt.safeInt(video.get('year', '')),
+                                'year':          nt.safe_int(video.get('year', '')),
                                 'tagline':       "..." if skip else temp_genre,
-                                'episode':       nt.safeInt(video.get('epnumber', '')),
+                                'episode':       nt.safe_int(video.get('epnumber', '')),
                                 'aired':         air,
                                 'tvshowtitle':   grandparent_title,
-                                'votes':         nt.safeInt(video.get('votes', '')),
+                                'votes':         nt.safe_int(video.get('votes', '')),
                                 'originaltitle': nt.decode(video.get('name', '')),
-                                'size': nt.safeInt(video['files'][0].get('size', '0')),
+                                'size': nt.safe_int(video['files'][0].get('size', '0')),
                             }
 
                             season = str(body.get('season', '1'))
@@ -1194,7 +1219,7 @@ def build_serie_episodes(params):
                                     season = season.split('x')[0]
                             except Exception as w:
                                 nt.error(w, season)
-                            details['season'] = nt.safeInt(season)
+                            details['season'] = nt.safe_int(season)
 
                             temp_date = str(details['aired']).split('-')
                             if len(temp_date) == 3:  # format is 2016-01-24, we want it 24.01.2016
@@ -1228,13 +1253,13 @@ def build_serie_episodes(params):
                                 'key':              key,
                                 'resume':           int(int(video['files'][0].get('offset', '0')) / 1000),
                                 'parentKey':        parent_key,
-                                'jmmepisodeid':     nt.safeInt(body.get('id', '')),
+                                'jmmepisodeid':     nt.safe_int(body.get('id', '')),
                                 'actors':           actors,
                                 'VideoStreams':     defaultdict(dict),
                                 'AudioStreams':     defaultdict(dict),
                                 'SubStreams':       defaultdict(dict),
-                                'ep_id':            nt.safeInt(video.get('id', '')),
-                                'serie_id':         nt.safeInt(body.get('id', '')),
+                                'ep_id':            nt.safe_int(video.get('id', '')),
+                                'serie_id':         nt.safe_int(body.get('id', '')),
                                 'file_id':          video['files'][0].get('offset', '0')
                             }
 
@@ -1243,7 +1268,7 @@ def build_serie_episodes(params):
                                 util.video_file_information(video['files'][0]['media'], extra_data)
 
                             # Determine what type of watched flag [overlay] to use
-                            if int(nt.safeInt(video.get("view", '0'))) > 0:
+                            if int(nt.safe_int(video.get("view", '0'))) > 0:
                                 details['playcount'] = 1
                                 details['overlay'] = 5
                                 # details['lastplayed'] = '2010-10-10 11:00:00'
@@ -1363,7 +1388,7 @@ def build_cast_menu(params):
                 u = nt.set_parameter(u, 'url', new_search_url)
                 u = nt.set_parameter(u, 'cmd', 'searchCast')
 
-                listitems.append((u, liz, True))
+                list_items.append((u, liz, True))
 
             end_of_directory()
     except:
@@ -1380,8 +1405,8 @@ def build_search_directory():
         "url": nt.server + "/api/serie",
         "mode": 3,
         "poster": "none",
-        "icon": os.patch.join(img, 'icons', 'search.png'),
-        "fanart": os.patch.join(img, 'backgrounds', 'new-search.jpg'),
+        "icon": os.path.join(_img, 'icons', 'search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
         "type": "",
         "plot": "",
         "extras": "true-search"
@@ -1390,8 +1415,8 @@ def build_search_directory():
         "url": "delete-all",
         "mode": 31,
         "poster": "none",
-        "icon": os.path.join(img, 'icons', 'trash.png'),
-        "fanart": os.path.join(img, 'backgrounds', 'clear-search.jpg'),
+        "icon": os.path.join(_img, 'icons', 'trash.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'clear-search.jpg'),
         "type": "",
         "plot": "",
         "extras": ""
@@ -1409,7 +1434,7 @@ def build_search_directory():
                     "query": ss[0],
                     "mode": 3,
                     "poster": "none",
-                    "icon": os.path.join(img, 'icons', 'tag.png'),
+                    "icon": os.path.join(_img, 'icons', 'tag.png'),
                     "fanart": os.path.join(nt.home, 'fanart.jpg'),
                     "type": "",
                     "plot": "",
@@ -1433,7 +1458,7 @@ def build_search_directory():
                     'icon': detail['icon'],
                     'fanart': detail['fanart']})
         liz.setInfo(type=detail['type'], infoLabels={"Title": nt.encode(detail['title']), "Plot": detail['plot']})
-        listitems.append((u, liz, True))
+        list_items.append((u, liz, True))
     end_of_directory(False)
 
 
@@ -1458,7 +1483,6 @@ def build_serie_soon_new(params):
         if nt.addon.getSetting("spamLog") == "true":
             xbmc.log(params['url'], xbmc.LOGWARNING)
             xbmc.log(html, xbmc.LOGWARNING)
-        html_body = nt.json.loads(html)
         busy.update(70)
         temp_url = params['url']
         temp_url = nt.set_parameter(temp_url, 'level', 2)
@@ -1469,7 +1493,6 @@ def build_serie_soon_new(params):
 
         try:
             window = Calendar(data=body, handle=handle)
-            # xbmcplugin.endOfDirectory(int(sys.argv[1]))
             window.doModal()
             del window
             # return
@@ -1498,7 +1521,6 @@ def build_serie_soon(params):
         temp_url = nt.set_parameter(temp_url, 'level', 2)
 
         busy.update(10)
-        temp_url = params['url']
         temp_url = nt.set_parameter(temp_url, 'nocast', 0)
         temp_url = nt.set_parameter(temp_url, 'notag', 0)
         temp_url = nt.set_parameter(temp_url, 'level', 0)
@@ -1508,9 +1530,7 @@ def build_serie_soon(params):
         if nt.addon.getSetting("spamLog") == "true":
             xbmc.log(params['url'], xbmc.LOGWARNING)
             xbmc.log(html, xbmc.LOGWARNING)
-        html_body = nt.json.loads(html)
         busy.update(70)
-        directory_type = html_body['type']
         temp_url = params['url']
         temp_url = nt.set_parameter(temp_url, 'level', 2)
         html = nt.get_json(temp_url)
@@ -1535,9 +1555,7 @@ def build_serie_soon(params):
                 else:
                     used_dates.append(sers.get('air', ''))
                     soon_url = nt.server + "/api/serie/soon"
-                    details = {}
-                    details['aired'] = sers.get('air', '')
-                    details['title'] = sers.get('air', '')
+                    details = {'aired': sers.get('air', ''), 'title': sers.get('air', '')}
                     u = sys.argv[0]
                     u = nt.set_parameter(u, 'url', soon_url)
                     u = nt.set_parameter(u, 'mode', str(0))
@@ -1563,7 +1581,7 @@ def build_raw_list(params):
     :return:
     """
     xbmcplugin.setContent(handle, 'files')
-    util.set_window_heading('Unsorted')
+    util.set_window_heading(nt.addon.getLocalizedString(30106))
     try:
         html = nt.get_json(params['url'])
         body = nt.json.loads(html)
@@ -1586,15 +1604,15 @@ def build_network_menu():
     Build fake menu that will alert user about network util.error (unable to connect to api)
     """
     network_url = nt.server + "/api/version"
-    title = "Network connection util.error"
+    title = nt.addon.getLocalizedString(30197)
     liz = xbmcgui.ListItem(label=title, label2=title, path=network_url)
-    liz.setArt({"icon": os.path.join(img, 'icons', 'search.png'),
-                "fanart": os.path.join(img, 'backgrounds', 'new-search.jpg')})
+    liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+                "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = nt.set_parameter(u, 'url', network_url)
     u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-    listitems.append((u, liz, True))
+    list_items.append((u, liz, True))
     end_of_directory(False)
 
 
@@ -1623,7 +1641,7 @@ def execute_search_and_add_query():
     """
     Build a search query and if its not in Search History add it
     """
-    find = nt.searchBox()
+    find = nt.search_box()
     # check search history
     if find == '':
         build_search_directory()
@@ -1664,3 +1682,4 @@ def create_playlist(serie_id):
                     playlist.add(url=video, listitem=liz, index=item_count)
     if item_count > 0:
         xbmc.Player().play(playlist)
+

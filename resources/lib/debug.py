@@ -4,20 +4,21 @@
 import cProfile
 import pstats
 import xbmc
+import sys
 import nakamoritools as nt
 
 has_pydev = False
 has_line_profiler = False
 try:
     # noinspection PyUnresolvedReferences
-    import line_profiler
+    import line_profiler as line_profiler
     has_line_profiler = True
 except ImportError:
     pass
 
 try:
     # noinspection PyUnresolvedReferences
-    import pydevd
+    import pydevd as pydevd
     has_pydev = True
 except ImportError:
     pass
@@ -44,8 +45,43 @@ def profile_this(func):
             return result
         finally:
             stream = nt.StringIO()
-            sortby = 'time'
-            ps = pstats.Stats(profile, stream=stream).sort_stats(sortby)
+            sort_by = 'time'
+            ps = pstats.Stats(profile, stream=stream).sort_stats(sort_by)
             ps.print_stats()
             xbmc.log('Profiled Function: ' + func.__name__ + '\n' + stream.getvalue(), xbmc.LOGWARNING)
     return profiled_func
+
+
+def debug_init():
+    """
+    start debugger is there is needed one
+    also dump argv if spamLog
+    :return:
+    """
+    if nt.addon.getSetting('remote_debug') == 'true':
+        try:
+            if has_pydev:
+                pydevd.settrace(nt.addon.getSetting('ide_ip'), port=int(nt.addon.getSetting('ide_port')),
+                                stdoutToServer=True, stderrToServer=True, suspend=False)
+            else:
+                nt.error('pydevd not found, disabling remote_debug')
+                nt.addon.setSetting('remote_debug', 'false')
+        except Exception as ex:
+            nt.error('Unable to start debugger, disabling', str(ex))
+            nt.addon.setSetting('remote_debug', 'false')
+    if nt.addon.getSetting('spamLog') == "true":
+        nt.dump_dictionary(sys.argv, 'sys.argv')
+
+
+def debug_stop():
+    """
+    stop debugger if there was any
+    :return:
+    """
+    if nt.addon.getSetting('remote_debug') == 'true':
+        try:
+            if has_pydev:
+                pydevd.stoptrace()
+        except Exception as remote_exc:
+            xbmc.log(str(remote_exc), xbmc.LOGWARNING)
+            pass
