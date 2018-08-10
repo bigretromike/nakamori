@@ -116,5 +116,8 @@
     </category>
     <category label="30097">
         <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
+        <setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
+        <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
+        <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
     </category>
 </settings>

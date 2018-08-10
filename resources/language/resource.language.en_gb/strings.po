@@ -457,7 +457,20 @@ msgctxt "#30110"
 msgid "Clear Search Terms"
 msgstr ""
 
-# 110 - 119 empty
+msgctxt "#30111"
+msgid "Always hide Rating"
+msgstr ""
+
+msgctxt "#30112"
+msgid "Hide Rating only in active series"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Hide rating for"
+msgstr ""
+
+
+# 114 - 119 empty
 
 #---------------End-Settings--------------------------
 
