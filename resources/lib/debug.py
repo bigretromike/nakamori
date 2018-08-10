@@ -63,6 +63,7 @@ def debug_init():
             if has_pydev:
                 pydevd.settrace(nt.addon.getSetting('ide_ip'), port=int(nt.addon.getSetting('ide_port')),
                                 stdoutToServer=True, stderrToServer=True, suspend=False)
+                xbmc.log("PyDev has run", xbmc.LOGINFO)
             else:
                 nt.error('pydevd not found, disabling remote_debug')
                 nt.addon.setSetting('remote_debug', 'false')

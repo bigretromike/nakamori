@@ -445,7 +445,11 @@ msgctxt "#30107"
 msgid "Settings"
 msgstr ""
 
-# 108 - 119 empty
+msgctxt "#30108"
+msgid "Send anonymous data about your settings"
+msgstr ""
+
+# 109 - 119 empty
 
 #---------------End-Settings--------------------------
 
