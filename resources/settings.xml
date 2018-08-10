@@ -119,5 +119,6 @@
         <setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
         <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
         <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
+		<setting label="30108" type="bool" id="send_data" default="true"/>
     </category>
 </settings>
