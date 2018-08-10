@@ -84,6 +84,7 @@
         <setting label="30070" type="bool" id="hideSettingTags" default="false"/>
     </category>
     <category label="30044">
+        <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false" />
         <setting label="30021" type="lsep"/>
         <setting label="30022" type="number" id="maxlimit" default="20"/>
         <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
@@ -114,6 +115,6 @@
         <setting label="30094" type="text" id="vbitrateEigakan" default="3000000" visible="eq(-4,true)"/>
     </category>
     <category label="30097">
-
+        <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
     </category>
 </settings>

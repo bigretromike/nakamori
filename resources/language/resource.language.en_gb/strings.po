@@ -449,7 +449,15 @@ msgctxt "#30108"
 msgid "Send anonymous data about your settings"
 msgstr ""
 
-# 109 - 119 empty
+msgctxt "#30109"
+msgid "Select custom Image/IconPack"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Clear Search Terms"
+msgstr ""
+
+# 110 - 119 empty
 
 #---------------End-Settings--------------------------
 

@@ -23,7 +23,7 @@ list_items = []
 handle = int(sys.argv[1])
 busy = xbmcgui.DialogProgress()
 
-_img = os.path.join(xbmcaddon.Addon('resource.images.nakamori').getAddonInfo('path'), 'resources', 'media')
+_img = os.path.join(xbmcaddon.Addon(nt.addon.getSetting('icon_pack')).getAddonInfo('path'), 'resources', 'media')
 
 
 def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0, force_select=False):
