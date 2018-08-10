@@ -706,15 +706,9 @@ def add_filter_item(menu):
             thumb = menu["art"]["thumb"][0]["url"]
             if ":" not in thumb:
                 thumb = nt.server + thumb
-        if "Year" in title or "Airing Today" in title:
-            thumb = os.path.join(_img, 'icons', 'year.png')
-        elif "Tag" in title:
-            thumb = os.path.join(_img, 'icons', 'tag.png')
     except:
-        if "Year" in title or "Airing Today" in title:
-            thumb = os.path.join(_img, 'icons', 'year.png')
-        elif "Tag" in title:
-            thumb = os.path.join(_img, 'icons', 'tag.png')
+        pass
+
     fanart = ''
     try:
         if len(menu["art"]["fanart"]) > 0:
@@ -768,24 +762,45 @@ def build_filters_menu():
             for menu in json_menu["filters"]:
                 title = menu['name']
                 if title == 'Seasons':
-                    airing = {
+                    airing = dict({
                         "name": nt.addon.getLocalizedString(30223),
-                        "url": nt.server + "/api/serie/today"
-                    }
+                        "url": nt.server + "/api/serie/today",
+                    })
+                    airing['art'] = {}
+                    airing['art']['fanart'] = []
+                    airing['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'airing.jpg')})
                     if nt.get_version(nt.addon.getSetting("ipaddress"),
                                       nt.addon.getSetting("port")) >= nt.LooseVersion("3.8.0.0"):
                         menu_append.append(airing)
+                    menu['art'] = {}
+                    menu['art']['fanart'] = []
+                    menu['art']['thumb'] = []
+                    menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'seasons.jpg')})
                     menu_append.append(menu)
                 elif title == 'Tags':
+                    menu['art'] = {}
+                    menu['art']['fanart'] = []
+                    menu['art']['thumb'] = []
+                    menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'tags.jpg')})
+                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tag.png')})
                     menu_append.append(menu)
                 elif title == 'Unsort':
                     if nt.addon.getSetting("show_unsort") == "true":
+                        menu['art'] = {}
+                        menu['art']['fanart'] = []
+                        menu['art']['thumb'] = []
+                        menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'unsort.jpg')})
+                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tag.png')})
                         menu_append.append(menu)
                 elif title == 'Years':
+                    menu['art'] = {}
+                    menu['art']['fanart'] = []
+                    menu['art']['thumb'] = []
+                    menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'years.jpg')})
+                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'year.png')})
                     menu_append.append(menu)
             for menu in json_menu["filters"]:
                 title = menu['name']
-
                 if title == 'Unsort':
                     continue
                 elif title == 'Tags':
@@ -810,7 +825,7 @@ def build_filters_menu():
         title = nt.addon.getLocalizedString(30222)
         liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
         liz.setArt({"icon": os.path.join(_img, 'icons', 'year.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+                    "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
         u = nt.set_parameter(u, 'url', soon_url)
@@ -825,7 +840,7 @@ def build_filters_menu():
         title = "Calendar v2"
         liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
         liz.setArt({"icon": os.path.join(_img, 'icons', 'year.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+                    "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
         u = nt.set_parameter(u, 'url', soon_url)
@@ -840,7 +855,7 @@ def build_filters_menu():
         title = nt.addon.getLocalizedString(30221)
         liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
         liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+                    "fanart": os.path.join(_img, 'backgrounds', 'search.jpg')})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
         u = nt.set_parameter(u, 'url', search_url)
@@ -854,7 +869,8 @@ def build_filters_menu():
         title = nt.addon.getLocalizedString(30107)
         liz = xbmcgui.ListItem(label=title, label2=title)
         liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+                    "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
+        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
         u = nt.set_parameter(u, 'url', '')
         u = nt.set_parameter(u, 'mode', str(11))
