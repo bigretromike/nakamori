@@ -31,6 +31,7 @@ else:
 global __tagSettingFlags__
 busy = xbmcgui.DialogProgress()
 
+
 def set_window_heading(window_name):
     """
     Sets the window titles
