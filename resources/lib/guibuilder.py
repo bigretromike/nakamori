@@ -285,9 +285,12 @@ def add_raw_files(node):
         key = node["url"]
         raw_url = nt.server + "/api/file?id=" + str(file_id)
         title = nt.os.path.split(str(name))[1]
-        thumb = nt.server + "/image/support/plex_others.png"
+        thumb = os.path.join(_img, 'thumb', 'other.png')
+        fanart = os.path.join(_img, 'fanart', 'other.png')
+        banner = os.path.join(_img, 'banner', 'other.png')
+        poster = os.path.join(_img, 'poster', 'other.png')
         liz = xbmcgui.ListItem(label=title, label2=title, path=raw_url)
-        liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
+        liz.setArt({'thumb': thumb, 'poster': poster, 'icon': 'DefaultVideo.png', 'fanart': fanart, 'banner': banner})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
         u = nt.set_parameter(u, 'url', raw_url)
@@ -318,37 +321,39 @@ def add_content_typ_dir(name, serie_id):
     dir_url = nt.set_parameter(dir_url, 'id', str(serie_id))
     dir_url = nt.set_parameter(dir_url, 'level', 4)
     title = str(name)
-    thumb = nt.server + "/api/image/support/"
 
     if title == "Credit":
-        thumb += "plex_credits.png"
+        image_name = 'credits.png'
     elif title == "Movie":
-        thumb += "plex_movies.png"
+        image_name = "movie.png"
     elif title == "Ova":
-        thumb += "plex_ovas.png"
+        image_name = "ova.png"
     elif title == "Other":
-        thumb += "plex_others.png"
+        image_name = "other.png"
     elif title == "Episode":
-        thumb += "plex_episodes.png"
+        image_name = "episodes.png"
     elif title == "TV Episode":
-        thumb += "plex_tvepisodes.png"
+        image_name = "tvepisodes.png"
     elif title == "Web Clip":
-        thumb += "plex_webclips.png"
-    elif title == "Episode":
-        thumb += "plex_episodes.png"
+        image_name = "webclips.png"
     elif title == "Parody":
-        thumb += "plex_parodies.png"
+        image_name = "parody.png"
     elif title == "Special":
-        thumb += "plex_specials.png"
+        image_name = "specials.png"
     elif title == "Trailer":
-        thumb += "plex_trailers.png"
+        image_name = "trailers.png"
     elif title == "Misc":
-        thumb += "plex_misc.png"
+        image_name = "misc.png"
     else:
-        thumb += "plex_others.png"
+        image_name = "other.png"
+
+    thumb = os.path.join(_img, 'thumb', image_name)
+    fanart = os.path.join(_img, 'fanart', image_name)
+    banner = os.path.join(_img, 'banner', image_name)
+    poster = os.path.join(_img, 'poster', image_name)
 
     liz = xbmcgui.ListItem(label=title, label2=title, path=dir_url)
-    liz.setArt({'thumb': thumb, 'poster': thumb, 'icon': 'DefaultVideo.png'})
+    liz.setArt({'thumb': thumb, 'poster': poster, 'icon': 'DefaultVideo.png', 'fanart': fanart, 'banner': banner})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = nt.set_parameter(u, 'url', dir_url)
@@ -1189,10 +1194,11 @@ def build_serie_episodes(params):
 
             elif len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
+                thumb = os.path.join(_img, 'thumb', 'other.png')
+                poster = os.path.join(_img, 'poster', 'other.png')
                 if nt.addon.getSetting("show_continue") == "true":
                     if nt.decode(parent_title).lower() != "unsort":
-                        nt.addDir("-continue-", '', '7', nt.server + "/image/support/plex_others.png",
-                                  "Next episode", "3", "4", str(next_episode))
+                        nt.add_dir("-continue-", '', '7', thumb, "Next episode", poster, "4", str(next_episode))
                 selected_list_item = False
                 for video in body['eps']:
                     item_count += 1
