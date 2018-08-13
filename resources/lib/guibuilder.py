@@ -768,7 +768,9 @@ def build_filters_menu():
                     })
                     airing['art'] = {}
                     airing['art']['fanart'] = []
+                    airing['art']['thumb'] = []
                     airing['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'airing.jpg')})
+                    airing['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'airing.png')})
                     if nt.get_version(nt.addon.getSetting("ipaddress"),
                                       nt.addon.getSetting("port")) >= nt.LooseVersion("3.8.0.0"):
                         menu_append.append(airing)
@@ -776,13 +778,14 @@ def build_filters_menu():
                     menu['art']['fanart'] = []
                     menu['art']['thumb'] = []
                     menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'seasons.jpg')})
+                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'seasons.png')})
                     menu_append.append(menu)
                 elif title == 'Tags':
                     menu['art'] = {}
                     menu['art']['fanart'] = []
                     menu['art']['thumb'] = []
                     menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'tags.jpg')})
-                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tag.png')})
+                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tags.png')})
                     menu_append.append(menu)
                 elif title == 'Unsort':
                     if nt.addon.getSetting("show_unsort") == "true":
@@ -790,14 +793,14 @@ def build_filters_menu():
                         menu['art']['fanart'] = []
                         menu['art']['thumb'] = []
                         menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'unsort.jpg')})
-                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tag.png')})
+                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'unsort.png')})
                         menu_append.append(menu)
                 elif title == 'Years':
                     menu['art'] = {}
                     menu['art']['fanart'] = []
                     menu['art']['thumb'] = []
                     menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'years.jpg')})
-                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'year.png')})
+                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'years.png')})
                     menu_append.append(menu)
             for menu in json_menu["filters"]:
                 title = menu['name']
@@ -824,7 +827,7 @@ def build_filters_menu():
         soon_url = nt.server + "/api/serie/soon"
         title = nt.addon.getLocalizedString(30222)
         liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'year.png'),
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
                     "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
@@ -839,7 +842,7 @@ def build_filters_menu():
         soon_url = nt.server + "/api/serie/soon"
         title = "Calendar v2"
         liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'year.png'),
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
                     "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
@@ -868,7 +871,7 @@ def build_filters_menu():
     if nt.addon.getSetting("show_settings") == "true":
         title = nt.addon.getLocalizedString(30107)
         liz = xbmcgui.ListItem(label=title, label2=title)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
                     "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
         liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
         u = sys.argv[0]
@@ -1421,7 +1424,7 @@ def build_search_directory():
         "url": nt.server + "/api/serie",
         "mode": 3,
         "poster": "none",
-        "icon": os.path.join(_img, 'icons', 'search.png'),
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
         "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
         "type": "",
         "plot": "",
@@ -1431,7 +1434,7 @@ def build_search_directory():
         "url": "delete-all",
         "mode": 31,
         "poster": "none",
-        "icon": os.path.join(_img, 'icons', 'trash.png'),
+        "icon": os.path.join(_img, 'icons', 'clear-search.png'),
         "fanart": os.path.join(_img, 'backgrounds', 'clear-search.jpg'),
         "type": "",
         "plot": "",
@@ -1450,7 +1453,7 @@ def build_search_directory():
                     "query": ss[0],
                     "mode": 3,
                     "poster": "none",
-                    "icon": os.path.join(_img, 'icons', 'tag.png'),
+                    "icon": os.path.join(_img, 'icons', 'tags.png'),
                     "fanart": os.path.join(nt.home, 'fanart.jpg'),
                     "type": "",
                     "plot": "",
@@ -1622,7 +1625,7 @@ def build_network_menu():
     network_url = nt.server + "/api/version"
     title = nt.addon.getLocalizedString(30197)
     liz = xbmcgui.ListItem(label=title, label2=title, path=network_url)
-    liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+    liz.setArt({"icon": os.path.join(_img, 'icons', 'new-search.png'),
                 "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]

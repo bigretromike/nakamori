@@ -449,7 +449,28 @@ msgctxt "#30108"
 msgid "Send anonymous data about your settings"
 msgstr ""
 
-# 109 - 119 empty
+msgctxt "#30109"
+msgid "Select custom Image/IconPack"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Clear Search Terms"
+msgstr ""
+
+msgctxt "#30111"
+msgid "Always hide Rating"
+msgstr ""
+
+msgctxt "#30112"
+msgid "Hide Rating only in active series"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Hide rating for"
+msgstr ""
+
+
+# 114 - 119 empty
 
 #---------------End-Settings--------------------------
 
@@ -649,5 +670,3 @@ msgid "New Search"
 msgstr ""
 
 #---------------End-Items----------------------------
-
-# 225 - 999 empty
