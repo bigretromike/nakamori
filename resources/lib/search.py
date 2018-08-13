@@ -21,7 +21,7 @@ def decode_utf8(_string):
         return _string
 
 
-ADDON_ID='plugin.video.nakamori'
+ADDON_ID = 'plugin.video.nakamori'
 addon = xbmcaddon.Addon(id=ADDON_ID)
 profileDir = addon.getAddonInfo('profile')
 profileDir = decode_utf8(xbmc.translatePath(profileDir))

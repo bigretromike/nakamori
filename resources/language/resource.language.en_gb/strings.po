@@ -458,15 +458,15 @@ msgid "Clear Search Terms"
 msgstr ""
 
 msgctxt "#30111"
-msgid "Always hide Rating"
+msgid "always hide rating for ..."
 msgstr ""
 
 msgctxt "#30112"
-msgid "Hide Rating only in active series"
+msgid "hide rating only in unwatched ..."
 msgstr ""
 
 msgctxt "#30113"
-msgid "Hide rating for"
+msgid "pick 'hide rating' cases"
 msgstr ""
 
 

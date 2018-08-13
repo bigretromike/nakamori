@@ -84,7 +84,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
 
         if extra_data is not None and len(extra_data) > 0:
             liz.setUniqueIDs({'anidb': extra_data.get('serie_id', 0)})
-            liz.setRating('anidb', int(details.get('rating', 0)), int(details.get('votes', 0)), True)
+            if details.get('rating', 0) != '*.*':
+                    liz.setRating('anidb', float(int(details.get('rating', 0))), int(details.get('votes', 0)), True)
             actors = extra_data.get('actors', None)
             if actors is not None:
                 if len(actors) > 0:
@@ -145,6 +146,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
             part_temp = nt.parse_parameters(input_string=gui_url)
             liz.setProperty('path', str(part_temp.get('file', 'empty')))
 
+        # For series/groups
         if extra_data and len(extra_data) > 0:
             if extra_data.get('source') == 'serie' or extra_data.get('source') == 'group':
                 # Then set the number of watched and unwatched, which will be displayed per season
@@ -153,6 +155,11 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                 liz.setProperty('UnWatchedEpisodes', str(extra_data['UnWatchedEpisodes']))
 
                 if extra_data.get('partialTV') == 1:
+                    if nt.addon.getSetting('hide_rating_type') != 'Episodes':  # Series|Both
+                        if nt.addon.getSetting('hide_rating_watching') == 'false' and \
+                                nt.addon.getSetting('hide_rating') == 'false':
+                            liz.setRating('anidb', float(int(details.get('rating', 0))), int(details.get('votes', 0)),
+                                          True)
                     total = str(extra_data['TotalEpisodes'])
                     watched = str(extra_data['WatchedEpisodes'])
                     if nt.python_two:
@@ -371,7 +378,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
             watched += nt.safe_int(watched_sizes.get("Specials", 0))
     else:
         watched = nt.safe_int(node.get("watchedsize", ''))
-
+    _watched = watched
     list_cast = []
     list_cast_and_role = []
     actors = []
@@ -454,6 +461,13 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         # trailer        : string (/home/user/trailer.avi,
         'dateadded':        node.get('added', '')
     }
+    if nt.addon.getSetting('hide_rating') == 'true':
+        if nt.addon.getSetting('hide_rating_type') != 'Episodes':  # Series|Both
+            details['rating'] = '*.*'
+    if nt.addon.getSetting('hide_rating_watching') == 'true':
+        if nt.addon.getSetting('hide_rating_type') != 'Episodes':  # Series|Both
+            if _watched > 0 and _watched != total:
+                details['rating'] = '*.*'
 
     directory_type = str(node.get('type', ''))
     key_id = str(node.get('id', ''))
@@ -599,6 +613,10 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'dateadded':        node.get('added', ''),
         'aired':            str(air),
     }
+
+    if nt.addon.getSetting('hide_rating') == 'true':
+        if nt.addon.getSetting('hide_rating_type') != 'Episodes':  # Series|Both
+            details['rating'] = '*.*'
 
     key_id = str(node.get("id", ''))
     if is_filter:
@@ -997,7 +1015,6 @@ def build_serie_episodes_types(params):
     Returns:
     """
 
-    # xbmcgui.Dialog().ok('MODE=5', str(params['url']))
     try:
         html = nt.get_json(params['url'])
         if nt.addon.getSetting("spamLog") == "true":
@@ -1123,6 +1140,7 @@ def build_serie_episodes(params):
                 grandparent_title = nt.decode(body.get('name', ''))
 
             if len(body.get('eps', {})) <= 0:
+                # TODO: When there is eps {} = 0
                 if is_fake == 0:
                     nt.error("No episodes in list")
                 else:
@@ -1144,11 +1162,17 @@ def build_serie_episodes(params):
                         'genre': "..." if skip else temp_genre,
                         'tagline': "..." if skip else temp_genre
                     }
+
+                    if nt.addon.getSetting('hide_rating') == 'true':
+                        if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
+                            details['rating'] = '*.*'
+
                     extra_data = {
                         'source': 'ep',
                         'VideoStreams': defaultdict(dict),
                         'thumb': None if skip else thumb,
                     }
+                    # TODO why = 0 ?
                     extra_data['VideoStreams'][0]['duration'] = 0
                     u = sys.argv[0]
                     add_gui_item(u, details, extra_data, folder=False, index=int(episode_count - 1))
@@ -1231,6 +1255,9 @@ def build_serie_episodes(params):
                                 'originaltitle': nt.decode(video.get('name', '')),
                                 'size': nt.safe_int(video['files'][0].get('size', '0')),
                             }
+                            if nt.addon.getSetting('hide_rating') == 'true':
+                                if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
+                                    details['rating'] = '*.*'
 
                             season = str(body.get('season', '1'))
                             try:
@@ -1296,7 +1323,6 @@ def build_serie_episodes(params):
                                 details['overlay'] = 4
                                 if next_episode == -1:
                                     next_episode = episode_count - 1
-
                             select_this_item = False
                             if details['playcount'] == 0:
                                 # if there was no other item select this on listitem
@@ -1310,6 +1336,9 @@ def build_serie_episodes(params):
                                           " for Unwatched Items in the Video Library Settings."
                                     extra_data['thumb'] = thumb
                                     extra_data['fanart_image'] = fanart
+                                if nt.addon.getSetting('hide_rating_watching') == 'true':
+                                    if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
+                                        details['rating'] = '*.*'
 
                             context = None
 
@@ -1453,8 +1482,8 @@ def build_search_directory():
                     "query": ss[0],
                     "mode": 3,
                     "poster": "none",
-                    "icon": os.path.join(_img, 'icons', 'tags.png'),
-                    "fanart": os.path.join(nt.home, 'fanart.jpg'),
+                    "icon": os.path.join(_img, 'icons', 'search.png'),
+                    "fanart": os.path.join(_img, 'backgrounds', 'search.jpg'),
                     "type": "",
                     "plot": "",
                     "extras": "force-search",
@@ -1625,8 +1654,8 @@ def build_network_menu():
     network_url = nt.server + "/api/version"
     title = nt.addon.getLocalizedString(30197)
     liz = xbmcgui.ListItem(label=title, label2=title, path=network_url)
-    liz.setArt({"icon": os.path.join(_img, 'icons', 'new-search.png'),
-                "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg')})
+    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
     u = sys.argv[0]
     u = nt.set_parameter(u, 'url', network_url)
