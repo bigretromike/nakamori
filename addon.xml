@@ -19,6 +19,13 @@
 		<news>
 			v3.0.0 (2018-08-08)
 - modularization
+- support for icon/resources packages
+- new content images
+- new thumb icons
+- hide rating option added
+- screenshots added
+- option to hide menu items
+- setting item in menu
 		</news>
 		<platform>all</platform>
 		<language>en</language>
