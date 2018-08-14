@@ -16,13 +16,6 @@ try:
 except ImportError:
     pass
 
-try:
-    # noinspection PyUnresolvedReferences
-    import pydevd as pydevd
-    has_pydev = True
-except ImportError:
-    pass
-
 
 def profile_this(func):
     """
@@ -60,29 +53,10 @@ def debug_init():
     """
     if nt.addon.getSetting('remote_debug') == 'true':
         try:
-            if has_pydev:
-                pydevd.settrace(nt.addon.getSetting('ide_ip'), port=int(nt.addon.getSetting('ide_port')),
-                                stdoutToServer=True, stderrToServer=True, suspend=False)
-                xbmc.log("PyDev has run", xbmc.LOGINFO)
-            else:
-                nt.error('pydevd not found, disabling remote_debug')
-                nt.addon.setSetting('remote_debug', 'false')
+            import web_pdb
+            web_pdb.set_trace()
         except Exception as ex:
             nt.error('Unable to start debugger, disabling', str(ex))
             nt.addon.setSetting('remote_debug', 'false')
     if nt.addon.getSetting('spamLog') == "true":
         nt.dump_dictionary(sys.argv, 'sys.argv')
-
-
-def debug_stop():
-    """
-    stop debugger if there was any
-    :return:
-    """
-    if nt.addon.getSetting('remote_debug') == 'true':
-        try:
-            if has_pydev:
-                pydevd.stoptrace()
-        except Exception as remote_exc:
-            xbmc.log(str(remote_exc), xbmc.LOGWARNING)
-            pass

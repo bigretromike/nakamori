@@ -193,5 +193,3 @@ if nt.get_shoko_status() is True:
 else:
     nt.addon.setSetting(id='wizard', value='0')
     gb.build_network_menu()
-
-dbg.debug_stop()

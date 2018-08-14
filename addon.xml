@@ -5,6 +5,7 @@
 		<import addon="script.module.nakamoriplayer" version="3.0.0"/>
 		<import addon="resource.images.nakamori" version="3.0.0"/>
 		<import addon="script.module.future" version="0.16.0.4"/>
+		<import addon="script.module.web-pdb" optional="true"/>
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="nakamori.py">
 		<provides>video</provides>
