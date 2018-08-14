@@ -359,6 +359,30 @@ def video_file_information(node, detail_dict):
             i += 1
 
 
+def folder_list():
+    """
+    List all import folders
+    :return: int vl of picked folder
+    """
+    return import_folder_list()
+
+
+def mediainfo_update():
+    """
+    Update mediainfo for all files
+    :return:
+    """
+    nt.get_json(nt.server + "/api/mediainfo_update")
+
+
+def stats_update():
+    """
+    Update stats via server
+    :return:
+    """
+    nt.get_json(nt.server + "/api/stats_update")
+
+
 def rescan_file(params, rescan):
     """
     Rescans or rehashes a file
@@ -367,24 +391,27 @@ def rescan_file(params, rescan):
         rescan: True to rescan, False to rehash
     """
     vl_id = params.get('vl', '')
-    command = 'rehash'
-    if rescan:
-        command = 'rescan'
+    if vl_id == '':
+        vl_id = import_folder_list()
+    if vl_id != 0:
+        command = 'rehash'
+        if rescan:
+            command = 'rescan'
 
-    key_url = ""
-    if vl_id != '':
-        key_url = nt.server + "/api/" + command + "?id=" + vl_id
-    if nt.addon.getSetting('log_spam') == 'true':
-        xbmc.log('vlid: ' + str(vl_id), xbmc.LOGWARNING)
-        xbmc.log('key: ' + key_url, xbmc.LOGWARNING)
+        key_url = ""
+        if vl_id != '':
+            key_url = nt.server + "/api/" + command + "?id=" + vl_id
+        if nt.addon.getSetting('log_spam') == 'true':
+            xbmc.log('vlid: ' + str(vl_id), xbmc.LOGWARNING)
+            xbmc.log('key: ' + key_url, xbmc.LOGWARNING)
 
         nt.get_json(key_url)
 
-    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
-        nt.addon.getLocalizedString(30190) if rescan else nt.addon.getLocalizedString(30189),
-        nt.addon.getLocalizedString(30191), nt.addon.getAddonInfo('icon')))
-    xbmc.sleep(10000)
-    nt.refresh()
+        xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
+            nt.addon.getLocalizedString(30190) if rescan else nt.addon.getLocalizedString(30189),
+            nt.addon.getLocalizedString(30191), nt.addon.getAddonInfo('icon')))
+        xbmc.sleep(10000)
+        nt.refresh()
 
 
 def remove_missing_files():
@@ -447,6 +474,32 @@ def file_list_gui(ep_body):
             return 0
     elif len(ep_body['files']) == 1:
         return ep_body['files'][0]['id']
+    else:
+        return 0
+
+
+def import_folder_list():
+    """
+    Create DialogBox with folder list to pick if there
+    :param import_list:
+    :return: int (vl of selected folder)
+    """
+    pick_folder = []
+    get_id = []
+    import_list = nt.json.loads(nt.get_json(nt.server + "/api/folder/list"))
+    if len(import_list) > 1:
+        for body in import_list:
+            location = str(body['ImportFolderLocation'])
+            pick_folder.append(location)
+            get_id.append(str(body['ImportFolderID']))
+        my_folder = xbmcgui.Dialog().select(nt.addon.getLocalizedString(30119), pick_folder)
+        if my_folder > -1:
+            return get_id[my_folder]
+        else:
+            # cancel -1,0
+            return 0
+    elif len(import_list) == 1:
+        return import_list[0]['ImportFolderID']
     else:
         return 0
 

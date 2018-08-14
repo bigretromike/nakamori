@@ -469,8 +469,30 @@ msgctxt "#30113"
 msgid "pick 'hide rating' cases"
 msgstr ""
 
+msgctxt "#30114"
+msgid "Show 'Shoko'"
+msgstr ""
 
-# 114 - 119 empty
+msgctxt "#30115"
+msgid "Shoko"
+msgstr ""
+
+msgctxt "#30116"
+msgid "List import folders"
+msgstr ""
+
+msgctxt "#30117"
+msgid "Stats update"
+msgstr ""
+
+msgctxt "#30118"
+msgid "MediaInfo update"
+msgstr ""
+
+msgctxt "#30119"
+msgid "Import Folder"
+msgstr ""
+
 
 #---------------End-Settings--------------------------
 
@@ -536,7 +558,31 @@ msgctxt "#30134"
 msgid "View Cast"
 msgstr ""
 
-# 135 - 159 empty
+msgctxt "#30135"
+msgid "Scan your library and remove all files that have been re/moved by hand and not accessible anymore by shoko"
+msgstr ""
+
+msgctxt "#30136"
+msgid "Push status update ..."
+msgstr ""
+
+msgctxt "#30137"
+msgid "Scan your library for all files that are missing MediaInfo and update them to reflect the reality"
+msgstr ""
+
+msgctxt "#30138"
+msgid "Rescan import folder and try to add new series to library"
+msgstr ""
+
+msgctxt "#30139"
+msgid "Rehash import folder to the hashed are alright (??)"
+msgstr ""
+
+msgctxt "#30140"
+msgid "List all your Import Folders"
+msgstr ""
+
+# 141 - 159 empty
 
 #---------------End-Context-Menu----------------------
 

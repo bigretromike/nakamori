@@ -46,14 +46,13 @@ if nt.get_shoko_status() is True:
                 nt.error('valid_userid_1 parse_parameters() util.error', str(exp))
                 parameters = {'mode': 2}
 
+            mode = None
             if parameters:
                 try:
-                    mode = int(parameters['mode'])
+                    if 'mode' in parameters:
+                        mode = int(parameters['mode'])
                 except Exception as exp:
                     nt.error('valid_userid set \'mode\' util.error', str(exp) + " parameters: " + str(parameters))
-                    mode = None
-            else:
-                mode = None
 
             try:
                 if 'cmd' in parameters:
@@ -110,6 +109,12 @@ if nt.get_shoko_status() is True:
                     util.rescan_file(parameters, False)
                 elif cmd == 'missing':
                     util.remove_missing_files()
+                elif cmd == 'mediainfo':
+                    util.mediainfo_update()
+                elif cmd == 'statsupdate':
+                    util.stats_update()
+                elif cmd == 'folderlist':
+                    util.folder_list()
                 elif cmd == 'createPlaylist':
                     gb.create_playlist(parameters['serie_id'])
                 elif cmd == 'refresh':
@@ -173,6 +178,8 @@ if nt.get_shoko_status() is True:
                 elif mode == 11:  # Settings
                     # noinspection PyTypeChecker
                     xbmcaddon.Addon(id='plugin.video.nakamori').openSettings()
+                elif mode == 12:  # Settings
+                    gb.build_shoko_menu()
                 elif mode == 31:  # Clear Search History
                     search.clear_search_history(parameters)
                 else:

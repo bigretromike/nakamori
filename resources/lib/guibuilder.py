@@ -904,6 +904,20 @@ def build_filters_menu():
         list_items.append((u, liz, True))
     # endregion
 
+    # region Shoko
+    if nt.addon.getSetting("show_shoko") == "true":
+        title = nt.addon.getLocalizedString(30115)
+        liz = xbmcgui.ListItem(label=title, label2=title)
+        liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                    "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
+        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+        u = sys.argv[0]
+        u = nt.set_parameter(u, 'url', '')
+        u = nt.set_parameter(u, 'mode', str(12))
+        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+        list_items.append((u, liz, True))
+    # endregion
+
     end_of_directory(False)
 
 
@@ -1737,3 +1751,86 @@ def create_playlist(serie_id):
     if item_count > 0:
         xbmc.Player().play(playlist)
 
+
+def build_shoko_menu():
+    """
+    build menu with items to interact with shoko server via api
+    :return:
+    """
+    xbmcplugin.setContent(handle, content='tvshows')
+    util.set_window_heading(nt.addon.getLocalizedString(30115))
+
+    items = [{
+        "title": nt.addon.getLocalizedString(30122),
+        "cmd": "missing",
+        "poster": "none",
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
+        "type": "video",
+        "plot": nt.addon.getLocalizedString(30135),
+        "extras": ""
+    }, {
+        "title": nt.addon.getLocalizedString(30117),
+        "cmd": "statsupdate",
+        "poster": "none",
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
+        "type": "video",
+        "plot": nt.addon.getLocalizedString(30136),
+        "extras": ""
+    }, {
+        "title": nt.addon.getLocalizedString(30118),
+        "cmd": "mediainfo",
+        "poster": "none",
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
+        "type": "video",
+        "plot": nt.addon.getLocalizedString(30137),
+        "extras": ""
+    }, {
+        "title": nt.addon.getLocalizedString(30120),
+        "cmd": "rescan",
+        "poster": "none",
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
+        "type": "video",
+        "plot": nt.addon.getLocalizedString(30138),
+        "extras": "",
+        "vl": ""
+    }, {
+        "title": nt.addon.getLocalizedString(30121),
+        "cmd": "rehash",
+        "poster": "none",
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
+        "type": "video",
+        "plot": nt.addon.getLocalizedString(30139),
+        "extras": "",
+        "vl": ""
+    }, {
+        "title": nt.addon.getLocalizedString(30116),
+        "cmd": "folderlist",
+        "poster": "none",
+        "icon": os.path.join(_img, 'icons', 'new-search.png'),
+        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
+        "type": "video",
+        "plot": nt.addon.getLocalizedString(30140),
+        "extras": "",
+    }]
+
+    for detail in items:
+        u = sys.argv[0]
+        if 'cmd' in detail:
+            u = nt.set_parameter(u, 'cmd', detail['cmd'])
+        if 'vl' in detail:
+            u = nt.set_parameter(u, 'vl', detail['vl'])
+        u = nt.set_parameter(u, 'name', nt.encode(detail['title']))
+        u = nt.set_parameter(u, 'extras', detail['extras'])
+        liz = xbmcgui.ListItem(nt.encode(detail['title']))
+        liz.setArt({'thumb': detail['icon'],
+                    'poster': detail['poster'],
+                    'icon': detail['icon'],
+                    'fanart': detail['fanart']})
+        liz.setInfo(type=detail['type'], infoLabels={"Title": nt.encode(detail['title']), "Plot": detail['plot']})
+        list_items.append((u, liz, True))
+    end_of_directory(False)

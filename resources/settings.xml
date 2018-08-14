@@ -22,6 +22,7 @@
         <setting label="30103" type="bool" id="show_calendar" default="true"/>
         <setting label="30104" type="bool" id="show_extra" default="true"/>
         <setting label="30105" type="bool" id="show_unsort" default="true"/>
+        <setting label="30114" type="bool" id="show_shoko" default="false"/>
         <setting label="30039" type="bool" id="show_continue" default="false"/>
         <setting label="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
