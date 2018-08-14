@@ -587,6 +587,9 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         else:
             total = nt.safe_int(node.get("localsize", ''))
 
+    if node.get("type", '') == 'filter':
+        total = node.get("size", 0)
+
     if watched > total:
         watched = total
 
