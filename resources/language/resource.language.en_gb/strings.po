@@ -269,13 +269,8 @@ msgctxt "#30063"
 msgid "Enable remote debugging for an IDE"
 msgstr ""
 
-msgctxt "#30064"
-msgid "IP Address for IDE"
-msgstr ""
-
-msgctxt "#30065"
-msgid "Port for IDE"
-msgstr ""
+# msgctxt "#30064"
+# msgctxt "#30065"
 
 msgctxt "#30066"
 msgid "Request that the server not send cast"
@@ -493,6 +488,7 @@ msgctxt "#30119"
 msgid "Import Folder"
 msgstr ""
 
+# 30064 - 30065 empty
 
 #---------------End-Settings--------------------------
 
