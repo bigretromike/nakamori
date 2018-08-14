@@ -4,17 +4,25 @@
         <setting label="30006" type="lsep"/>
         <setting label="30002" type="text" id="ipaddress" default="127.0.0.1"/>
         <setting label="30003" type="number" id="port" default="8111"/>
-        <setting label="30004" type="number" id="timeout" default="60"/>
+        <setting label="30004" type="number" id="timeout" default="60" visible="eq(5,true)" subsetting="true"/>
         <setting label="30011" type="lsep"/>
         <setting label="30015" type="text" id="login" default="Default"/>
         <setting label="30016" type="text" id="password" options="hidden"/>
-        <setting label="30017" type="text" id="device" default="nakamori"/>
+        <setting label="30017" type="text" id="device" default="nakamori" visible="eq(1,true)" subsetting="true"/>
+        <setting label="30100" type="bool" id="more_30001" default="false"/>
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
         <setting type="number" id="kodi18" default="3" visible="false"/>
         <setting type="number" id="wizard" default="0" visible="false"/>
     </category>
     <category label="30054">
+        <setting label="30098" type="lsep"/>
+        <setting label="30101" type="bool" id="show_search" default="true"/>
+        <setting label="30102" type="bool" id="show_settings" default="true"/>
+        <setting label="30103" type="bool" id="show_calendar" default="true"/>
+        <setting label="30104" type="bool" id="show_extra" default="true"/>
+        <setting label="30105" type="bool" id="show_unsort" default="true"/>
+        <setting label="30114" type="bool" id="show_shoko" default="false"/>
         <setting label="30039" type="bool" id="show_continue" default="false"/>
         <setting label="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30040" type="bool" id="local_total" default="false"/>
@@ -77,6 +85,7 @@
         <setting label="30070" type="bool" id="hideSettingTags" default="false"/>
     </category>
     <category label="30044">
+        <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false" />
         <setting label="30021" type="lsep"/>
         <setting label="30022" type="number" id="maxlimit" default="20"/>
         <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
@@ -105,5 +114,12 @@
         <setting label="30092" type="text" id="profileEigakan" default="main" visible="eq(-2,true)"/>
         <setting label="30093" type="text" id="audioEigakan" default="aac" visible="eq(-3,true)"/>
         <setting label="30094" type="text" id="vbitrateEigakan" default="3000000" visible="eq(-4,true)"/>
+    </category>
+    <category label="30097">
+        <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
+        <setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
+        <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
+        <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
+		<setting label="30108" type="bool" id="send_data" default="true"/>
     </category>
 </settings>

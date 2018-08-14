@@ -1,12 +1,12 @@
 # Kodi Media Center language file
 # Addon Name: Nakamori
 # Addon id: plugin.video.nakamori
-# Addon Provider: BigRetroMike
+# Addon Provider: BigRetroMike, da3dsoul
 msgid ""
 msgstr ""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2018-07-18 18:28+0100\n"
+"PO-Revision-Date: 2018-08-10 12:00+0100\n"
 "Last-Translator: bigretromike\n"
 "Language-Team: da3dsoul\n"
 "MIME-Version: 1.0\n"
@@ -350,7 +350,7 @@ msgid "Select first unwatched episode"
 msgstr ""
 
 msgctxt "#30084"
-msgid "(WIP) Eigakan"
+msgid "Eigakan"
 msgstr ""
 
 msgctxt "#30085"
@@ -400,6 +400,99 @@ msgstr ""
 msgctxt "#30096"
 msgid "Subtitles language setting"
 msgstr ""
+
+msgctxt "#30097"
+msgid "Maintenance"
+msgstr ""
+
+msgctxt "#30098"
+msgid "Folders"
+msgstr ""
+
+msgctxt "#30099"
+msgid "Enable setup-wizard"
+msgstr ""
+
+msgctxt "#30100"
+msgid "More..."
+msgstr ""
+
+msgctxt "#30101"
+msgid "Show Search"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Show Settings"
+msgstr ""
+
+msgctxt "#30103"
+msgid "Show Calendar"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Show Calendarv2"
+msgstr ""
+
+msgctxt "#30105"
+msgid "Show Unsorted"
+msgstr ""
+
+msgctxt "#30106"
+msgid "Unsorted"
+msgstr ""
+
+msgctxt "#30107"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#30108"
+msgid "Send anonymous data about your settings"
+msgstr ""
+
+msgctxt "#30109"
+msgid "Select custom Image/IconPack"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Clear Search Terms"
+msgstr ""
+
+msgctxt "#30111"
+msgid "always hide rating for ..."
+msgstr ""
+
+msgctxt "#30112"
+msgid "hide rating only in unwatched ..."
+msgstr ""
+
+msgctxt "#30113"
+msgid "pick 'hide rating' cases"
+msgstr ""
+
+msgctxt "#30114"
+msgid "Show 'Shoko'"
+msgstr ""
+
+msgctxt "#30115"
+msgid "Shoko"
+msgstr ""
+
+msgctxt "#30116"
+msgid "List import folders"
+msgstr ""
+
+msgctxt "#30117"
+msgid "Stats update"
+msgstr ""
+
+msgctxt "#30118"
+msgid "MediaInfo update"
+msgstr ""
+
+msgctxt "#30119"
+msgid "Import Folder"
+msgstr ""
+
 
 #---------------End-Settings--------------------------
 
@@ -465,6 +558,32 @@ msgctxt "#30134"
 msgid "View Cast"
 msgstr ""
 
+msgctxt "#30135"
+msgid "Scan your library and remove all files that have been re/moved by hand and not accessible anymore by shoko"
+msgstr ""
+
+msgctxt "#30136"
+msgid "Push status update ..."
+msgstr ""
+
+msgctxt "#30137"
+msgid "Scan your library for all files that are missing MediaInfo and update them to reflect the reality"
+msgstr ""
+
+msgctxt "#30138"
+msgid "Rescan import folder and try to add new series to library"
+msgstr ""
+
+msgctxt "#30139"
+msgid "Rehash import folder to the hashed are alright (??)"
+msgstr ""
+
+msgctxt "#30140"
+msgid "List all your Import Folders"
+msgstr ""
+
+# 141 - 159 empty
+
 #---------------End-Context-Menu----------------------
 
 #---------------Start-Progress------------------------
@@ -497,6 +616,7 @@ msgctxt "#30166"
 msgid "Waiting given time (postpone)"
 msgstr ""
 
+# 167 - 179 empty
 
 #---------------End-Progress--------------------------
 
@@ -569,6 +689,12 @@ msgstr ""
 msgctxt "#30196"
 msgid "Files"
 msgstr ""
+
+msgctxt "#30197"
+msgid "No connection to Shoko server"
+msgstr ""
+
+# 198 - 220 empty
 
 #---------------End-Windows--------------------------
 #---------------Start=Items--------------------------

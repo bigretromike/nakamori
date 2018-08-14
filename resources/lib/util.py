@@ -1,187 +1,35 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
+"""
+here are function needed to this module that don't need to be elsewhere
+"""
+
+
 import sys
-import re
-import gzip
+import os
 import traceback
-import json
-import time
-from distutils.version import LooseVersion
-import collections
+
+import nakamoritools as nt
+
+# noinspection PyUnresolvedReferences
+import nakamoriplayer as nplayer
+# noinspection PyUnresolvedReferences
+from Calendar import Wizard
+
+from collections import defaultdict
 import xbmc
-import xbmcgui
 import xbmcaddon
-import xbmcplugin
-import xml.etree.ElementTree as Tree
-import resources.lib.cache as cache
+import xbmcgui
 
 if sys.version_info < (3, 0):
-    from urllib2 import urlopen
-    from urllib import quote, quote_plus, unquote, unquote_plus, urlencode
-    from urllib2 import Request
-    from urllib2 import HTTPError, URLError
-    from StringIO import StringIO
+    from urllib import unquote
 else:
     # For Python 3.0 and later
-    from urllib.request import urlopen
-    from urllib.parse import quote, quote_plus, unquote, unquote_plus, urlencode
-    from urllib.request import Request
-    from urllib.error import HTTPError, URLError
-    from io import StringIO, BytesIO
+    # noinspection PyCompatibility,PyUnresolvedReferences
+    from urllib.parse import unquote
 
-# __ is public, _ is protected
-global __addon__
-global __addonversion__
-global __addonid__
-global __addonname__
-global __icon__
-global __localize__
-global __server__
-global __home__
-global __python_two__
-
-
-__python_two__ = sys.version_info < (3, 0)
-__addon__ = xbmcaddon.Addon()
-__addonversion__ = __addon__.getAddonInfo('version')
-__addonid__ = __addon__.getAddonInfo('id')
-__addonname__ = __addon__.getAddonInfo('name')
-__icon__ = __addon__.getAddonInfo('icon')
-__localize__ = __addon__.getLocalizedString
-__server__ = "http://" + __addon__.getSetting("ipaddress") + ":" + __addon__.getSetting("port")
-
-
-def decode(i=''):
-    """
-    decode a string to UTF-8
-    Args:
-        i: string to decode
-
-    Returns: decoded string
-
-    """
-    if __python_two__:
-        try:
-            if isinstance(i, str):
-                return i.decode("utf-8")
-            elif isinstance(i, unicode):
-                return i
-        except:
-            error("Unicode Error", error_type='Unicode Error')
-            return ''
-    else:
-        try:
-            if isinstance(i, bytes):
-                return i.decode("utf-8")
-            elif isinstance(i, str):
-                return i
-        except:
-            error("Unicode Error", error_type='Unicode Error')
-            return ''
-
-
-def encode(i=''):
-    """
-    encode a string from UTF-8 to bytes or safe string
-    Args:
-        i: string to encode
-
-    Returns: encoded string
-
-    """
-
-    if __python_two__:
-        try:
-            if isinstance(i, str):
-                return i
-            elif isinstance(i, unicode):
-                return i.encode('utf-8')
-        except:
-            error("Unicode Error", error_type='Unicode Error')
-            return ''
-    else:
-        try:
-            if isinstance(i, bytes):
-                return i
-            elif isinstance(i, str):
-                return i.encode('utf-8')
-        except:
-            error("Unicode Error", error_type='Unicode Error')
-            return ''
-
-
-__home__ = decode(xbmc.translatePath(__addon__.getAddonInfo('path')))
-__shoko_version__ = LooseVersion('0.1')
-
-try:
-    # kodi 17+
-    UA = xbmc.getUserAgent()
-except:
-    # kodi < 17
-    UA = 'Mozilla/6.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.5) Gecko/2008092417 Firefox/3.0.3'
-pDialog = ''
-
-
-def valid_user():
-    """
-    Logs into the server and stores the apikey, then checks if the userid is valid
-    :return: bool True if all completes successfully
-    """
-
-    if __addon__.getSetting("apikey") != "" and __addon__.getSetting("login") == "":
-        return True
-    else:
-        xbmc.log('-- apikey empty --')
-        try:
-            if __addon__.getSetting("login") != "" and __addon__.getSetting("device") != "":
-                body = '{"user":"' + __addon__.getSetting("login") + '",' + \
-                       '"device":"' + __addon__.getSetting("device") + '",' + \
-                       '"pass":"' + __addon__.getSetting("password") + '"}'
-                post_body = post_data(__server__ + "/api/auth", body)
-                auth = json.loads(post_body)
-                if "apikey" in auth:
-                    xbmc.log('-- save apikey and reset user credentials --')
-                    __addon__.setSetting(id='apikey', value=str(auth["apikey"]))
-                    __addon__.setSetting(id='login', value='')
-                    __addon__.setSetting(id='password', value='')
-                    return True
-                else:
-                    raise Exception('Error Getting apikey')
-            else:
-                xbmc.log('-- Login and Device Empty --')
-                return False
-        except Exception as exc:
-            error('Error in Valid_User', str(exc))
-            return False
-
-
-def move_position_on_list(control_list, position=0, force=False):
-    """
-    Move to the position in a list - use episode number for position
-    Args:
-        control_list: the list control
-        position: the index of the item not including settings
-        force: bypass setting and set position directly
-    """
-    if not force:
-        if position < 0:
-            position = 0
-        if __addon__.getSetting('show_continue') == 'true':
-            position = int(position + 1)
-
-        if get_kodi_setting_bool("filelists.showparentdiritems"):
-            position = int(position + 1)
-
-    try:
-        control_list.selectItem(position)
-    except:
-        try:
-            control_list.selectItem(position - 1)
-        except Exception as e:
-            error('Unable to reselect item', str(e))
-            xbmc.log('control_list: ' + str(control_list.getId()), xbmc.LOGWARNING)
-            xbmc.log('position: ' + str(position), xbmc.LOGWARNING)
+global __tagSettingFlags__
+busy = xbmcgui.DialogProgress()
 
 
 def set_window_heading(window_name):
@@ -208,98 +56,6 @@ def set_window_heading(window_name):
         window_obj.clearProperty("heading2")
 
 
-def populate_tag_setting_flags():
-    """
-    Get user settings from local Kodi, and use them with Nakamori
-    :rtype: object
-    :return: setting_flags
-    """
-    tag_setting_flags = 0
-    tag_setting_flags = tag_setting_flags | (0b000001 if __addon__.getSetting('hideMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b000010 if __addon__.getSetting('hideArtTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b000100 if __addon__.getSetting('hideSourceTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b001000 if __addon__.getSetting('hideUsefulMiscTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b010000 if __addon__.getSetting('hideSpoilerTags') == 'true' else 0)
-    tag_setting_flags = tag_setting_flags | (0b100000 if __addon__.getSetting('hideSettingTags') == 'true' else 0)
-    return tag_setting_flags
-
-
-def refresh():
-    """
-    Refresh and re-request data from server
-    refresh watch status as we now mark episode and refresh list so it show real status not kodi_cached
-    Allow time for the ui to reload
-    """
-    xbmc.executebuiltin('Container.Refresh')
-    xbmc.sleep(int(__addon__.getSetting('refresh_wait')))
-
-
-def dump_dictionary(details, name):
-    if __addon__.getSetting("spamLog") == 'true':
-        if details is not None:
-            xbmc.log("---- " + name + ' ----', xbmc.LOGWARNING)
-
-            for i in details:
-                temp_log = ""
-                if isinstance(details, dict):
-                    a = details.get(decode(i))
-                    if a is None:
-                        temp_log = "\'unset\'"
-                    elif isinstance(a, collections.Iterable):
-                        # easier for recursion and pretty
-                        temp_log = json.dumps(a, sort_keys=True, indent=4, separators=(',', ': '))
-                    else:
-                        temp_log = str(a)
-                    xbmc.log("-" + str(i) + "- " + temp_log, xbmc.LOGWARNING)
-                elif isinstance(details, collections.Iterable):
-                    temp_log = json.dumps(i, sort_keys=True, indent=4, separators=(',', ': '))
-                    xbmc.log("-" + temp_log, xbmc.LOGWARNING)
-
-
-def remove_anidb_links(data=""):
-    """
-    Remove anidb links from descriptions
-    Args:
-        data: the strong to remove links from
-
-    Returns: new string without links
-
-    """
-    # search for string with 1 to 3 letters and 1 to 7 numbers
-    p = re.compile('http://anidb.net/[a-z]{1,3}[0-9]{1,7}[ ]')
-    data2 = p.sub('', data)
-    # remove '[' and ']' that included link to anidb.net
-    p = re.compile('(\[|\])')
-    return p.sub('', data2)
-
-
-# json
-def dbg(msg):
-    """
-    simple log message into kodi.log
-    :param msg: the message to print to log
-    :return:
-    """
-    xbmc.log(str(msg), xbmc.LOGDEBUG)
-
-
-# json
-def safeInt(object_body):
-    """
-    safe convert type to int to avoid NoneType
-    :param object_body:
-    :return: int
-    """
-    try:
-        if object_body is not None and object_body != '':
-            return int(object_body)
-        else:
-            return 0
-    except:
-        return 0
-
-
-# json
 def error(msg, error_type='Error', silent=False):
     """
     Log and notify the user of an error
@@ -308,7 +64,7 @@ def error(msg, error_type='Error', silent=False):
         error_type: Type of Error
         silent: disable visual notification
     """
-    xbmc.log("Nakamori " + str(__addonversion__) + " id: " + str(__addonid__), xbmc.LOGERROR)
+    xbmc.log("Nakamori " + str(nt.addonversion) + " id: " + str(nt.addonid), xbmc.LOGERROR)
     xbmc.log('---' + msg + '---', xbmc.LOGERROR)
     key = sys.argv[0]
     if len(sys.argv) > 2 and sys.argv[2] != '':
@@ -325,643 +81,755 @@ def error(msg, error_type='Error', silent=False):
         xbmc.log("The error message: " + str(e), xbmc.LOGERROR)
         traceback.print_exc()
     if not silent:
-        xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg, __addon__.getAddonInfo('icon')))
+        xbmc.executebuiltin('XBMC.Notification(%s, %s %s, 2000, %s)' % (error_type, ' ', msg,
+                                                                        nt.addon.getAddonInfo('icon')))
 
 
-def parse_possible_error(data, data_type):
-    if data_type == 'json':
-        stream = json.loads(data)
-        if "StatusCode" in stream:
-            code = stream.get('StatusCode')
-            if code != '200':
-                error_msg = code
-                if code == '500':
-                    error_msg = 'Server Error'
-                elif code == '404':
-                    error_msg = 'Invalid URL: Endpoint not Found in Server'
-                elif code == '503':
-                    error_msg = 'Service Unavailable: Check netsh http'
-                elif code == '401' or code == '403':
-                    error_msg = 'The was refused as unauthorized'
-                error(error_msg, error_type='Network Error: ' + code)
-                if stream.get('Details', '') != '':
-                    xbmc.log(encode(stream.get('Details')), xbmc.LOGERROR)
-    elif data_type == 'xml':
-        stream = xml(data)
-        if stream.get('Code', '') != '':
-            code = stream.get('Code')
-            if code != '200':
-                error_msg = code
-                if code == '500':
-                    error_msg = 'Server Error'
-                elif code == '404':
-                    error_msg = 'Invalid URL: Endpoint not Found in Server'
-                elif code == '503':
-                    error_msg = 'Service Unavailable: Check netsh http'
-                elif code == '401' or code == '403':
-                    error_msg = 'The was refused as unauthorized'
-                error(error_msg, error_type='Network Error: ' + code)
-                if stream.get('Message', '') != '':
-                    xbmc.log(encode(stream.get('Message')), xbmc.LOGERROR)
+def populate_tag_setting_flags():
+    """
+    Get user settings from local Kodi, and use them with Nakamori
+    :rtype: object
+    :return: setting_flags
+    """
+    tag_setting_flags = 0
+    tag_setting_flags |= 0b000001 if nt.addon.getSetting('hideMiscTags') == 'true' else 0
+    tag_setting_flags |= 0b000010 if nt.addon.getSetting('hideArtTags') == 'true' else 0
+    tag_setting_flags |= 0b000100 if nt.addon.getSetting('hideSourceTags') == 'true' else 0
+    tag_setting_flags |= 0b001000 if nt.addon.getSetting('hideUsefulMiscTags') == 'true' else 0
+    tag_setting_flags |= 0b010000 if nt.addon.getSetting('hideSpoilerTags') == 'true' else 0
+    tag_setting_flags |= 0b100000 if nt.addon.getSetting('hideSettingTags') == 'true' else 0
+    return tag_setting_flags
 
 
-# Internal function
+# noinspection PyRedeclaration
+__tagSettingFlags__ = populate_tag_setting_flags()
 
-def head(url_in):
+
+def get_tags(tag_node):
+    """
+    Get the tags from the new style
+    Args:
+        tag_node: node containing group
+
+    Returns: a string of all of the tags formatted
+
+    """
     try:
-        urlopen(url_in)
-        return True
-    except HTTPError, e:
-        # error('HTTPError', e.code)
-        return False
-    except URLError, e:
-        # error('URLError', str(e.args))
-        return False
-    except Exception, e:
-        # error('Exceptions', str(e.args))
-        return False
-
-
-# json
-def get_json(url_in, direct=False):
-    body = ""
-    if direct:
-        body = get_data(url_in, None, "json")
-        # xbmcgui.Dialog().ok("direct", str(body))
-    else:
-        if (__addon__.getSetting("enableCache") == "true") and ("file?id" not in url_in):
-            # xbmcgui.Dialog().ok("cache", "ENABLED")
-            # xbmcgui.Dialog().ok("cache url", str(url_in))
-            db_row = cache.check_in_database(url_in)
-            if db_row is None:
-                db_row = 0
-            # xbmcgui.Dialog().ok("cache db_row", str(db_row))
-            if db_row > 0:
-                expire_second = time.time() - float(db_row)
-                if expire_second > int(__addon__.getSetting("expireCache")):
-                    # expire, get new date
-                    # xbmcgui.Dialog().ok("cache", "data expired")
-                    body = get_data(url_in, None, "json")
-                    params = {}
-                    params['extras'] = 'single-delete'
-                    params['name'] = url_in
-                    cache.remove_cache(params)
-                    cache.add_cache(url_in, json.dumps(body))
+        if tag_node is None:
+            return ''
+        if len(tag_node) > 0:
+            temp_genres = []
+            for tag in tag_node:
+                if isinstance(tag, str) or isinstance(tag, unicode):
+                    temp_genres.append(tag)
                 else:
-                    # xbmcgui.Dialog().ok("cache", "not expire")
-                    body = cache.get_data_from_cache(url_in)
-                    # xbmcgui.Dialog().ok("cache-body", str(body))
-                    # body = str(body)
-                    # why I get response as ({},) I dont know i leave this as
-                    # body = body[4:]
-                    # body = body[:-4]
-                    # xbmcgui.Dialog().ok("cache-body", str(body))
-            else:
-                # xbmcgui.Dialog().ok("cache", "not cached")
-                body = get_data(url_in, None, "json")
-                cache.add_cache(url_in, json.dumps(body))
+                    temp_genre = nt.decode(tag["tag"]).strip()
+                    temp_genres.append(temp_genre)
+            temp_genre = " | ".join(temp_genres)
+            return temp_genre
         else:
-            # xbmcgui.Dialog().ok("direct because of check", str(body))
-            body = get_data(url_in, None, "json")
-    return body
-
-
-# legacy
-def get_xml(url_in):
-    # return get_data(url_in, None, "xml")
-    return get_data(url_in, None, "")
-
-
-# json + legacy
-def get_data(url_in, referer, data_type):
-    """
-    Send a message to the server and wait for a response
-    Args:
-        url_in: the URL to get data from
-        referer: currently not used always should be None
-        data_type: extension for url (.json or .xml) to force return type
-
-    Returns: The response from the server in forced type (.json or .xml)
-    """
-    try:
-        if data_type != "json":
-            data_type = "xml"
-
-        url = url_in
-
-        req = Request(encode(url))
-        req.add_header('Accept', 'application/' + data_type)
-        req.add_header('apikey', __addon__.getSetting("apikey"))
-
-        if referer is not None:
-            referer = quote(encode(referer)).replace("%3A", ":")
-            if len(referer) > 1:
-                req.add_header('Referer', referer)
-        use_gzip = __addon__.getSetting("use_gzip")
-        if "127.0.0.1" not in url and "localhost" not in url:
-            if use_gzip == "true":
-                req.add_header('Accept-encoding', 'gzip')
-        data = None
-        try:
-            xbmc.log("Trying to open url:" + str(url), xbmc.LOGERROR)
-            response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
-            if response.info().get('Content-Encoding') == 'gzip':
-                try:
-                    if __python_two__:
-                        buf = StringIO(response.read())
-                    else:
-                        buf = BytesIO(response.read())
-                    f = gzip.GzipFile(fileobj=buf)
-                    data = f.read()
-                except Exception as ex:
-                    error('Decompresing gzip respond failed: ' + str(ex))
-            else:
-                data = response.read()
-            response.close()
-        except Exception as ex:
-            xbmc.log("url: " + str(url) + " error: " + ex.message, xbmc.LOGERROR)
-            error('Connection Failed', str(ex))
-            data = None
-    except Exception as ex:
-        error('Get_Data Error', str(ex))
-        data = None
-
-    if data is not None and data != '':
-        parse_possible_error(data, data_type)
-    return data
-
-
-def post_dict(url, body):
-    json = ''
-    try:
-        json = json.dumps(body)
-    except:
-        error('Failed to send data')
-    post_data(url, json)
-
-
-# json
-def post_json(url_in, body):
-    if len(body) > 3:
-        proper_body = '{' + body + '}'
-        return post_data(url_in, proper_body)
-    else:
-        return None
-
-
-# json
-def post_data(url, data_in):
-    """
-    Send a message to the server and wait for a response
-    Args:
-        url: the URL to send the data to
-        data_in: the message to send (in json)
-
-    Returns: The response from the server
-    """
-    if data_in is not None:
-        req = Request(encode(url), encode(data_in), {'Content-Type': 'application/json'})
-        req.add_header('apikey', __addon__.getSetting("apikey"))
-        req.add_header('Accept', 'application/json')
-        data_out = None
-        try:
-            response = urlopen(req, timeout=int(__addon__.getSetting('timeout')))
-            data_out = response.read()
-            response.close()
-        except Exception as ex:
-            error('url:' + str(url))
-            error('Connection Failed in post_data', str(ex))
-        return data_out
-    else:
-        error('post_data body is None')
-        return None
-
-
-# legacy
-def xml(xml_string):
-    """
-    return an xml tree from string with error catching
-    Args:
-        xml_string: the string containing the xml data
-
-    Returns: ElementTree equivalentof Tree.XML()
-
-    """
-    e = Tree.XML(xml_string)
-    if e.get('ErrorString', '') != '':
-        error(e.get('ErrorString'), 'JMM Error')
-    return e
-
-
-def post(url, data, headers={}):
-    postdata = urlencode(data)
-    req = Request(url, postdata, headers)
-    req.add_header('User-Agent', UA)
-    response = urlopen(req)
-    data = response.read()
-    response.close()
-    return data
-
-
-def get_server_status(ip, port):
-    """
-    Try to query server for version, if kodi get version respond then shoko server is running
-    :return: bool
-    """
-    try:
-        if get_version(ip, port) != LooseVersion('0.0'):
-            return True
-        else:
-            return False
-    except:
-        return False
-
-
-# json - ok
-def get_version(ip, port):
-    legacy = ''
-    version = ''
-    try:
-        global __shoko_version__
-        if __shoko_version__ != LooseVersion('0.1'):
-            return __shoko_version__
-        legacy = LooseVersion('0.0')
-        json_file = get_json("http://" + str(ip) + ":" + str(port) + "/api/version", direct=True)
-        if json_file is None:
-            return legacy
-        try:
-            data = json.loads(json_file)
-        except:
-            return legacy
-
-        for module in data:
-            if module["name"] == "server":
-                version = module["version"]
-                break
-
-        if version != '':
-            try:
-                __shoko_version__ = LooseVersion(version)
-            except:
-                return legacy
-            return __shoko_version__
-    except:
-        pass
-    return legacy
-
-
-def getURL(url, header):
-    try:
-        req = Request(url, headers=header)
-        response = urlopen(req)
-        if response and response.getcode() == 200:
-            if response.info().get('Content-Encoding') == 'gzip':
-                buf = StringIO(response.read())
-                gzip_f = gzip.GzipFile(fileobj=buf)
-                content = gzip_f.read()
-            else:
-                content = response.read()
-            content = decode(content)
-            return content
-        return False
-    except:
-        xbmc.log('Error Loading URL (Error: ' + str(response.getcode()) +
-                 ' Encoding:' + response.info().get('Content-Encoding') + '): ' + url, xbmc.LOGERROR)
-        xbmc.log('Content: ' + response.read(), xbmc.LOGERROR)
-        return False
-
-
-def get_kodi_version():
-    """
-    This returns a LooseVersion instance containing the kodi version (16.0, 16.1, 17.0, etc)
-    """
-    version_string = xbmc.getInfoLabel('System.BuildVersion')
-    version_string = version_string.split(' ')[0]
-    return LooseVersion(version_string)
-
-
-def kodi_jsonrpc(request):
-    try:
-        return_data = xbmc.executeJSONRPC(request)
-        result = json.loads(return_data)
-        return result
+            return ''
     except Exception as exc:
-        error("jsonrpc_error: " + str(exc))
+        nt.error('util.error generating tags', str(exc))
+        return ''
 
 
-def get_kodi_setting_int(setting):
-    try:
-        parent_setting = xbmc.executeJSONRPC(
-            '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-            '{"setting": "' + setting + '"}, "id": 1}')
-        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
-
-        result = json.loads(parent_setting)
-        if "result" in result:
-            if "value" in result["result"]:
-                return int(result["result"]["value"])
-    except Exception as exc:
-        error("jsonrpc_error: " + str(exc))
-    return -1
-
-
-def get_kodi_setting_bool(setting):
-    try:
-        parent_setting = xbmc.executeJSONRPC(
-            '{"jsonrpc": "2.0", "method": "Settings.GetSettingValue", "params":' +
-            '{"setting": "' + setting + '"}, "id": 1}')
-        # {"id":1,"jsonrpc":"2.0","result":{"value":false}} or true if ".." is displayed on list
-
-        result = json.loads(parent_setting)
-        if "result" in result:
-            if "value" in result["result"]:
-                return result["result"]["value"]
-    except Exception as exc:
-        error("jsonrpc_error: " + str(exc))
-    return False
-
-
-def safeName(name):
-    return re.sub(r'[^a-zA-Z0-9 ]', '', name.lower()).replace(" ", "_")
-
-
-def stripInvalid(name):
-    return re.sub(r'[^a-zA-Z0-9 ]', ' ', name.lower())
-
-
-def urlSafe(name):
-    return re.sub(r'[^a-zA-Z0-9 ]', '', name.lower())
-
-
-def alert(alertText):
-    dialog = xbmcgui.Dialog()
-    ret = dialog.ok(__addonid__, alertText)
-
-
-def fakeError(alertText):
-    dialog = xbmcgui.Dialog()
-    ret = dialog.ok(__addonid__ + " [COLOR red]ERROR (1002)[/COLOR]", alertText)
-
-
-def progressStart(title, status):
-    pDialog = xbmcgui.DialogProgress()
-    ret = pDialog.create(title, status)
-    progressUpdate(pDialog, 1, status)
-    return pDialog
-
-
-def progressStop(pDialog):
-    pDialog.close
-
-
-def progressUpdate(pDialog, progress, status):
-    pDialog.update(progress, status)
-
-
-def relevanceCheck(title, animeList):
-    returnList = []
-    for anime in animeList:
-        if title.lower() in anime.lower():
-            returnList.append(anime)
-    return returnList
-
-
-def set_parameter(url, parameter, value):
-    value = str(value)
-    if value is None or value == '':
-        if '?' not in url:
-            return url
-        array1 = url.split('?')
-        if (parameter+'=') not in array1[1]:
-            return url
-        url = array1[0] + '?'
-        array2 = array1[1].split('&')
-        for key in array2:
-            array3 = key.split('=')
-            if array3[0] == parameter:
-                continue
-            url += array3[0] + '=' + array3[1] + '&'
-        return url[:-1]
-    value = quote_plus(value)
-    if '?' not in url:
-        return url + '?' + parameter + '=' + value
-
-    array1 = url.split('?')
-    if (parameter+'=') not in array1[1]:
-        return url + "&" + parameter + '=' + value
-
-    url = array1[0] + '?'
-    array2 = array1[1].split('&')
-    for key in array2:
-        array3 = key.split('=')
-        if array3[0] == parameter:
-            array3[1] = value
-        url += array3[0] + '=' + array3[1] + '&'
-    return url[:-1]
-
-
-# plugin://plugin.video.nakamori/?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 01 [720p].mkv&ep_id=13500&ui_index=0?url=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&mode=1&file=D:\\Media\\Video\\Tv Shows\\Animated\\Anime\\Okusama ga Seitokaichou! Plus!\\[HorribleSubs] Okusama ga Seitokaichou! S2 (Uncensored) - 02 [720p].mkv&ep_id=13499&ui_index=1
-
-def searchBox():
+def get_cast_and_role_new(data):
     """
-    Shows a keyboard, and returns the text entered
-    :return: the text that was entered
+    Get cast from the json and arrange in the new setCast format
+    Args:
+        data: json node containing 'roles'
+
+    Returns: a list of dictionaries for the cast
     """
-    keyb = xbmc.Keyboard('', 'Enter search text')
-    keyb.doModal()
-    searchText = ''
+    result_list = []
+    if data is not None and len(data) > 0:
+        for char in data:
+            char_charname = char.get("character", "")
+            char_seiyuuname = char.get("staff", "")
+            char_seiyuupic = nt.server + char.get("character_image", "")
 
-    if keyb.isConfirmed():
-        searchText = keyb.getText()
-    return searchText
-
-
-def addDir(name, url, mode, iconimage='DefaultTVShows.png', plot="", poster="DefaultVideo.png", filename="none",
-           offset=''):
-    # u=sys.argv[0]+"?url="+url+"&mode="+str(mode)+"&name="+quote_plus(name)+"&poster_file="+quote_plus(poster)+"&filename="+quote_plus(filename)
-    u = sys.argv[0]
-    if mode is not '':
-        u = set_parameter(u, 'mode', str(mode))
-    if name is not '':
-        u = set_parameter(u, 'name', quote_plus(name))
-    u = set_parameter(u, 'poster_file', quote_plus(poster))
-    u = set_parameter(u, 'filename', quote_plus(filename))
-    if offset is not '':
-        u = set_parameter(u, 'offset', offset)
-    if url is not '':
-        u = set_parameter(u, 'url', url)
-    ok = True
-    liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
-    liz.setInfo(type="Video", infoLabels={"Title": name, "Plot": plot})
-    liz.setProperty("Poster_Image", iconimage)
-    if mode is not '':
-        if mode == 7:
-            ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=False)
-        else:
-            ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-    else:
-        # should this even possible ? as failsafe I leave it.
-        ok = xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=u, listitem=liz, isFolder=True)
-    return ok
-
-
-def playMedia(title, thumbnail, link, mediaType='Video'):
-    """Plays a video
-
-    Arguments:
-    title: the title to be displayed
-    thumbnail: the thumnail to be used as an icon and thumbnail
-    link: the link to the media to be played
-    mediaType: the type of media to play, defaults to Video. Known values are Video, Pictures, Music and Programs
-    """
-    try:
-        li = xbmcgui.ListItem(label=title, iconImage=thumbnail, thumbnailImage=thumbnail, path=link)
-        li.setInfo(type=mediaType, infoLabels={"Title": title})
-        xbmc.Player().play(item=link, listitem=li)
-    except:
-        alert("Unable to play stream.")
-
-
-def parseParameters(input_string=sys.argv[2]):
-    """Parses a parameter string starting at the first ? found in inputString
-    
-    Argument:
-    input_string: the string to be parsed, sys.argv[2] by default
-    
-    Returns a dictionary with parameter names as keys and parameter values as values
-    """
-    parameters = {}
-    p1 = input_string.find('?')
-    if p1 >= 0:
-        split_parameters = input_string[p1 + 1:].split('&')
-        for name_value_pair in split_parameters:
-            # xbmc.log("parseParameter detected Value: " + str(name_value_pair))
-            if (len(name_value_pair) > 0) & ("=" in name_value_pair):
-                pair = name_value_pair.split('=')
-                key = pair[0]
-                value = decode(unquote_plus(pair[1]))
-                parameters[key] = value
-    return parameters
-
-
-def notify(addonId, message, timeShown=5000):
-    """Displays a notification to the user
-    
-    Parameters:
-    addonId: the current addon id
-    message: the message to be shown
-    timeShown: the length of time for which the notification will be shown, in milliseconds, 5 seconds by default
-    """
-    addon = xbmcaddon.Addon(addonId)
-    xbmc.executebuiltin(
-        'Notification(%s, %s, %d, %s)' % (addon.getAddonInfo('name'), message, timeShown, addon.getAddonInfo('icon')))
-
-
-def showError(addonId, errorMessage):
-    """
-    Shows an error to the user and logs it
-    
-    Parameters:
-    addonId: the current addon id
-    message: the message to be shown
-    """
-    notify(addonId, errorMessage)
-    xbmc.log(errorMessage, xbmc.LOGERROR)
-
-
-def extractAll(text, startText, endText):
-    """
-    Extract all occurences of a string within text that start with startText and end with endText
-    
-    Parameters:
-    text: the text to be parsed
-    startText: the starting tokem
-    endText: the ending token
-    
-    Returns an array containing all occurences found, with tabs and newlines removed and leading whitespace removed
-    """
-    result = []
-    start = 0
-    pos = text.find(startText, start)
-    while pos != -1:
-        start = pos + startText.__len__()
-        end = text.find(endText, start)
-        result.append(text[start:end].replace('\n', '').replace('\t', '').lstrip())
-        pos = text.find(startText, end)
-    return result
-
-
-def extract(text, startText, endText):
-    """
-    Extract the first occurence of a string within text that start with startText and end with endText
-    
-    Parameters:
-    text: the text to be parsed
-    startText: the starting tokem
-    endText: the ending token
-    
-    Returns the string found between startText and endText, or None if the startText or endText is not found
-    """
-    start = text.find(startText, 0)
-    if start != -1:
-        start = start + startText.__len__()
-        end = text.find(endText, start + 1)
-        if end != -1:
-            return text[start:end]
+            # only add it if it has data
+            # reorder these to match the convention (Actor is cast, character is role, in that order)
+            if len(char_charname) != 0:
+                actor = {
+                    'name':         char_seiyuuname,
+                    'role':         char_charname,
+                    'thumbnail':    char_seiyuupic
+                }
+                result_list.append(actor)
+        if len(result_list) == 0:
+            return None
+        return result_list
     return None
 
 
-def request(url, headers={}):
-    debug('request: %s' % url)
-    req = Request(url, headers=headers)
-    req.add_header('User-Agent', UA)
-    response = urlopen(req)
-    data = response.read()
-    response.close()
-    debug('len(data) %s' % len(data))
-    return data
-
-
-def debug(text):
-    xbmc.log(str([text]), xbmc.LOGDEBUG)
-
-
-def makeLink(params, baseUrl=sys.argv[0]):
+def get_cast_and_role(data):
     """
-    Build a link with the specified base URL and parameters
-    
-    Parameters:
-    params: the params to be added to the URL
-    BaseURL: the base URL, sys.argv[0] by default
+    Get cast from the json and arrange in the new setCast format
+    Args:
+        data: json node containing 'roles'
+
+    Returns: a list of dictionaries for the cast
     """
-    return baseUrl + '?' + urlencode(
-        dict([encode(k), encode(decode(v))] for k, v in params.items()))
+    result_list = []
+    if data is not None and len(data) > 0:
+        for char in data:
+            char_charname = char["role"]
+            char_seiyuuname = char['name']
+            char_seiyuupic = char["rolepic"]
+
+            # only add it if it has data
+            # reorder these to match the convention (Actor is cast, character is role, in that order)
+            if len(char_charname) != 0:
+                actor = {
+                    'name':         char_seiyuuname,
+                    'role':         char_charname,
+                    'thumbnail':    char_seiyuupic
+                }
+                result_list.append(actor)
+        if len(result_list) == 0:
+            return None
+        return result_list
+    return None
 
 
-def addMenuItem(caption, link, icon=None, thumbnail=None, folder=False):
+def convert_cast_and_role_to_legacy(list_of_dicts):
     """
-    Add a menu item to the xbmc GUI
-    
-    Parameters:
-    caption: the caption for the menu item
-    icon: the icon for the menu item, displayed if the thumbnail is not accessible
-    thumbail: the thumbnail for the menu item
-    link: the link for the menu item
-    folder: True if the menu item is a folder, false if it is a terminal menu item
-    
-    Returns True if the item is successfully added, False otherwise
+    Convert standard cast_and_role to version supported by Kodi16 and lower
+    :param list_of_dicts:
+    :return: list
     """
-    listItem = xbmcgui.ListItem(unicode(caption), iconImage=icon, thumbnailImage=thumbnail)
-    listItem.setInfo(type="Video", infoLabels={"Title": caption})
-    return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), url=link, listitem=listItem, isFolder=folder)
+
+    result_list = []
+    list_cast = []
+    list_cast_and_role = []
+    if list_of_dicts is not None and len(list_of_dicts) > 0:
+        for actor in list_of_dicts:
+            seiyuu = actor.get('name', '')
+            role = actor.get('role', '')
+            if len(role) != 0:
+                list_cast.append(role)
+                if len(seiyuu) != 0:
+                    list_cast_and_role.append((seiyuu, role))
+        result_list.append(list_cast)
+        result_list.append(list_cast_and_role)
+    return result_list
 
 
-def endListing():
+def get_title(data):
     """
-    Signals the end of the menu listing
+    Get the new title
+    Args:
+        data: json node containing the title
+
+    Returns: string of the desired title
+
     """
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
+    try:
+        if 'titles' not in data or nt.addon.getSetting('use_server_title') == 'true':
+            return nt.decode(data.get('name', ''))
+        # xbmc.log(data.get('title', 'Unknown'))
+        title = nt.decode(data.get('name', '').lower())
+        if title == 'ova' or title == 'ovas' \
+                or title == 'episode' or title == 'episodes' \
+                or title == 'special' or title == 'specials' \
+                or title == 'parody' or title == 'parodies' \
+                or title == 'credit' or title == 'credits' \
+                or title == 'trailer' or title == 'trailers' \
+                or title == 'other' or title == 'others':
+            return nt.decode(data.get('name', ''))
+
+        lang = nt.addon.getSetting("displaylang")
+        title_type = nt.addon.getSetting("title_type")
+        try:
+            for titleTag in data.get("titles", []):
+                if titleTag.get("Type", "").lower() == title_type.lower():
+                    if titleTag.get("Language", "").lower() == lang.lower():
+                        if nt.decode(titleTag.get("Title", "")) == "":
+                            continue
+                        return nt.decode(titleTag.get("Title", ""))
+            # fallback on language any title
+            for titleTag in data.get("titles", []):
+                if titleTag.get("Type", "").lower() != 'short':
+                    if titleTag.get("Language", "").lower() == lang.lower():
+                        if nt.decode(titleTag.get("Title", "")) == "":
+                            continue
+                        return nt.decode(titleTag.get("Title", ""))
+            # fallback on x-jat main title
+            for titleTag in data.get("titles", []):
+                if titleTag.get("Type", "").lower() == 'main':
+                    if titleTag.get("Language", "").lower() == "x-jat":
+                        if nt.decode(titleTag.get("Title", "")) == "":
+                            continue
+                        return nt.decode(titleTag.get("Title", ""))
+            # fallback on directory title
+            return nt.decode(data.get('name', ''))
+        except Exception as expc:
+            nt.error('util.error thrown on getting title', str(expc))
+            return nt.decode(data.get('name', ''))
+    except Exception as exw:
+        nt.error("get_title Exception", str(exw))
+        return 'util.error'
 
 
-def replaceHTMLCodes(txt):
-    return txt
+def set_watch_flag(extra_data, details):
+    """
+    Set the flag icon for the list item to the desired state based on watched episodes
+    Args:
+        extra_data: the extra_data dict
+        details: the details dict
+    """
+    # Set up overlays for watched and unwatched episodes
+    if extra_data['WatchedEpisodes'] == 0:
+        details['playcount'] = 0
+    elif extra_data['UnWatchedEpisodes'] == 0:
+        details['playcount'] = 1
+    else:
+        extra_data['partialTV'] = 1
+
+
+def video_file_information(node, detail_dict):
+    """
+    Process given 'node' and parse it to create proper file information dictionary 'detail_dict'
+    :param node: node that contains file
+    :param detail_dict: dictionary for output
+    :return: dict
+    """
+    # Video
+    if 'VideoStreams' not in detail_dict:
+        detail_dict['VideoStreams'] = defaultdict(dict)
+    if 'AudioStream' not in detail_dict:
+        detail_dict['AudioStreams'] = defaultdict(dict)
+    if 'SubStream' not in detail_dict:
+        detail_dict['SubStreams'] = defaultdict(dict)
+
+    if "videos" in node:
+        for stream_node in node["videos"]:
+            stream_info = node["videos"][stream_node]
+            if not isinstance(stream_info, dict):
+                continue
+            streams = detail_dict.get('VideoStreams', defaultdict(dict))
+            stream_id = int(stream_info["Index"])
+            streams[stream_id]['VideoCodec'] = stream_info['Codec']
+            streams['xVideoCodec'] = stream_info['Codec']
+            streams[stream_id]['width'] = stream_info['Width']
+            if 'width' not in streams:
+                streams['width'] = stream_info['Width']
+            streams['xVideoResolution'] = str(stream_info['Width'])
+            streams[stream_id]['height'] = stream_info['Height']
+            if 'height' not in streams:
+                streams['height'] = stream_info['Height']
+                streams[stream_id]['aspect'] = round(int(streams['width']) / int(streams['height']), 2)
+            streams['xVideoResolution'] += "x" + str(stream_info['Height'])
+            streams[stream_id]['duration'] = int(round(float(stream_info.get('Duration', 0)) / 1000, 0))
+            detail_dict['VideoStreams'] = streams
+
+    # Audio
+    if "audios" in node:
+        for stream_node in node["audios"]:
+            stream_info = node["audios"][stream_node]
+            if not isinstance(stream_info, dict):
+                continue
+            streams = detail_dict.get('AudioStreams', defaultdict(dict))
+            stream_id = int(stream_info["Index"])
+            streams[stream_id]['AudioCodec'] = stream_info["Codec"]
+            streams['xAudioCodec'] = streams[stream_id]['AudioCodec']
+            streams[stream_id]['AudioLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
+                else "unk"
+            streams[stream_id]['AudioChannels'] = int(stream_info["Channels"]) if "Channels" in stream_info else 1
+            streams['xAudioChannels'] = nt.safe_int(streams[stream_id]['AudioChannels'])
+            detail_dict['AudioStreams'] = streams
+
+    # Subtitle
+    if "subtitles" in node:
+        i = 0
+        for stream_node in node["subtitles"]:
+            stream_info = node["subtitles"][stream_node]
+            if not isinstance(stream_info, dict):
+                continue
+            streams = detail_dict.get('SubStreams', defaultdict(dict))
+            try:
+                stream_id = int(stream_node)
+            except:
+                stream_id = i
+            streams[stream_id]['SubtitleLanguage'] = stream_info["LanguageCode"] if "LanguageCode" in stream_info \
+                else "unk"
+            detail_dict['SubStreams'] = streams
+            i += 1
+
+
+def folder_list():
+    """
+    List all import folders
+    :return: int vl of picked folder
+    """
+    return import_folder_list()
+
+
+def mediainfo_update():
+    """
+    Update mediainfo for all files
+    :return:
+    """
+    nt.get_json(nt.server + "/api/mediainfo_update")
+
+
+def stats_update():
+    """
+    Update stats via server
+    :return:
+    """
+    nt.get_json(nt.server + "/api/stats_update")
+
+
+def rescan_file(params, rescan):
+    """
+    Rescans or rehashes a file
+    Args:
+        params:
+        rescan: True to rescan, False to rehash
+    """
+    vl_id = params.get('vl', '')
+    if vl_id == '':
+        vl_id = import_folder_list()
+    if vl_id != 0:
+        command = 'rehash'
+        if rescan:
+            command = 'rescan'
+
+        key_url = ""
+        if vl_id != '':
+            key_url = nt.server + "/api/" + command + "?id=" + vl_id
+        if nt.addon.getSetting('log_spam') == 'true':
+            xbmc.log('vlid: ' + str(vl_id), xbmc.LOGWARNING)
+            xbmc.log('key: ' + key_url, xbmc.LOGWARNING)
+
+        nt.get_json(key_url)
+
+        xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
+            nt.addon.getLocalizedString(30190) if rescan else nt.addon.getLocalizedString(30189),
+            nt.addon.getLocalizedString(30191), nt.addon.getAddonInfo('icon')))
+        xbmc.sleep(10000)
+        nt.refresh()
+
+
+def remove_missing_files():
+    """
+    Run "remove missing files" on server to remove every file that is not accessible by server
+    :return:
+    """
+    key = nt.server + "/api/remove_missing_files"
+
+    if nt.addon.getSetting('log_spam') == 'true':
+        xbmc.log('key: ' + key, xbmc.LOGWARNING)
+
+    nt.get_json(key)
+    xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (nt.addon.getLocalizedString(30192),
+                                                                 nt.addon.getLocalizedString(30193),
+                                                                 nt.addon.getAddonInfo('icon')))
+    xbmc.sleep(10000)
+    nt.refresh()
+
+
+def play_continue_item():
+    """
+    Move to next item that was not marked as watched
+    Essential information are query from Parameters via util lib
+    """
+    params = nt.parse_parameters(sys.argv[2])
+    if 'offset' in params:
+        offset = params['offset']
+        pos = int(offset)
+        if pos == 1:
+            xbmcgui.Dialog().ok(nt.addon.getLocalizedString(30182), nt.addon.getLocalizedString(30183))
+        else:
+            wind = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            control_id = wind.getFocusId()
+            control_list = wind.getControl(control_id)
+            nt.move_position_on_list(control_list, pos)
+            xbmc.sleep(1000)
+    else:
+        pass
+
+
+def file_list_gui(ep_body):
+    """
+    Create DialogBox with file list to pick if there is more than 1 file for episode
+    :param ep_body:
+    :return: int (id of picked file or 0 if none)
+    """
+    pick_filename = []
+    get_fileid = []
+    if len(ep_body['files']) > 1:
+        for body in ep_body['files']:
+            filename = os.path.basename(body['filename'])
+            pick_filename.append(filename)
+            get_fileid.append(str(body['id']))
+        my_file = xbmcgui.Dialog().select(nt.addon.getLocalizedString(30196), pick_filename)
+        if my_file > -1:
+            return get_fileid[my_file]
+        else:
+            # cancel -1,0
+            return 0
+    elif len(ep_body['files']) == 1:
+        return ep_body['files'][0]['id']
+    else:
+        return 0
+
+
+def import_folder_list():
+    """
+    Create DialogBox with folder list to pick if there
+    :param import_list:
+    :return: int (vl of selected folder)
+    """
+    pick_folder = []
+    get_id = []
+    import_list = nt.json.loads(nt.get_json(nt.server + "/api/folder/list"))
+    if len(import_list) > 1:
+        for body in import_list:
+            location = str(body['ImportFolderLocation'])
+            pick_folder.append(location)
+            get_id.append(str(body['ImportFolderID']))
+        my_folder = xbmcgui.Dialog().select(nt.addon.getLocalizedString(30119), pick_folder)
+        if my_folder > -1:
+            return get_id[my_folder]
+        else:
+            # cancel -1,0
+            return 0
+    elif len(import_list) == 1:
+        return import_list[0]['ImportFolderID']
+    else:
+        return 0
+
+
+def play_video(ep_id, raw_id, movie):
+    """
+    Plays a file or episode
+    Args:
+        ep_id: episode id, if applicable for watched status and stream details
+        raw_id: file id, that is only used when ep_id = 0
+        movie: determinate if played object is movie or episode (ex.Trakt)
+    Returns:
+
+    """
+    details = {
+        'plot':          xbmc.getInfoLabel('ListItem.Plot'),
+        'title':         xbmc.getInfoLabel('ListItem.Title'),
+        'sorttitle':     xbmc.getInfoLabel('ListItem.Title'),
+        'rating':        xbmc.getInfoLabel('ListItem.Rating'),
+        'duration':      xbmc.getInfoLabel('ListItem.Duration'),
+        'mpaa':          xbmc.getInfoLabel('ListItem.Mpaa'),
+        'year':          xbmc.getInfoLabel('ListItem.Year'),
+        'tagline':       xbmc.getInfoLabel('ListItem.Tagline'),
+        'episode':       xbmc.getInfoLabel('ListItem.Episode'),
+        'aired':         xbmc.getInfoLabel('ListItem.Premiered'),
+        'tvshowtitle':   xbmc.getInfoLabel('ListItem.TVShowTitle'),
+        'votes':         xbmc.getInfoLabel('ListItem.Votes'),
+        'originaltitle': xbmc.getInfoLabel('ListItem.OriginalTitle'),
+        'size':          xbmc.getInfoLabel('ListItem.Size'),
+        'season':        xbmc.getInfoLabel('ListItem.Season'),
+        'epid':          ep_id,  # player
+        'movie':         movie,  # player
+    }
+
+    file_id = ''
+    file_url = ''
+    file_body = None
+    offset = 0
+    item = ''
+
+    try:
+        if ep_id != "0":
+            episode_url = nt.server + "/api/ep?id=" + str(ep_id)
+            episode_url = nt.set_parameter(episode_url, "level", "1")
+            html = nt.get_json(nt.encode(episode_url))
+            if nt.addon.getSetting("spamLog") == "true":
+                xbmc.log(html, xbmc.LOGWARNING)
+            episode_body = nt.json.loads(html)
+            if nt.addon.getSetting("pick_file") == "true":
+                file_id = file_list_gui(episode_body)
+            else:
+                file_id = episode_body["files"][0]["id"]
+        else:
+            file_id = raw_id
+
+        if file_id is not None and file_id != 0:
+            details['fileid'] = file_id
+            file_url = nt.server + "/api/file?id=" + str(file_id)
+            file_body = nt.json.loads(nt.get_json(file_url))
+
+            file_url = file_body['url']
+            server_path = file_body.get('server_path', '')
+            if server_path is not None and server_path != '':
+                try:
+                    if os.path.isfile(server_path):
+                        if nt.python_two:
+                            # noinspection PyCompatibility
+                            if unicode(server_path).startswith('\\\\'):
+                                server_path = "smb:"+server_path
+                        else:
+                            if server_path.startswith('\\\\'):
+                                server_path = "smb:"+server_path
+                        file_url = server_path
+                except:
+                    pass
+
+            # Information about streams inside video file
+            # Video
+            codecs = dict()
+            video_file_information(file_body["media"], codecs)
+
+            details['duration'] = file_body.get('duration', 0)
+            details['size'] = file_body['size']
+
+            item = xbmcgui.ListItem(details.get('title', 'Unknown'),
+                                    thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
+                                    path=file_url)
+            item.setInfo(type='Video', infoLabels=details)
+
+            # item.setProperty('IsPlayable', 'true')
+
+            if 'offset' in file_body:
+                offset = file_body.get('offset', 0)
+                if offset != 0:
+                    offset = int(offset) / 1000
+                    item.setProperty('ResumeTime', str(offset))
+
+            for stream_index in codecs["VideoStreams"]:
+                if not isinstance(codecs["VideoStreams"][stream_index], dict):
+                    continue
+                item.addStreamInfo('video', codecs["VideoStreams"][stream_index])
+            for stream_index in codecs["AudioStreams"]:
+                if not isinstance(codecs["AudioStreams"][stream_index], dict):
+                    continue
+                item.addStreamInfo('audio', codecs["AudioStreams"][stream_index])
+            for stream_index in codecs["SubStreams"]:
+                if not isinstance(codecs["SubStreams"][stream_index], dict):
+                    continue
+                item.addStreamInfo('subtitle', codecs["SubStreams"][stream_index])
+        else:
+            if nt.addon.getSetting("pick_file") == "false":
+                nt.error("file_id not retrieved")
+            return 0
+    except Exception as exc:
+        nt.error('util.error getting episode info', str(exc))
+
+    video_url = ''
+    is_transcoded = False
+
+    player = nplayer.Service()
+    player.feed(details)
+
+    try:
+        # region Eigakan
+        if nt.addon.getSetting("enableEigakan") == "true":
+            eigakan_url = nt.addon.getSetting("ipEigakan")
+            eigakan_port = nt.addon.getSetting("portEigakan")
+            eigakan_host = 'http://' + eigakan_url + ':' + eigakan_port
+            video_url = eigakan_host + '/api/transcode/' + str(file_id)
+            post_data = '"file":"' + file_url + '"'
+            try_count = 0
+            m3u8_url = eigakan_host + '/api/video/' + str(file_id) + '/play.m3u8'
+            ts_url = eigakan_host + '/api/video/' + str(file_id) + '/play0.ts'
+
+            try:
+                eigakan_data = nt.get_json(eigakan_host + '/api/version')
+                if 'eigakan' in eigakan_data:
+                    audio_stream_id = -1
+                    stream_index = -1
+                    for audio_code in nt.addon.getSetting("audiolangEigakan").split(","):
+                        for audio_stream in file_body['media']['audios']:
+                            stream_index += 1
+                            if 'Language' in file_body['media']['audios'][audio_stream]:
+                                if audio_code in file_body['media']['audios'][audio_stream].get('Language').lower():
+                                    audio_stream_id = stream_index
+                                    break
+                            if 'LanguageCode' in file_body['media']['audios'][audio_stream]:
+                                if audio_code in file_body['media']['audios'][audio_stream].get('LanguageCode').lower():
+                                    audio_stream_id = stream_index
+                                    break
+                            if 'Title' in file_body['media']['audios'][audio_stream]:
+                                if audio_code in file_body['media']['audios'][audio_stream].get('Language').lower():
+                                    audio_stream_id = stream_index
+                                    break
+                        if audio_stream_id != -1:
+                            break
+
+                    sub_stream_id = -1
+                    stream_index = -1
+                    for sub_code in nt.addon.getSetting("subEigakan").split(","):
+                        for sub_stream in file_body['media']['subtitles']:
+                            stream_index += 1
+                            if 'Language' in file_body['media']['subtitles'][sub_stream]:
+                                if sub_code in file_body['media']['subtitles'][sub_stream].get('Language').lower():
+                                    sub_stream_id = stream_index
+                                    break
+                            if 'LanguageCode' in file_body['media']['subtitles'][sub_stream]:
+                                if sub_code in file_body['media']['subtitles'][sub_stream].get('LanguageCode').lower():
+                                    sub_stream_id = stream_index
+                                    break
+                            if 'Title' in file_body['media']['subtitles'][sub_stream]:
+                                if sub_code in file_body['media']['subtitles'][sub_stream].get('Language').lower():
+                                    sub_stream_id = stream_index
+                                    break
+                        if sub_stream_id != -1:
+                            break
+
+                    busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30165))
+
+                    if audio_stream_id != -1:
+                        post_data += ',"audio_stream":"' + str(audio_stream_id) + '"'
+                    if sub_stream_id != -1:
+                        post_data += ',"subtitles_stream":"' + str(sub_stream_id) + '"'
+
+                    if nt.addon.getSetting("advEigakan") == "true":
+                        post_data += ',"resolution":"' + nt.addon.getSetting("resolutionEigakan") + '"'
+                        post_data += ',"audio_codec":"' + nt.addon.getSetting("audioEigakan") + '"'
+                        post_data += ',"video_bitrate":"' + nt.addon.getSetting("vbitrateEigakan") + '"'
+                        post_data += ',"x264_profile":"' + nt.addon.getSetting("profileEigakan") + '"'
+                    nt.post_json(video_url, post_data)
+                    xbmc.sleep(1000)
+                    busy.close()
+
+                    busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30164))
+                    while True:
+                        if nt.head(url_in=ts_url) is False:
+                            x_try = int(nt.addon.getSetting("tryEigakan"))
+                            if try_count > x_try:
+                                break
+                            if busy.iscanceled():
+                                break
+                            try_count += 1
+                            busy.update(try_count)
+                            xbmc.sleep(1000)
+                        else:
+                            break
+                    busy.close()
+
+                    postpone_seconds = int(nt.addon.getSetting("postponeEigakan"))
+                    if postpone_seconds > 0:
+                        busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30166))
+                        while postpone_seconds > 0:
+                            xbmc.sleep(1000)
+                            postpone_seconds -= 1
+                            busy.update(postpone_seconds)
+                            if busy.iscanceled():
+                                break
+                        busy.close()
+
+                    if nt.head(url_in=ts_url):
+                        is_transcoded = True
+                        player.play(item=m3u8_url, startpos=-1)
+                else:
+                    nt.error("Eigakan server is unavailable")
+            except Exception as exc:
+                nt.error('eigakan.post_json error', str(exc))
+                busy.close()
+        # endregion
+        else:
+            player.play(item=file_url, listitem=item)
+
+        if not is_transcoded:
+            if nt.addon.getSetting("file_resume") == "true":
+                if offset > 0:
+                    for i in range(0, 1000):  # wait up to 10 secs for the video to start playing before we try to seek
+                        if not player.isPlayingVideo():  # and not xbmc.abortRequested:
+                            xbmc.sleep(100)
+                        else:
+                            xbmc.Player().seekTime(offset)
+                            xbmc.log("-----player: seek_time offset:" + str(offset), xbmc.LOGNOTICE)
+                            break
+
+    except Exception as player_ex:
+        xbmc.log(str(player_ex), xbmc.LOGWARNING)
+        pass
+
+    # wait for player (network issue etc)
+    xbmc.sleep(1000)
+    mark = float(nt.addon.getSetting("watched_mark"))
+    mark /= 100
+    file_fin = False
+    trakt_404 = False
+    # hack for slow connection and buffering time
+    xbmc.sleep(int(nt.addon.getSetting("player_sleep")))
+
+    try:
+        if raw_id == "0":  # skip for raw_file
+            progress = 0
+            while player.isPlaying():
+                try:
+
+                    xbmc.sleep(2500)  # 2.5sec this will make the server handle it better
+                    if is_transcoded:
+                        total_time = details['duration']
+                    else:
+                        total_time = player.getTotalTime()
+                    current_time = player.getTime()
+
+                    # region Resume support (work with shoko 3.6.0.7+)
+                    # don't sync until the files is playing and more than 10 seconds in
+                    # we'll sync the offset if it's set to sync watched states, and leave file_resume to auto resuming
+                    if nt.addon.getSetting("syncwatched") == "true" and current_time > 10:
+                        nt.sync_offset(file_id, current_time)
+                    # endregion
+
+                    if (total_time * mark) < current_time:
+                        file_fin = True
+                    if not player.isPlaying():
+                        break
+                except:
+                    xbmc.sleep(60)
+                    if not trakt_404:
+                        # send 'pause' to trakt
+                        nt.trakt_scrobble(str(ep_id), str(2), str(progress), str(movie), True)
+                    break
+
+            if is_transcoded:
+                nt.get_json(video_url + '/cancel')
+    except Exception as ops_ex:
+        nt.dbg(ops_ex)
+        pass
+
+    if raw_id == "0":  # skip for raw_file
+        no_watch_status = False
+        if nt.addon.getSetting('no_mark') != "0":
+            no_watch_status = True
+            # reset no_mark so next file will mark watched status
+            nt.addon.setSetting('no_mark', '0')
+
+        if file_fin is True:
+            if no_watch_status is False:
+                return ep_id
+    return 0
+
+
+def wizard():
+    """
+    Run wizard if there weren't any before
+    :return: nothing, set ip/port user/password in settings
+    """
+
+    if nt.addon.getSetting('wizard') == '0':
+        great_wizard = Wizard(nt.addon.getLocalizedString(30082))
+        great_wizard.doModal()
+        if great_wizard.setup_ok:
+            nt.addon.setSetting(id='wizard', value='1')
+        del great_wizard
+
+
+def detect_kodi18():
+    """
+    Detect if Kodi user run is not-yet-released 18.x
+    check if '3' (unknown), set 1 if kodi18, set 0 if anything else
+    :return: this function dont return anything, only set 'kodi18' in settings
+    """
+    if nt.addon.getSetting('kodi18') == '3':
+        python = xbmcaddon.Addon('xbmc.addon')
+        if python is not None:
+            # kodi18 return 17.9.701 as for now
+            if str(python.getAddonInfo('version')) == '17.9.701':
+                nt.addon.setSetting(id='kodi18', value='1')
+            else:
+                nt.addon.setSetting(id='kodi18', value='0')
