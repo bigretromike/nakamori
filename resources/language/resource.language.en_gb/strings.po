@@ -273,7 +273,9 @@ msgctxt "#30064"
 msgid "Tweaks"
 msgstr ""
 
-# msgctxt "#30065"
+msgctxt "#30065"
+msgid "Play"
+msgstr ""
 
 msgctxt "#30066"
 msgid "Disable 'cast' information"
@@ -490,8 +492,6 @@ msgstr ""
 msgctxt "#30119"
 msgid "Import Folder"
 msgstr ""
-
-# 30065 empty
 
 #---------------End-Settings--------------------------
 

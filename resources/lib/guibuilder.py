@@ -15,6 +15,7 @@ import sys
 import os
 import datetime
 from collections import defaultdict
+# noinspection PyUnresolvedReferences
 import nakamoritools as nt
 # noinspection PyUnresolvedReferences
 from Calendar import Calendar
@@ -101,6 +102,11 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         # TODO Refactor this out into the above method
         # For all video items
         if not folder:
+            # remove most of default context menu items but break viewing
+            # folder = True
+            # probably fix for desync watchmark (url ending with .pvr are not marked as watched)
+            # https://forum.kodi.tv/showthread.php?tid=325059
+            gui_url = nt.set_parameter(gui_url, 'pvr', '.pvr')
             # liz.setProperty('IsPlayable', 'true')
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
@@ -208,15 +214,26 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = nt.set_parameter(url_peep, 'ui_index', str(index))
                     url_peep = nt.set_parameter(url_peep, 'file_id', str(file_id))
 
-                    # Play and Watch
+                    number_of_dummy_items = 3
+
+                    # Play
+                    context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
+
+                    # Play (No Scrobble)
                     if nt.addon.getSetting('context_show_play_no_watch') == 'true':
                         context.append((nt.addon.getLocalizedString(30132),
                                         'RunPlugin(%s&cmd=no_mark)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
 
+                    # Inspect
                     if nt.addon.getSetting('context_pick_file') == 'true':
                         context.append((nt.addon.getLocalizedString(30133),
                                         'RunPlugin(%s&cmd=pickFile)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
 
+                    # Mark as watched/unwatched
                     if extra_data.get('jmmepisodeid') != '':
                         if nt.addon.getSetting('context_krypton_watched') == 'true':
                             if details.get('playcount', 0) == 0:
@@ -230,31 +247,56 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                                             'RunPlugin(%s&cmd=watched)' % url_peep))
                             context.append((nt.addon.getLocalizedString(30129),
                                             'RunPlugin(%s&cmd=unwatched)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
 
+                    # Playlist Mode
                     if nt.addon.getSetting('context_playlist') == 'true':
                         context.append((nt.addon.getLocalizedString(30130),
                                         'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
 
-                    # Vote
+                    # Vote Episode
                     if nt.addon.getSetting('context_show_vote_Episode') == 'true' and ep_id != '':
                         context.append((nt.addon.getLocalizedString(30125),
                                         'RunPlugin(%s&cmd=voteEp)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
+
+                    # Vote Series
                     if nt.addon.getSetting('context_show_vote_Series') == 'true' and series_id != '':
                         context.append((nt.addon.getLocalizedString(30124),
                                         'RunPlugin(%s&cmd=voteSer)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
 
                     # Metadata
                     if nt.addon.getSetting('context_show_info') == 'true':
                         context.append((nt.addon.getLocalizedString(30123),
                                         'Action(Info)'))
+                    else:
+                        number_of_dummy_items += 1
 
                     if nt.addon.getSetting('context_view_cast') == 'true':
                         if series_id != '':
                             context.append((nt.addon.getLocalizedString(30134),
                                             'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
+                        else:
+                            number_of_dummy_items += 1
+                    else:
+                        number_of_dummy_items += 1
+
                     if nt.addon.getSetting('context_refresh') == 'true':
                         context.append((nt.addon.getLocalizedString(30131),
                                         'RunPlugin(%s&cmd=refresh)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
+
+                    x = 0
+                    while x < number_of_dummy_items:
+                        context.append(('', 'Action(Select)'))
+                        x += 1
 
         liz.addContextMenuItems(context)
         liz.select(force_select)
@@ -1093,8 +1135,7 @@ def build_serie_episodes(params):
     :return:
     """
 
-    # xbmcgui.Dialog().ok('MODE=6','IN')
-    xbmcplugin.setContent(handle, 'episodes')
+    xbmcplugin.setContent(handle, 'episodes')  # episodes
 
     # value to hold position of not seen episode
     next_episode = -1
@@ -1211,11 +1252,10 @@ def build_serie_episodes(params):
 
             elif len(body.get('eps', {})) > 0:
                 # add item to move to next not played item (not marked as watched)
-                thumb = os.path.join(_img, 'thumb', 'other.png')
-                poster = os.path.join(_img, 'poster', 'other.png')
                 if nt.addon.getSetting("show_continue") == "true":
                     if nt.decode(parent_title).lower() != "unsort":
-                        nt.add_dir("-continue-", '', '7', thumb, "Next episode", poster, "4", str(next_episode))
+                        nt.add_dir("-continue-", '', '7', os.path.join(_img, 'thumb', 'other.png'),
+                                   "Next episode", os.path.join(_img, 'poster', 'other.png'), "4", str(next_episode))
                 selected_list_item = False
                 for video in body['eps']:
                     item_count += 1
@@ -1252,31 +1292,63 @@ def build_serie_episodes(params):
 
                             # Required listItem entries for XBMC
                             details = {
-                                'mediatype':     'episode',
-                                'plot':          "..." if skip else nt.remove_anidb_links(nt.decode(video['summary'])),
-                                'title':         title,
-                                'sorttitle':     str(video.get('epnumber', '')) + " " + title,
-                                'parenttitle':   nt.decode(parent_title),
-                                'rating':        float(str(video.get('rating', '0')).replace(',', '.')),
-                                'userrating':    float(str(video.get('UserRating', '0')).replace(',', '.')),
-                                # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
-                                # This doesn't work, some gremlins be afoot in this code...
-                                # it's probably just that it only applies at series level
-                                'castandrole':   list_cast_and_role,
-                                'cast':          list_cast,
-                                # 'director': " / ".join(temp_dir),
-                                # 'writer': " / ".join(temp_writer),
-                                'genre':         "..." if skip else temp_genre,
-                                'duration':      duration,
-                                # 'mpaa':          video.get('contentRating', ''), <--
-                                'year':          nt.safe_int(video.get('year', '')),
-                                'tagline':       "..." if skip else temp_genre,
-                                'episode':       nt.safe_int(video.get('epnumber', '')),
-                                'aired':         air,
-                                'tvshowtitle':   grandparent_title,
-                                'votes':         nt.safe_int(video.get('votes', '')),
-                                'originaltitle': nt.decode(video.get('name', '')),
+                                # OFFICIAL General Values
+                                # 'count': - can be used to store an id for later, or for sorting purposes
                                 'size': nt.safe_int(video['files'][0].get('size', '0')),
+                                # 'date': file date - coded below
+                                # OFFICIAL Video Values
+                                'genre': "..." if skip else temp_genre,
+                                # 'county':
+                                'year': nt.safe_int(video.get('year', '')),
+                                'episode': nt.safe_int(video.get('epnumber', '')),
+                                #  'season' - coded below
+                                #  'sortepisode'  # k18
+                                #  'sortseason'  # k18
+                                #  'episodeguide'  # k18
+                                #  'showlink'  # k18
+                                #  'top250'
+                                #  'setid'
+                                #  'tracknumber'
+                                'rating': float(str(video.get('rating', '0')).replace(',', '.')),
+                                'userrating': float(str(video.get('UserRating', '0')).replace(',', '.')),
+                                #  'watched' - depreciated
+                                #  'playcount' - coded below
+                                #  'overlay' - cdeded below
+                                'cast': list_cast,
+                                'castandrole': list_cast_and_role,
+                                #  'director': " / ".join(temp_dir),
+                                #  'mpaa':          video.get('contentRating', ''), <--
+                                'plot': "..." if skip else nt.remove_anidb_links(nt.decode(video['summary'])),
+                                #  'plotoutline':
+                                'title': title,
+                                'originaltitle': nt.decode(video.get('name', '')),
+                                'sorttitle': str(video.get('epnumber', '')) + " " + title,
+                                'duration': duration,
+                                # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
+                                'tagline': "..." if skip else temp_genre,  # short description of movie k18
+                                # 'writer': " / ".join(temp_writer),
+                                'tvshowtitle': grandparent_title,
+                                'premiered': air,
+                                #  'status': 'Continuing'
+                                #  'set' -  name of the collection
+                                #  'setoverview' - k18
+                                'tag': "..." if skip else temp_genre,  # k18
+                                #  'imdbnumber'
+                                #  'code' - production code
+                                'aired': air,
+                                #  'credits'
+                                #  'lastplayed'
+                                #  'album'
+                                #  'artist'
+                                'votes': nt.safe_int(video.get('votes', '')),
+                                #  'path'
+                                #  'trailes'
+                                #  'dateadded'
+                                'mediatype': 'episode',  # "video", "movie", "tvshow", "season", "episode", "musicvideo"
+                                #  'dbid' - local kodi db id
+
+                                # CUSTOM
+                                'parenttitle':   nt.decode(parent_title)
                             }
                             if nt.addon.getSetting('hide_rating') == 'true':
                                 if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
@@ -1314,7 +1386,7 @@ def build_serie_episodes(params):
 
                             # Extra data required to manage other properties
                             extra_data = {
-                                'type':             'video',
+                                'type':             'video',  # 'video'
                                 'source':           'ep',
                                 'thumb':            None if skip else thumb,
                                 'fanart_image':     None if skip else fanart,
