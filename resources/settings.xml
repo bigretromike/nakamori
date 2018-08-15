@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
+	<!-- shoko settings -->
     <category label="30001">
         <setting label="30006" type="lsep"/>
         <setting label="30002" type="text" id="ipaddress" default="127.0.0.1"/>
         <setting label="30003" type="number" id="port" default="8111"/>
-        <setting label="30004" type="number" id="timeout" default="60" visible="eq(5,true)" subsetting="true"/>
         <setting label="30011" type="lsep"/>
         <setting label="30015" type="text" id="login" default="Default"/>
         <setting label="30016" type="text" id="password" options="hidden"/>
-        <setting label="30017" type="text" id="device" default="nakamori" visible="eq(1,true)" subsetting="true"/>
-        <setting label="30100" type="bool" id="more_30001" default="false"/>
+		<setting label="30100" type="bool" id="more_30001" default="false"/>
+		<!-- advanced -->
+        <setting label="30044" type="lsep" visible="eq(-1,true)"/>
+		<setting label="30017" type="text" id="device" default="nakamori" visible="eq(-2,true)"/>
+		<setting label="30004" type="number" id="timeout" default="60" visible="eq(-3,true)"/>
+		<setting label="30013" type="bool" id="use_gzip" default="true" visible="eq(-4,true)"/>
+		<!-- searching -->
+        <setting label="30021" type="lsep" visible="eq(-5,true)"/>
+        <setting label="30022" type="number" id="maxlimit" default="20" visible="eq(-6,true)"/>
+        <setting label="30033" type="number" id="maxlimit_tag" default="100" visible="eq(-7,true)"/>
+        <setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false" visible="eq(-8,true)"/>
+        <setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" visible="eq(-9,true)" subsetting="true"/>		
+        <setting label="30066" type="bool" id="request_nocast" default="false" visible="eq(-10,true)"/>
+		<setting label="30028" type="bool" id="short_tag_list" default="true" visible="eq(-11,true)"/>
+		<!-- trakt support -->
+        <setting label="30038" type="lsep" visible="eq(-12,true)"/>
+        <setting label="30035" type="bool" id="trakt" default="false" visible="eq(-13,true)"/>
+        <setting label="30036" type="bool" id="trakt_scrobble" default="false" visible="eq(-14,true)"/>
+        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"  visible="eq(-15,true)"/>
+		<setting label="30044" type="lsep" visible="eq(-16,true)"/>
+		<setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false" visible="eq(-17,true)"/>
+        <setting label="30053" type="bool" id="use_server_sort" default="false" visible="eq(-18,true)"/>
+		<!-- hidden -->
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
         <setting type="number" id="kodi18" default="3" visible="false"/>
         <setting type="number" id="wizard" default="0" visible="false"/>
+		<!-- wizard -->
+		<setting label="30082" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" option="close"/>
     </category>
-    <category label="30054">
-        <setting label="30098" type="lsep"/>
+	<!-- folder -->
+    <category label="30098">
         <setting label="30101" type="bool" id="show_search" default="true"/>
         <setting label="30102" type="bool" id="show_settings" default="true"/>
         <setting label="30103" type="bool" id="show_calendar" default="true"/>
@@ -24,35 +47,53 @@
         <setting label="30105" type="bool" id="show_unsort" default="true"/>
         <setting label="30114" type="bool" id="show_shoko" default="false"/>
         <setting label="30039" type="bool" id="show_continue" default="false"/>
-        <setting label="30083" type="bool" id="select_unwatched" default="true"/>
-        <setting label="30040" type="bool" id="local_total" default="false"/>
-        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
-        <setting label="30051" type="bool" id="useSeasons" default="false"/>
-        <setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false"/>
-        <setting label="30053" type="bool" id="use_server_sort" default="false" />
-        <setting label="30028" type="bool" id="short_tag_list" default="true" />
+	</category>
+	<!-- browsing -->
+    <category label="30054">
+		<!-- title settings -->
         <setting label="30056" type="lsep"/>
         <setting label="30052" type="bool" id="use_server_title" default="false" />
-        <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)"/>
-        <setting label="30010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)"/>
-        <setting label="30057" type="lsep"/>
-        <!-- Play and Watch -->
+        <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)" visible="eq(-1,false)"/>
+        <setting label="30010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)" visible="eq(-2,false)"/>
+		<!-- tweaks -->
+		<setting label="30064" type="lsep"/>
+		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
+        <setting label="30051" type="bool" id="useSeasons" default="false"/>
+		<setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
+        <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
+        <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
+        <!-- Context Menu Settings -->
+		<setting label="30057" type="lsep"/>
         <setting label="30132" type="bool" id="context_show_play_no_watch" default="true" />
         <setting label="30133" type="bool" id="context_pick_file" default="true" />
         <setting label="30130" type="bool" id="context_playlist" default="true" />
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
-        <!-- Vote -->
         <setting label="30125" type="bool" id="context_show_vote_Episode" default="true" />
         <setting label="30124" type="bool" id="context_show_vote_Series" default="true" />
-        <!-- Metadata -->
         <setting label="30123" type="bool" id="context_show_info" default="true" />
         <setting label="30134" type="bool" id="context_view_cast" default="false" />
         <setting label="30131" type="bool" id="context_refresh" default="true" />
+		<!-- tag blacklist -->
+		<setting label="30046" type="lsep"/>
+        <setting label="30045" type="bool" id="hideMiscTags" default="false"/>
+        <setting label="30047" type="bool" id="hideArtTags" default="false"/>
+        <setting label="30048" type="bool" id="hideSourceTags" default="false"/>
+        <setting label="30049" type="bool" id="hideUsefulMiscTags" default="false"/>
+        <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
+        <setting label="30070" type="bool" id="hideSettingTags" default="false"/>
+		<!-- maintenance -->
+		<setting label="30097" type="lsep"/>
+        <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
     </category>
+	<!-- video settings -->
     <category label="30023">
         <setting label="30007" type="lsep"/>
         <setting label="30025" type="bool" id="watchedbox" default="true"/>
         <setting label="30024" type="number" id="watched_mark" default="80"/>
+		<setting label="30032" type="bool" id="vote_always" default="false"/>
+        <setting label="30034" type="bool" id="vote_on_series" default="false"/>
+		<setting label="30040" type="bool" id="local_total" default="false"/>
+        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
         <setting label="30055" type="number" id="refresh_wait" default="1000"/>
         <setting label="30005" type="bool" id="syncwatched" default="true"/>
         <setting label="30014" type="bool" id="pick_file" default="true"/>
@@ -60,45 +101,16 @@
         <setting label="30026" type="lsep"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
-    <category label="30012">
-        <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
-        <setting label="30059" type="number" id="calendar_rows" default="4"/>
-        <setting label="30060" type="number" id="calendar_cols" default="10"/>
-        <setting label="30061" type="bool" id="calendar_adv" default="false"/>
-        <setting label="30019" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
-        <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
-    </category>
-    <category label="30031">
-        <setting label="30032" type="bool" id="vote_always" default="false"/>
-        <setting label="30034" type="bool" id="vote_on_series" default="false"/>
-        <setting label="30038" type="lsep"/>
-        <setting label="30035" type="bool" id="trakt" default="false"/>
-        <setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
-        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"/>
-    </category>
-    <category label="30046">
-        <setting label="30045" type="bool" id="hideMiscTags" default="false"/>
-        <setting label="30047" type="bool" id="hideArtTags" default="false"/>
-        <setting label="30048" type="bool" id="hideSourceTags" default="false"/>
-        <setting label="30049" type="bool" id="hideUsefulMiscTags" default="false"/>
-        <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
-        <setting label="30070" type="bool" id="hideSettingTags" default="false"/>
-    </category>
+	<!-- Advance -->
     <category label="30044">
         <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false" />
-        <setting label="30021" type="lsep"/>
-        <setting label="30022" type="number" id="maxlimit" default="20"/>
-        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
-        <setting label="30044" type="lsep"/>
-        <setting label="30041" type="bool" id="skipExtraInfoOnLongSeries" default="false"/>
-        <setting label="30043" type="number" id="skipExtraInfoMaxEpisodes" default="50" enable="eq(-1,true)" subsetting="true"/>
         <setting label="30042" type="bool" id="spamLog" default="false"/>
-        <setting label="30013" type="bool" id="use_gzip" default="true"/>
-        <setting label="30066" type="bool" id="request_nocast" default="false"/>
         <setting label="30063" type="bool" id="remote_debug" default="false"/>
+		<!-- cache -->
         <setting label="30029" type="lsep"/>
         <setting label="30030" type="bool" id="enableCache" default="false"/>
         <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true"/>
+		<!-- eigakan -->
         <setting label="30084" type="lsep"/>
         <setting label="30085" type="bool" id="enableEigakan" default="false"/>
         <setting label="30086" type="text" id="ipEigakan" default="127.0.0.1" visible="eq(-1,true)"/>
@@ -112,12 +124,15 @@
         <setting label="30092" type="text" id="profileEigakan" default="main" visible="eq(-2,true)"/>
         <setting label="30093" type="text" id="audioEigakan" default="aac" visible="eq(-3,true)"/>
         <setting label="30094" type="text" id="vbitrateEigakan" default="3000000" visible="eq(-4,true)"/>
-    </category>
-    <category label="30097">
-        <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
-        <setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
-        <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
-        <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
+		<!-- calendar -->
+		<setting label="30012" type="lsep"/>
+        <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
+        <setting label="30059" type="number" id="calendar_rows" default="4"/>
+        <setting label="30060" type="number" id="calendar_cols" default="10"/>
+        <setting label="30061" type="bool" id="calendar_adv" default="false"/>
+        <setting label="30019" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
+		<!-- noname -->
 		<setting label="30108" type="bool" id="send_data" default="true"/>
     </category>
 </settings>
