@@ -10,7 +10,6 @@ import os
 import traceback
 # noinspection PyUnresolvedReferences
 import nakamoritools as nt
-from time import sleep
 # noinspection PyUnresolvedReferences
 import nakamoriplayer as nplayer
 # noinspection PyUnresolvedReferences
@@ -481,7 +480,6 @@ def file_list_gui(ep_body):
 def import_folder_list():
     """
     Create DialogBox with folder list to pick if there
-    :param import_list:
     :return: int (vl of selected folder)
     """
     pick_folder = []

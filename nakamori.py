@@ -13,7 +13,7 @@ import resources.lib.debug as dbg
 import resources.lib.guibuilder as gb
 import resources.lib.search as search
 import resources.lib.util as util
-
+# noinspection PyUnresolvedReferences
 import nakamoritools as nt
 
 import xbmcplugin
@@ -161,7 +161,8 @@ if nt.get_shoko_status() is True:
                         else:
                             xbmcplugin.setContent(int(gb.handle), str('movies'))
                             gb.execute_search_and_add_query()
-                    except:
+                    except Exception as search_ex:
+                        xbmc.log(str(search_ex), xbmc.LOGERROR)
                         gb.build_search_directory()
                 elif mode == 4:  # Group/Serie
                     try:
