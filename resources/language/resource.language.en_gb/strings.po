@@ -581,7 +581,11 @@ msgctxt "#30140"
 msgid "List all your Import Folders"
 msgstr ""
 
-# 141 - 159 empty
+msgctxt "#30141"
+msgid "Resume"
+msgstr ""
+
+# 142 - 159 empty
 
 #---------------End-Context-Menu----------------------
 

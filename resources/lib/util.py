@@ -10,7 +10,7 @@ import os
 import traceback
 # noinspection PyUnresolvedReferences
 import nakamoritools as nt
-
+from time import sleep
 # noinspection PyUnresolvedReferences
 import nakamoriplayer as nplayer
 # noinspection PyUnresolvedReferences
@@ -532,6 +532,8 @@ def play_video(ep_id, raw_id, movie):
         'season':        xbmc.getInfoLabel('ListItem.Season'),
         'epid':          ep_id,  # player
         'movie':         movie,  # player
+        'fileid':        0,      # player, coded below
+        'rawid':         raw_id  # player
     }
 
     file_id = ''
@@ -580,7 +582,8 @@ def play_video(ep_id, raw_id, movie):
             # Video
             codecs = dict()
             video_file_information(file_body["media"], codecs)
-
+            file_url += "?pvr=.pvr"
+            details['path'] = file_url
             details['duration'] = file_body.get('duration', 0)
             details['size'] = file_body['size']
 
@@ -588,8 +591,6 @@ def play_video(ep_id, raw_id, movie):
                                     thumbnailImage=xbmc.getInfoLabel('ListItem.Thumb'),
                                     path=file_url)
             item.setInfo(type='Video', infoLabels=details)
-
-            # item.setProperty('IsPlayable', 'true')
 
             if 'offset' in file_body:
                 offset = file_body.get('offset', 0)
@@ -616,14 +617,11 @@ def play_video(ep_id, raw_id, movie):
     except Exception as exc:
         nt.error('util.error getting episode info', str(exc))
 
-    video_url = ''
+    m3u8_url = ''
     is_transcoded = False
 
-    player = nplayer.Service()
-    player.feed(details)
-
+    # region Eigakan
     try:
-        # region Eigakan
         if nt.addon.getSetting("enableEigakan") == "true":
             eigakan_url = nt.addon.getSetting("ipEigakan")
             eigakan_port = nt.addon.getSetting("portEigakan")
@@ -721,87 +719,46 @@ def play_video(ep_id, raw_id, movie):
 
                     if nt.head(url_in=ts_url):
                         is_transcoded = True
-                        player.play(item=m3u8_url, startpos=-1)
+
                 else:
                     nt.error("Eigakan server is unavailable")
             except Exception as exc:
                 nt.error('eigakan.post_json error', str(exc))
                 busy.close()
-        # endregion
+    except Exception as eigakan_ex:
+        xbmc.log(str(eigakan_ex), xbmc.LOGWARNING)
+        pass
+    # endregion
+
+    player = nplayer.Service()
+    player.feed(details)
+
+    try:
+        if is_transcoded:
+            details['path'] = m3u8_url
+            player.feed(details)
+            player.play(item=m3u8_url, startpos=-1)
         else:
             player.play(item=file_url, listitem=item)
-
-        if not is_transcoded:
-            if nt.addon.getSetting("file_resume") == "true":
+            if nt.addon.getSetting("file_resume") == "true" and nt.addon.getSetting("resume") == "1":
+                nt.addon.setSetting('resume', '0')
                 if offset > 0:
                     for i in range(0, 1000):  # wait up to 10 secs for the video to start playing before we try to seek
                         if not player.isPlayingVideo():  # and not xbmc.abortRequested:
                             xbmc.sleep(100)
+                            xbmc.log("---> trying to player_seek", xbmc.LOGINFO)
                         else:
-                            xbmc.Player().seekTime(offset)
-                            xbmc.log("-----player: seek_time offset:" + str(offset), xbmc.LOGNOTICE)
+                            xbmc.log("-----> player_seek: seek_time offset:" + str(offset), xbmc.LOGNOTICE)
+                            player.seekTime(offset)
                             break
-
     except Exception as player_ex:
         xbmc.log(str(player_ex), xbmc.LOGWARNING)
         pass
 
-    # wait for player (network issue etc)
-    xbmc.sleep(1000)
-    mark = float(nt.addon.getSetting("watched_mark"))
-    mark /= 100
-    file_fin = False
-    trakt_404 = False
+    # TODO do we need this ? probably not anymore
     # hack for slow connection and buffering time
     xbmc.sleep(int(nt.addon.getSetting("player_sleep")))
 
-    try:
-        if raw_id == "0":  # skip for raw_file
-            progress = 0
-            while player.isPlaying():
-                try:
-
-                    xbmc.sleep(2500)  # 2.5sec this will make the server handle it better
-                    if is_transcoded:
-                        total_time = details['duration']
-                    else:
-                        total_time = player.getTotalTime()
-                    current_time = player.getTime()
-
-                    # region Resume support (work with shoko 3.6.0.7+)
-                    # don't sync until the files is playing and more than 10 seconds in
-                    # we'll sync the offset if it's set to sync watched states, and leave file_resume to auto resuming
-                    if nt.addon.getSetting("syncwatched") == "true" and current_time > 10:
-                        nt.sync_offset(file_id, current_time)
-                    # endregion
-
-                    if (total_time * mark) < current_time:
-                        file_fin = True
-                    if not player.isPlaying():
-                        break
-                except:
-                    xbmc.sleep(60)
-                    if not trakt_404:
-                        # send 'pause' to trakt
-                        nt.trakt_scrobble(str(ep_id), str(2), str(progress), str(movie), True)
-                    break
-
-            if is_transcoded:
-                nt.get_json(video_url + '/cancel')
-    except Exception as ops_ex:
-        nt.dbg(ops_ex)
-        pass
-
-    if raw_id == "0":  # skip for raw_file
-        no_watch_status = False
-        if nt.addon.getSetting('no_mark') != "0":
-            no_watch_status = True
-            # reset no_mark so next file will mark watched status
-            nt.addon.setSetting('no_mark', '0')
-
-        if file_fin is True:
-            if no_watch_status is False:
-                return ep_id
     return 0
 
 

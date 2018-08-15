@@ -14,6 +14,7 @@ import xbmcplugin
 import sys
 import os
 import datetime
+import time
 from collections import defaultdict
 # noinspection PyUnresolvedReferences
 import nakamoritools as nt
@@ -214,10 +215,21 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = nt.set_parameter(url_peep, 'ui_index', str(index))
                     url_peep = nt.set_parameter(url_peep, 'file_id', str(file_id))
 
-                    number_of_dummy_items = 3
+                    number_of_dummy_items = 2
 
                     # Play
                     context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
+
+                    # Resume
+                    if 'resume' in extra_data:
+                        if nt.addon.getSetting("file_resume") == "true":
+                            if str(extra_data.get('resume')) != "0":
+                                liz.setProperty('ResumeTime', str(extra_data.get('resume')))
+                                context.append((nt.addon.getLocalizedString(30141) + ' (%s)' %
+                                                time.strftime('%H:%M:%S', time.gmtime(int(extra_data.get('resume')))),
+                                                'RunPlugin(%s&cmd=resume)' % url_peep))
+                    else:
+                        number_of_dummy_items += 1
 
                     # Play (No Scrobble)
                     if nt.addon.getSetting('context_show_play_no_watch') == 'true':

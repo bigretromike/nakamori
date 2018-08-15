@@ -33,10 +33,11 @@
 		<!-- hidden -->
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
+        <setting type="number" id="resume" default="0" visible="false"/>
         <setting type="number" id="kodi18" default="3" visible="false"/>
         <setting type="number" id="wizard" default="0" visible="false"/>
 		<!-- wizard -->
-		<setting label="30082" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" option="close"/>
+		<setting label="30082" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?cmd=wizard)" option="close"/>
     </category>
 	<!-- folder -->
     <category label="30098">

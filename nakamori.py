@@ -119,6 +119,18 @@ if nt.get_shoko_status() is True:
                     gb.create_playlist(parameters['serie_id'])
                 elif cmd == 'refresh':
                     nt.refresh()
+                elif cmd == 'resume':
+                    nt.addon.setSetting('resume', '1')
+                    # noinspection PyTypeChecker
+                    xbmc.executebuiltin('Action(Select)')
+                elif cmd == 'resumeno_mark':
+                    nt.addon.setSetting('no_mark', '1')
+                    nt.addon.setSetting('resume', '1')
+                    # noinspection PyTypeChecker
+                    xbmc.executebuiltin('Action(Select)')
+                elif cmd == 'wizard':
+                    nt.addon.setSetting('wizard', '0')
+                    # no need to execute wizard here, he will run in filter_menu
             else:
                 if mode == 0:  # string label
                     pass
