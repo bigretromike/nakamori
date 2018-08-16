@@ -36,6 +36,8 @@
         <setting type="number" id="resume" default="0" visible="false"/>
         <setting type="number" id="kodi18" default="3" visible="false"/>
         <setting type="number" id="wizard" default="0" visible="false"/>
+        <setting type="text" id="good_ip" default="" visible="false"/>
+        <setting type="text" id="good_version" default="" visible="false"/>
 		<!-- wizard -->
 		<setting label="30082" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?cmd=wizard)" option="close"/>
     </category>
