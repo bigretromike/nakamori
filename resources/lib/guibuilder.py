@@ -84,10 +84,11 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         if tbi is not None and len(tbi) > 0:
             liz.setArt({'thumb': tbi, 'icon': tbi, 'poster': tbi})
 
+        if details.get('rating', 0) != '*.*':
+            liz.setRating('anidb', float(int(details.get('rating', 0))), int(details.get('votes', 0)), True)
+
         if extra_data is not None and len(extra_data) > 0:
             liz.setUniqueIDs({'anidb': extra_data.get('serie_id', 0)})
-            if details.get('rating', 0) != '*.*':
-                    liz.setRating('anidb', float(int(details.get('rating', 0))), int(details.get('votes', 0)), True)
             actors = extra_data.get('actors', None)
             if actors is not None:
                 if len(actors) > 0:
@@ -987,14 +988,14 @@ def build_groups_menu(params, json_body=None):
     Returns:
 
     """
-    # xbmcgui.Dialog().ok('MODE=4', 'IN')
     xbmcplugin.setContent(handle, 'tvshows')
     if nt.addon.getSetting('use_server_sort') == 'false':
-        xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
-        xbmcplugin.addSortMethod(handle, 3)  # date
-        xbmcplugin.addSortMethod(handle, 18)  # rating
-        xbmcplugin.addSortMethod(handle, 17)  # year
-        xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+        # https://codedocs.xyz/AlwinEsch/kodi/group__python__xbmcplugin.html
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
 
     try:
         busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30161))
