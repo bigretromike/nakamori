@@ -108,7 +108,7 @@
     <category label="30044">
         <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false" />
         <setting label="30042" type="bool" id="spamLog" default="false"/>
-        <setting label="30063" type="bool" id="remote_debug" default="false"/>
+        <setting label="30063" type="bool" id="remote_debug" default="false" enable="System.HasAddon(script.module.web-pdb)"/>
 		<!-- cache -->
         <setting label="30029" type="lsep"/>
         <setting label="30030" type="bool" id="enableCache" default="false"/>
@@ -136,6 +136,6 @@
         <setting label="30019" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
         <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
 		<!-- noname -->
-		<setting label="30108" type="bool" id="send_data" default="true"/>
+		<setting label="30108" type="bool" id="send_data" default="true" visible="false"/>
     </category>
 </settings>
