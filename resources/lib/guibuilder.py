@@ -989,13 +989,14 @@ def build_groups_menu(params, json_body=None):
 
     """
     xbmcplugin.setContent(handle, 'tvshows')
-    if nt.addon.getSetting('use_server_sort') == 'false':
-        # https://codedocs.xyz/AlwinEsch/kodi/group__python__xbmcplugin.html
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
+
+    # https://codedocs.xyz/AlwinEsch/kodi/group__python__xbmcplugin.html
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
 
     try:
         busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30161))
@@ -1121,13 +1122,11 @@ def build_serie_episodes_types(params):
                 xbmcplugin.setContent(handle, 'seasons')
                 util.set_window_heading('Types')
 
-                if nt.addon.getSetting('use_server_sort') == 'false':
-                    # Apparently date sorting in Kodi has been broken for years
-                    xbmcplugin.addSortMethod(handle, 17)  # year
-                    xbmcplugin.addSortMethod(handle, 27)  # video title ignore THE
-                    xbmcplugin.addSortMethod(handle, 3)  # date
-                    xbmcplugin.addSortMethod(handle, 18)  # rating
-                    xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
+                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
+                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
+                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
 
                 for content in content_type:
                     add_content_typ_dir(content, body.get("id", ''))
@@ -1174,16 +1173,15 @@ def build_serie_episodes(params):
             except Exception as exc:
                 nt.error("Unable to get parent title in buildTVEpisodes", str(exc))
 
-            if nt.addon.getSetting('use_server_sort') == 'false':
-                # Set Sort Method
-                xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)  # episode
-                xbmcplugin.addSortMethod(handle, 3)  # date
-                xbmcplugin.addSortMethod(handle, 25)  # video title ignore THE
-                xbmcplugin.addSortMethod(handle, 19)  # date added
-                xbmcplugin.addSortMethod(handle, 18)  # rating
-                xbmcplugin.addSortMethod(handle, 17)  # year
-                xbmcplugin.addSortMethod(handle, 29)  # runtime
-                xbmcplugin.addSortMethod(handle, 28)  # by MPAA
+            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
+            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
+            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
+            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
+            xbmcplugin.addSortMethod(handle, 19)  # date added
+            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
+            xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+            xbmcplugin.addSortMethod(handle, 29)  # runtime
+            xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
             skip = nt.addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body.get('eps', {})) > int(
                 nt.addon.getSetting("skipExtraInfoMaxEpisodes"))
@@ -1667,8 +1665,8 @@ def build_serie_soon(params):
 
         """
     xbmcplugin.setContent(handle, 'tvshows')
-    if nt.addon.getSetting('use_server_sort') == 'false':
-        xbmcplugin.addSortMethod(handle, sortMethod=xbmcplugin.SORT_METHOD_NONE)  # None
+
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
 
     try:
         busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30161))

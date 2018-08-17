@@ -29,7 +29,6 @@
         <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"  visible="eq(-15,true)"/>
 		<setting label="30044" type="lsep" visible="eq(-16,true)"/>
 		<setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false" visible="eq(-17,true)"/>
-        <setting label="30053" type="bool" id="use_server_sort" default="false" visible="eq(-18,true)"/>
 		<!-- hidden -->
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
