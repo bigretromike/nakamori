@@ -61,6 +61,9 @@
 		<setting label="30064" type="lsep"/>
 		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
+        <setting label="30053" type="select" id="default_sort_filter" default="Server" values="Server|Title|Episode|Date|Rating"/>
+        <setting label="30142" type="select" id="default_sort_group_series" default="Server" values="Server|Title|Episode|Date|Rating"/>
+        <setting label="30143" type="select" id="default_sort_episodes" default="Server" values="Server|Title|Episode|Date|Rating"/>
 		<setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
         <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
         <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>

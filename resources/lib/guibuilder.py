@@ -48,7 +48,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
     """
     try:
         tbi = ""
-        tp = 'Video'
+        tp = 'video'
         link_url = ""
 
         # do this before so it'll log
@@ -106,9 +106,6 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         if not folder:
             # remove most of default context menu items but break viewing
             # folder = True
-            # probably fix for desync watchmark (url ending with .pvr are not marked as watched)
-            # https://forum.kodi.tv/showthread.php?tid=325059
-            gui_url = nt.set_parameter(gui_url, 'pvr', '.pvr')
             # liz.setProperty('IsPlayable', 'true')
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
@@ -150,9 +147,12 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                             subtitle_codec['language'] = str(extra_data['SubStreams'][stream2]['SubtitleLanguage'])
                             liz.addStreamInfo('subtitle', subtitle_codec)
 
+            # probably fix for desync watchmark (url ending with .pvr are not marked as watched) but its not working
+            # https://forum.kodi.tv/showthread.php?tid=325059
             # UMS/PSM Jumpy plugin require 'path' to play video
-            part_temp = nt.parse_parameters(input_string=gui_url)
-            liz.setProperty('path', str(part_temp.get('file', 'empty')))
+            key_file = str(extra_data.get('key', 'empty')) + '?livetv=1.pvr'
+            liz.setProperty('path', key_file)
+            liz.setPath(key_file)
 
         # For series/groups
         if extra_data and len(extra_data) > 0:
@@ -216,7 +216,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = nt.set_parameter(url_peep, 'ui_index', str(index))
                     url_peep = nt.set_parameter(url_peep, 'file_id', str(file_id))
 
-                    number_of_dummy_items = 2
+                    number_of_dummy_items = 1
 
                     # Play
                     context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
@@ -229,6 +229,10 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                                 context.append((nt.addon.getLocalizedString(30141) + ' (%s)' %
                                                 time.strftime('%H:%M:%S', time.gmtime(int(extra_data.get('resume')))),
                                                 'RunPlugin(%s&cmd=resume)' % url_peep))
+                            else:
+                                number_of_dummy_items += 1
+                        else:
+                            number_of_dummy_items += 1
                     else:
                         number_of_dummy_items += 1
 
@@ -319,12 +323,18 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         nt.error("util.error during add_gui_item", str(e))
 
 
-def end_of_directory(cache=True):
+def end_of_directory(cache=True, force_sort=-1, place='filter'):
     """
     Leave this in nakamori.py! It needs to be here to access listitems properly
     Adds all items to the list in batch, and then finalizes it
     """
     xbmcplugin.addDirectoryItems(handle, list_items, len(list_items))
+
+    if force_sort == -1:
+        nt.set_user_sort_method(place)
+    else:
+        nt.set_sort_method(str(force_sort))
+
     xbmcplugin.endOfDirectory(handle, cacheToDisc=cache)
 
 
@@ -833,6 +843,11 @@ def build_filters_menu():
     Builds the list of items (filters) in the Main Menu
     """
     xbmcplugin.setContent(handle, content='tvshows')
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
+    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
+
     try:
         filters_key = nt.server + "/api/filter"
         filters_key = nt.set_parameter(filters_key, "level", 0)
@@ -976,7 +991,7 @@ def build_filters_menu():
         list_items.append((u, liz, True))
     # endregion
 
-    end_of_directory(False)
+    end_of_directory(False, force_sort=0)
 
 
 def build_groups_menu(params, json_body=None):
@@ -996,7 +1011,6 @@ def build_groups_menu(params, json_body=None):
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-    xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
 
     try:
         busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30161))
@@ -1040,7 +1054,7 @@ def build_groups_menu(params, json_body=None):
                 # it isn't single filter)
                 for nest_filter in body:
                     add_group_item(nest_filter, '', body.get('id', ''), True)
-                end_of_directory()
+                end_of_directory(place='filter')
                 return
             except:
                 pass
@@ -1081,7 +1095,7 @@ def build_groups_menu(params, json_body=None):
             nt.error("util.error during build_groups_menu", str(e))
     except Exception as e:
         nt.error("Invalid JSON Received in build_groups_menu", str(e))
-    end_of_directory()
+    end_of_directory(place='group')
 
 
 def build_serie_episodes_types(params):
@@ -1130,14 +1144,14 @@ def build_serie_episodes_types(params):
 
                 for content in content_type:
                     add_content_typ_dir(content, body.get("id", ''))
-                end_of_directory()
+                end_of_directory(place='group')
                 return
 
         except Exception as exs:
             nt.error("util.error during build_serie_episodes_types", str(exs))
     except Exception as exc:
         nt.error("Invalid JSON Received in build_serie_episodes_types", str(exc))
-    end_of_directory()
+    end_of_directory(palce='group')
 
 
 def build_serie_episodes(params):
@@ -1466,7 +1480,7 @@ def build_serie_episodes(params):
         nt.error("Invalid JSON Received in build_serie_episodes", str(exc))
     if is_fake == 0:
         busy.close()
-        end_of_directory()
+        end_of_directory(place='episode')
     # settings / media / videos / {advanced} / Select first unwatched tv show season,episode (always)
     if nt.get_kodi_setting_int('videolibrary.tvshowsselectfirstunwatcheditem') > 0 or \
             nt.addon.getSetting("select_unwatched") == "true":
@@ -1544,7 +1558,7 @@ def build_cast_menu(params):
 
                 list_items.append((u, liz, True))
 
-            end_of_directory()
+            end_of_directory(place='filter')
     except:
         nt.error("util.error in build_cast_menu")
 

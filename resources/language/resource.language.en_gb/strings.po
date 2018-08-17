@@ -226,7 +226,7 @@ msgid "Use Server Title"
 msgstr ""
 
 msgctxt "#30053"
-msgid "Use Server Sorting"
+msgid "Default sorting method for Filters"
 msgstr ""
 
 msgctxt "#30054"
@@ -585,7 +585,15 @@ msgctxt "#30141"
 msgid "Resume"
 msgstr ""
 
-# 142 - 159 empty
+msgctxt "#30142"
+msgid "Default sorting method for Group/Series"
+msgstr ""
+
+msgctxt "#30143"
+msgid "Default sorting method for Episodes"
+msgstr ""
+
+# 144 - 159 empty
 
 #---------------End-Context-Menu----------------------
 
