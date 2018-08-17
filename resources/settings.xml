@@ -26,7 +26,8 @@
         <setting label="30038" type="lsep" visible="eq(-12,true)"/>
         <setting label="30035" type="bool" id="trakt" default="false" visible="eq(-13,true)"/>
         <setting label="30036" type="bool" id="trakt_scrobble" default="false" visible="eq(-14,true)"/>
-        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"  visible="eq(-15,true)"/>
+        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"  visible="eq(-15,true)+eq(-1,true)"/>
+        <!-- advanced -->
 		<setting label="30044" type="lsep" visible="eq(-16,true)"/>
 		<setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false" visible="eq(-17,true)"/>
 		<!-- hidden -->
@@ -57,26 +58,31 @@
         <setting label="30052" type="bool" id="use_server_title" default="false" />
         <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)" visible="eq(-1,false)"/>
         <setting label="30010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)" visible="eq(-2,false)"/>
-		<!-- tweaks -->
-		<setting label="30064" type="lsep"/>
-		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
-        <setting label="30051" type="bool" id="useSeasons" default="false"/>
+        <!-- sorting -->
+        <setting label="30144" type="lsep"/>
         <setting label="30053" type="select" id="default_sort_filter" default="Server" values="Server|Title|Episode|Date|Rating"/>
         <setting label="30142" type="select" id="default_sort_group_series" default="Server" values="Server|Title|Episode|Date|Rating"/>
         <setting label="30143" type="select" id="default_sort_episodes" default="Server" values="Server|Title|Episode|Date|Rating"/>
-		<setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
+        <!-- tweaks -->
+		<setting label="30064" type="lsep"/>
+		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
+        <setting label="30051" type="bool" id="useSeasons" default="false"/>
+        <setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
         <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
         <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
         <!-- Context Menu Settings -->
 		<setting label="30057" type="lsep"/>
-        <setting label="30132" type="bool" id="context_show_play_no_watch" default="true" />
-        <setting label="30133" type="bool" id="context_pick_file" default="true" />
+        <setting type="bool" id="trakt_scrobble" default="false" visible="false"/>
+        <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" enable="eq(-1,true)" />
+        <setting type="bool" id="pick_file" default="true" visible="false"/>
+        <setting label="30133" type="bool" id="context_pick_file" default="true" enable="eq(-1,true)"/>
+        <setting label="30020" type="bool" id="file_resume" default="true"/>
         <setting label="30130" type="bool" id="context_playlist" default="true" />
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
         <setting label="30125" type="bool" id="context_show_vote_Episode" default="true" />
         <setting label="30124" type="bool" id="context_show_vote_Series" default="true" />
         <setting label="30123" type="bool" id="context_show_info" default="true" />
-        <setting label="30134" type="bool" id="context_view_cast" default="false" />
+        <setting label="30134" type="bool" id="context_view_cast" default="true" />
         <setting label="30131" type="bool" id="context_refresh" default="true" />
 		<!-- tag blacklist -->
 		<setting label="30046" type="lsep"/>
@@ -88,22 +94,23 @@
         <setting label="30070" type="bool" id="hideSettingTags" default="false"/>
 		<!-- maintenance -->
 		<setting label="30097" type="lsep"/>
-        <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31&name=Test)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
+        <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
     </category>
 	<!-- video settings -->
     <category label="30023">
+        <!-- watched status settings -->
         <setting label="30007" type="lsep"/>
+        <setting label="30005" type="bool" id="syncwatched" default="true"/>
         <setting label="30025" type="bool" id="watchedbox" default="true"/>
         <setting label="30024" type="number" id="watched_mark" default="80"/>
 		<setting label="30032" type="bool" id="vote_always" default="false"/>
         <setting label="30034" type="bool" id="vote_on_series" default="false"/>
-		<setting label="30040" type="bool" id="local_total" default="false"/>
         <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
+		<setting label="30040" type="bool" id="local_total" default="false"/>
         <setting label="30055" type="number" id="refresh_wait" default="1000"/>
-        <setting label="30005" type="bool" id="syncwatched" default="true"/>
-        <setting label="30014" type="bool" id="pick_file" default="true"/>
-        <setting label="30020" type="bool" id="file_resume" default="true"/>
+        <!-- kodi player settings -->
         <setting label="30026" type="lsep"/>
+        <setting label="30014" type="bool" id="pick_file" default="true"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
     </category>
 	<!-- Advance -->
@@ -111,32 +118,35 @@
         <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false" />
         <setting label="30042" type="bool" id="spamLog" default="false"/>
         <setting label="30063" type="bool" id="remote_debug" default="false" enable="System.HasAddon(script.module.web-pdb)"/>
-		<!-- cache -->
-        <setting label="30029" type="lsep"/>
-        <setting label="30030" type="bool" id="enableCache" default="false"/>
-        <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true"/>
-		<!-- eigakan -->
-        <setting label="30084" type="lsep"/>
-        <setting label="30085" type="bool" id="enableEigakan" default="false"/>
-        <setting label="30086" type="text" id="ipEigakan" default="127.0.0.1" visible="eq(-1,true)"/>
-        <setting label="30087" type="number" id="portEigakan" default="8000" visible="eq(-2,true)"/>
-        <setting label="30088" type="number" id="tryEigakan" default="10" visible="eq(-3,true)"/>
-        <setting label="30089" type="number" id="postponeEigakan" default="10" visible="eq(-4,true)"/>
-        <setting label="30095" type="text" id="audiolangEigakan" default="eng" visible="eq(-5,true)"/>
-        <setting label="30096" type="text" id="subEigakan" default="eng" visible="eq(-6,true)"/>
-        <setting label="30090" type="bool" id="advEigakan" default="false"/>
-        <setting label="30091" type="text" id="resolutionEigakan" default="1280x720" visible="eq(-1,true)"/>
-        <setting label="30092" type="text" id="profileEigakan" default="main" visible="eq(-2,true)"/>
-        <setting label="30093" type="text" id="audioEigakan" default="aac" visible="eq(-3,true)"/>
-        <setting label="30094" type="text" id="vbitrateEigakan" default="3000000" visible="eq(-4,true)"/>
-		<!-- calendar -->
+        <!-- calendar -->
 		<setting label="30012" type="lsep"/>
         <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
         <setting label="30059" type="number" id="calendar_rows" default="4"/>
         <setting label="30060" type="number" id="calendar_cols" default="10"/>
         <setting label="30061" type="bool" id="calendar_adv" default="false"/>
-        <setting label="30019" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true"/>
-        <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true"/>
+        <setting label="30019" type="number" id="calendar_rows_span" default="8" enable="eq(-1,true)" subsetting="true" visible="eq(-1,true)"/>
+        <setting label="30071" type="number" id="calendar_cols_span" default="4" enable="eq(-2,true)" subsetting="true" visible="eq(-2,true)"/>
+        <!-- experimental/misc -->
+        <setting label="30146" type="lsep"/>
+        <setting label="30145" type="bool" id="experimental" default="false"/>
+		<!-- cache -->
+        <setting label="30029" type="lsep" visible="eq(-1,true)"/>
+        <setting label="30030" type="bool" id="enableCache" default="false" visible="eq(-2,true)"/>
+        <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true" visible="eq(-3,true)+eq(-2,true)"/>
+		<!-- eigakan -->
+        <setting label="30084" type="lsep" visible="eq(-4,true)"/>
+        <setting label="30085" type="bool" id="enableEigakan" default="false" visible="eq(-5,true)"/>
+        <setting label="30086" type="text" id="ipEigakan" default="127.0.0.1" visible="eq(-6,true)+eq(-1,true)"/>
+        <setting label="30087" type="number" id="portEigakan" default="8000" visible="eq(-7,true)+eq(-2,true)"/>
+        <setting label="30088" type="number" id="tryEigakan" default="10" visible="eq(-8,true)+eq(-3,true)"/>
+        <setting label="30089" type="number" id="postponeEigakan" default="10" visible="eq(-9,true)+eq(-4,true)"/>
+        <setting label="30095" type="text" id="audiolangEigakan" default="eng" visible="eq(-10,true)+eq(-5,true)"/>
+        <setting label="30096" type="text" id="subEigakan" default="eng" visible="eq(-11,true)+eq(-6,true)"/>
+        <setting label="30090" type="bool" id="advEigakan" default="false" visible="eq(-12,true)+eq(-7,true)"/>
+        <setting label="30091" type="text" id="resolutionEigakan" default="1280x720" visible="eq(-13,true)+eq(-1,true)"/>
+        <setting label="30092" type="text" id="profileEigakan" default="main" visible="eq(-14,true)+eq(-2,true)"/>
+        <setting label="30093" type="text" id="audioEigakan" default="aac" visible="eq(-15,true)+eq(-3,true)"/>
+        <setting label="30094" type="text" id="vbitrateEigakan" default="3000000" visible="eq(-16,true)+eq(-4,true)"/>
 		<!-- noname -->
 		<setting label="30108" type="bool" id="send_data" default="true" visible="false"/>
     </category>

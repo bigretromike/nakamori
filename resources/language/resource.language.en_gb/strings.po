@@ -258,7 +258,7 @@ msgid "Columns to show"
 msgstr ""
 
 msgctxt "#30061"
-msgid "Advance settings"
+msgid "Advance calendar settings"
 msgstr ""
 
 msgctxt "#30062"
@@ -593,7 +593,19 @@ msgctxt "#30143"
 msgid "Default sorting method for Episodes"
 msgstr ""
 
-# 144 - 159 empty
+msgctxt "#30144"
+msgid "Sorting"
+msgstr ""
+
+msgctxt "#30145"
+msgid "Experimental"
+msgstr ""
+
+msgctxt "#30146"
+msgid "Misc"
+msgstr ""
+
+# 147 - 159 empty
 
 #---------------End-Context-Menu----------------------
 
