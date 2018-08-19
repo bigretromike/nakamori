@@ -193,6 +193,10 @@ if nt.get_shoko_status() is True:
                     xbmcaddon.Addon(id='plugin.video.nakamori').openSettings()
                 elif mode == 12:  # Settings
                     gb.build_shoko_menu()
+                elif mode == 13:  # Experiment
+                    xbmc.log('---> One punch.....', xbmc.LOGERROR)
+                    nt.onepunchmen()
+                    xbmc.log('<--- One punch.....', xbmc.LOGERROR)
                 elif mode == 31:  # Clear Search History
                     search.clear_search_history(parameters)
                 else:

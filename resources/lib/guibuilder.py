@@ -851,147 +851,168 @@ def build_filters_menu():
     try:
         filters_key = nt.server + "/api/filter"
         filters_key = nt.set_parameter(filters_key, "level", 0)
-        json_menu = nt.json.loads(nt.get_json(filters_key))
-        util.set_window_heading(json_menu['name'])
-        try:
-            menu_append = []
-            for menu in json_menu["filters"]:
-                title = menu['name']
-                if title == 'Seasons':
-                    airing = dict({
-                        "name": nt.addon.getLocalizedString(30223),
-                        "url": nt.server + "/api/serie/today",
-                    })
-                    airing['art'] = {}
-                    airing['art']['fanart'] = []
-                    airing['art']['thumb'] = []
-                    airing['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'airing.jpg')})
-                    airing['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'airing.png')})
-                    if nt.get_version(nt.addon.getSetting("ipaddress"),
-                                      nt.addon.getSetting("port")) >= nt.LooseVersion("3.8.0.0"):
-                        menu_append.append(airing)
-                    menu['art'] = {}
-                    menu['art']['fanart'] = []
-                    menu['art']['thumb'] = []
-                    menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'seasons.jpg')})
-                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'seasons.png')})
-                    menu_append.append(menu)
-                elif title == 'Tags':
-                    menu['art'] = {}
-                    menu['art']['fanart'] = []
-                    menu['art']['thumb'] = []
-                    menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'tags.jpg')})
-                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tags.png')})
-                    menu_append.append(menu)
-                elif title == 'Unsort':
-                    if nt.addon.getSetting("show_unsort") == "true":
+        retrieved_json = nt.get_json(filters_key)
+        if retrieved_json is not None:
+            json_menu = nt.json.loads(retrieved_json)
+            util.set_window_heading(json_menu['name'])
+            try:
+                menu_append = []
+                for menu in json_menu["filters"]:
+                    title = menu['name']
+                    if title == 'Seasons':
+                        airing = dict({
+                            "name": nt.addon.getLocalizedString(30223),
+                            "url": nt.server + "/api/serie/today",
+                        })
+                        airing['art'] = {}
+                        airing['art']['fanart'] = []
+                        airing['art']['thumb'] = []
+                        airing['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'airing.jpg')})
+                        airing['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'airing.png')})
+                        if nt.get_version(nt.addon.getSetting("ipaddress"),
+                                          nt.addon.getSetting("port")) >= nt.LooseVersion("3.8.0.0"):
+                            menu_append.append(airing)
                         menu['art'] = {}
                         menu['art']['fanart'] = []
                         menu['art']['thumb'] = []
-                        menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'unsort.jpg')})
-                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'unsort.png')})
+                        menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'seasons.jpg')})
+                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'seasons.png')})
                         menu_append.append(menu)
-                elif title == 'Years':
-                    menu['art'] = {}
-                    menu['art']['fanart'] = []
-                    menu['art']['thumb'] = []
-                    menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'years.jpg')})
-                    menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'years.png')})
-                    menu_append.append(menu)
-            for menu in json_menu["filters"]:
-                title = menu['name']
-                if title == 'Unsort':
-                    continue
-                elif title == 'Tags':
-                    continue
-                elif title == 'Seasons':
-                    continue
-                elif title == 'Years':
-                    continue
-                add_filter_item(menu)
+                    elif title == 'Tags':
+                        menu['art'] = {}
+                        menu['art']['fanart'] = []
+                        menu['art']['thumb'] = []
+                        menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'tags.jpg')})
+                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tags.png')})
+                        menu_append.append(menu)
+                    elif title == 'Unsort':
+                        if nt.addon.getSetting("show_unsort") == "true":
+                            menu['art'] = {}
+                            menu['art']['fanart'] = []
+                            menu['art']['thumb'] = []
+                            menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'unsort.jpg')})
+                            menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'unsort.png')})
+                            menu_append.append(menu)
+                    elif title == 'Years':
+                        menu['art'] = {}
+                        menu['art']['fanart'] = []
+                        menu['art']['thumb'] = []
+                        menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'years.jpg')})
+                        menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'years.png')})
+                        menu_append.append(menu)
+                for menu in json_menu["filters"]:
+                    title = menu['name']
+                    if title == 'Unsort':
+                        continue
+                    elif title == 'Tags':
+                        continue
+                    elif title == 'Seasons':
+                        continue
+                    elif title == 'Years':
+                        continue
+                    add_filter_item(menu)
 
-            for menu in menu_append:
-                add_filter_item(menu)
+                for menu in menu_append:
+                    add_filter_item(menu)
 
-        except Exception as e:
-            nt.error("util.error during build_filters_menu", str(e))
+                # region Calendar
+                if nt.addon.getSetting("show_calendar") == "true":
+                    soon_url = nt.server + "/api/serie/soon"
+                    title = nt.addon.getLocalizedString(30222)
+                    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
+                    liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
+                                "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
+                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                    u = sys.argv[0]
+                    u = nt.set_parameter(u, 'url', soon_url)
+                    u = nt.set_parameter(u, 'mode', str(9))
+                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+                    list_items.append((u, liz, True))
+                # endregion
+
+                # region NEW_Calendar
+                if nt.addon.getSetting("show_extra") == "true":
+                    soon_url = nt.server + "/api/serie/soon"
+                    title = "Calendar v2"
+                    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
+                    liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
+                                "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
+                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                    u = sys.argv[0]
+                    u = nt.set_parameter(u, 'url', soon_url)
+                    u = nt.set_parameter(u, 'mode', str(10))
+                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+                    list_items.append((u, liz, True))
+                # endregion
+
+                # region Search
+                if nt.addon.getSetting("show_search") == "true":
+                    search_url = nt.server + "/api/search"
+                    title = nt.addon.getLocalizedString(30221)
+                    liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
+                    liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+                                "fanart": os.path.join(_img, 'backgrounds', 'search.jpg')})
+                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                    u = sys.argv[0]
+                    u = nt.set_parameter(u, 'url', search_url)
+                    u = nt.set_parameter(u, 'mode', str(3))
+                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+                    list_items.append((u, liz, True))
+                # endregion
+
+                # region Settings
+                if nt.addon.getSetting("show_settings") == "true":
+                    title = nt.addon.getLocalizedString(30107)
+                    liz = xbmcgui.ListItem(label=title, label2=title)
+                    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                                "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
+                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                    u = sys.argv[0]
+                    u = nt.set_parameter(u, 'url', '')
+                    u = nt.set_parameter(u, 'mode', str(11))
+                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+                    list_items.append((u, liz, True))
+                # endregion
+
+                # region Shoko
+                if nt.addon.getSetting("show_shoko") == "true":
+                    title = nt.addon.getLocalizedString(30115)
+                    liz = xbmcgui.ListItem(label=title, label2=title)
+                    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                                "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
+                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                    u = sys.argv[0]
+                    u = nt.set_parameter(u, 'url', '')
+                    u = nt.set_parameter(u, 'mode', str(12))
+                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+                    list_items.append((u, liz, True))
+                # endregion
+
+                # region Experiment
+                if nt.addon.getSetting("onepunchmen") == "true":
+                    title = 'Experiment'
+                    liz = xbmcgui.ListItem(label=title, label2=title)
+                    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                                "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
+                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+                    u = sys.argv[0]
+                    u = nt.set_parameter(u, 'url', '')
+                    u = nt.set_parameter(u, 'mode', str(13))
+                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
+                    list_items.append((u, liz, True))
+                # endregion
+
+            except Exception as e:
+                nt.error("util.error during build_filters_menu", str(e))
+
+            end_of_directory(False, force_sort=0)
+
+        else:
+            xbmc.log('---> retrived_json = None, Network Error', xbmc.LOGERROR)
+            build_network_menu()
+
     except Exception as e:
         nt.error("Invalid JSON Received in build_filters_menu", str(e))
-
-    # region Calendar
-    if nt.addon.getSetting("show_calendar") == "true":
-        soon_url = nt.server + "/api/serie/soon"
-        title = nt.addon.getLocalizedString(30222)
-        liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
-        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        u = sys.argv[0]
-        u = nt.set_parameter(u, 'url', soon_url)
-        u = nt.set_parameter(u, 'mode', str(9))
-        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-        list_items.append((u, liz, True))
-    # endregion
-
-    # region NEW_Calendar
-    if nt.addon.getSetting("show_extra") == "true":
-        soon_url = nt.server + "/api/serie/soon"
-        title = "Calendar v2"
-        liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
-        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        u = sys.argv[0]
-        u = nt.set_parameter(u, 'url', soon_url)
-        u = nt.set_parameter(u, 'mode', str(10))
-        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-        list_items.append((u, liz, True))
-    # endregion
-
-    # region Search
-    if nt.addon.getSetting("show_search") == "true":
-        search_url = nt.server + "/api/search"
-        title = nt.addon.getLocalizedString(30221)
-        liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'search.jpg')})
-        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        u = sys.argv[0]
-        u = nt.set_parameter(u, 'url', search_url)
-        u = nt.set_parameter(u, 'mode', str(3))
-        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-        list_items.append((u, liz, True))
-    # endregion
-
-    # region Settings
-    if nt.addon.getSetting("show_settings") == "true":
-        title = nt.addon.getLocalizedString(30107)
-        liz = xbmcgui.ListItem(label=title, label2=title)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
-        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        u = sys.argv[0]
-        u = nt.set_parameter(u, 'url', '')
-        u = nt.set_parameter(u, 'mode', str(11))
-        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-        list_items.append((u, liz, True))
-    # endregion
-
-    # region Shoko
-    if nt.addon.getSetting("show_shoko") == "true":
-        title = nt.addon.getLocalizedString(30115)
-        liz = xbmcgui.ListItem(label=title, label2=title)
-        liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
-                    "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
-        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-        u = sys.argv[0]
-        u = nt.set_parameter(u, 'url', '')
-        u = nt.set_parameter(u, 'mode', str(12))
-        u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-        list_items.append((u, liz, True))
-    # endregion
-
-    end_of_directory(False, force_sort=0)
 
 
 def build_groups_menu(params, json_body=None):
