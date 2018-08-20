@@ -12,8 +12,6 @@ import traceback
 import nakamoritools as nt
 # noinspection PyUnresolvedReferences
 import nakamoriplayer as nplayer
-# noinspection PyUnresolvedReferences
-from Calendar import Wizard
 
 from collections import defaultdict
 import xbmc
@@ -767,11 +765,7 @@ def wizard():
     """
 
     if nt.addon.getSetting('wizard') == '0':
-        great_wizard = Wizard(nt.addon.getLocalizedString(30082))
-        great_wizard.doModal()
-        if great_wizard.setup_ok:
-            nt.addon.setSetting(id='wizard', value='1')
-        del great_wizard
+        xbmc.executebuiltin('RunScript(script.module.nakamori,?info=wizard)')
 
 
 def detect_kodi18():
