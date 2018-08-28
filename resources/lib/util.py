@@ -763,9 +763,15 @@ def wizard():
     Run wizard if there weren't any before
     :return: nothing, set ip/port user/password in settings
     """
-
+    # xbmc.log('---(util.wizard) START = %s ' % nt.addon.getSetting('wizard'), xbmc.LOGWARNING)
     if nt.addon.getSetting('wizard') == '0':
-        xbmc.executebuiltin('RunScript(script.module.nakamori,?info=wizard)')
+        xbmc.executebuiltin('RunScript(script.module.nakamori,?info=wizard)', True)
+        # xbmc.sleep(10000)
+        # window = xbmcgui.Control(9999)
+        # while window.getProperty('script.module.nakamori.running') == 'true':
+            # xbmc.sleep(5000)
+            # xbmc.log('---(util.wizard) SLEEP = %s ' % nt.addon.getSetting('wizard'), xbmc.LOGWARNING)
+    # xbmc.log('---(util.wizard) END = %s ' % nt.addon.getSetting('wizard'), xbmc.LOGWARNING)
 
 
 def detect_kodi18():

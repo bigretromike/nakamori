@@ -39,7 +39,8 @@ util.wizard()
 
 if nt.get_shoko_status() is True:
     try:
-        if nt.valid_user() is True:
+        auth, apikey = nt.valid_user()
+        if auth:
             try:
                 parameters = nt.parse_parameters(sys.argv[2])
             except Exception as exp:
@@ -129,6 +130,7 @@ if nt.get_shoko_status() is True:
                     # noinspection PyTypeChecker
                     xbmc.executebuiltin('Action(Select)')
                 elif cmd == 'wizard':
+                    xbmc.log('--- (cmd: wizard) --- ', xbmc.LOGWARNING)
                     nt.addon.setSetting('wizard', '0')
                     # no need to execute wizard here, he will run in filter_menu
             else:
@@ -187,7 +189,8 @@ if nt.get_shoko_status() is True:
                 elif mode == 9:  # Calendar
                     gb.build_serie_soon(parameters)
                 elif mode == 10:  # newCalendar
-                    gb.build_serie_soon_new(parameters)
+                    xbmc.executebuiltin('RunScript(script.module.nakamori,?info=calendar)')
+                    # gb.build_serie_soon_new(parameters)
                 elif mode == 11:  # Settings
                     # noinspection PyTypeChecker
                     xbmcaddon.Addon(id='plugin.video.nakamori').openSettings()
@@ -201,10 +204,13 @@ if nt.get_shoko_status() is True:
                     # starting point
                     gb.build_filters_menu()
         else:
+            xbmc.log('--- (auth = False: wizard) ---', xbmc.LOGWARNING)
             nt.error(nt.addon.getLocalizedString(30194), nt.addon.getLocalizedString(30195))
+            nt.addon.setSetting(id='wizard', value='0')
     except HTTPError as err:
         if err.code == 401:
             gb.build_network_menu()
 else:
+    xbmc.log('--- (get_shoko_status: wizard) ---', xbmc.LOGWARNING)
     nt.addon.setSetting(id='wizard', value='0')
     gb.build_network_menu()
