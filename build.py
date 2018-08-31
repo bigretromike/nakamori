@@ -22,6 +22,16 @@ def get_all_file_paths(directory):
                 continue
             if '.git' in filepath:
                 continue
+            if 'xbmc.py' in filepath:
+                continue
+            if 'xbmcaddon.py' in filepath:
+                continue
+            if 'xbmcgui.py' in filepath:
+                continue
+            if 'xbmcplugin.py' in filepath:
+                continue
+            if 'xbmcvfs.py' in filepath:
+                continue
             file_paths.append(filepath)
 
     # returning all file paths
