@@ -3,7 +3,9 @@
 here are functions needed to create dirs/files
 """
 
-import resources.lib.util as util
+from resources.lib import ModelUtils
+from resources.lib import KodiUtils
+
 import resources.lib.search as search
 
 import xbmcaddon
@@ -436,7 +438,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     # xbmcgui.Dialog().ok('series', 'series')
     temp_genre = ''
     if 'tags' in node:
-        temp_genre = util.get_tags(node.get("tags", {}))
+        temp_genre = ModelUtils.get_tags(node.get("tags", {}))
 
     watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
@@ -453,12 +455,12 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         cast_nodes = node.get("roles", {})
         if len(cast_nodes) > 0:
             if cast_nodes[0].get("character", "") != "":
-                result_list = util.get_cast_and_role_new(cast_nodes)
+                result_list = ModelUtils.get_cast_and_role_new(cast_nodes)
             else:
-                result_list = util.get_cast_and_role(cast_nodes)
+                result_list = ModelUtils.get_cast_and_role(cast_nodes)
             actors = result_list
             if result_list is not None:
-                result_list = util.convert_cast_and_role_to_legacy(result_list)
+                result_list = ModelUtils.convert_cast_and_role_to_legacy(result_list)
                 list_cast = result_list[0]
                 list_cast_and_role = result_list[1]
 
@@ -478,7 +480,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     if watched > total:
         watched = total
 
-    title = util.get_title(node)
+    title = ModelUtils.get_title(node)
     if "userrating" in node:
         userrating = str(node.get("userrating", '0')).replace(',', '.')
     else:
@@ -541,7 +543,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     key = nt.server + "/api/serie"
     key = nt.set_parameter(key, 'id', key_id)
     key = nt.set_parameter(key, 'level', 2)
-    key = nt.set_parameter(key, 'tagfilter', util.__tagSettingFlags__)
+    key = nt.set_parameter(key, 'tagfilter', ModelUtils.__tagSettingFlags__)
     if nt.addon.getSetting('request_nocast') == 'true':
         key = nt.set_parameter(key, 'nocast', 1)
 
@@ -576,7 +578,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     }
 
     serie_url = key
-    util.set_watch_flag(extra_data, details)
+    ModelUtils.set_watch_flag(extra_data, details)
     use_mode = 5
     if key_id == '-1' or key_id == '0':
         use_mode = 0
@@ -625,8 +627,8 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     :return:
     """
 
-    temp_genre = util.get_tags(node.get("tags", {}))
-    title = util.get_title(node)
+    temp_genre = ModelUtils.get_tags(node.get("tags", {}))
+    title = ModelUtils.get_title(node)
 
     watched_sizes = node.get("watched_sizes", {})
     if len(watched_sizes) > 0:
@@ -696,7 +698,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     key = nt.set_parameter(key, 'id', key_id)
     key = nt.set_parameter(key, 'filter', filter_id)
     key = nt.set_parameter(key, 'level', 1)
-    key = nt.set_parameter(key, 'tagfilter', util.__tagSettingFlags__)
+    key = nt.set_parameter(key, 'tagfilter', ModelUtils.__tagSettingFlags__)
     if nt.addon.getSetting('request_nocast') == 'true':
         key = nt.set_parameter(key, 'nocast', 1)
 
@@ -730,7 +732,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
     }
 
     group_url = key
-    util.set_watch_flag(extra_data, details)
+    ModelUtils.set_watch_flag(extra_data, details)
     use_mode = 4 if not is_filter else 4
     if key_id == '-1' or key_id == '0':
         use_mode = 0
@@ -785,7 +787,7 @@ def add_filter_item(menu):
     key = nt.set_parameter(key, 'level', 2)
     if title == "Airing Today":
         key = nt.set_parameter(key, 'level', 0)
-    key = nt.set_parameter(key, 'tagfilter', util.__tagSettingFlags__)
+    key = nt.set_parameter(key, 'tagfilter', ModelUtils.__tagSettingFlags__)
     filter_url = key
 
     thumb = ''
@@ -851,7 +853,7 @@ def build_filters_menu():
         retrieved_json = nt.get_json(filters_key)
         if retrieved_json is not None:
             json_menu = nt.json.loads(retrieved_json)
-            util.set_window_heading(json_menu['name'])
+            KodiUtils.set_window_heading(json_menu['name'])
             try:
                 menu_append = []
                 for menu in json_menu["filters"]:
@@ -1052,7 +1054,7 @@ def build_groups_menu(params, json_body=None):
 
         # check if this is maybe filter-inception
         try:
-            util.set_window_heading(body.get('name', ''))
+            KodiUtils.set_window_heading(body.get('name', ''))
         except:
             try:  # this might not be a filter
                 # it isn't single filter)
@@ -1138,7 +1140,7 @@ def build_serie_episodes_types(params):
             else:
                 xbmcplugin.setPluginCategory(handle, parent_title)
                 xbmcplugin.setContent(handle, 'seasons')
-                util.set_window_heading('Types')
+                KodiUtils.set_window_heading('Types')
 
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
@@ -1155,7 +1157,7 @@ def build_serie_episodes_types(params):
             nt.error("util.error during build_serie_episodes_types", str(exs))
     except Exception as exc:
         nt.error("Invalid JSON Received in build_serie_episodes_types", str(exc))
-    end_of_directory(palce='group')
+    end_of_directory(place='group')
 
 
 def build_serie_episodes(params):
@@ -1187,7 +1189,7 @@ def build_serie_episodes(params):
             parent_title = ''
             try:
                 parent_title = body.get('name', '')
-                util.set_window_heading(parent_title)
+                KodiUtils.set_window_heading(parent_title)
             except Exception as exc:
                 nt.error("Unable to get parent title in buildTVEpisodes", str(exc))
 
@@ -1202,9 +1204,6 @@ def build_serie_episodes(params):
             xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
             # keep this init out of the loop, as we only provide this once
-            temp_genre = ""
-            parent_key = ""
-            grandparent_title = ""
             list_cast = []
             list_cast_and_role = []
             actors = []
@@ -1213,17 +1212,17 @@ def build_serie_episodes(params):
                 cast_nodes = body.get('roles', {})
                 if len(cast_nodes) > 0:
                     if cast_nodes[0].get("character", "") != "":
-                        result_list = util.get_cast_and_role_new(cast_nodes)
+                        result_list = ModelUtils.get_cast_and_role_new(cast_nodes)
                     else:
-                        result_list = util.get_cast_and_role(cast_nodes)
+                        result_list = ModelUtils.get_cast_and_role(cast_nodes)
                     actors = result_list
                     if result_list is not None:
-                        result_list = util.convert_cast_and_role_to_legacy(result_list)
+                        result_list = ModelUtils.convert_cast_and_role_to_legacy(result_list)
                         list_cast = result_list[0]
                         list_cast_and_role = result_list[1]
 
             short_tag = nt.addon.getSetting("short_tag_list") == "true"
-            temp_genre = util.get_tags(body.get('tags', {}))
+            temp_genre = ModelUtils.get_tags(body.get('tags', {}))
             if short_tag:
                 temp_genre = temp_genre[:50]
             parent_key = body.get('id', '')
@@ -1433,7 +1432,7 @@ def build_serie_episodes(params):
 
                             # Information about streams inside video file
                             if len(video["files"][0].get("media", {})) > 0:
-                                util.video_file_information(video['files'][0]['media'], extra_data)
+                                ModelUtils.video_file_information(video['files'][0]['media'], extra_data)
 
                             # Determine what type of watched flag [overlay] to use
                             if int(nt.safe_int(video.get("view", '0'))) > 0:
@@ -1669,9 +1668,9 @@ def build_serie_soon(params):
 
         # check if this is maybe filter-inception
         try:
-            util.set_window_heading(body.get('name', ''))
+            KodiUtils.set_window_heading(body.get('name', ''))
         except:
-            util.set_window_heading(nt.addon.getLocalizedString(30222))
+            KodiUtils.set_window_heading(nt.addon.getLocalizedString(30222))
 
         try:
             item_count = 0
@@ -1710,7 +1709,7 @@ def build_raw_list(params):
     :return:
     """
     xbmcplugin.setContent(handle, 'files')
-    util.set_window_heading(nt.addon.getLocalizedString(30106))
+    KodiUtils.set_window_heading(nt.addon.getLocalizedString(30106))
     try:
         html = nt.get_json(params['url'])
         body = nt.json.loads(html)
@@ -1819,7 +1818,7 @@ def build_shoko_menu():
     :return:
     """
     xbmcplugin.setContent(handle, content='tvshows')
-    util.set_window_heading(nt.addon.getLocalizedString(30115))
+    KodiUtils.set_window_heading(nt.addon.getLocalizedString(30115))
 
     items = [{
         "title": nt.addon.getLocalizedString(30122),
