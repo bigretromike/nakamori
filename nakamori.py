@@ -1,12 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-this is main file that will execute on entering add-on
-this should be minimal as possible
-anything that build/create lists/dialogs (based on xbmcgui) should go to guibuilder
-anything else should go to util
-"""
-
 from __future__ import absolute_import, division, unicode_literals
 
 import resources.lib.debug as dbg

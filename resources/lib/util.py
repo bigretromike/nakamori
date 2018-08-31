@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-here are function needed to this module that don't need to be elsewhere
-"""
-
-
 import sys
 import os
 import traceback
