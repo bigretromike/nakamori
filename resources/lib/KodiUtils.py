@@ -185,6 +185,9 @@ def play_video(ep_id, raw_id, movie):
     offset = 0
     item = ''
 
+    resume = nt.addon.getSetting('resume') == '1'
+    nt.addon.setSetting('resume', '0')
+
     try:
         if ep_id != "0":
             episode_url = nt.server + "/api/ep?id=" + str(ep_id)
@@ -239,8 +242,9 @@ def play_video(ep_id, raw_id, movie):
                 offset = file_body.get('offset', 0)
                 if offset != 0:
                     offset = int(offset) / 1000
-                    item.setProperty('ResumeTime', str(offset))
-                    item.setProperty('StartOffset', str(offset))
+                    if nt.addon.getSetting("file_resume") == "true" and resume:
+                        item.setProperty('ResumeTime', str(offset))
+                        item.setProperty('StartOffset', str(offset))
 
             for stream_index in codecs["VideoStreams"]:
                 if not isinstance(codecs["VideoStreams"][stream_index], dict):
@@ -384,10 +388,6 @@ def play_video(ep_id, raw_id, movie):
             player.play(item=m3u8_url)
         else:
             player.play(item=file_url, listitem=item)
-            if nt.addon.getSetting("file_resume") == "true" and nt.addon.getSetting("resume") == "1":
-                nt.addon.setSetting('resume', '0')
-            else:
-                nt.addon.setSetting('resume', '0')
 
     except Exception as player_ex:
         xbmc.log(str(player_ex), xbmc.LOGWARNING)
