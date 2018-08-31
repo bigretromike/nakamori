@@ -187,14 +187,17 @@ if nt.get_shoko_status() is True:
                 elif mode == 8:  # File List
                     gb.build_raw_list(parameters)
                 elif mode == 9:  # Calendar
-                    gb.build_serie_soon(parameters)
+                    if nt.addon.getSetting('calendar_basic') == 'true':
+                        gb.build_serie_soon(parameters)
+                    else:
+                        xbmc.executebuiltin('RunScript(script.module.nakamori,?info=calendar)')
                 elif mode == 10:  # newCalendar
                     xbmc.executebuiltin('RunScript(script.module.nakamori,?info=calendar)')
                     # gb.build_serie_soon_new(parameters)
                 elif mode == 11:  # Settings
                     # noinspection PyTypeChecker
                     xbmcaddon.Addon(id='plugin.video.nakamori').openSettings()
-                elif mode == 12:  # Settings
+                elif mode == 12:  # Shoko
                     gb.build_shoko_menu()
                 elif mode == 13:  # Experiment
                     xbmc.executebuiltin('RunScript(script.module.nakamori,?info=calendar)')
@@ -209,6 +212,7 @@ if nt.get_shoko_status() is True:
             nt.addon.setSetting(id='wizard', value='0')
     except HTTPError as err:
         if err.code == 401:
+            xbmc.log('--- (httperror = 401: wizard) ---', xbmc.LOGWARNING)
             gb.build_network_menu()
 else:
     xbmc.log('--- (get_shoko_status: wizard) ---', xbmc.LOGWARNING)

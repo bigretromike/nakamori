@@ -258,7 +258,7 @@ msgid "Columns to show"
 msgstr ""
 
 msgctxt "#30061"
-msgid "Advance calendar settings"
+msgid "Switch Calendar to Directory based"
 msgstr ""
 
 msgctxt "#30062"

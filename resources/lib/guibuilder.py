@@ -18,8 +18,6 @@ import time
 from collections import defaultdict
 # noinspection PyUnresolvedReferences
 import nakamoritools as nt
-# noinspection PyUnresolvedReferences
-from Calendar import Calendar
 
 list_items = []
 handle = int(sys.argv[1])
@@ -930,21 +928,6 @@ def build_filters_menu():
                     list_items.append((u, liz, True))
                 # endregion
 
-                # region NEW_Calendar
-                if nt.addon.getSetting("show_extra") == "true":
-                    soon_url = nt.server + "/api/serie/soon"
-                    title = "Calendar v2"
-                    liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-                    liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
-                                "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
-                    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
-                    u = sys.argv[0]
-                    u = nt.set_parameter(u, 'url', soon_url)
-                    u = nt.set_parameter(u, 'mode', str(10))
-                    u = nt.set_parameter(u, 'name', nt.quote_plus(title))
-                    list_items.append((u, liz, True))
-                # endregion
-
                 # region Search
                 if nt.addon.getSetting("show_search") == "true":
                     search_url = nt.server + "/api/search"
@@ -1008,7 +991,8 @@ def build_filters_menu():
             end_of_directory(False, force_sort=0)
 
         else:
-            xbmc.log('---> retrived_json = None, Network Error', xbmc.LOGERROR)
+            xbmc.log('---> retrived_json = None, Network Error, wizard = 0', xbmc.LOGERROR)
+            nt.addon.setSetting(id='wizard', value='0')
             build_network_menu()
 
     except Exception as e:
@@ -1218,8 +1202,6 @@ def build_serie_episodes(params):
             xbmcplugin.addSortMethod(handle, 29)  # runtime
             xbmcplugin.addSortMethod(handle, 28)  # by MPAA
 
-            skip = nt.addon.getSetting("skipExtraInfoOnLongSeries") == "true" and len(body.get('eps', {})) > int(
-                nt.addon.getSetting("skipExtraInfoMaxEpisodes"))
             # keep this init out of the loop, as we only provide this once
             temp_genre = ""
             parent_key = ""
@@ -1227,26 +1209,26 @@ def build_serie_episodes(params):
             list_cast = []
             list_cast_and_role = []
             actors = []
-            if not skip:
-                if len(list_cast) == 0:
-                    cast_nodes = body.get('roles', {})
-                    if len(cast_nodes) > 0:
-                        if cast_nodes[0].get("character", "") != "":
-                            result_list = util.get_cast_and_role_new(cast_nodes)
-                        else:
-                            result_list = util.get_cast_and_role(cast_nodes)
-                        actors = result_list
-                        if result_list is not None:
-                            result_list = util.convert_cast_and_role_to_legacy(result_list)
-                            list_cast = result_list[0]
-                            list_cast_and_role = result_list[1]
 
-                short_tag = nt.addon.getSetting("short_tag_list") == "true"
-                temp_genre = util.get_tags(body.get('tags', {}))
-                if short_tag:
-                    temp_genre = temp_genre[:50]
-                parent_key = body.get('id', '')
-                grandparent_title = nt.decode(body.get('name', ''))
+            if len(list_cast) == 0:
+                cast_nodes = body.get('roles', {})
+                if len(cast_nodes) > 0:
+                    if cast_nodes[0].get("character", "") != "":
+                        result_list = util.get_cast_and_role_new(cast_nodes)
+                    else:
+                        result_list = util.get_cast_and_role(cast_nodes)
+                    actors = result_list
+                    if result_list is not None:
+                        result_list = util.convert_cast_and_role_to_legacy(result_list)
+                        list_cast = result_list[0]
+                        list_cast_and_role = result_list[1]
+
+            short_tag = nt.addon.getSetting("short_tag_list") == "true"
+            temp_genre = util.get_tags(body.get('tags', {}))
+            if short_tag:
+                temp_genre = temp_genre[:50]
+            parent_key = body.get('id', '')
+            grandparent_title = nt.decode(body.get('name', ''))
 
             if len(body.get('eps', {})) <= 0:
                 # TODO: When there is eps {} = 0
@@ -1268,8 +1250,8 @@ def build_serie_episodes(params):
                         'aired': body['air'],
                         'tvshowtitle': body['name'],
                         'size': nt.safe_int(body.get('size', '0')),
-                        'genre': "..." if skip else temp_genre,
-                        'tagline': "..." if skip else temp_genre
+                        'genre': temp_genre,
+                        'tagline': temp_genre
                     }
 
                     if nt.addon.getSetting('hide_rating') == 'true':
@@ -1279,7 +1261,7 @@ def build_serie_episodes(params):
                     extra_data = {
                         'source': 'ep',
                         'VideoStreams': defaultdict(dict),
-                        'thumb': None if skip else thumb,
+                        'thumb': thumb,
                     }
                     # TODO why = 0 ?
                     extra_data['VideoStreams'][0]['duration'] = 0
@@ -1343,7 +1325,7 @@ def build_serie_episodes(params):
                                 'size': nt.safe_int(video['files'][0].get('size', '0')),
                                 # 'date': file date - coded below
                                 # OFFICIAL Video Values
-                                'genre': "..." if skip else temp_genre,
+                                'genre': temp_genre,
                                 # 'county':
                                 'year': nt.safe_int(video.get('year', '')),
                                 'episode': nt.safe_int(video.get('epnumber', '')),
@@ -1364,21 +1346,21 @@ def build_serie_episodes(params):
                                 'castandrole': list_cast_and_role,
                                 #  'director': " / ".join(temp_dir),
                                 #  'mpaa':          video.get('contentRating', ''), <--
-                                'plot': "..." if skip else nt.remove_anidb_links(nt.decode(video['summary'])),
+                                'plot': nt.remove_anidb_links(nt.decode(video['summary'])),
                                 #  'plotoutline':
                                 'title': title,
                                 'originaltitle': nt.decode(video.get('name', '')),
                                 'sorttitle': str(video.get('epnumber', '')) + " " + title,
                                 'duration': duration,
                                 # 'studio'      : episode.get('studio',tree.get('studio','')), 'utf-8') ,
-                                'tagline': "..." if skip else temp_genre,  # short description of movie k18
+                                'tagline': temp_genre,  # short description of movie k18
                                 # 'writer': " / ".join(temp_writer),
                                 'tvshowtitle': grandparent_title,
                                 'premiered': air,
                                 #  'status': 'Continuing'
                                 #  'set' -  name of the collection
                                 #  'setoverview' - k18
-                                'tag': "..." if skip else temp_genre,  # k18
+                                'tag': temp_genre,  # k18
                                 #  'imdbnumber'
                                 #  'code' - production code
                                 'aired': air,
@@ -1434,9 +1416,9 @@ def build_serie_episodes(params):
                             extra_data = {
                                 'type':             'video',  # 'video'
                                 'source':           'ep',
-                                'thumb':            None if skip else thumb,
-                                'fanart_image':     None if skip else fanart,
-                                'banner':           None if skip else banner,
+                                'thumb':            thumb,
+                                'fanart_image':     fanart,
+                                'banner':           banner,
                                 'key':              key,
                                 'resume':           int(int(video['files'][0].get('offset', '0')) / 1000),
                                 'parentKey':        parent_key,
@@ -1651,56 +1633,15 @@ def build_search_directory():
     end_of_directory(False)
 
 
-def build_serie_soon_new(params):
-    """
-            Builds the list of items for newCalendar
-            Args:
-                params:
-            Returns:
-
-            """
-    try:
-        busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30161))
-        busy.update(10)
-        temp_url = params['url']
-        temp_url = nt.set_parameter(temp_url, 'nocast', 0)
-        temp_url = nt.set_parameter(temp_url, 'notag', 0)
-        temp_url = nt.set_parameter(temp_url, 'level', 0)
-        busy.update(20)
-        html = nt.get_json(temp_url)
-        busy.update(50, nt.addon.getLocalizedString(30162))
-        if nt.addon.getSetting("spamLog") == "true":
-            xbmc.log(params['url'], xbmc.LOGWARNING)
-            xbmc.log(html, xbmc.LOGWARNING)
-        busy.update(70)
-        temp_url = params['url']
-        temp_url = nt.set_parameter(temp_url, 'level', 2)
-        html = nt.get_json(temp_url)
-        body = nt.json.loads(html)
-        busy.update(100)
-        busy.close()
-
-        try:
-            window = Calendar(data=body, handle=handle)
-            window.doModal()
-            del window
-            # return
-        except Exception as e:
-            nt.error("util.error during build_serie_soon date_air", str(e))
-    except Exception as e:
-        nt.error("Invalid JSON Received in build_serie_soon", str(e))
-
-
 def build_serie_soon(params):
     """
-        Builds the list of items for Calendar
+        Builds the list of items for Calendar via Directory and ListItems ( Basic Mode )
         Args:
             params:
         Returns:
 
         """
     xbmcplugin.setContent(handle, 'tvshows')
-
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
 
     try:

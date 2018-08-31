@@ -51,6 +51,9 @@ def debug_init():
     also dump argv if spamLog
     :return:
     """
+    if nt.addon.getSetting('spamLog') == "true":
+        nt.dump_dictionary(sys.argv, 'sys.argv')
+
     if nt.addon.getSetting('remote_debug') == 'true':
         try:
             import web_pdb
@@ -58,5 +61,3 @@ def debug_init():
         except Exception as ex:
             nt.error('Unable to start debugger, disabling', str(ex))
             nt.addon.setSetting('remote_debug', 'false')
-    if nt.addon.getSetting('spamLog') == "true":
-        nt.dump_dictionary(sys.argv, 'sys.argv')
