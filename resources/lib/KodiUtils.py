@@ -228,7 +228,7 @@ def play_video(ep_id, raw_id, movie):
             # Video
             codecs = dict()
             ModelUtils.video_file_information(file_body["media"], codecs)
-            file_url += "?pvr=.pvr"
+            # file_url += "?pvr=.pvr"
             details['path'] = file_url
             details['duration'] = file_body.get('duration', 0)
             details['size'] = file_body['size']
@@ -374,7 +374,7 @@ def play_video(ep_id, raw_id, movie):
                 nt.error('eigakan.post_json error', str(exc))
                 busy.close()
     except Exception as eigakan_ex:
-        xbmc.log(str(eigakan_ex), xbmc.LOGWARNING)
+        xbmc.log('---> enableEigakan: ' + str(eigakan_ex), xbmc.LOGWARNING)
         pass
     # endregion
 
@@ -390,7 +390,7 @@ def play_video(ep_id, raw_id, movie):
             player.play(item=file_url, listitem=item)
 
     except Exception as player_ex:
-        xbmc.log(str(player_ex), xbmc.LOGWARNING)
+        xbmc.log('---> player_ex: ' + str(player_ex), xbmc.LOGWARNING)
         pass
 
     # TODO do we need this ? probably not anymore

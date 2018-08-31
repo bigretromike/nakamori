@@ -45,7 +45,7 @@ def play_video(parameters):
             parameters['watched'] = True
             nt.mark_watch_status(parameters)
     except Exception as exp:
-        xbmc.log(str(exp), xbmc.LOGWARNING)
+        xbmc.log('---> play_video ' + str(exp), xbmc.LOGWARNING)
         pass
 
 
@@ -154,15 +154,18 @@ if nt.get_shoko_status() is True:
                     xbmcgui.Dialog().ok('MODE=2', 'MODE')
                 elif mode == 3:  # Search
                     try:
-                        if parameters['extras'] == "force-search" and 'query' in parameters:
-                            url = nt.server + '/api/search'
-                            url = nt.set_parameter(url, 'query', parameters['query'])
-                            gb.search_for(url)
+                        if 'extras' in parameters:
+                            if parameters['extras'] == "force-search" and 'query' in parameters:
+                                url = nt.server + '/api/search'
+                                url = nt.set_parameter(url, 'query', parameters['query'])
+                                gb.search_for(url)
+                            else:
+                                xbmcplugin.setContent(int(gb.handle), str('movies'))
+                                gb.execute_search_and_add_query()
                         else:
-                            xbmcplugin.setContent(int(gb.handle), str('movies'))
-                            gb.execute_search_and_add_query()
+                            gb.build_search_directory()
                     except Exception as search_ex:
-                        xbmc.log(str(search_ex), xbmc.LOGERROR)
+                        xbmc.log('---> search, mode=3:' + str(search_ex), xbmc.LOGERROR)
                         gb.build_search_directory()
                 elif mode == 4:  # Group/Serie
                     try:
