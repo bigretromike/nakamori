@@ -146,10 +146,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                             subtitle_codec['language'] = str(extra_data['SubStreams'][stream2]['SubtitleLanguage'])
                             liz.addStreamInfo('subtitle', subtitle_codec)
 
-            # probably fix for desync watchmark (url ending with .pvr are not marked as watched) but its not working
-            # https://forum.kodi.tv/showthread.php?tid=325059
             # UMS/PSM Jumpy plugin require 'path' to play video
-            key_file = str(extra_data.get('key', 'empty')) + '?livetv=1.pvr'
+            key_file = str(extra_data.get('key', 'empty'))
             liz.setProperty('path', key_file)
             liz.setPath(key_file)
 
