@@ -1,33 +1,17 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<!-- shoko settings -->
-    <category label="30001">
-        <setting label="30006" type="lsep"/>
+    <category label="30001"> <!-- Shoko Settings -->
+        <setting label="30006" type="lsep"/> <!-- Shoko Server -->
         <setting label="30002" type="text" id="ipaddress" default="127.0.0.1"/>
         <setting label="30003" type="number" id="port" default="8111"/>
-        <setting label="30011" type="lsep"/>
+        <setting label="30011" type="lsep"/> <!-- Shoko User -->
         <setting label="30015" type="text" id="login" default="Default"/>
         <setting label="30016" type="text" id="password" options="hidden"/>
 		<setting label="30100" type="bool" id="more_30001" default="false"/>
 		<!-- advanced -->
-        <setting label="30044" type="lsep" visible="eq(-1,true)"/>
+        <setting label="30044" type="lsep" visible="eq(-1,true)"/> <!-- Advanced -->
 		<setting label="30017" type="text" id="device" default="nakamori" visible="eq(-2,true)"/>
-		<setting label="30004" type="number" id="timeout" default="60" visible="eq(-3,true)"/>
-		<setting label="30013" type="bool" id="use_gzip" default="true" visible="eq(-4,true)"/>
-		<!-- searching -->
-        <setting label="30021" type="lsep" visible="eq(-5,true)"/>
-        <setting label="30022" type="number" id="maxlimit" default="20" visible="eq(-6,true)"/>
-        <setting label="30033" type="number" id="maxlimit_tag" default="100" visible="eq(-7,true)"/>
-        <setting label="30066" type="bool" id="request_nocast" default="false" visible="eq(-8,true)"/>
-		<setting label="30028" type="bool" id="short_tag_list" default="true" visible="eq(-9,true)"/>
-		<!-- trakt support -->
-        <setting label="30038" type="lsep" visible="eq(-10,true)"/>
-        <setting label="30035" type="bool" id="trakt" default="false" visible="eq(-11,true)"/>
-        <setting label="30036" type="bool" id="trakt_scrobble" default="false" visible="eq(-12,true)"/>
-        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true"  visible="eq(-13,true)+eq(-1,true)"/>
-        <!-- advanced -->
-		<setting label="30044" type="lsep" visible="eq(-14,true)"/>
-		<setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false" visible="eq(-15,true)"/>
 		<!-- hidden -->
         <setting label="30018" type="text" id="apikey" visible="false"/>
         <setting type="number" id="no_mark" default="0" visible="false"/>
@@ -40,7 +24,7 @@
 		<!-- wizard -->
 		<setting label="30082" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?cmd=wizard)" option="close"/>
     </category>
-	<!-- folder -->
+	<!-- Main Menu Items -->
     <category label="30098">
         <setting label="30101" type="bool" id="show_search" default="true"/>
         <setting label="30102" type="bool" id="show_settings" default="true"/>
@@ -54,8 +38,8 @@
 		<!-- title settings -->
         <setting label="30056" type="lsep"/>
         <setting label="30052" type="bool" id="use_server_title" default="false" />
-        <setting label="30009" type="select" id="displaylang" default="en" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)" visible="eq(-1,false)"/>
-        <setting label="30010" type="labelenum" id="title_type" default="Official" values="Official|Main|Synonym|Short" enable="eq(-2,false)" visible="eq(-2,false)"/>
+        <setting label="30009" type="select" id="displaylang" default="x-jat" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)" visible="eq(-1,false)"/>
+        <setting label="30010" type="labelenum" id="title_type" default="Main" values="Official|Main|Synonym|Short" enable="eq(-2,false)" visible="eq(-2,false)"/>
         <!-- sorting -->
         <setting label="30144" type="lsep"/>
         <setting label="30053" type="select" id="default_sort_filter" default="Server" values="Server|Title|Episode|Date|Rating"/>
@@ -65,16 +49,18 @@
 		<setting label="30064" type="lsep"/>
 		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
-        <setting label="30111" type="bool" id="hide_rating" default="false" enable="eq(1,false)"/>
-        <setting label="30112" type="bool" id="hide_rating_watching" default="false" enable="eq(-1,false)"/>
-        <setting label="30113" type="select" id="hide_rating_type" default="" values="Episodes|Series|Both" enable="eq(-1,true) | eq(-2,true)"/>
+        <setting label="30040" type="bool" id="local_total" default="true"/>
+        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
+        <setting label="30111" type="labelenum" id="hide_rating" default="Never" values="Never|Watched|Always" />
+        <!-- Kodi has errors in comparing text in visibility and enabled status. This should be fixed in Leia -->
+        <setting label="30113" type="labelenum" id="hide_rating_type" default="Both" values="Episodes|Series|Both" enable="!eq(-1,Never)" visible="!eq(-1,Never)"/>
+        <setting label="30028" type="bool" id="short_tag_list" default="true" />
+        <setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false" />
         <!-- Context Menu Settings -->
 		<setting label="30057" type="lsep"/>
-        <setting type="bool" id="trakt_scrobble" default="false" visible="false"/>
         <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" enable="eq(-1,true)" />
         <setting type="bool" id="pick_file" default="true" visible="false"/>
-        <setting label="30133" type="bool" id="context_pick_file" default="true" enable="eq(-1,true)"/>
-        <setting label="30020" type="bool" id="file_resume" default="true"/>
+        <setting label="30133" type="bool" id="context_pick_file" default="true" enable="eq(-1,true)" visible="eq(-1,true)"/>
         <setting label="30130" type="bool" id="context_playlist" default="true" />
         <setting label="30062" type="bool" id="context_krypton_watched" default="true" />
         <setting label="30125" type="bool" id="context_show_vote_Episode" default="true" />
@@ -82,7 +68,9 @@
         <setting label="30123" type="bool" id="context_show_info" default="true" />
         <setting label="30134" type="bool" id="context_view_cast" default="true" />
         <setting label="30131" type="bool" id="context_refresh" default="true" />
-		<!-- tag blacklist -->
+    </category>
+    <category label="30046">
+        <!-- tag blacklist -->
 		<setting label="30046" type="lsep"/>
         <setting label="30045" type="bool" id="hideMiscTags" default="false"/>
         <setting label="30047" type="bool" id="hideArtTags" default="false"/>
@@ -90,7 +78,13 @@
         <setting label="30049" type="bool" id="hideUsefulMiscTags" default="false"/>
         <setting label="30050" type="bool" id="hideSpoilerTags" default="false"/>
         <setting label="30070" type="bool" id="hideSettingTags" default="false"/>
-		<!-- maintenance -->
+    </category>
+    <category label="30221">
+        <!-- searching -->
+        <setting label="30021" type="lsep" /> <!-- Searching -->
+        <setting label="30022" type="number" id="maxlimit" default="20" />
+        <setting label="30033" type="number" id="maxlimit_tag" default="100" />
+        <!-- maintenance -->
 		<setting label="30097" type="lsep"/>
         <setting label="30110" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=31)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
     </category>
@@ -103,19 +97,26 @@
         <setting label="30024" type="number" id="watched_mark" default="80"/>
 		<setting label="30032" type="bool" id="vote_always" default="false"/>
         <setting label="30034" type="bool" id="vote_on_series" default="false"/>
-        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
-		<setting label="30040" type="bool" id="local_total" default="false"/>
         <setting label="30055" type="number" id="refresh_wait" default="1000"/>
+        <!-- trakt support -->
+        <setting label="30038" type="lsep" /> <!--  -->
+        <setting label="30035" type="bool" id="trakt" default="false" />
+        <setting label="30036" type="bool" id="trakt_scrobble" default="false" />
+        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true" visible="eq(-1,true)"/>
         <!-- kodi player settings -->
         <setting label="30026" type="lsep"/>
+        <setting label="30020" type="bool" id="file_resume" default="true"/>
         <setting label="30014" type="bool" id="pick_file" default="true"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
+        <setting label="30004" type="number" id="timeout" default="60" />
     </category>
 	<!-- Advance -->
     <category label="30044">
         <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false" />
         <setting label="30042" type="bool" id="spamLog" default="false"/>
         <setting label="30063" type="bool" id="remote_debug" default="false" enable="System.HasAddon(script.module.web-pdb)"/>
+        <setting label="30013" type="bool" id="use_gzip" default="true" />
+        <setting label="30066" type="bool" id="request_nocast" default="false" />
         <!-- calendar -->
 		<setting label="30012" type="lsep"/>
         <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>

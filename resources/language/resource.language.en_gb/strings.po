@@ -250,7 +250,7 @@ msgid "Date format"
 msgstr ""
 
 msgctxt "#30059"
-msgid "Serie per column"
+msgid "Series per column"
 msgstr ""
 
 msgctxt "#30060"
@@ -278,7 +278,7 @@ msgid "Play"
 msgstr ""
 
 msgctxt "#30066"
-msgid "Disable 'cast' information"
+msgid "Disable Kodi's Internal Cast Menu"
 msgstr ""
 
 msgctxt "#30067"
@@ -310,7 +310,7 @@ msgid "Save"
 msgstr ""
 
 msgctxt "#30074"
-msgid "IP Address"
+msgid "IP Address/Hostname"
 msgstr ""
 
 msgctxt "#30075"
@@ -334,7 +334,7 @@ msgid "Warning"
 msgstr ""
 
 msgctxt "#30080"
-msgid "It looks like you didn't successful connect to server."
+msgid "Could not connect to Shoko Server"
 msgstr ""
 
 msgctxt "#30081"
@@ -346,7 +346,7 @@ msgid "Setup Wizard"
 msgstr ""
 
 msgctxt "#30083"
-msgid "Select first unwatched episode"
+msgid "Select First Unwatched Episode"
 msgstr ""
 
 msgctxt "#30084"
@@ -358,19 +358,19 @@ msgid "Enable Eigakan"
 msgstr ""
 
 msgctxt "#30086"
-msgid "ip address"
+msgid "IP Address/Hostname"
 msgstr ""
 
 msgctxt "#30087"
-msgid "port"
+msgid "Port"
 msgstr ""
 
 msgctxt "#30088"
-msgid "attempts before giving up"
+msgid "Number Attempts Before Giving Up"
 msgstr ""
 
 msgctxt "#30089"
-msgid "wait (s) before starting to play (postpone)"
+msgid "Wait (s) to buffer starting"
 msgstr ""
 
 msgctxt "#30090"
@@ -378,7 +378,7 @@ msgid "Advance settings"
 msgstr ""
 
 msgctxt "#30091"
-msgid "Resolution (WxH)"
+msgid "Resolution (1920x1080)"
 msgstr ""
 
 msgctxt "#30092"
@@ -406,7 +406,7 @@ msgid "Maintenance"
 msgstr ""
 
 msgctxt "#30098"
-msgid "Folders"
+msgid "Main Menu Items"
 msgstr ""
 
 msgctxt "#30099"
@@ -430,7 +430,7 @@ msgid "Show Calendar"
 msgstr ""
 
 msgctxt "#30104"
-msgid "Show Calendarv2"
+msgid "Show Calendar"
 msgstr ""
 
 msgctxt "#30105"
@@ -458,15 +458,11 @@ msgid "Clear Search Terms"
 msgstr ""
 
 msgctxt "#30111"
-msgid "always hide rating for ..."
-msgstr ""
-
-msgctxt "#30112"
-msgid "hide rating only in unwatched ..."
+msgid "Hide Ratings ..."
 msgstr ""
 
 msgctxt "#30113"
-msgid "pick 'hide rating' cases"
+msgid "Hide Rating Only When..."
 msgstr ""
 
 msgctxt "#30114"
@@ -558,7 +554,7 @@ msgid "View Cast"
 msgstr ""
 
 msgctxt "#30135"
-msgid "Scan your library and remove all files that have been re/moved by hand and not accessible anymore by shoko"
+msgid "Scan your library and remove all files that have been re/moved by hand and no longer accessible by Shoko"
 msgstr ""
 
 msgctxt "#30136"
@@ -566,7 +562,7 @@ msgid "Push status update ..."
 msgstr ""
 
 msgctxt "#30137"
-msgid "Scan your library for all files that are missing MediaInfo and update them to reflect the reality"
+msgid "Generate Missing MediaInfo"
 msgstr ""
 
 msgctxt "#30138"
