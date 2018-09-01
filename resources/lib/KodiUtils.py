@@ -393,9 +393,11 @@ def play_video(ep_id, raw_id, movie):
         xbmc.log('---> player_ex: ' + str(player_ex), xbmc.LOGWARNING)
         pass
 
-    # TODO do we need this ? probably not anymore
-    # hack for slow connection and buffering time
+    # leave player alive so we can handle onPlayBackStopped/onPlayBackEnded
     xbmc.sleep(int(nt.addon.getSetting("player_sleep")))
+
+    while player.isPlaying():
+        xbmc.sleep(500)
 
     return 0
 
