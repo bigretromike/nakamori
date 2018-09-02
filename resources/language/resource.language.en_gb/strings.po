@@ -601,6 +601,14 @@ msgctxt "#30146"
 msgid "Misc"
 msgstr ""
 
+msgctxt "#30147"
+msgid "-Below are Kodi's items-"
+msgstr ""
+
+msgctxt "#30148"
+msgid "-Don't use 'Mark as watched'-"
+msgstr ""
+
 # 147 - 159 empty
 
 #---------------End-Context-Menu----------------------

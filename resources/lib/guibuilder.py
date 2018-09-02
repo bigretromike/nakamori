@@ -208,8 +208,6 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = nt.set_parameter(url_peep, 'ui_index', str(index))
                     url_peep = nt.set_parameter(url_peep, 'file_id', str(file_id))
 
-                    number_of_dummy_items = 1
-
                     # Play
                     context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
 
@@ -221,26 +219,16 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                                 context.append((nt.addon.getLocalizedString(30141) + ' (%s)' %
                                                 time.strftime('%H:%M:%S', time.gmtime(int(extra_data.get('resume')))),
                                                 'RunPlugin(%s&cmd=resume)' % url_peep))
-                            else:
-                                number_of_dummy_items += 1
-                        else:
-                            number_of_dummy_items += 1
-                    else:
-                        number_of_dummy_items += 1
 
                     # Play (No Scrobble)
                     if nt.addon.getSetting('context_show_play_no_watch') == 'true':
                         context.append((nt.addon.getLocalizedString(30132),
                                         'RunPlugin(%s&cmd=no_mark)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
                     # Inspect
                     if nt.addon.getSetting('context_pick_file') == 'true':
                         context.append((nt.addon.getLocalizedString(30133),
                                         'RunPlugin(%s&cmd=pickFile)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
                     # Mark as watched/unwatched
                     if extra_data.get('jmmepisodeid') != '':
@@ -256,56 +244,39 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                                             'RunPlugin(%s&cmd=watched)' % url_peep))
                             context.append((nt.addon.getLocalizedString(30129),
                                             'RunPlugin(%s&cmd=unwatched)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
                     # Playlist Mode
                     if nt.addon.getSetting('context_playlist') == 'true':
                         context.append((nt.addon.getLocalizedString(30130),
                                         'RunPlugin(%s&cmd=createPlaylist)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
                     # Vote Episode
                     if nt.addon.getSetting('context_show_vote_Episode') == 'true' and ep_id != '':
                         context.append((nt.addon.getLocalizedString(30125),
                                         'RunPlugin(%s&cmd=voteEp)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
                     # Vote Series
                     if nt.addon.getSetting('context_show_vote_Series') == 'true' and series_id != '':
                         context.append((nt.addon.getLocalizedString(30124),
                                         'RunPlugin(%s&cmd=voteSer)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
                     # Metadata
                     if nt.addon.getSetting('context_show_info') == 'true':
                         context.append((nt.addon.getLocalizedString(30123),
                                         'Action(Info)'))
-                    else:
-                        number_of_dummy_items += 1
 
                     if nt.addon.getSetting('context_view_cast') == 'true':
                         if series_id != '':
                             context.append((nt.addon.getLocalizedString(30134),
                                             'ActivateWindow(Videos, %s&cmd=viewCast)' % url_peep))
-                        else:
-                            number_of_dummy_items += 1
-                    else:
-                        number_of_dummy_items += 1
 
                     if nt.addon.getSetting('context_refresh') == 'true':
                         context.append((nt.addon.getLocalizedString(30131),
                                         'RunPlugin(%s&cmd=refresh)' % url_peep))
-                    else:
-                        number_of_dummy_items += 1
 
-                    x = 0
-                    while x < number_of_dummy_items:
-                        context.append(('', 'Action(Select)'))
-                        x += 1
+                    context.append(('  ', 'empty'))
+                    context.append((nt.addon.getLocalizedString(30147), 'empty'))
+                    context.append((nt.addon.getLocalizedString(30148), 'empty'))
 
         liz.addContextMenuItems(context)
         liz.select(force_select)
