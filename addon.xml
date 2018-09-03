@@ -18,7 +18,7 @@
 		<disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 		<disclaimer lang="he_il">אם שרת Shoko נמצא במחשב אחר, הגדר את כתובת ה- IP בהגדרות של Nakamori לפני שתתחיל</disclaimer>
 		<news>
-			v3.0.0 (2018-08-08)
+			v3.0.0 (2018-09-03)
 - modularization
 - 'shoko' menu allow to send additional commands to server
 - support for icon/resources packages
