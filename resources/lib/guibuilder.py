@@ -1075,7 +1075,8 @@ def build_groups_menu(params, json_body=None):
             nt.error("util.error during build_groups_menu", str(e))
     except Exception as e:
         nt.error("Invalid JSON Received in build_groups_menu", str(e))
-    if params['name'] == 'Seasons':  # TODO make this language neutral
+
+    if params.get('name', '') == 'Seasons':  # TODO make this language neutral
         end_of_directory(force_sort=0)
     else:
         end_of_directory(place='group')
