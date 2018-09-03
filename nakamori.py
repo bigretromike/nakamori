@@ -160,7 +160,7 @@ if nt.get_shoko_status() is True:
                                 url = nt.set_parameter(url, 'query', parameters['query'])
                                 gb.search_for(url)
                             else:
-                                xbmcplugin.setContent(int(gb.handle), str('movies'))
+                                xbmcplugin.setContent(int(gb.handle), 'movies')
                                 gb.execute_search_and_add_query()
                         else:
                             gb.build_search_directory()

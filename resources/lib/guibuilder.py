@@ -987,6 +987,12 @@ def build_groups_menu(params, json_body=None):
 
     try:
         busy.create(nt.addon.getLocalizedString(30160), nt.addon.getLocalizedString(30161))
+        parent_title = ''
+        if 'name' in params:
+            parent_title = params['name']
+        elif 'query' in params:
+            parent_title = params['query']
+        xbmcplugin.setPluginCategory(handle, parent_title.replace('+', ' '))
         if json_body is None:
             busy.update(10)
             temp_url = params['url']
@@ -1159,6 +1165,8 @@ def build_serie_episodes(params):
                 KodiUtils.set_window_heading(parent_title)
             except Exception as exc:
                 nt.error("Unable to get parent title in buildTVEpisodes", str(exc))
+
+            xbmcplugin.setPluginCategory(handle, parent_title)
 
             xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
             xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
@@ -1728,6 +1736,7 @@ def search_for(search_url):
                                                                             nt.addon.getLocalizedString(30181),
                                                                             '!', nt.addon.getAddonInfo('icon')))
         else:
+            search_url = nt.parse_parameters(search_url)
             build_groups_menu(search_url, json_body)
     except:
         nt.error("util.error in findVideo")
