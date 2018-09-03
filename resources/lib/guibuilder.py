@@ -1043,6 +1043,7 @@ def build_groups_menu(params, json_body=None):
             parent_title = body.get('name', '')
             directory_type = body.get('type', '')
             filter_id = ''
+
             if directory_type != 'ep' and directory_type != 'serie':
                 if 'filter' in params:
                     filter_id = params['filter']
@@ -1074,7 +1075,10 @@ def build_groups_menu(params, json_body=None):
             nt.error("util.error during build_groups_menu", str(e))
     except Exception as e:
         nt.error("Invalid JSON Received in build_groups_menu", str(e))
-    end_of_directory(place='group')
+    if params['name'] == 'Seasons':  # TODO make this language neutral
+        end_of_directory(force_sort=0)
+    else:
+        end_of_directory(place='group')
 
 
 def build_serie_episodes_types(params):
