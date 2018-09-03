@@ -808,7 +808,7 @@ def build_filters_menu():
     """
     Builds the list of items (filters) in the Main Menu
     """
-    xbmcplugin.setContent(handle, content='tvshows')
+    xbmcplugin.setContent(handle, 'tvshows')
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_UNSORTED)
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_EPISODE)
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
@@ -1676,7 +1676,7 @@ def build_raw_list(params):
     :param params: json body with all files to draw
     :return:
     """
-    xbmcplugin.setContent(handle, 'files')
+    xbmcplugin.setContent(handle, 'videos')
     KodiUtils.set_window_heading(nt.addon.getLocalizedString(30106))
     try:
         html = nt.get_json(params['url'])
@@ -1785,7 +1785,7 @@ def build_shoko_menu():
     build menu with items to interact with shoko server via api
     :return:
     """
-    xbmcplugin.setContent(handle, content='tvshows')
+    xbmcplugin.setContent(handle, 'tvshows')
     KodiUtils.set_window_heading(nt.addon.getLocalizedString(30115))
 
     items = [{
