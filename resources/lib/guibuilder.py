@@ -338,7 +338,7 @@ def add_raw_files(node):
         pass
 
 
-def add_content_typ_dir(name, serie_id):
+def add_content_typ_dir(name, serie_id, total_size=0, watched=0, unwatched=0):
     """
     Adding directories for given types of content inside series (ex. episodes, credits)
     :param name: name of directory
@@ -383,6 +383,14 @@ def add_content_typ_dir(name, serie_id):
     liz = xbmcgui.ListItem(label=title, label2=title, path=dir_url)
     liz.setArt({'thumb': thumb, 'poster': poster, 'icon': 'DefaultVideo.png', 'fanart': fanart, 'banner': banner})
     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+    liz.setProperty('TotalEpisodes', str(total_size))
+    liz.setProperty('WatchedEpisodes', str(watched))
+    liz.setProperty('UnWatchedEpisodes', str(unwatched))
+    liz.setProperty('resumetime', str(watched))
+    liz.setProperty('TotalTime', str(total_size))
+    liz.setProperty('TotalCount', str(total_size))
+    liz.setProperty('WatchedCount', str(watched))
+
     u = sys.argv[0]
     u = nt.set_parameter(u, 'url', dir_url)
     u = nt.set_parameter(u, 'mode', str(6))
@@ -1105,12 +1113,16 @@ def build_serie_episodes_types(params):
                 nt.error("Unable to get parent title in buildTVSeasons", str(exc))
 
             content_type = dict()
+            content_watched = dict()
             if "eps" in body:
                 if len(body.get("eps", {})) >= 1:
                     for ep in body["eps"]:
                         if ep["eptype"] not in content_type.keys():
                             content_type[ep["eptype"]] = ep["art"]["thumb"][0]["url"] if len(ep["art"]["thumb"]) > 0 \
                                 else ''
+                            content_watched[ep["eptype"]] = 0
+                        if ep.get('view', 0) == 1:
+                            content_watched[ep["eptype"]] += 1
             # no matter what type is its only one type, flat directory
             if len(content_type) == 1:
                 build_serie_episodes(params)
@@ -1126,8 +1138,27 @@ def build_serie_episodes_types(params):
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
 
+                map_types = {
+                    "Credits": "Credits",
+                    "Episode": "Episodes",
+                    "Special": "Specials",
+                    "Trailer": "Trailers",
+                    "Parody": "Parodies",
+                    "Other": "Others"
+                }
+
                 for content in content_type:
-                    add_content_typ_dir(content, body.get("id", ''))
+                    try:
+                        type_of = map_types[content]
+                        if nt.addon.getSetting("local_total") == "true":
+                            total_size = body['local_sizes'][type_of]
+                        else:
+                            total_size = body['total_sizes'][type_of]
+                        watched = content_watched[content]
+                        unwatched = int(total_size) - int(watched)
+                        add_content_typ_dir(content, body.get("id", ''), total_size, watched, unwatched)
+                    except:
+                        add_content_typ_dir(content, body.get("id", ''))
                 end_of_directory(place='group')
                 return
 
