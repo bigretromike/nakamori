@@ -382,14 +382,18 @@ def add_content_typ_dir(name, serie_id, total_size=0, watched=0, unwatched=0):
 
     liz = xbmcgui.ListItem(label=title, label2=title, path=dir_url)
     liz.setArt({'thumb': thumb, 'poster': poster, 'icon': 'DefaultVideo.png', 'fanart': fanart, 'banner': banner})
-    liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+
+    if watched == total_size:
+        details = {'mediatype': 'tvshow', 'size': total_size, "Title": title, "Plot": title, 'playcount': 1}
+    else:
+        details = {'mediatype': 'tvshow', 'size': total_size, "Title": title, "Plot": title, 'playcount': 0}
+    liz.setInfo(type="Video", infoLabels=details)
     liz.setProperty('TotalEpisodes', str(total_size))
     liz.setProperty('WatchedEpisodes', str(watched))
     liz.setProperty('UnWatchedEpisodes', str(unwatched))
-    liz.setProperty('resumetime', str(watched))
-    liz.setProperty('TotalTime', str(total_size))
-    liz.setProperty('TotalCount', str(total_size))
-    liz.setProperty('WatchedCount', str(watched))
+    if unwatched != 0 and watched > 0:
+        liz.setProperty('TotalTime', str(total_size))
+        liz.setProperty('ResumeTime', str(watched))
 
     u = sys.argv[0]
     u = nt.set_parameter(u, 'url', dir_url)
@@ -407,7 +411,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
     :param destination_playlist:
     :return:
     """
-    # xbmcgui.Dialog().ok('series', 'series')
+    # xbmcgui.Dialog().ok('add_serie_item', '')
     temp_genre = ''
     if 'tags' in node:
         temp_genre = ModelUtils.get_tags(node.get("tags", {}))
