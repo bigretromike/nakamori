@@ -609,7 +609,11 @@ msgctxt "#30148"
 msgid "-Don't use 'Mark as watched'-"
 msgstr ""
 
-# 147 - 159 empty
+msgctxt "#30149"
+msgid "External player watch fix"
+msgstr ""
+
+# 150 - 159 empty
 
 #---------------End-Context-Menu----------------------
 

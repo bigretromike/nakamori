@@ -109,6 +109,7 @@
         <setting label="30014" type="bool" id="pick_file" default="true"/>
         <setting label="30027" type="number" id="player_sleep" default="5000"/>
         <setting label="30004" type="number" id="timeout" default="60" />
+        <setting label="30149" type="bool" id="external_player" default="false"/>
     </category>
 	<!-- Advance -->
     <category label="30044">
