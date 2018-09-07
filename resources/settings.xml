@@ -44,7 +44,7 @@
         <setting label="30144" type="lsep"/>
         <setting label="30053" type="select" id="default_sort_filter" default="Server" values="Server|Title|Episode|Date|Rating"/>
         <setting label="30142" type="select" id="default_sort_group_series" default="Server" values="Server|Title|Episode|Date|Rating"/>
-        <setting label="30143" type="select" id="default_sort_episodes" default="Server" values="Server|Title|Episode|Date|Rating"/>
+        <setting label="30143" type="select" id="default_sort_episodes" default="Episode" values="Server|Title|Episode|Date|Rating"/>
         <!-- tweaks -->
 		<setting label="30064" type="lsep"/>
 		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
