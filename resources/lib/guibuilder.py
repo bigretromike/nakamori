@@ -493,7 +493,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         # 'Studio'       : studio, < ---
         # 'Tagline'      : tagline,
         # 'Writer'       : writer,
-        # 'tvshowtitle'  : tvshowtitle,
+        'tvshowtitle'  : nt.decode(parent_title),
         'tvshowname':       title,
         # 'premiered'    : premiered,
         # 'Status'       : status,
@@ -656,6 +656,7 @@ def add_group_item(node, parent_title, filter_id, is_filter=False):
         'plot':             nt.remove_anidb_links(nt.decode(node.get('summary', '...'))),
         'originaltitle':    title,
         'sorttitle':        title,
+        'tvshowtitle':      nt.decode(parent_title),
         'tvshowname':       title,
         'dateadded':        node.get('added', ''),
         'aired':            str(air),
@@ -1388,7 +1389,8 @@ def build_serie_episodes(params):
                                 #  'dbid' - local kodi db id
 
                                 # CUSTOM
-                                'parenttitle':   nt.decode(parent_title)
+                                'parenttitle':   nt.decode(parent_title),
+                                'tvshowname': grandparent_title
                             }
 
                             if nt.addon.getSetting('hide_rating') == 'Always':
