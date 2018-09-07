@@ -97,15 +97,10 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                         details.pop('castandrole', None)
                     except:
                         pass
-        # Set the properties of the item, such as summary, name, season, etc
         liz.setInfo(type=tp, infoLabels=details)
 
-        # TODO Refactor this out into the above method
         # For all video items
         if not folder:
-            # remove most of default context menu items but break viewing
-            # folder = True
-            # liz.setProperty('IsPlayable', 'true')
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
                 if extra_data.get('type', 'video').lower() == "video":
@@ -140,8 +135,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
 
                     if len(extra_data.get('SubStreams', {})) > 0:
                         for stream2 in extra_data['SubStreams']:
-                            liz.setProperty('SubtitleLanguage.' + str(stream2), str(extra_data['SubStreams'][stream2]
-                                                                                    ['SubtitleLanguage']))
+                            liz.setProperty('SubtitleLanguage.' + str(stream2),
+                                            str(extra_data['SubStreams'][stream2]['SubtitleLanguage']))
                             subtitle_codec = dict()
                             subtitle_codec['language'] = str(extra_data['SubStreams'][stream2]['SubtitleLanguage'])
                             liz.addStreamInfo('subtitle', subtitle_codec)
@@ -151,8 +146,9 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
             liz.setProperty('path', key_file)
             liz.setPath(key_file)
 
-        # For series/groups
+        # For series/groups/episodes
         if extra_data and len(extra_data) > 0:
+            # For series/groups
             if extra_data.get('source') == 'serie' or extra_data.get('source') == 'group':
                 # Then set the number of watched and unwatched, which will be displayed per season
                 liz.setProperty('TotalEpisodes', str(extra_data['TotalEpisodes']))
@@ -343,6 +339,9 @@ def add_content_typ_dir(name, serie_id, total_size=0, watched=0, unwatched=0):
     Adding directories for given types of content inside series (ex. episodes, credits)
     :param name: name of directory
     :param serie_id: id that the content belong too
+    :param total_size: dir file count
+    :param watched: how many files have been watched
+    :param unwatched: how many files haven't been watched
     :return: add new directory
     """
     dir_url = nt.server + "/api/serie"
@@ -1161,8 +1160,9 @@ def build_serie_episodes_types(params):
                         watched = content_watched[content]
                         unwatched = int(total_size) - int(watched)
                         add_content_typ_dir(content, body.get("id", ''), total_size, watched, unwatched)
-                    except:
+                    except Exception as ex:
                         add_content_typ_dir(content, body.get("id", ''))
+                        xbmc.log('-- is %s supported? error: %s' % (content, ex.message), xbmc.LOGWARNING)
                 end_of_directory(place='group')
                 return
 
