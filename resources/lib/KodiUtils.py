@@ -419,8 +419,8 @@ def detect_kodi18():
     if nt.addon.getSetting('kodi18') == '3':
         python = xbmcaddon.Addon('xbmc.addon')
         if python is not None:
-            # kodi18 return 17.9.701 as for now
-            if str(python.getAddonInfo('version')) == '17.9.701':
+            # kodi18 return 17.9.xxx as for now later it will be 18.x
+            if str(python.getAddonInfo('version')).startswith('17.9.') or str(python.getAddonInfo('version')).startswith('18.0'):
                 nt.addon.setSetting(id='kodi18', value='1')
             else:
                 nt.addon.setSetting(id='kodi18', value='0')
