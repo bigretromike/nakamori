@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import nakamoritools as nt
-from resources.lib import KodiUtils
+from resources.lib import kodi_utils
 
 import xbmc
 
@@ -10,7 +10,7 @@ def folder_list():
     List all import folders
     :return: int vl of picked folder
     """
-    return KodiUtils.import_folder_list()
+    return kodi_utils.import_folder_list()
 
 
 def mediainfo_update():

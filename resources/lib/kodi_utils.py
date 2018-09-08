@@ -7,7 +7,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 
-from resources.lib import ModelUtils
+from resources.lib import model_utils
 
 import nakamoritools as nt
 import nakamoriplayer as nplayer
@@ -227,7 +227,7 @@ def play_video(ep_id, raw_id, movie):
             # Information about streams inside video file
             # Video
             codecs = dict()
-            ModelUtils.video_file_information(file_body["media"], codecs)
+            model_utils.video_file_information(file_body["media"], codecs)
             details['path'] = file_url
             details['duration'] = file_body.get('duration', 0)
             details['size'] = file_body['size']
