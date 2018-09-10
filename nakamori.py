@@ -117,9 +117,9 @@ if nt.get_server_status():
                         ep_url = nt.server + "/api/ep?id=" + str(parameters['ep_id']) + "&level=2"
                         kodi_utils.file_list_gui(nt.json.loads(nt.get_json(ep_url)))
                 elif cmd == 'rescan':
-                    shoko_utils.rescan_file(parameters, True)
+                    shoko_utils.rescan_file(parameters.get('vl', ''))
                 elif cmd == 'rehash':
-                    shoko_utils.rescan_file(parameters, False)
+                    shoko_utils.rehash_file(parameters.get('vl', ''))
                 elif cmd == 'missing':
                     shoko_utils.remove_missing_files()
                 elif cmd == 'mediainfo':

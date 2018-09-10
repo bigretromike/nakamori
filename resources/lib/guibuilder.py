@@ -1866,26 +1866,6 @@ def build_shoko_menu():
         "plot": nt.addon.getLocalizedString(30137),
         "extras": ""
     }, {
-        "title": nt.addon.getLocalizedString(30120),
-        "cmd": "rescan",
-        "poster": "none",
-        "icon": os.path.join(_img, 'icons', 'new-search.png'),
-        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
-        "type": "video",
-        "plot": nt.addon.getLocalizedString(30138),
-        "extras": "",
-        "vl": ""
-    }, {
-        "title": nt.addon.getLocalizedString(30121),
-        "cmd": "rehash",
-        "poster": "none",
-        "icon": os.path.join(_img, 'icons', 'new-search.png'),
-        "fanart": os.path.join(_img, 'backgrounds', 'new-search.jpg'),
-        "type": "video",
-        "plot": nt.addon.getLocalizedString(30139),
-        "extras": "",
-        "vl": ""
-    }, {
         "title": nt.addon.getLocalizedString(30116),
         "cmd": "folderlist",
         "poster": "none",

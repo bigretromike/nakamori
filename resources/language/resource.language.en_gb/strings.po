@@ -566,15 +566,15 @@ msgid "Generate Missing MediaInfo"
 msgstr ""
 
 msgctxt "#30138"
-msgid "Rescan import folder and try to add new series to library"
+msgid "to be used"
 msgstr ""
 
 msgctxt "#30139"
-msgid "Rehash import folder to the hashed are alright (??)"
+msgid "to be used"
 msgstr ""
 
 msgctxt "#30140"
-msgid "List all your Import Folders"
+msgid "Import Folders"
 msgstr ""
 
 msgctxt "#30141"
@@ -725,7 +725,15 @@ msgctxt "#30197"
 msgid "No connection to Shoko server"
 msgstr ""
 
-# 198 - 220 empty
+msgctxt "#30198"
+msgid "Queued Run Import on Server"
+msgstr ""
+
+msgctxt "#30199"
+msgid "Queued Import Folder Scan"
+msgstr ""
+
+# 200 - 220 empty
 
 #---------------End-Windows--------------------------
 #---------------Start=Items--------------------------
