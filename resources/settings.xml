@@ -31,7 +31,6 @@
         <setting label="30103" type="bool" id="show_calendar" default="true"/>
         <setting label="30105" type="bool" id="show_unsort" default="true"/>
         <setting label="30114" type="bool" id="show_shoko" default="false"/>
-        <setting label="30039" type="bool" id="show_continue" default="false"/>
 	</category>
 	<!-- browsing -->
     <category label="30054">
@@ -47,6 +46,7 @@
         <setting label="30143" type="select" id="default_sort_episodes" default="Episode" values="Server|Title|Episode|Date|Rating"/>
         <!-- tweaks -->
 		<setting label="30064" type="lsep"/>
+        <setting label="30039" type="bool" id="show_continue" default="false"/>
 		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
         <setting label="30040" type="bool" id="local_total" default="true"/>
@@ -58,7 +58,7 @@
         <setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false" />
         <!-- Context Menu Settings -->
 		<setting label="30057" type="lsep"/>
-        <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" enable="eq(-1,true)" />
+        <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" />
         <setting type="bool" id="pick_file" default="true" visible="false"/>
         <setting label="30133" type="bool" id="context_pick_file" default="true" enable="eq(-1,true)" visible="eq(-1,true)"/>
         <setting label="30130" type="bool" id="context_playlist" default="true" />
