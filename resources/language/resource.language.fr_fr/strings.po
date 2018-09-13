@@ -1,0 +1,907 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Nakamori\n"
+"Language: fr\n"
+
+#: 
+msgctxt "#30001"
+msgid "Shoko Settings"
+msgstr "Paramètres Shoko"
+
+#: 
+msgctxt "#30002"
+msgid "IP Address or Hostname"
+msgstr "Adresse IP ou nom d'hôte"
+
+#: 
+msgctxt "#30003"
+msgid "Port"
+msgstr "Port"
+
+#: 
+msgctxt "#30004"
+msgid "Query Timeout (s)"
+msgstr "Délai de requête (s)"
+
+#: 
+msgctxt "#30005"
+msgid "Sync 'Watched status' to Shoko"
+msgstr "Synchroniser le «statut surveillé» avec Shoko"
+
+#: 
+msgctxt "#30006"
+msgid "Shoko Server"
+msgstr "Shoko Server"
+
+#: 
+msgctxt "#30007"
+msgid "Watched Status Settings"
+msgstr "Paramètres de statut surveillés"
+
+#: 
+msgctxt "#30008"
+msgid "Language Display Priority"
+msgstr "Priorité d'affichage de la langue"
+
+#: 
+msgctxt "#30009"
+msgid "Language"
+msgstr "La langue"
+
+#: 
+msgctxt "#30010"
+msgid "Title Type"
+msgstr "Type de titre"
+
+#: 
+msgctxt "#30011"
+msgid "Shoko User"
+msgstr "Shoko Utilisateur"
+
+#: 
+msgctxt "#30012"
+msgid "Calendar"
+msgstr "Calendrier"
+
+#: 
+msgctxt "#30013"
+msgid "Use gzip"
+msgstr "Utilisez gzip"
+
+#: 
+msgctxt "#30014"
+msgid "Enable \'Pick file\' on multi files episodes"
+msgstr "Activer \ 'Choisir le fichier \' sur les épisodes de plusieurs fichiers"
+
+#: 
+msgctxt "#30015"
+msgid "Login"
+msgstr "S'identifier"
+
+#: 
+msgctxt "#30016"
+msgid "Password"
+msgstr "Mot de passe"
+
+#: 
+msgctxt "#30017"
+msgid "Device name"
+msgstr "Nom de l'appareil"
+
+#: 
+msgctxt "#30018"
+msgid "API Key"
+msgstr "clé API"
+
+#: 
+msgctxt "#30019"
+msgid "Rows span"
+msgstr "Portée"
+
+#: 
+msgctxt "#30020"
+msgid "Enable \'Resume\'"
+msgstr "Activer \ 'Reprendre \'"
+
+#: 
+msgctxt "#30021"
+msgid "Searching"
+msgstr "Recherche"
+
+#: 
+msgctxt "#30022"
+msgid "Limit search results to"
+msgstr "Limiter les résultats de la recherche à"
+
+#: 
+msgctxt "#30023"
+msgid "Video settings"
+msgstr "Paramètres vidéo"
+
+#: 
+msgctxt "#30024"
+msgid "Percent to Play before Marking as Watched"
+msgstr "Pourcentage à jouer avant de marquer comme vu"
+
+#: 
+msgctxt "#30025"
+msgid "Notification Window when Marked as Watched"
+msgstr "Fenêtre de notification lorsque marqué comme surveillé"
+
+#: 
+msgctxt "#30026"
+msgid "Kodi Player Settings"
+msgstr "Paramètres du lecteur Kodi"
+
+#: 
+msgctxt "#30027"
+msgid "Max time to wait for buffer (in ms)"
+msgstr "Temps maximum d'attente du tampon (en ms)"
+
+#: 
+msgctxt "#30028"
+msgid "Use short Tag list"
+msgstr "Utiliser une courte liste de tags"
+
+#: 
+msgctxt "#30029"
+msgid "Cache"
+msgstr "Cache"
+
+#: 
+msgctxt "#30030"
+msgid "Enable Cache"
+msgstr "Activer le cache"
+
+#: 
+msgctxt "#30031"
+msgid "Community"
+msgstr "Communauté"
+
+#: 
+msgctxt "#30032"
+msgid "Trigger Voting after each episode"
+msgstr "Déclenchement du vote après chaque épisode"
+
+#: 
+msgctxt "#30033"
+msgid "Limit TAG results to"
+msgstr "Limiter les résultats de TAG à"
+
+#: 
+msgctxt "#30034"
+msgid "(WIP)Series Vote after completing it"
+msgstr "(WIP) Series Vote après l'avoir complété"
+
+#: 
+msgctxt "#30035"
+msgid "(WIP)Enable voting for Trakt"
+msgstr "(WIP) Activer le vote pour Trakt"
+
+#: 
+msgctxt "#30036"
+msgid "Trakt Scrobble"
+msgstr "Trakt Scrobble"
+
+#: 
+msgctxt "#30037"
+msgid "Enable Trakt Scrobble Notification"
+msgstr "Activer la notification Scrobble Trakt"
+
+#: 
+msgctxt "#30038"
+msgid "Trakt support"
+msgstr "Support Trakt"
+
+#: 
+msgctxt "#30039"
+msgid "Show -continue-"
+msgstr "Montrer -continuer-"
+
+#: 
+msgctxt "#30040"
+msgid "Use local file count for total episodes"
+msgstr "Utiliser le nombre de fichiers locaux pour les épisodes totaux"
+
+#: 
+msgctxt "#30041"
+msgid "Skip Extra Info on Long Series"
+msgstr "Ignorer les informations supplémentaires sur les séries longues"
+
+#: 
+msgctxt "#30042"
+msgid "Spam the Log with info (only enable if told to)"
+msgstr "Spam le journal avec info (activer uniquement si dit à)"
+
+#: 
+msgctxt "#30043"
+msgid "Max episodes before data will be truncated"
+msgstr "Max épisodes avant que les données soient tronquées"
+
+#: 
+msgctxt "#30044"
+msgid "Advanced"
+msgstr "Avancée"
+
+#: 
+msgctxt "#30045"
+msgid "Hide AniDB Helper or Otherwise Useless Tags"
+msgstr "Masquer l'assistant AniDB ou les balises inutiles"
+
+#: 
+msgctxt "#30046"
+msgid "Tag Blacklist"
+msgstr "Tag Blacklist"
+
+#: 
+msgctxt "#30047"
+msgid "Hide art style related tags"
+msgstr "Masquer les balises liées au style d'art"
+
+#: 
+msgctxt "#30048"
+msgid "Hide source tags (Manga, original, etc)"
+msgstr "Masquer les tags source (Manga, original, etc.)"
+
+#: 
+msgctxt "#30049"
+msgid "Hide useful helper tags (mostly related to OP/ED style)"
+msgstr "Masquer les tags utiles (principalement liés au style OP / ED)"
+
+#: 
+msgctxt "#30050"
+msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
+msgstr "Masquer les balises du spoiler des tracés (ainsi et ainsi de suite meurt / gagne / etc)"
+
+#: 
+msgctxt "#30051"
+msgid "Treat Subgroups as 'Seasons'"
+msgstr "Traiter les sous-groupes comme des «saisons»"
+
+#: 
+msgctxt "#30052"
+msgid "Use Server Title"
+msgstr "Utiliser le titre du serveur"
+
+#: 
+msgctxt "#30053"
+msgid "Default sorting method for Filters"
+msgstr "Méthode de tri par défaut pour les filtres"
+
+#: 
+msgctxt "#30054"
+msgid "Browsing"
+msgstr "La navigation"
+
+#: 
+msgctxt "#30055"
+msgid "Time to wait for refresh to move selection (adjust for sync)"
+msgstr "Délai d'attente du rafraîchissement pour déplacer la sélection (ajuster pour la synchronisation)"
+
+#: 
+msgctxt "#30056"
+msgid "Title Settings"
+msgstr "Paramètres du titre"
+
+#: 
+msgctxt "#30057"
+msgid "Context Menu Settings"
+msgstr "Paramètres du menu contextuel"
+
+#: 
+msgctxt "#30058"
+msgid "Date format"
+msgstr "Format de date"
+
+#: 
+msgctxt "#30059"
+msgid "Series per column"
+msgstr "Série par colonne"
+
+#: 
+msgctxt "#30060"
+msgid "Columns to show"
+msgstr "Colonnes à montrer"
+
+#: 
+msgctxt "#30061"
+msgid "Switch Calendar to Directory based"
+msgstr "Changer le calendrier en répertoire basé"
+
+#: 
+msgctxt "#30062"
+msgid "Use new Mark as Watched Style"
+msgstr "Utiliser le nouveau repère comme style surveillé"
+
+#: 
+msgctxt "#30063"
+msgid "Enable remote debugging (web-pdb)"
+msgstr "Activer le débogage distant (web-pdb)"
+
+#: 
+msgctxt "#30064"
+msgid "Tweaks"
+msgstr "Tweaks"
+
+#: 
+msgctxt "#30065"
+msgid "Play"
+msgstr "Jouer"
+
+#: 
+msgctxt "#30066"
+msgid "Disable Kodi's Internal Cast Menu"
+msgstr "Désactiver le menu interne de Kodi"
+
+#: 
+msgctxt "#30067"
+msgid "Use the source thumbnail ratio instead of 16:9"
+msgstr "Utilisez le ratio de vignettes source au lieu de 16: 9"
+
+#: 
+msgctxt "#30068"
+msgid "Ignore Specials for Watched States"
+msgstr "Ignorer les offres spéciales pour les États surveillés"
+
+#: 
+msgctxt "#30069"
+msgid "Cached data expiration time (s)"
+msgstr "Temps d'expiration des données en cache"
+
+#: 
+msgctxt "#30070"
+msgid "Hide setting tags (time/place/etc)"
+msgstr "Masquer les balises de réglage (heure / lieu / etc)"
+
+#: 
+msgctxt "#30071"
+msgid "Columns span"
+msgstr "Les colonnes s'étendent"
+
+#: 
+msgctxt "#30072"
+msgid "Test"
+msgstr "Tester"
+
+#: 
+msgctxt "#30073"
+msgid "Save"
+msgstr "sauvegarder"
+
+#: 
+msgctxt "#30074"
+msgid "IP Address/Hostname"
+msgstr "Adresse IP / Nom d'hôte"
+
+#: 
+msgctxt "#30075"
+msgid "Port"
+msgstr "Port"
+
+#: 
+msgctxt "#30076"
+msgid "Login"
+msgstr "S'identifier"
+
+#: 
+msgctxt "#30077"
+msgid "Password"
+msgstr "Mot de passe"
+
+#: 
+msgctxt "#30078"
+msgid "Close"
+msgstr "Fermer"
+
+#: 
+msgctxt "#30079"
+msgid "Warning"
+msgstr "Attention"
+
+#: 
+msgctxt "#30080"
+msgid "Could not connect to Shoko Server"
+msgstr "Impossible de se connecter à Shoko Server"
+
+#: 
+msgctxt "#30081"
+msgid "Would you like to stop setup process and close this window?"
+msgstr "Voulez-vous arrêter le processus d'installation et fermer cette fenêtre?"
+
+#: 
+msgctxt "#30082"
+msgid "Setup Wizard"
+msgstr "Assistant de configuration"
+
+#: 
+msgctxt "#30083"
+msgid "Select First Unwatched Episode"
+msgstr "Sélectionnez le premier épisode non surveillé"
+
+#: 
+msgctxt "#30084"
+msgid "Eigakan"
+msgstr "Eigakan"
+
+#: 
+msgctxt "#30085"
+msgid "Enable Eigakan"
+msgstr "Activer Eigakan"
+
+#: 
+msgctxt "#30086"
+msgid "IP Address/Hostname"
+msgstr "Adresse IP / Nom d'hôte"
+
+#: 
+msgctxt "#30087"
+msgid "Port"
+msgstr "Port"
+
+#: 
+msgctxt "#30088"
+msgid "Number Attempts Before Giving Up"
+msgstr "Nombre de tentatives avant d'abandonner"
+
+#: 
+msgctxt "#30089"
+msgid "Wait (s) to buffer starting"
+msgstr "Attendez de mettre en mémoire tampon le démarrage"
+
+#: 
+msgctxt "#30090"
+msgid "Advance settings"
+msgstr "Paramètres avancés"
+
+#: 
+msgctxt "#30091"
+msgid "Resolution (1920x1080)"
+msgstr "Résolution (1920x1080)"
+
+#: 
+msgctxt "#30092"
+msgid "x264 profile"
+msgstr "profil x264"
+
+#: 
+msgctxt "#30093"
+msgid "Audio codec"
+msgstr "Un codec audio"
+
+#: 
+msgctxt "#30094"
+msgid "Video bitrate"
+msgstr "Bitrate vidéo"
+
+#: 
+msgctxt "#30095"
+msgid "Audio language setting"
+msgstr "Réglage de la langue audio"
+
+#: 
+msgctxt "#30096"
+msgid "Subtitles language setting"
+msgstr "Réglage de la langue des sous-titres"
+
+#: 
+msgctxt "#30097"
+msgid "Maintenance"
+msgstr "Entretien"
+
+#: 
+msgctxt "#30098"
+msgid "Main Menu Items"
+msgstr "Articles du menu principal"
+
+#: 
+msgctxt "#30099"
+msgid "Enable setup-wizard"
+msgstr "Activer l'assistant d'installation"
+
+#: 
+msgctxt "#30100"
+msgid "More..."
+msgstr "Plus..."
+
+#: 
+msgctxt "#30101"
+msgid "Show Search"
+msgstr "Afficher la recherche"
+
+#: 
+msgctxt "#30102"
+msgid "Show Settings"
+msgstr "Afficher les paramètres"
+
+#: 
+msgctxt "#30103"
+msgid "Show Calendar"
+msgstr "Afficher le calendrier"
+
+#: 
+msgctxt "#30104"
+msgid "Show Calendar"
+msgstr "Afficher le calendrier"
+
+#: 
+msgctxt "#30105"
+msgid "Show Unsorted"
+msgstr "Montrer non trié"
+
+#: 
+msgctxt "#30106"
+msgid "Unsorted"
+msgstr "Non trié"
+
+#: 
+msgctxt "#30107"
+msgid "Settings"
+msgstr "Paramètres"
+
+#: 
+msgctxt "#30108"
+msgid "Send anonymous data about your settings"
+msgstr "Envoyer des données anonymes sur vos paramètres"
+
+#: 
+msgctxt "#30109"
+msgid "Select custom Image/IconPack"
+msgstr "Sélectionnez Image / IconPack personnalisée"
+
+#: 
+msgctxt "#30110"
+msgid "Clear Search Terms"
+msgstr "Effacer les termes de recherche"
+
+#: 
+msgctxt "#30111"
+msgid "Hide Ratings ..."
+msgstr "Masquer les cotes ..."
+
+#: 
+msgctxt "#30113"
+msgid "Hide Rating Only When..."
+msgstr "Hide Rating Only Quand ..."
+
+#: 
+msgctxt "#30114"
+msgid "Show 'Shoko'"
+msgstr "Montrer 'Shoko'"
+
+#: 
+msgctxt "#30115"
+msgid "Shoko"
+msgstr "Shoko"
+
+#: 
+msgctxt "#30116"
+msgid "List import folders"
+msgstr "Liste des dossiers d'importation"
+
+#: 
+msgctxt "#30117"
+msgid "Stats update"
+msgstr "Mise à jour des statistiques"
+
+#: 
+msgctxt "#30118"
+msgid "MediaInfo update"
+msgstr "Mise à jour MediaInfo"
+
+#: 
+msgctxt "#30119"
+msgid "Import Folder"
+msgstr "Dossier d'importation"
+
+#: 
+msgctxt "#30120"
+msgid "Rescan File"
+msgstr "Réanalyser le fichier"
+
+#: 
+msgctxt "#30121"
+msgid "Rehash File"
+msgstr "Fichier Rehash"
+
+#: 
+msgctxt "#30122"
+msgid "Remove Missing Files"
+msgstr "Supprimer les fichiers manquants"
+
+#: 
+msgctxt "#30123"
+msgid "More Info"
+msgstr "Plus d'informations"
+
+#: 
+msgctxt "#30124"
+msgid "Vote (Series)"
+msgstr "Vote (série)"
+
+#: 
+msgctxt "#30125"
+msgid "Vote (Episode)"
+msgstr "Vote (épisode)"
+
+#: 
+msgctxt "#30126"
+msgid "Mark Series as Watched"
+msgstr "Marque série comme regardé"
+
+#: 
+msgctxt "#30127"
+msgid "Mark Series as Unwatched"
+msgstr "Mark Series comme non surveillé"
+
+#: 
+msgctxt "#30128"
+msgid "Mark Episode as Watched"
+msgstr "Mark épisode comme regardé"
+
+#: 
+msgctxt "#30129"
+msgid "Mark Episode as Unwatched"
+msgstr "Marquer l'épisode comme non surveillé"
+
+#: 
+msgctxt "#30130"
+msgid "Playlist Mode"
+msgstr "Mode Playlist"
+
+#: 
+msgctxt "#30131"
+msgid "Refresh"
+msgstr "Rafraîchir"
+
+#: 
+msgctxt "#30132"
+msgid "Play (No Scrobble)"
+msgstr "Jouer (pas de scrobble)"
+
+#: 
+msgctxt "#30133"
+msgid "Inspect Files"
+msgstr "Inspecter les fichiers"
+
+#: 
+msgctxt "#30134"
+msgid "View Cast"
+msgstr "Voir Cast"
+
+#: 
+msgctxt "#30135"
+msgid "Scan your library and remove all files that have been re/moved by hand and no longer accessible by Shoko"
+msgstr "Scannez votre bibliothèque et supprimez tous les fichiers qui ont été déplacés / déplacés à la main et qui ne sont plus accessibles par Shoko"
+
+#: 
+msgctxt "#30136"
+msgid "Push status update ..."
+msgstr "Push status update ..."
+
+#: 
+msgctxt "#30137"
+msgid "Generate Missing MediaInfo"
+msgstr "Générer un MediaInfo manquant"
+
+#: 
+msgctxt "#30138"
+msgid "to be used"
+msgstr "à utiliser"
+
+#: 
+msgctxt "#30139"
+msgid "to be used"
+msgstr "à utiliser"
+
+#: 
+msgctxt "#30140"
+msgid "Import Folders"
+msgstr "Importer des dossiers"
+
+#: 
+msgctxt "#30141"
+msgid "Resume"
+msgstr "CV"
+
+#: 
+msgctxt "#30142"
+msgid "Default sorting method for Group/Series"
+msgstr "Méthode de tri par défaut pour groupe / série"
+
+#: 
+msgctxt "#30143"
+msgid "Default sorting method for Episodes"
+msgstr "Méthode de tri par défaut pour les épisodes"
+
+#: 
+msgctxt "#30144"
+msgid "Sorting"
+msgstr "Tri"
+
+#: 
+msgctxt "#30145"
+msgid "Experimental"
+msgstr "Expérimental"
+
+#: 
+msgctxt "#30146"
+msgid "Misc"
+msgstr "Divers"
+
+#: 
+msgctxt "#30147"
+msgid "-Below are Kodi's items-"
+msgstr "-Les éléments de Kodi sont plus bas -"
+
+#: 
+msgctxt "#30148"
+msgid "-Don't use 'Mark as watched'-"
+msgstr "-Ne pas utiliser 'Mark as watch'-"
+
+#: 
+msgctxt "#30149"
+msgid "External player watch fix"
+msgstr "Correction de la montre du lecteur externe"
+
+#. 150 - 159 empty
+#: 
+msgctxt "#30160"
+msgid "Please Wait"
+msgstr "S'il vous plaît, attendez"
+
+#: 
+msgctxt "#30161"
+msgid "Getting from Server..."
+msgstr "Obtenir du serveur ..."
+
+#: 
+msgctxt "#30162"
+msgid "Loading Results..."
+msgstr "Chargement des résultats ..."
+
+#: 
+msgctxt "#30163"
+msgid "Getting Episodes from Server..."
+msgstr "Obtenir des épisodes de serveur ..."
+
+#: 
+msgctxt "#30164"
+msgid "Waiting for respond from Server..."
+msgstr "En attente de réponse du serveur ..."
+
+#: 
+msgctxt "#30165"
+msgid "Sending request to Transcode server..."
+msgstr "Envoi d'une requête au serveur de transcodage ..."
+
+#: 
+msgctxt "#30166"
+msgid "Waiting given time (postpone)"
+msgstr "Attendre le temps imparti (reporter)"
+
+#. 167 - 179 empty
+#: 
+msgctxt "#30180"
+msgid "No Results Found"
+msgstr "Aucun résultat trouvé"
+
+#: 
+msgctxt "#30181"
+msgid "Try a Different Query"
+msgstr "Essayez une requête différente"
+
+#: 
+msgctxt "#30182"
+msgid "Finished"
+msgstr "Fini"
+
+#: 
+msgctxt "#30183"
+msgid "You already finished this."
+msgstr "Vous avez déjà fini cela."
+
+#: 
+msgctxt "#30184"
+msgid "Series Voting"
+msgstr "Vote en série"
+
+#: 
+msgctxt "#30185"
+msgid "You Voted"
+msgstr "Tu as voté"
+
+#: 
+msgctxt "#30186"
+msgid "Episode Voting"
+msgstr "Épisode vote"
+
+#: 
+msgctxt "#30187"
+msgid "Watched Status Changed"
+msgstr "Statut surveillé modifié"
+
+#: 
+msgctxt "#30188"
+msgid "Marked as"
+msgstr "Marqué comme"
+
+#: 
+msgctxt "#30189"
+msgid "Queued File for Rehash"
+msgstr "Fichier en file d'attente pour Rehash"
+
+#: 
+msgctxt "#30190"
+msgid "Queued File for Rescan"
+msgstr "Fichier en file d'attente pour Rescan"
+
+#: 
+msgctxt "#30191"
+msgid "Refreshing in 10 seconds"
+msgstr "Rafraîchissant en 10 secondes"
+
+#: 
+msgctxt "#30192"
+msgid "Queued Remove Missing Files"
+msgstr "En file d'attente Supprimer les fichiers manquants"
+
+#: 
+msgctxt "#30193"
+msgid "It may take some time."
+msgstr "Cela peut prendre du temps."
+
+#: 
+msgctxt "#30194"
+msgid "Incorrect Credentials"
+msgstr "Informations d'identification incorrectes"
+
+#: 
+msgctxt "#30195"
+msgid "Please change them in Settings"
+msgstr "Veuillez les changer dans les paramètres"
+
+#: 
+msgctxt "#30196"
+msgid "Files"
+msgstr "Des dossiers"
+
+#: 
+msgctxt "#30197"
+msgid "No connection to Shoko server"
+msgstr "Aucune connexion au serveur Shoko"
+
+#: 
+msgctxt "#30198"
+msgid "Queued Run Import on Server"
+msgstr "Importation en file d'attente sur le serveur"
+
+#: 
+msgctxt "#30199"
+msgid "Queued Import Folder Scan"
+msgstr "Analyse du dossier d'importation en file d'attente"
+
+#. 200 - 220 empty
+#: 
+msgctxt "#30221"
+msgid "Search"
+msgstr "Chercher"
+
+#: 
+msgctxt "#30222"
+msgid "Calendar"
+msgstr "Calendrier"
+
+#: 
+msgctxt "#30223"
+msgid "Airing Today"
+msgstr "Aérer aujourd'hui"
+
+#: 
+msgctxt "#30224"
+msgid "New Search"
+msgstr "Nouvelle recherche"
+

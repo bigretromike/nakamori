@@ -1,0 +1,907 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Nakamori\n"
+"Language: ru\n"
+
+#: 
+msgctxt "#30001"
+msgid "Shoko Settings"
+msgstr "Настройки Shoko"
+
+#: 
+msgctxt "#30002"
+msgid "IP Address or Hostname"
+msgstr "IP адрес или имя сервера"
+
+#: 
+msgctxt "#30003"
+msgid "Port"
+msgstr "Порт"
+
+#: 
+msgctxt "#30004"
+msgid "Query Timeout (s)"
+msgstr "Таймаут (сек)"
+
+#: 
+msgctxt "#30005"
+msgid "Sync 'Watched status' to Shoko"
+msgstr "Синзронизировать статус просмотра с Shoko"
+
+#: 
+msgctxt "#30006"
+msgid "Shoko Server"
+msgstr "Shoko сервер"
+
+#: 
+msgctxt "#30007"
+msgid "Watched Status Settings"
+msgstr "Настройка статуса просмотра"
+
+#: 
+msgctxt "#30008"
+msgid "Language Display Priority"
+msgstr "Приоритет отбражения языков"
+
+#: 
+msgctxt "#30009"
+msgid "Language"
+msgstr "Язык"
+
+#: 
+msgctxt "#30010"
+msgid "Title Type"
+msgstr "Тип названия"
+
+#: 
+msgctxt "#30011"
+msgid "Shoko User"
+msgstr "Пользователь Shoko"
+
+#: 
+msgctxt "#30012"
+msgid "Calendar"
+msgstr "Календарь"
+
+#: 
+msgctxt "#30013"
+msgid "Use gzip"
+msgstr "Использовать gzip"
+
+#: 
+msgctxt "#30014"
+msgid "Enable \'Pick file\' on multi files episodes"
+msgstr "Включить \"Выбор файла\" для мульти-файловых эпизодов"
+
+#: 
+msgctxt "#30015"
+msgid "Login"
+msgstr "Логин"
+
+#: 
+msgctxt "#30016"
+msgid "Password"
+msgstr "Пароль"
+
+#: 
+msgctxt "#30017"
+msgid "Device name"
+msgstr "Устройство"
+
+#: 
+msgctxt "#30018"
+msgid "API Key"
+msgstr "API ключ"
+
+#: 
+msgctxt "#30019"
+msgid "Rows span"
+msgstr "Число рядов"
+
+#: 
+msgctxt "#30020"
+msgid "Enable \'Resume\'"
+msgstr "Включить \"Продолжить\""
+
+#: 
+msgctxt "#30021"
+msgid "Searching"
+msgstr "Идет поиск"
+
+#: 
+msgctxt "#30022"
+msgid "Limit search results to"
+msgstr "Ограничить результаты"
+
+#: 
+msgctxt "#30023"
+msgid "Video settings"
+msgstr "Настройки видео"
+
+#: 
+msgctxt "#30024"
+msgid "Percent to Play before Marking as Watched"
+msgstr "Отмечать просмотренным после проигрывания %"
+
+#: 
+msgctxt "#30025"
+msgid "Notification Window when Marked as Watched"
+msgstr "Сообщение при отметке Просмотрено"
+
+#: 
+msgctxt "#30026"
+msgid "Kodi Player Settings"
+msgstr "Настройки плеера Kodi"
+
+#: 
+msgctxt "#30027"
+msgid "Max time to wait for buffer (in ms)"
+msgstr "Макс. время ожидания буфферизации (мс)"
+
+#: 
+msgctxt "#30028"
+msgid "Use short Tag list"
+msgstr "Использовать короткий список тегов"
+
+#: 
+msgctxt "#30029"
+msgid "Cache"
+msgstr "Кэш"
+
+#: 
+msgctxt "#30030"
+msgid "Enable Cache"
+msgstr "Включить кэш"
+
+#: 
+msgctxt "#30031"
+msgid "Community"
+msgstr "Сообщество"
+
+#: 
+msgctxt "#30032"
+msgid "Trigger Voting after each episode"
+msgstr "Голосовать за серию после завершения"
+
+#: 
+msgctxt "#30033"
+msgid "Limit TAG results to"
+msgstr "Ограничить тэги для"
+
+#: 
+msgctxt "#30034"
+msgid "(WIP)Series Vote after completing it"
+msgstr "(WIP)Голосовать за шоу после завершения"
+
+#: 
+msgctxt "#30035"
+msgid "(WIP)Enable voting for Trakt"
+msgstr "(WIP)Включить Trakt голосование"
+
+#: 
+msgctxt "#30036"
+msgid "Trakt Scrobble"
+msgstr "Trakt скробблинг"
+
+#: 
+msgctxt "#30037"
+msgid "Enable Trakt Scrobble Notification"
+msgstr "Включить сообщение о Trakt скробблинге"
+
+#: 
+msgctxt "#30038"
+msgid "Trakt support"
+msgstr "Поддержка Trakt"
+
+#: 
+msgctxt "#30039"
+msgid "Show -continue-"
+msgstr "Показывать -продолжить-"
+
+#: 
+msgctxt "#30040"
+msgid "Use local file count for total episodes"
+msgstr "Использовать локальный счетчик эпизодов"
+
+#: 
+msgctxt "#30041"
+msgid "Skip Extra Info on Long Series"
+msgstr "Запрашивать меньше информации для больших шоу"
+
+#: 
+msgctxt "#30042"
+msgid "Spam the Log with info (only enable if told to)"
+msgstr "Spam the Log with info (only enable if told to)"
+
+#: 
+msgctxt "#30043"
+msgid "Max episodes before data will be truncated"
+msgstr "Max episodes before data will be truncated"
+
+#: 
+msgctxt "#30044"
+msgid "Advanced"
+msgstr "Расширенные"
+
+#: 
+msgctxt "#30045"
+msgid "Hide AniDB Helper or Otherwise Useless Tags"
+msgstr "Прятать вспомогательные AniDB тэги"
+
+#: 
+msgctxt "#30046"
+msgid "Tag Blacklist"
+msgstr "Блэклист тэгов"
+
+#: 
+msgctxt "#30047"
+msgid "Hide art style related tags"
+msgstr "Спрятать тэги стиля рисования"
+
+#: 
+msgctxt "#30048"
+msgid "Hide source tags (Manga, original, etc)"
+msgstr "Спрятать тэги источника (Manga, original, и т.п.)"
+
+#: 
+msgctxt "#30049"
+msgid "Hide useful helper tags (mostly related to OP/ED style)"
+msgstr "Спрятать полезные вспомогательные тэги (OP/ED стили)"
+
+#: 
+msgctxt "#30050"
+msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
+msgstr "Спрятать тэги раскрывающие сюжет"
+
+#: 
+msgctxt "#30051"
+msgid "Treat Subgroups as 'Seasons'"
+msgstr "Показывать подгруппы как сезоны"
+
+#: 
+msgctxt "#30052"
+msgid "Use Server Title"
+msgstr "Использовать название с сервера"
+
+#: 
+msgctxt "#30053"
+msgid "Default sorting method for Filters"
+msgstr "Метод сортировки фильтров по умолчанию"
+
+#: 
+msgctxt "#30054"
+msgid "Browsing"
+msgstr "Просмотр"
+
+#: 
+msgctxt "#30055"
+msgid "Time to wait for refresh to move selection (adjust for sync)"
+msgstr "Time to wait for refresh to move selection (adjust for sync)"
+
+#: 
+msgctxt "#30056"
+msgid "Title Settings"
+msgstr "Настройки названия"
+
+#: 
+msgctxt "#30057"
+msgid "Context Menu Settings"
+msgstr "Настройки контекстного меню"
+
+#: 
+msgctxt "#30058"
+msgid "Date format"
+msgstr "Формат даты"
+
+#: 
+msgctxt "#30059"
+msgid "Series per column"
+msgstr "Шоу на столбец"
+
+#: 
+msgctxt "#30060"
+msgid "Columns to show"
+msgstr "Показывать столбцы"
+
+#: 
+msgctxt "#30061"
+msgid "Switch Calendar to Directory based"
+msgstr "Переключить календарь на каталог"
+
+#: 
+msgctxt "#30062"
+msgid "Use new Mark as Watched Style"
+msgstr "Использовать новый стиль Mark as Watched Style"
+
+#: 
+msgctxt "#30063"
+msgid "Enable remote debugging (web-pdb)"
+msgstr "Включение удаленной отладки (web-pdb)"
+
+#: 
+msgctxt "#30064"
+msgid "Tweaks"
+msgstr "Tweaks"
+
+#: 
+msgctxt "#30065"
+msgid "Play"
+msgstr "Просмотр"
+
+#: 
+msgctxt "#30066"
+msgid "Disable Kodi's Internal Cast Menu"
+msgstr "Отключить внутреннее меню Cast Kodi"
+
+#: 
+msgctxt "#30067"
+msgid "Use the source thumbnail ratio instead of 16:9"
+msgstr "Использовать пропорции источника вместо 16:9"
+
+#: 
+msgctxt "#30068"
+msgid "Ignore Specials for Watched States"
+msgstr "Игнорировать спец. эпизоды для статуса просмотра"
+
+#: 
+msgctxt "#30069"
+msgid "Cached data expiration time (s)"
+msgstr "Время кэширования данных"
+
+#: 
+msgctxt "#30070"
+msgid "Hide setting tags (time/place/etc)"
+msgstr "Скрыть теги настроек (время / место / и т. Д.)"
+
+#: 
+msgctxt "#30071"
+msgid "Columns span"
+msgstr "Пропуск колонок"
+
+#: 
+msgctxt "#30072"
+msgid "Test"
+msgstr "Проверить"
+
+#: 
+msgctxt "#30073"
+msgid "Save"
+msgstr "Сохранить"
+
+#: 
+msgctxt "#30074"
+msgid "IP Address/Hostname"
+msgstr "IP-адрес / имя хоста"
+
+#: 
+msgctxt "#30075"
+msgid "Port"
+msgstr "Порт"
+
+#: 
+msgctxt "#30076"
+msgid "Login"
+msgstr "Логин"
+
+#: 
+msgctxt "#30077"
+msgid "Password"
+msgstr "Пароль"
+
+#: 
+msgctxt "#30078"
+msgid "Close"
+msgstr "Закрыть"
+
+#: 
+msgctxt "#30079"
+msgid "Warning"
+msgstr "Предупреждение"
+
+#: 
+msgctxt "#30080"
+msgid "Could not connect to Shoko Server"
+msgstr "Не удалось подключиться к серверу Shoko"
+
+#: 
+msgctxt "#30081"
+msgid "Would you like to stop setup process and close this window?"
+msgstr "Вы хотите остановить процесс установки и закрыть это окно?"
+
+#: 
+msgctxt "#30082"
+msgid "Setup Wizard"
+msgstr "Мастер установки"
+
+#: 
+msgctxt "#30083"
+msgid "Select First Unwatched Episode"
+msgstr "Выбрать первую непросмотренную серию"
+
+#: 
+msgctxt "#30084"
+msgid "Eigakan"
+msgstr "Eigakan"
+
+#: 
+msgctxt "#30085"
+msgid "Enable Eigakan"
+msgstr "Включить Eigakan"
+
+#: 
+msgctxt "#30086"
+msgid "IP Address/Hostname"
+msgstr "IP-адрес / имя хоста"
+
+#: 
+msgctxt "#30087"
+msgid "Port"
+msgstr "Порт"
+
+#: 
+msgctxt "#30088"
+msgid "Number Attempts Before Giving Up"
+msgstr "Число попыток"
+
+#: 
+msgctxt "#30089"
+msgid "Wait (s) to buffer starting"
+msgstr "Подождите, пока не запустится буфер"
+
+#: 
+msgctxt "#30090"
+msgid "Advance settings"
+msgstr "Продвинутые настройки"
+
+#: 
+msgctxt "#30091"
+msgid "Resolution (1920x1080)"
+msgstr "Разрешение (1920x1080)"
+
+#: 
+msgctxt "#30092"
+msgid "x264 profile"
+msgstr "Профиль x264"
+
+#: 
+msgctxt "#30093"
+msgid "Audio codec"
+msgstr "Аудиокодек"
+
+#: 
+msgctxt "#30094"
+msgid "Video bitrate"
+msgstr "Битрейт видео"
+
+#: 
+msgctxt "#30095"
+msgid "Audio language setting"
+msgstr "Настройка языка аудио"
+
+#: 
+msgctxt "#30096"
+msgid "Subtitles language setting"
+msgstr "Настройка языка субтитров"
+
+#: 
+msgctxt "#30097"
+msgid "Maintenance"
+msgstr "Обслуживание"
+
+#: 
+msgctxt "#30098"
+msgid "Main Menu Items"
+msgstr "Элементы главного меню"
+
+#: 
+msgctxt "#30099"
+msgid "Enable setup-wizard"
+msgstr "Запустить мастер установки"
+
+#: 
+msgctxt "#30100"
+msgid "More..."
+msgstr "Ещё..."
+
+#: 
+msgctxt "#30101"
+msgid "Show Search"
+msgstr "Показать результаты поиска"
+
+#: 
+msgctxt "#30102"
+msgid "Show Settings"
+msgstr "Показать настройки"
+
+#: 
+msgctxt "#30103"
+msgid "Show Calendar"
+msgstr "Показать календарь"
+
+#: 
+msgctxt "#30104"
+msgid "Show Calendar"
+msgstr "Показать календарь"
+
+#: 
+msgctxt "#30105"
+msgid "Show Unsorted"
+msgstr "Показать Unsorted"
+
+#: 
+msgctxt "#30106"
+msgid "Unsorted"
+msgstr "Несортированные"
+
+#: 
+msgctxt "#30107"
+msgid "Settings"
+msgstr "Настройки"
+
+#: 
+msgctxt "#30108"
+msgid "Send anonymous data about your settings"
+msgstr "Отправлять анонимные данные о ваших настройках"
+
+#: 
+msgctxt "#30109"
+msgid "Select custom Image/IconPack"
+msgstr "Выберите пользовательский Image / IconPack"
+
+#: 
+msgctxt "#30110"
+msgid "Clear Search Terms"
+msgstr "Очистить условия поиска"
+
+#: 
+msgctxt "#30111"
+msgid "Hide Ratings ..."
+msgstr "Скрыть оценки ..."
+
+#: 
+msgctxt "#30113"
+msgid "Hide Rating Only When..."
+msgstr "Скрыть рейтинг только если ..."
+
+#: 
+msgctxt "#30114"
+msgid "Show 'Shoko'"
+msgstr "Показать 'Shoko'"
+
+#: 
+msgctxt "#30115"
+msgid "Shoko"
+msgstr "Shoko"
+
+#: 
+msgctxt "#30116"
+msgid "List import folders"
+msgstr "Перечислить папки импорта"
+
+#: 
+msgctxt "#30117"
+msgid "Stats update"
+msgstr "Обновление статистики"
+
+#: 
+msgctxt "#30118"
+msgid "MediaInfo update"
+msgstr "Обновление MediaInfo"
+
+#: 
+msgctxt "#30119"
+msgid "Import Folder"
+msgstr "Импортировать папку"
+
+#: 
+msgctxt "#30120"
+msgid "Rescan File"
+msgstr "Повторно сканировать файл"
+
+#: 
+msgctxt "#30121"
+msgid "Rehash File"
+msgstr "Перехешировать файл"
+
+#: 
+msgctxt "#30122"
+msgid "Remove Missing Files"
+msgstr "Удаление отсутствующих файлов"
+
+#: 
+msgctxt "#30123"
+msgid "More Info"
+msgstr "Больше информации"
+
+#: 
+msgctxt "#30124"
+msgid "Vote (Series)"
+msgstr "Голосование (шоу)"
+
+#: 
+msgctxt "#30125"
+msgid "Vote (Episode)"
+msgstr "Голосование (эпизод)"
+
+#: 
+msgctxt "#30126"
+msgid "Mark Series as Watched"
+msgstr "Отметить шоу как Просмотрено"
+
+#: 
+msgctxt "#30127"
+msgid "Mark Series as Unwatched"
+msgstr "Марк шоу как Непросмотрено"
+
+#: 
+msgctxt "#30128"
+msgid "Mark Episode as Watched"
+msgstr "Марк Эпизод как Просмотрено"
+
+#: 
+msgctxt "#30129"
+msgid "Mark Episode as Unwatched"
+msgstr "Марк Эпизод как Непросмотрено"
+
+#: 
+msgctxt "#30130"
+msgid "Playlist Mode"
+msgstr "Режим плейлиста"
+
+#: 
+msgctxt "#30131"
+msgid "Refresh"
+msgstr "Обновить"
+
+#: 
+msgctxt "#30132"
+msgid "Play (No Scrobble)"
+msgstr "Просмотр (без Scrobble)"
+
+#: 
+msgctxt "#30133"
+msgid "Inspect Files"
+msgstr "Проверка файлов"
+
+#: 
+msgctxt "#30134"
+msgid "View Cast"
+msgstr "Просмотр актеров"
+
+#: 
+msgctxt "#30135"
+msgid "Scan your library and remove all files that have been re/moved by hand and no longer accessible by Shoko"
+msgstr "Сканируйте свою библиотеку и удалите все файлы, которые были повторно перемещены вручную и больше недоступны Shoko"
+
+#: 
+msgctxt "#30136"
+msgid "Push status update ..."
+msgstr "Нажмите обновление статуса ..."
+
+#: 
+msgctxt "#30137"
+msgid "Generate Missing MediaInfo"
+msgstr "Создать отсутствующий MediaInfo"
+
+#: 
+msgctxt "#30138"
+msgid "to be used"
+msgstr "быть использованным"
+
+#: 
+msgctxt "#30139"
+msgid "to be used"
+msgstr "быть использованным"
+
+#: 
+msgctxt "#30140"
+msgid "Import Folders"
+msgstr "Импорт папок"
+
+#: 
+msgctxt "#30141"
+msgid "Resume"
+msgstr "Продолжить"
+
+#: 
+msgctxt "#30142"
+msgid "Default sorting method for Group/Series"
+msgstr "Метод сортировки по умолчанию для группы / шоу"
+
+#: 
+msgctxt "#30143"
+msgid "Default sorting method for Episodes"
+msgstr "Метод сортировки по умолчанию для эпизодов"
+
+#: 
+msgctxt "#30144"
+msgid "Sorting"
+msgstr "Сортировка"
+
+#: 
+msgctxt "#30145"
+msgid "Experimental"
+msgstr "экспериментальный"
+
+#: 
+msgctxt "#30146"
+msgid "Misc"
+msgstr "Разное"
+
+#: 
+msgctxt "#30147"
+msgid "-Below are Kodi's items-"
+msgstr "-Ниже меню Kodi-"
+
+#: 
+msgctxt "#30148"
+msgid "-Don't use 'Mark as watched'-"
+msgstr "-Не использовать «Отметить как Просмотрено» -"
+
+#: 
+msgctxt "#30149"
+msgid "External player watch fix"
+msgstr "External player watch fix"
+
+#. 150 - 159 empty
+#: 
+msgctxt "#30160"
+msgid "Please Wait"
+msgstr "Пожалуйста, подождите"
+
+#: 
+msgctxt "#30161"
+msgid "Getting from Server..."
+msgstr "Получение от сервера ..."
+
+#: 
+msgctxt "#30162"
+msgid "Loading Results..."
+msgstr "Загрузка результатов ..."
+
+#: 
+msgctxt "#30163"
+msgid "Getting Episodes from Server..."
+msgstr "Получение эпизодов с сервера ..."
+
+#: 
+msgctxt "#30164"
+msgid "Waiting for respond from Server..."
+msgstr "Ожидание ответа от сервера ..."
+
+#: 
+msgctxt "#30165"
+msgid "Sending request to Transcode server..."
+msgstr "Отправка запроса на сервер Transcode ..."
+
+#: 
+msgctxt "#30166"
+msgid "Waiting given time (postpone)"
+msgstr "Ожидание заданного времени (отсрочка)"
+
+#. 167 - 179 empty
+#: 
+msgctxt "#30180"
+msgid "No Results Found"
+msgstr "Результатов не найдено"
+
+#: 
+msgctxt "#30181"
+msgid "Try a Different Query"
+msgstr "Попробуйте другой запрос"
+
+#: 
+msgctxt "#30182"
+msgid "Finished"
+msgstr "Законченный"
+
+#: 
+msgctxt "#30183"
+msgid "You already finished this."
+msgstr "Вы уже закончили это."
+
+#: 
+msgctxt "#30184"
+msgid "Series Voting"
+msgstr "Голосование по шоу"
+
+#: 
+msgctxt "#30185"
+msgid "You Voted"
+msgstr "Вы проголосовали"
+
+#: 
+msgctxt "#30186"
+msgid "Episode Voting"
+msgstr "Голосование за эпизод"
+
+#: 
+msgctxt "#30187"
+msgid "Watched Status Changed"
+msgstr "Изменено состояние просмотра"
+
+#: 
+msgctxt "#30188"
+msgid "Marked as"
+msgstr "Отмечено как"
+
+#: 
+msgctxt "#30189"
+msgid "Queued File for Rehash"
+msgstr "Файл в очереди хеширования"
+
+#: 
+msgctxt "#30190"
+msgid "Queued File for Rescan"
+msgstr "Файл в очереди для повторного сканирования"
+
+#: 
+msgctxt "#30191"
+msgid "Refreshing in 10 seconds"
+msgstr "Обновление через 10 секунд"
+
+#: 
+msgctxt "#30192"
+msgid "Queued Remove Missing Files"
+msgstr "Очередь Удаление отсутствующих файлов"
+
+#: 
+msgctxt "#30193"
+msgid "It may take some time."
+msgstr "Это может занять некоторое время."
+
+#: 
+msgctxt "#30194"
+msgid "Incorrect Credentials"
+msgstr "Неверные учетные данные"
+
+#: 
+msgctxt "#30195"
+msgid "Please change them in Settings"
+msgstr "Пожалуйста, измените их в настройках"
+
+#: 
+msgctxt "#30196"
+msgid "Files"
+msgstr "Файлы"
+
+#: 
+msgctxt "#30197"
+msgid "No connection to Shoko server"
+msgstr "Нет подключения к серверу Shoko"
+
+#: 
+msgctxt "#30198"
+msgid "Queued Run Import on Server"
+msgstr "Импорт поставлен в очередь на сервере"
+
+#: 
+msgctxt "#30199"
+msgid "Queued Import Folder Scan"
+msgstr "Сканирование папки в очереди"
+
+#. 200 - 220 empty
+#: 
+msgctxt "#30221"
+msgid "Search"
+msgstr "Поиск"
+
+#: 
+msgctxt "#30222"
+msgid "Calendar"
+msgstr "Календарь"
+
+#: 
+msgctxt "#30223"
+msgid "Airing Today"
+msgstr "Выходят сегодня"
+
+#: 
+msgctxt "#30224"
+msgid "New Search"
+msgstr "Новый поиск"
+

@@ -1,0 +1,907 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: POEditor.com\n"
+"Project-Id-Version: Nakamori\n"
+"Language: nl\n"
+
+#: 
+msgctxt "#30001"
+msgid "Shoko Settings"
+msgstr "Shoko-instellingen"
+
+#: 
+msgctxt "#30002"
+msgid "IP Address or Hostname"
+msgstr "IP-adres of hostnaam"
+
+#: 
+msgctxt "#30003"
+msgid "Port"
+msgstr "Haven"
+
+#: 
+msgctxt "#30004"
+msgid "Query Timeout (s)"
+msgstr "Query Timeout (s)"
+
+#: 
+msgctxt "#30005"
+msgid "Sync 'Watched status' to Shoko"
+msgstr "Synchroniseer 'Bekeken status' naar Shoko"
+
+#: 
+msgctxt "#30006"
+msgid "Shoko Server"
+msgstr "Shoko Server"
+
+#: 
+msgctxt "#30007"
+msgid "Watched Status Settings"
+msgstr "Bekeken statusinstellingen"
+
+#: 
+msgctxt "#30008"
+msgid "Language Display Priority"
+msgstr "Taalweergave Prioriteit"
+
+#: 
+msgctxt "#30009"
+msgid "Language"
+msgstr "Taal"
+
+#: 
+msgctxt "#30010"
+msgid "Title Type"
+msgstr "Titel Type"
+
+#: 
+msgctxt "#30011"
+msgid "Shoko User"
+msgstr "Shoko-gebruiker"
+
+#: 
+msgctxt "#30012"
+msgid "Calendar"
+msgstr "Kalender"
+
+#: 
+msgctxt "#30013"
+msgid "Use gzip"
+msgstr "Gebruik gzip"
+
+#: 
+msgctxt "#30014"
+msgid "Enable \'Pick file\' on multi files episodes"
+msgstr "Schakel 'Pick file' in multi-bestanden afleveringen in"
+
+#: 
+msgctxt "#30015"
+msgid "Login"
+msgstr "Log in"
+
+#: 
+msgctxt "#30016"
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: 
+msgctxt "#30017"
+msgid "Device name"
+msgstr "Toestelnaam"
+
+#: 
+msgctxt "#30018"
+msgid "API Key"
+msgstr "API sleutel"
+
+#: 
+msgctxt "#30019"
+msgid "Rows span"
+msgstr "Rijen overspanning"
+
+#: 
+msgctxt "#30020"
+msgid "Enable \'Resume\'"
+msgstr "Schakel 'Doorgaan' in"
+
+#: 
+msgctxt "#30021"
+msgid "Searching"
+msgstr "Zoeken"
+
+#: 
+msgctxt "#30022"
+msgid "Limit search results to"
+msgstr "Beperk de zoekresultaten tot"
+
+#: 
+msgctxt "#30023"
+msgid "Video settings"
+msgstr "Beeldinstellingen"
+
+#: 
+msgctxt "#30024"
+msgid "Percent to Play before Marking as Watched"
+msgstr "Het percentage dat moet worden gespeeld voordat het wordt gemarkeerd als waargenomen"
+
+#: 
+msgctxt "#30025"
+msgid "Notification Window when Marked as Watched"
+msgstr "Meldingsvenster wanneer gemarkeerd als bekeken"
+
+#: 
+msgctxt "#30026"
+msgid "Kodi Player Settings"
+msgstr "Kodi Player-instellingen"
+
+#: 
+msgctxt "#30027"
+msgid "Max time to wait for buffer (in ms)"
+msgstr "Maximale wachttijd voor buffer (in ms)"
+
+#: 
+msgctxt "#30028"
+msgid "Use short Tag list"
+msgstr "Gebruik de korte taglijst"
+
+#: 
+msgctxt "#30029"
+msgid "Cache"
+msgstr "Cache"
+
+#: 
+msgctxt "#30030"
+msgid "Enable Cache"
+msgstr "Schakel Cache in"
+
+#: 
+msgctxt "#30031"
+msgid "Community"
+msgstr "Gemeenschap"
+
+#: 
+msgctxt "#30032"
+msgid "Trigger Voting after each episode"
+msgstr "Trigger Stemmen na elke aflevering"
+
+#: 
+msgctxt "#30033"
+msgid "Limit TAG results to"
+msgstr "Beperk TAG-resultaten tot"
+
+#: 
+msgctxt "#30034"
+msgid "(WIP)Series Vote after completing it"
+msgstr "(OHW) Reeksstemming na het voltooien ervan"
+
+#: 
+msgctxt "#30035"
+msgid "(WIP)Enable voting for Trakt"
+msgstr "(WIP) Stemming voor Trakt inschakelen"
+
+#: 
+msgctxt "#30036"
+msgid "Trakt Scrobble"
+msgstr "Trakt Scrobble"
+
+#: 
+msgctxt "#30037"
+msgid "Enable Trakt Scrobble Notification"
+msgstr "Activeer Trakt Scrobble-melding"
+
+#: 
+msgctxt "#30038"
+msgid "Trakt support"
+msgstr "Trakt-ondersteuning"
+
+#: 
+msgctxt "#30039"
+msgid "Show -continue-"
+msgstr "Show -Verdergaan-"
+
+#: 
+msgctxt "#30040"
+msgid "Use local file count for total episodes"
+msgstr "Gebruik het lokale aantal bestanden voor de totale afleveringen"
+
+#: 
+msgctxt "#30041"
+msgid "Skip Extra Info on Long Series"
+msgstr "Sla extra info over de lange reeks over"
+
+#: 
+msgctxt "#30042"
+msgid "Spam the Log with info (only enable if told to)"
+msgstr "Spam het logboek met info (alleen inschakelen indien verteld)"
+
+#: 
+msgctxt "#30043"
+msgid "Max episodes before data will be truncated"
+msgstr "Max afleveringen voordat gegevens worden afgebroken"
+
+#: 
+msgctxt "#30044"
+msgid "Advanced"
+msgstr "gevorderd"
+
+#: 
+msgctxt "#30045"
+msgid "Hide AniDB Helper or Otherwise Useless Tags"
+msgstr "Verberg AniDB Helper of anders nutteloze tags"
+
+#: 
+msgctxt "#30046"
+msgid "Tag Blacklist"
+msgstr "Tag Blacklist"
+
+#: 
+msgctxt "#30047"
+msgid "Hide art style related tags"
+msgstr "Verberg kunst gerelateerde tags"
+
+#: 
+msgctxt "#30048"
+msgid "Hide source tags (Manga, original, etc)"
+msgstr "Brontags verbergen (Manga, origineel, enz.)"
+
+#: 
+msgctxt "#30049"
+msgid "Hide useful helper tags (mostly related to OP/ED style)"
+msgstr "Verberg nuttige helper tags (meestal gerelateerd aan de OP / ED stijl)"
+
+#: 
+msgctxt "#30050"
+msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
+msgstr "Verberg plot spoiler tags (zo en zo sterft / wint / etc)"
+
+#: 
+msgctxt "#30051"
+msgid "Treat Subgroups as 'Seasons'"
+msgstr "Subgroepen behandelen als 'seizoenen'"
+
+#: 
+msgctxt "#30052"
+msgid "Use Server Title"
+msgstr "Gebruik servernaam"
+
+#: 
+msgctxt "#30053"
+msgid "Default sorting method for Filters"
+msgstr "Standaard sorteermethode voor filters"
+
+#: 
+msgctxt "#30054"
+msgid "Browsing"
+msgstr "Browsing"
+
+#: 
+msgctxt "#30055"
+msgid "Time to wait for refresh to move selection (adjust for sync)"
+msgstr "Tijd om te wachten op verversen om selectie te verplaatsen (aanpassen voor synchronisatie)"
+
+#: 
+msgctxt "#30056"
+msgid "Title Settings"
+msgstr "Titel instellingen"
+
+#: 
+msgctxt "#30057"
+msgid "Context Menu Settings"
+msgstr "Context Menu Instellingen"
+
+#: 
+msgctxt "#30058"
+msgid "Date format"
+msgstr "Datumnotatie"
+
+#: 
+msgctxt "#30059"
+msgid "Series per column"
+msgstr "Serie per kolom"
+
+#: 
+msgctxt "#30060"
+msgid "Columns to show"
+msgstr "Kolommen om te tonen"
+
+#: 
+msgctxt "#30061"
+msgid "Switch Calendar to Directory based"
+msgstr "Schakel van kalender naar map gebaseerd"
+
+#: 
+msgctxt "#30062"
+msgid "Use new Mark as Watched Style"
+msgstr "Gebruik nieuwe markering als gecontroleerde stijl"
+
+#: 
+msgctxt "#30063"
+msgid "Enable remote debugging (web-pdb)"
+msgstr "Foutopsporing op afstand inschakelen (web-pdb)"
+
+#: 
+msgctxt "#30064"
+msgid "Tweaks"
+msgstr "tweaks"
+
+#: 
+msgctxt "#30065"
+msgid "Play"
+msgstr "Spelen"
+
+#: 
+msgctxt "#30066"
+msgid "Disable Kodi's Internal Cast Menu"
+msgstr "Schakel het interne Cast-menu van Kodi uit"
+
+#: 
+msgctxt "#30067"
+msgid "Use the source thumbnail ratio instead of 16:9"
+msgstr "Gebruik de bronminiaturenverhouding in plaats van 16: 9"
+
+#: 
+msgctxt "#30068"
+msgid "Ignore Specials for Watched States"
+msgstr "Negeer specials voor bewaakte staten"
+
+#: 
+msgctxt "#30069"
+msgid "Cached data expiration time (s)"
+msgstr "Vervaltijd (en) in cachegegevens"
+
+#: 
+msgctxt "#30070"
+msgid "Hide setting tags (time/place/etc)"
+msgstr "Instellingslabels verbergen (tijd / plaats / etc)"
+
+#: 
+msgctxt "#30071"
+msgid "Columns span"
+msgstr "Kolommen overspannen"
+
+#: 
+msgctxt "#30072"
+msgid "Test"
+msgstr "Test"
+
+#: 
+msgctxt "#30073"
+msgid "Save"
+msgstr "Opslaan"
+
+#: 
+msgctxt "#30074"
+msgid "IP Address/Hostname"
+msgstr "IP-adres / hostnaam"
+
+#: 
+msgctxt "#30075"
+msgid "Port"
+msgstr "Haven"
+
+#: 
+msgctxt "#30076"
+msgid "Login"
+msgstr "Log in"
+
+#: 
+msgctxt "#30077"
+msgid "Password"
+msgstr "Wachtwoord"
+
+#: 
+msgctxt "#30078"
+msgid "Close"
+msgstr "Dichtbij"
+
+#: 
+msgctxt "#30079"
+msgid "Warning"
+msgstr "Waarschuwing"
+
+#: 
+msgctxt "#30080"
+msgid "Could not connect to Shoko Server"
+msgstr "Kon geen verbinding maken met Shoko Server"
+
+#: 
+msgctxt "#30081"
+msgid "Would you like to stop setup process and close this window?"
+msgstr "Wilt u het installatieproces stoppen en dit venster sluiten?"
+
+#: 
+msgctxt "#30082"
+msgid "Setup Wizard"
+msgstr "Installatiewizard"
+
+#: 
+msgctxt "#30083"
+msgid "Select First Unwatched Episode"
+msgstr "Selecteer Eerste onverwachte aflevering"
+
+#: 
+msgctxt "#30084"
+msgid "Eigakan"
+msgstr "Eigakan"
+
+#: 
+msgctxt "#30085"
+msgid "Enable Eigakan"
+msgstr "Schakel Eigakan in"
+
+#: 
+msgctxt "#30086"
+msgid "IP Address/Hostname"
+msgstr "IP-adres / hostnaam"
+
+#: 
+msgctxt "#30087"
+msgid "Port"
+msgstr "Haven"
+
+#: 
+msgctxt "#30088"
+msgid "Number Attempts Before Giving Up"
+msgstr "Aantal pogingen voordat u opgeeft"
+
+#: 
+msgctxt "#30089"
+msgid "Wait (s) to buffer starting"
+msgstr "Wacht (s) om het starten te bufferen"
+
+#: 
+msgctxt "#30090"
+msgid "Advance settings"
+msgstr "Geavanceerde instellingen"
+
+#: 
+msgctxt "#30091"
+msgid "Resolution (1920x1080)"
+msgstr "Resolutie (1920x1080)"
+
+#: 
+msgctxt "#30092"
+msgid "x264 profile"
+msgstr "x264 profiel"
+
+#: 
+msgctxt "#30093"
+msgid "Audio codec"
+msgstr "Audiocodec"
+
+#: 
+msgctxt "#30094"
+msgid "Video bitrate"
+msgstr "Video bitrate"
+
+#: 
+msgctxt "#30095"
+msgid "Audio language setting"
+msgstr "Instelling audiotaal"
+
+#: 
+msgctxt "#30096"
+msgid "Subtitles language setting"
+msgstr "Ondertitels taalinstelling"
+
+#: 
+msgctxt "#30097"
+msgid "Maintenance"
+msgstr "Onderhoud"
+
+#: 
+msgctxt "#30098"
+msgid "Main Menu Items"
+msgstr "Hoofdmenu-items"
+
+#: 
+msgctxt "#30099"
+msgid "Enable setup-wizard"
+msgstr "Schakel setup-wizard in"
+
+#: 
+msgctxt "#30100"
+msgid "More..."
+msgstr "Meer..."
+
+#: 
+msgctxt "#30101"
+msgid "Show Search"
+msgstr "Toon Zoeken"
+
+#: 
+msgctxt "#30102"
+msgid "Show Settings"
+msgstr "Toon instellingen"
+
+#: 
+msgctxt "#30103"
+msgid "Show Calendar"
+msgstr "Toon kalender"
+
+#: 
+msgctxt "#30104"
+msgid "Show Calendar"
+msgstr "Toon kalender"
+
+#: 
+msgctxt "#30105"
+msgid "Show Unsorted"
+msgstr "Ongesorteerd weergeven"
+
+#: 
+msgctxt "#30106"
+msgid "Unsorted"
+msgstr "unsorted"
+
+#: 
+msgctxt "#30107"
+msgid "Settings"
+msgstr "instellingen"
+
+#: 
+msgctxt "#30108"
+msgid "Send anonymous data about your settings"
+msgstr "Stuur anonieme gegevens over uw instellingen"
+
+#: 
+msgctxt "#30109"
+msgid "Select custom Image/IconPack"
+msgstr "Selecteer aangepast beeld / pictogrampakket"
+
+#: 
+msgctxt "#30110"
+msgid "Clear Search Terms"
+msgstr "Zoektermen wissen"
+
+#: 
+msgctxt "#30111"
+msgid "Hide Ratings ..."
+msgstr "Beoordelingen verbergen ..."
+
+#: 
+msgctxt "#30113"
+msgid "Hide Rating Only When..."
+msgstr "Verberg alleen wanneer wanneer ..."
+
+#: 
+msgctxt "#30114"
+msgid "Show 'Shoko'"
+msgstr "Toon 'Shoko'"
+
+#: 
+msgctxt "#30115"
+msgid "Shoko"
+msgstr "Shoko"
+
+#: 
+msgctxt "#30116"
+msgid "List import folders"
+msgstr "Lijstimportmappen"
+
+#: 
+msgctxt "#30117"
+msgid "Stats update"
+msgstr "Statistieken update"
+
+#: 
+msgctxt "#30118"
+msgid "MediaInfo update"
+msgstr "MediaInfo-update"
+
+#: 
+msgctxt "#30119"
+msgid "Import Folder"
+msgstr "Map importeren"
+
+#: 
+msgctxt "#30120"
+msgid "Rescan File"
+msgstr "Bestand opnieuw scannen"
+
+#: 
+msgctxt "#30121"
+msgid "Rehash File"
+msgstr "Rehash File"
+
+#: 
+msgctxt "#30122"
+msgid "Remove Missing Files"
+msgstr "Verwijder ontbrekende bestanden"
+
+#: 
+msgctxt "#30123"
+msgid "More Info"
+msgstr "Meer informatie"
+
+#: 
+msgctxt "#30124"
+msgid "Vote (Series)"
+msgstr "Stem (serie)"
+
+#: 
+msgctxt "#30125"
+msgid "Vote (Episode)"
+msgstr "Stem (aflevering)"
+
+#: 
+msgctxt "#30126"
+msgid "Mark Series as Watched"
+msgstr "Markeer de reeks als gevolgd"
+
+#: 
+msgctxt "#30127"
+msgid "Mark Series as Unwatched"
+msgstr "Markeer de reeks als niet gelukt"
+
+#: 
+msgctxt "#30128"
+msgid "Mark Episode as Watched"
+msgstr "Mark Episode als Watched"
+
+#: 
+msgctxt "#30129"
+msgid "Mark Episode as Unwatched"
+msgstr "Markeren als aflevering"
+
+#: 
+msgctxt "#30130"
+msgid "Playlist Mode"
+msgstr "Playlist-modus"
+
+#: 
+msgctxt "#30131"
+msgid "Refresh"
+msgstr "verversen"
+
+#: 
+msgctxt "#30132"
+msgid "Play (No Scrobble)"
+msgstr "Spelen (geen scrobble)"
+
+#: 
+msgctxt "#30133"
+msgid "Inspect Files"
+msgstr "Inspecteer bestanden"
+
+#: 
+msgctxt "#30134"
+msgid "View Cast"
+msgstr "Cast bekijken"
+
+#: 
+msgctxt "#30135"
+msgid "Scan your library and remove all files that have been re/moved by hand and no longer accessible by Shoko"
+msgstr "Scan uw bibliotheek en verwijder alle bestanden die handmatig zijn verplaatst en verplaatst en niet langer toegankelijk zijn voor Shoko"
+
+#: 
+msgctxt "#30136"
+msgid "Push status update ..."
+msgstr "Push status update ..."
+
+#: 
+msgctxt "#30137"
+msgid "Generate Missing MediaInfo"
+msgstr "Genereer Missing MediaInfo"
+
+#: 
+msgctxt "#30138"
+msgid "to be used"
+msgstr "om gebruikt te worden"
+
+#: 
+msgctxt "#30139"
+msgid "to be used"
+msgstr "om gebruikt te worden"
+
+#: 
+msgctxt "#30140"
+msgid "Import Folders"
+msgstr "Importeer mappen"
+
+#: 
+msgctxt "#30141"
+msgid "Resume"
+msgstr "Hervat"
+
+#: 
+msgctxt "#30142"
+msgid "Default sorting method for Group/Series"
+msgstr "Standaard sorteermethode voor Group / Series"
+
+#: 
+msgctxt "#30143"
+msgid "Default sorting method for Episodes"
+msgstr "Standaard sorteermethode voor afleveringen"
+
+#: 
+msgctxt "#30144"
+msgid "Sorting"
+msgstr "sorteer-"
+
+#: 
+msgctxt "#30145"
+msgid "Experimental"
+msgstr "experimenteel"
+
+#: 
+msgctxt "#30146"
+msgid "Misc"
+msgstr "Misc"
+
+#: 
+msgctxt "#30147"
+msgid "-Below are Kodi's items-"
+msgstr "-Onder zijn Kodi's items-"
+
+#: 
+msgctxt "#30148"
+msgid "-Don't use 'Mark as watched'-"
+msgstr "- Gebruik 'Mark niet als bekeken'"
+
+#: 
+msgctxt "#30149"
+msgid "External player watch fix"
+msgstr "Horloge-fix voor externe speler"
+
+#. 150 - 159 empty
+#: 
+msgctxt "#30160"
+msgid "Please Wait"
+msgstr "Even geduld aub"
+
+#: 
+msgctxt "#30161"
+msgid "Getting from Server..."
+msgstr "Van server komen ..."
+
+#: 
+msgctxt "#30162"
+msgid "Loading Results..."
+msgstr "Resultaten laden ..."
+
+#: 
+msgctxt "#30163"
+msgid "Getting Episodes from Server..."
+msgstr "Episodes van server halen ..."
+
+#: 
+msgctxt "#30164"
+msgid "Waiting for respond from Server..."
+msgstr "Wachten op antwoorden van server ..."
+
+#: 
+msgctxt "#30165"
+msgid "Sending request to Transcode server..."
+msgstr "Verzoek verzenden naar Transcode-server ..."
+
+#: 
+msgctxt "#30166"
+msgid "Waiting given time (postpone)"
+msgstr "Wachten op gegeven tijd (uitstel)"
+
+#. 167 - 179 empty
+#: 
+msgctxt "#30180"
+msgid "No Results Found"
+msgstr "Geen resultaten gevonden"
+
+#: 
+msgctxt "#30181"
+msgid "Try a Different Query"
+msgstr "Probeer een andere zoekopdracht"
+
+#: 
+msgctxt "#30182"
+msgid "Finished"
+msgstr "Afgewerkt"
+
+#: 
+msgctxt "#30183"
+msgid "You already finished this."
+msgstr "Je hebt dit al gedaan."
+
+#: 
+msgctxt "#30184"
+msgid "Series Voting"
+msgstr "Serie stemmen"
+
+#: 
+msgctxt "#30185"
+msgid "You Voted"
+msgstr "Jij stemde"
+
+#: 
+msgctxt "#30186"
+msgid "Episode Voting"
+msgstr "Aflevering stemmen"
+
+#: 
+msgctxt "#30187"
+msgid "Watched Status Changed"
+msgstr "Bekeken status gewijzigd"
+
+#: 
+msgctxt "#30188"
+msgid "Marked as"
+msgstr "Gemarkeerd als"
+
+#: 
+msgctxt "#30189"
+msgid "Queued File for Rehash"
+msgstr "In wachtrij geplaatst bestand voor Rehash"
+
+#: 
+msgctxt "#30190"
+msgid "Queued File for Rescan"
+msgstr "In wachtrij geplaatst bestand voor opnieuw scannen"
+
+#: 
+msgctxt "#30191"
+msgid "Refreshing in 10 seconds"
+msgstr "Vernieuwen in 10 seconden"
+
+#: 
+msgctxt "#30192"
+msgid "Queued Remove Missing Files"
+msgstr "In de wachtrij Verwijder ontbrekende bestanden"
+
+#: 
+msgctxt "#30193"
+msgid "It may take some time."
+msgstr "Het kan even duren."
+
+#: 
+msgctxt "#30194"
+msgid "Incorrect Credentials"
+msgstr "Onjuiste referenties"
+
+#: 
+msgctxt "#30195"
+msgid "Please change them in Settings"
+msgstr "Wijzig deze in Instellingen"
+
+#: 
+msgctxt "#30196"
+msgid "Files"
+msgstr "bestanden"
+
+#: 
+msgctxt "#30197"
+msgid "No connection to Shoko server"
+msgstr "Geen verbinding met Shoko-server"
+
+#: 
+msgctxt "#30198"
+msgid "Queued Run Import on Server"
+msgstr "In wachtrij Uitvoeren Importeren op server"
+
+#: 
+msgctxt "#30199"
+msgid "Queued Import Folder Scan"
+msgstr "In wachtrij geïmporteerde scan van map"
+
+#. 200 - 220 empty
+#: 
+msgctxt "#30221"
+msgid "Search"
+msgstr "Zoeken"
+
+#: 
+msgctxt "#30222"
+msgid "Calendar"
+msgstr "Kalender"
+
+#: 
+msgctxt "#30223"
+msgid "Airing Today"
+msgstr "Luchten vandaag"
+
+#: 
+msgctxt "#30224"
+msgid "New Search"
+msgstr "Nieuwe zoekopdracht"
+
