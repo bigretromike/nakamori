@@ -3,7 +3,7 @@
 # Addon id: plugin.video.nakamori
 # Addon Provider: BigRetroMike, da3dsoul
 msgid ""
-msgstr ""
+msgstm"""
 "Project-Id-Version: nakamori\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "PO-Revision-Date: 2018-08-10 12:00+0100\n"
@@ -19,475 +19,475 @@ msgstr ""
 
 msgctxt "#30001"
 msgid "Shoko Settings"
-msgstr ""
+msgstr "Shoko Settings"
 
 msgctxt "#30002"
 msgid "IP Address or Hostname"
-msgstr ""
+msgstr "IP Address or Hostname"
 
 msgctxt "#30003"
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgctxt "#30004"
 msgid "Query Timeout (s)"
-msgstr ""
+msgstr "Query Timeout (s)"
 
 msgctxt "#30005"
 msgid "Sync 'Watched status' to Shoko"
-msgstr ""
+msgstr "Sync 'Watched status' to Shoko"
 
 msgctxt "#30006"
 msgid "Shoko Server"
-msgstr ""
+msgstr "Shoko Server"
 
 msgctxt "#30007"
 msgid "Watched Status Settings"
-msgstr ""
+msgstr "Watched Status Settings"
 
 msgctxt "#30008"
 msgid "Language Display Priority"
-msgstr ""
+msgstr "Language Display Priority"
 
 msgctxt "#30009"
 msgid "Language"
-msgstr ""
+msgstr "Language"
 
 msgctxt "#30010"
 msgid "Title Type"
-msgstr ""
+msgstr "Title Type"
 
 msgctxt "#30011"
 msgid "Shoko User"
-msgstr ""
+msgstr "Shoko User"
 
 msgctxt "#30012"
 msgid "Calendar"
-msgstr ""
+msgstr "Calendar"
 
 msgctxt "#30013"
 msgid "Use gzip"
-msgstr ""
+msgstr "Use gzip"
 
 msgctxt "#30014"
 msgid "Enable \'Pick file\' on multi files episodes"
-msgstr ""
+msgstr "Enable \'Pick file\' on multi files episodes"
 
 msgctxt "#30015"
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
 msgctxt "#30016"
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 msgctxt "#30017"
 msgid "Device name"
-msgstr ""
+msgstr "Device name"
 
 msgctxt "#30018"
 msgid "API Key"
-msgstr ""
+msgstr "API Key"
 
 msgctxt "#30019"
 msgid "Rows span"
-msgstr ""
+msgstr "Rows span"
 
 msgctxt "#30020"
 msgid "Enable \'Resume\'"
-msgstr ""
+msgstr "Enable \'Resume\'"
 
 msgctxt "#30021"
 msgid "Searching"
-msgstr ""
+msgstr "Searching"
 
 msgctxt "#30022"
 msgid "Limit search results to"
-msgstr ""
+msgstr "Limit search results to"
 
 msgctxt "#30023"
 msgid "Video settings"
-msgstr ""
+msgstr "Video settings"
 
 msgctxt "#30024"
 msgid "Percent to Play before Marking as Watched"
-msgstr ""
+msgstr "Percent to Play before Marking as Watched"
 
 msgctxt "#30025"
 msgid "Notification Window when Marked as Watched"
-msgstr ""
+msgstr "Notification Window when Marked as Watched"
 
 msgctxt "#30026"
 msgid "Kodi Player Settings"
-msgstr ""
+msgstr "Kodi Player Settings"
 
 msgctxt "#30027"
 msgid "Max time to wait for buffer (in ms)"
-msgstr ""
+msgstr "Max time to wait for buffer (in ms)"
 
 msgctxt "#30028"
 msgid "Use short Tag list"
-msgstr ""
+msgstr "Use short Tag list"
 
 msgctxt "#30029"
 msgid "Cache"
-msgstr ""
+msgstr "Cache"
 
 msgctxt "#30030"
 msgid "Enable Cache"
-msgstr ""
+msgstr "Enable Cache"
 
 msgctxt "#30031"
 msgid "Community"
-msgstr ""
+msgstr "Community"
 
 msgctxt "#30032"
 msgid "Trigger Voting after each episode"
-msgstr ""
+msgstr "Trigger Voting after each episode"
 
 msgctxt "#30033"
 msgid "Limit TAG results to"
-msgstr ""
+msgstr "Limit TAG results to"
 
 msgctxt "#30034"
 msgid "(WIP)Series Vote after completing it"
-msgstr ""
+msgstr "(WIP)Series Vote after completing it"
 
 msgctxt "#30035"
 msgid "(WIP)Enable voting for Trakt"
-msgstr ""
+msgstr "(WIP)Enable voting for Trakt"
 
 msgctxt "#30036"
 msgid "Trakt Scrobble"
-msgstr ""
+msgstr "Trakt Scrobble"
 
 msgctxt "#30037"
 msgid "Enable Trakt Scrobble Notification"
-msgstr ""
+msgstr "Enable Trakt Scrobble Notification"
 
 msgctxt "#30038"
 msgid "Trakt support"
-msgstr ""
+msgstr "Trakt support"
 
 msgctxt "#30039"
 msgid "Show -continue-"
-msgstr ""
+msgstr "Show -continue-"
 
 msgctxt "#30040"
 msgid "Use local file count for total episodes"
-msgstr ""
+msgstr "Use local file count for total episodes"
 
 msgctxt "#30041"
 msgid "Skip Extra Info on Long Series"
-msgstr ""
+msgstr "Skip Extra Info on Long Series"
 
 msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
-msgstr ""
+msgstr "Spam the Log with info (only enable if told to)"
 
 msgctxt "#30043"
 msgid "Max episodes before data will be truncated"
-msgstr ""
+msgstr "Max episodes before data will be truncated"
 
 msgctxt "#30044"
 msgid "Advanced"
-msgstr ""
+msgstr "Advanced"
 
 msgctxt "#30045"
 msgid "Hide AniDB Helper or Otherwise Useless Tags"
-msgstr ""
+msgstr "Hide AniDB Helper or Otherwise Useless Tags"
 
 msgctxt "#30046"
 msgid "Tag Blacklist"
-msgstr ""
+msgstr "Tag Blacklist"
 
 msgctxt "#30047"
 msgid "Hide art style related tags"
-msgstr ""
+msgstr "Hide art style related tags"
 
 msgctxt "#30048"
 msgid "Hide source tags (Manga, original, etc)"
-msgstr ""
+msgstr "Hide source tags (Manga, original, etc)"
 
 msgctxt "#30049"
 msgid "Hide useful helper tags (mostly related to OP/ED style)"
-msgstr ""
+msgstr "Hide useful helper tags (mostly related to OP/ED style)"
 
 msgctxt "#30050"
 msgid "Hide plot spoiler tags (so and so dies/wins/etc)"
-msgstr ""
+msgstr "Hide plot spoiler tags (so and so dies/wins/etc)"
 
 msgctxt "#30051"
 msgid "Treat Subgroups as 'Seasons'"
-msgstr ""
+msgstr "Treat Subgroups as 'Seasons'"
 
 msgctxt "#30052"
 msgid "Use Server Title"
-msgstr ""
+msgstr "Use Server Title"
 
 msgctxt "#30053"
 msgid "Default sorting method for Filters"
-msgstr ""
+msgstr "Default sorting method for Filters"
 
 msgctxt "#30054"
 msgid "Browsing"
-msgstr ""
+msgstr "Browsing"
 
 msgctxt "#30055"
 msgid "Time to wait for refresh to move selection (adjust for sync)"
-msgstr ""
+msgstr "Time to wait for refresh to move selection (adjust for sync)"
 
 msgctxt "#30056"
 msgid "Title Settings"
-msgstr ""
+msgstr "Title Settings"
 
 msgctxt "#30057"
 msgid "Context Menu Settings"
-msgstr ""
+msgstr "Context Menu Settings"
 
 msgctxt "#30058"
 msgid "Date format"
-msgstr ""
+msgstr "Date format"
 
 msgctxt "#30059"
 msgid "Series per column"
-msgstr ""
+msgstr "Series per column"
 
 msgctxt "#30060"
 msgid "Columns to show"
-msgstr ""
+msgstr "Columns to show"
 
 msgctxt "#30061"
 msgid "Switch Calendar to Directory based"
-msgstr ""
+msgstr "Switch Calendar to Directory based"
 
 msgctxt "#30062"
 msgid "Use new Mark as Watched Style"
-msgstr ""
+msgstr "Use new Mark as Watched Style"
 
 msgctxt "#30063"
 msgid "Enable remote debugging (web-pdb)"
-msgstr ""
+msgstr "Enable remote debugging (web-pdb)"
 
 msgctxt "#30064"
 msgid "Tweaks"
-msgstr ""
+msgstr "Tweaks"
 
 msgctxt "#30065"
 msgid "Play"
-msgstr ""
+msgstr "Play"
 
 msgctxt "#30066"
 msgid "Disable Kodi's Internal Cast Menu"
-msgstr ""
+msgstr "Disable Kodi's Internal Cast Menu"
 
 msgctxt "#30067"
 msgid "Use the source thumbnail ratio instead of 16:9"
-msgstr ""
+msgstr "Use the source thumbnail ratio instead of 16:9"
 
 msgctxt "#30068"
 msgid "Ignore Specials for Watched States"
-msgstr ""
+msgstr "Ignore Specials for Watched States"
 
 msgctxt "#30069"
 msgid "Cached data expiration time (s)"
-msgstr ""
+msgstr "Cached data expiration time (s)"
 
 msgctxt "#30070"
 msgid "Hide setting tags (time/place/etc)"
-msgstr ""
+msgstr "Hide setting tags (time/place/etc)"
 
 msgctxt "#30071"
 msgid "Columns span"
-msgstr ""
+msgstr "Columns span"
 
 msgctxt "#30072"
 msgid "Test"
-msgstr ""
+msgstr "Test"
 
 msgctxt "#30073"
 msgid "Save"
-msgstr ""
+msgstr "Save"
 
 msgctxt "#30074"
 msgid "IP Address/Hostname"
-msgstr ""
+msgstr "IP Address/Hostname"
 
 msgctxt "#30075"
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgctxt "#30076"
 msgid "Login"
-msgstr ""
+msgstr "Login"
 
 msgctxt "#30077"
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 msgctxt "#30078"
 msgid "Close"
-msgstr ""
+msgstr "Close"
 
 msgctxt "#30079"
 msgid "Warning"
-msgstr ""
+msgstr "Warning"
 
 msgctxt "#30080"
 msgid "Could not connect to Shoko Server"
-msgstr ""
+msgstr "Could not connect to Shoko Server"
 
 msgctxt "#30081"
 msgid "Would you like to stop setup process and close this window?"
-msgstr ""
+msgstr "Would you like to stop setup process and close this window?"
 
 msgctxt "#30082"
 msgid "Setup Wizard"
-msgstr ""
+msgstr "Setup Wizard"
 
 msgctxt "#30083"
 msgid "Select First Unwatched Episode"
-msgstr ""
+msgstr "Select First Unwatched Episode"
 
 msgctxt "#30084"
 msgid "Eigakan"
-msgstr ""
+msgstr "Eigakan"
 
 msgctxt "#30085"
 msgid "Enable Eigakan"
-msgstr ""
+msgstr "Enable Eigakan"
 
 msgctxt "#30086"
 msgid "IP Address/Hostname"
-msgstr ""
+msgstr "IP Address/Hostname"
 
 msgctxt "#30087"
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 msgctxt "#30088"
 msgid "Number Attempts Before Giving Up"
-msgstr ""
+msgstr "Number Attempts Before Giving Up"
 
 msgctxt "#30089"
 msgid "Wait (s) to buffer starting"
-msgstr ""
+msgstr "Wait (s) to buffer starting"
 
 msgctxt "#30090"
 msgid "Advance settings"
-msgstr ""
+msgstr "Advance settings"
 
 msgctxt "#30091"
 msgid "Resolution (1920x1080)"
-msgstr ""
+msgstr "Resolution (1920x1080)"
 
 msgctxt "#30092"
 msgid "x264 profile"
-msgstr ""
+msgstr "x264 profile"
 
 msgctxt "#30093"
 msgid "Audio codec"
-msgstr ""
+msgstr "Audio codec"
 
 msgctxt "#30094"
 msgid "Video bitrate"
-msgstr ""
+msgstr "Video bitrate"
 
 msgctxt "#30095"
 msgid "Audio language setting"
-msgstr ""
+msgstr "Audio language setting"
 
 msgctxt "#30096"
 msgid "Subtitles language setting"
-msgstr ""
+msgstr "Subtitles language setting"
 
 msgctxt "#30097"
 msgid "Maintenance"
-msgstr ""
+msgstr "Maintenance"
 
 msgctxt "#30098"
 msgid "Main Menu Items"
-msgstr ""
+msgstr "Main Menu Items"
 
 msgctxt "#30099"
 msgid "Enable setup-wizard"
-msgstr ""
+msgstr "Enable setup-wizard"
 
 msgctxt "#30100"
 msgid "More..."
-msgstr ""
+msgstr "More..."
 
 msgctxt "#30101"
 msgid "Show Search"
-msgstr ""
+msgstr "Show Search"
 
 msgctxt "#30102"
 msgid "Show Settings"
-msgstr ""
+msgstr "Show Settings"
 
 msgctxt "#30103"
 msgid "Show Calendar"
-msgstr ""
+msgstr "Show Calendar"
 
 msgctxt "#30104"
 msgid "Show Calendar"
-msgstr ""
+msgstr "Show Calendar"
 
 msgctxt "#30105"
 msgid "Show Unsorted"
-msgstr ""
+msgstr "Show Unsorted"
 
 msgctxt "#30106"
 msgid "Unsorted"
-msgstr ""
+msgstr "Unsorted"
 
 msgctxt "#30107"
 msgid "Settings"
-msgstr ""
+msgstr "Settings"
 
 msgctxt "#30108"
 msgid "Send anonymous data about your settings"
-msgstr ""
+msgstr "Send anonymous data about your settings"
 
 msgctxt "#30109"
 msgid "Select custom Image/IconPack"
-msgstr ""
+msgstr "Select custom Image/IconPack"
 
 msgctxt "#30110"
 msgid "Clear Search Terms"
-msgstr ""
+msgstr "Clear Search Terms"
 
 msgctxt "#30111"
 msgid "Hide Ratings ..."
-msgstr ""
+msgstr "Hide Ratings ..."
 
 msgctxt "#30113"
 msgid "Hide Rating Only When..."
-msgstr ""
+msgstr "Hide Rating Only When..."
 
 msgctxt "#30114"
 msgid "Show 'Shoko'"
-msgstr ""
+msgstr "Show 'Shoko'"
 
 msgctxt "#30115"
 msgid "Shoko"
-msgstr ""
+msgstr "Shoko"
 
 msgctxt "#30116"
 msgid "List import folders"
-msgstr ""
+msgstr "List import folders"
 
 msgctxt "#30117"
 msgid "Stats update"
-msgstr ""
+msgstr "Stats update"
 
 msgctxt "#30118"
 msgid "MediaInfo update"
-msgstr ""
+msgstr "MediaInfo update"
 
 msgctxt "#30119"
 msgid "Import Folder"
-msgstr ""
+msgstr "Import Folder"
 
 #---------------End-Settings--------------------------
 
@@ -495,123 +495,123 @@ msgstr ""
 
 msgctxt "#30120"
 msgid "Rescan File"
-msgstr ""
+msgstr "Rescan File"
 
 msgctxt "#30121"
 msgid "Rehash File"
-msgstr ""
+msgstr "Rehash File"
 
 msgctxt "#30122"
 msgid "Remove Missing Files"
-msgstr ""
+msgstr "Remove Missing Files"
 
 msgctxt "#30123"
 msgid "More Info"
-msgstr ""
+msgstr "More Info"
 
 msgctxt "#30124"
 msgid "Vote (Series)"
-msgstr ""
+msgstr "Vote (Series)"
 
 msgctxt "#30125"
 msgid "Vote (Episode)"
-msgstr ""
+msgstr "Vote (Episode)"
 
 msgctxt "#30126"
 msgid "Mark Series as Watched"
-msgstr ""
+msgstr "Mark Series as Watched"
 
 msgctxt "#30127"
 msgid "Mark Series as Unwatched"
-msgstr ""
+msgstr "Mark Series as Unwatched"
 
 msgctxt "#30128"
 msgid "Mark Episode as Watched"
-msgstr ""
+msgstr "Mark Episode as Watched"
 
 msgctxt "#30129"
 msgid "Mark Episode as Unwatched"
-msgstr ""
+msgstr "Mark Episode as Unwatched"
 
 msgctxt "#30130"
 msgid "Playlist Mode"
-msgstr ""
+msgstr "Playlist Mode"
 
 msgctxt "#30131"
 msgid "Refresh"
-msgstr ""
+msgstr "Refresh"
 
 msgctxt "#30132"
 msgid "Play (No Scrobble)"
-msgstr ""
+msgstr "Play (No Scrobble)"
 
 msgctxt "#30133"
 msgid "Inspect Files"
-msgstr ""
+msgstr "Inspect Files"
 
 msgctxt "#30134"
 msgid "View Cast"
-msgstr ""
+msgstr "View Cast"
 
 msgctxt "#30135"
 msgid "Scan your library and remove all files that have been re/moved by hand and no longer accessible by Shoko"
-msgstr ""
+msgstr "Scan your library and remove all files that have been re/moved by hand and no longer accessible by Shoko"
 
 msgctxt "#30136"
 msgid "Push status update ..."
-msgstr ""
+msgstr "Push status update ..."
 
 msgctxt "#30137"
 msgid "Generate Missing MediaInfo"
-msgstr ""
+msgstr "Generate Missing MediaInfo"
 
 msgctxt "#30138"
 msgid "to be used"
-msgstr ""
+msgstr "to be used"
 
 msgctxt "#30139"
 msgid "to be used"
-msgstr ""
+msgstr "to be used"
 
 msgctxt "#30140"
 msgid "Import Folders"
-msgstr ""
+msgstr "Import Folders"
 
 msgctxt "#30141"
 msgid "Resume"
-msgstr ""
+msgstr "Resume"
 
 msgctxt "#30142"
 msgid "Default sorting method for Group/Series"
-msgstr ""
+msgstr "Default sorting method for Group/Series"
 
 msgctxt "#30143"
 msgid "Default sorting method for Episodes"
-msgstr ""
+msgstr "Default sorting method for Episodes"
 
 msgctxt "#30144"
 msgid "Sorting"
-msgstr ""
+msgstr "Sorting"
 
 msgctxt "#30145"
 msgid "Experimental"
-msgstr ""
+msgstr "Experimental"
 
 msgctxt "#30146"
 msgid "Misc"
-msgstr ""
+msgstr "Misc"
 
 msgctxt "#30147"
 msgid "-Below are Kodi's items-"
-msgstr ""
+msgstr "-Below are Kodi's items-"
 
 msgctxt "#30148"
 msgid "-Don't use 'Mark as watched'-"
-msgstr ""
+msgstr "-Don't use 'Mark as watched'-"
 
 msgctxt "#30149"
 msgid "External player watch fix"
-msgstr ""
+msgstr "External player watch fix"
 
 # 150 - 159 empty
 
@@ -621,31 +621,31 @@ msgstr ""
 
 msgctxt "#30160"
 msgid "Please Wait"
-msgstr ""
+msgstr "Please Wait"
 
 msgctxt "#30161"
 msgid "Getting from Server..."
-msgstr ""
+msgstr "Getting from Server..."
 
 msgctxt "#30162"
 msgid "Loading Results..."
-msgstr ""
+msgstr "Loading Results..."
 
 msgctxt "#30163"
 msgid "Getting Episodes from Server..."
-msgstr ""
+msgstr "Getting Episodes from Server..."
 
 msgctxt "#30164"
 msgid "Waiting for respond from Server..."
-msgstr ""
+msgstr "Waiting for respond from Server..."
 
 msgctxt "#30165"
 msgid "Sending request to Transcode server..."
-msgstr ""
+msgstr "Sending request to Transcode server..."
 
 msgctxt "#30166"
 msgid "Waiting given time (postpone)"
-msgstr ""
+msgstr "Waiting given time (postpone)"
 
 # 167 - 179 empty
 
@@ -655,83 +655,83 @@ msgstr ""
 
 msgctxt "#30180"
 msgid "No Results Found"
-msgstr ""
+msgstr "No Results Found"
 
 msgctxt "#30181"
 msgid "Try a Different Query"
-msgstr ""
+msgstr "Try a Different Query"
 
 msgctxt "#30182"
 msgid "Finished"
-msgstr ""
+msgstr "Finished"
 
 msgctxt "#30183"
 msgid "You already finished this."
-msgstr ""
+msgstr "You already finished this."
 
 msgctxt "#30184"
 msgid "Series Voting"
-msgstr ""
+msgstr "Series Voting"
 
 msgctxt "#30185"
 msgid "You Voted"
-msgstr ""
+msgstr "You Voted"
 
 msgctxt "#30186"
 msgid "Episode Voting"
-msgstr ""
+msgstr "Episode Voting"
 
 msgctxt "#30187"
 msgid "Watched Status Changed"
-msgstr ""
+msgstr "Watched Status Changed"
 
 msgctxt "#30188"
 msgid "Marked as"
-msgstr ""
+msgstr "Marked as"
 
 msgctxt "#30189"
 msgid "Queued File for Rehash"
-msgstr ""
+msgstr "Queued File for Rehash"
 
 msgctxt "#30190"
 msgid "Queued File for Rescan"
-msgstr ""
+msgstr "Queued File for Rescan"
 
 msgctxt "#30191"
 msgid "Refreshing in 10 seconds"
-msgstr ""
+msgstr "Refreshing in 10 seconds"
 
 msgctxt "#30192"
 msgid "Queued Remove Missing Files"
-msgstr ""
+msgstr "Queued Remove Missing Files"
 
 msgctxt "#30193"
 msgid "It may take some time."
-msgstr ""
+msgstr "It may take some time."
 
 msgctxt "#30194"
 msgid "Incorrect Credentials"
-msgstr ""
+msgstr "Incorrect Credentials"
 
 msgctxt "#30195"
 msgid "Please change them in Settings"
-msgstr ""
+msgstr "Please change them in Settings"
 
 msgctxt "#30196"
 msgid "Files"
-msgstr ""
+msgstr "Files"
 
 msgctxt "#30197"
 msgid "No connection to Shoko server"
-msgstr ""
+msgstr "No connection to Shoko server"
 
 msgctxt "#30198"
 msgid "Queued Run Import on Server"
-msgstr ""
+msgstr "Queued Run Import on Server"
 
 msgctxt "#30199"
 msgid "Queued Import Folder Scan"
-msgstr ""
+msgstr "Queued Import Folder Scan"
 
 # 200 - 220 empty
 
@@ -740,18 +740,18 @@ msgstr ""
 
 msgctxt "#30221"
 msgid "Search"
-msgstr ""
+msgstr "Search"
 
 msgctxt "#30222"
 msgid "Calendar"
-msgstr ""
+msgstr "Calendar"
 
 msgctxt "#30223"
 msgid "Airing Today"
-msgstr ""
+msgstr "Airing Today"
 
 msgctxt "#30224"
 msgid "New Search"
-msgstr ""
+msgstr "New Search"
 
 #---------------End-Items----------------------------
