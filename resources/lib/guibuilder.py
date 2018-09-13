@@ -222,8 +222,9 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
 
                     # Inspect
                     if nt.addon.getSetting('context_pick_file') == 'true':
-                        context.append((nt.addon.getLocalizedString(30133),
-                                        'RunPlugin(%s&cmd=pickFile)' % url_peep))
+                        if extra_data.get('multiep', False):
+                            context.append((nt.addon.getLocalizedString(30133),
+                                            'RunPlugin(%s&cmd=pickFile)' % url_peep))
 
                     # Mark as watched/unwatched
                     if extra_data.get('jmmepisodeid') != '':
@@ -1447,7 +1448,8 @@ def build_serie_episodes(params):
                                 'SubStreams':       defaultdict(dict),
                                 'ep_id':            nt.safe_int(video.get('id', '')),
                                 'serie_id':         nt.safe_int(body.get('id', '')),
-                                'file_id':          video['files'][0].get('offset', '0')
+                                'file_id':          video['files'][0].get('offset', '0'),
+                                'multiep':          True if len(video['files']) > 1 else False
                             }
 
                             # Information about streams inside video file
