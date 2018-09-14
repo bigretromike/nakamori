@@ -224,3 +224,4 @@ else:
     xbmc.log('--- (get_shoko_status: wizard) ---', xbmc.LOGWARNING)
     nt.addon.setSetting(id='wizard', value='0')
     gb.build_network_menu()
+    kodi_utils.wizard()
