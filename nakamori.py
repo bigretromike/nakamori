@@ -222,5 +222,7 @@ if nt.addon.getSetting('wizard') != '0' and nt.get_server_status():
             gb.build_network_menu()
 else:
     xbmc.log('--- (get_shoko_status: wizard) ---', xbmc.LOGWARNING)
-    nt.addon.setSetting(id='wizard', value='0')
     gb.build_network_menu()
+    if xbmcgui.Dialog().yesno("Error Connecting", "Would you like to open the setup wizard"):
+        nt.addon.setSetting(id='wizard', value='0')
+        kodi_utils.wizard()
