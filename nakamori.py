@@ -149,7 +149,7 @@ if nt.addon.getSetting('wizard') != '0' and nt.get_server_status():
                 elif cmd == 'wizard':
                     xbmc.log('--- (cmd: wizard) --- ', xbmc.LOGWARNING)
                     nt.addon.setSetting('wizard', '0')
-                    # no need to execute wizard here, he will run in filter_menu
+                    kodi_utils.wizard()
             else:
                 if mode == 0:  # string label
                     pass
