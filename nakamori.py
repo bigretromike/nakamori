@@ -30,26 +30,31 @@ kodi_utils.detect_kodi18()
 kodi_utils.wizard()
 
 
-def play_video(parameters):
+def play_video(video_parameters):
+    """
+    play function
+    :param video_parameters: dictionary with parameters to ask shoko for url
+    :return:
+    """
     global win, ctl, ui_index, exp
     try:
         win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
         ctl = win.getControl(win.getFocusId())
-        if kodi_utils.play_video(parameters['ep_id'],
-                                 parameters['raw_id'] if 'raw_id' in parameters else "0",
-                                 parameters['movie'] if 'movie' in parameters else 0) > 0:
+        if kodi_utils.play_video(video_parameters['ep_id'],
+                                 video_parameters['raw_id'] if 'raw_id' in video_parameters else "0",
+                                 video_parameters['movie'] if 'movie' in video_parameters else 0) > 0:
             # noinspection PyTypeChecker
-            ui_index = parameters.get('ui_index', '')
+            ui_index = video_parameters.get('ui_index', '')
             if ui_index != '':
                 nt.move_position_on_list(ctl, int(ui_index) + 1)
-            parameters['watched'] = True
-            nt.mark_watch_status(parameters)
+            video_parameters['watched'] = True
+            nt.mark_watch_status(video_parameters)
     except Exception as exp:
         xbmc.log('---> play_video ' + str(exp), xbmc.LOGWARNING)
         pass
 
 
-if nt.get_server_status():
+if nt.addon.getSetting('wizard') != '0' and nt.get_server_status():
     try:
         auth, apikey = nt.valid_user()
         if auth:
