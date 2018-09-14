@@ -847,8 +847,7 @@ def build_filters_menu():
                         airing['art']['thumb'] = []
                         airing['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'airing.jpg')})
                         airing['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'airing.png')})
-                        if nt.get_version(nt.addon.getSetting("ipaddress"),
-                                          nt.addon.getSetting("port")) >= nt.LooseVersion("3.8.0.0"):
+                        if nt.get_version() >= nt.LooseVersion("3.8.0.0"):
                             menu_append.append(airing)
                         menu['art'] = {}
                         menu['art']['fanart'] = []
