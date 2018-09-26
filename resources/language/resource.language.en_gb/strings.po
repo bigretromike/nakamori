@@ -747,7 +747,13 @@ msgctxt "#30149"
 msgid "External player watch fix"
 msgstr "External player watch fix"
 
-#. 150 - 159 empty
+#:
+msgctxt "#30150"
+msgid "Hide What's New"
+msgstr "Hide What's New"
+
+#. 151 - 159 empty
+
 #: 
 msgctxt "#30160"
 msgid "Please Wait"
