@@ -31,7 +31,7 @@
         <setting label="30103" type="bool" id="show_calendar" default="true"/>
         <setting label="30105" type="bool" id="show_unsort" default="true"/>
         <setting label="30114" type="bool" id="show_shoko" default="false"/>
-        <setting label="" type="bool" id="skip_information" default="false/>"
+        <setting label="30150" type="bool" id="skip_information" default="false"/>
 	</category>
 	<!-- browsing -->
     <category label="30054">
