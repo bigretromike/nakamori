@@ -17,7 +17,7 @@
 		<description lang="he_il">Nakamori נותן לך את היכולת לתקשר עם אוסף Shoko שלך עבור התקנים התומכים ב- Kodi. אתה יכול להשתמש בפקודות רבות זמינות משולחן העבודה ממש מתוך Kodi, כגון סימון מצב נצפה, הצבעה, סריקה, עיבוד קבצים, ועוד!</description>
 		<disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 		<disclaimer lang="he_il">אם שרת Shoko נמצא במחשב אחר, הגדר את כתובת ה- IP בהגדרות של Nakamori לפני שתתחיל</disclaimer>
-		<news>3.0.6[CR]- 'What's new' window added[CR]- Wizard don't crash on Android anymore[CR]- moved out string that belong to script</news><news>3.0.6[CR]- more frequent sync calling[CR]- removed duplicated module from Program Add-on[CR]- fix wizard logic[CR]- 'What's new' window added[CR]- Wizard don't crash on Android anymore[CR]- moved out string that belong to script</news>
+		<news>3.0.6[CR]- more frequent sync calling[CR]- removed duplicated module from Program Add-on[CR]- fix wizard logic[CR]- 'What's new' window added[CR]- Wizard don't crash on Android anymore[CR]- moved out string that belong to script</news>
 		<platform>all</platform>
 		<language>en</language>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
