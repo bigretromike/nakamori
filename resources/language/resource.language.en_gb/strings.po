@@ -368,6 +368,11 @@ msgid "Replace -continue- with Episode counter"
 msgstr "Replace -continue- with Episode counter"
 
 #: settings.xml
+msgctxt "#30073"
+msgid "Enable Title colorization"
+msgstr "Enable Title colorization"
+
+#: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
 msgstr "Setup Wizard"
