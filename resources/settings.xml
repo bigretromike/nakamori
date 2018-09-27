@@ -69,6 +69,7 @@
         <setting label="30067" type="bool" id="useOriginalThumbnailRatio" default="false"/>
         <!-- Context Menu Settings -->
 		<setting label="30057" type="lsep"/>
+        <setting label="30065" type="bool" id="context_show_play" default="true" />
 		<setting type="bool" id="trakt_scrobble" default="false" visible="false"/>
         <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" enable="eq(-1,true)"/>
         <setting type="bool" id="pick_file" default="true" visible="false"/>

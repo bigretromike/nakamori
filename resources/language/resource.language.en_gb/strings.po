@@ -363,6 +363,7 @@ msgid "Airing Series with all episodes (including specials)"
 msgstr "Airing Series with all episodes (including specials)"
 
 #: settings.xml
+# convert this to a selection!
 msgctxt "#30072"
 msgid "Replace -continue- with Episode counter"
 msgstr "Replace -continue- with Episode counter"
@@ -414,8 +415,8 @@ msgstr "Wait (s) to buffer starting"
 
 #: settings.xml
 msgctxt "#30090"
-msgid "Advance settings"
-msgstr "Advance settings"
+msgid "Advanced settings"
+msgstr "Advanced settings"
 
 #: settings.xml
 msgctxt "#30091"
@@ -720,8 +721,8 @@ msgstr "Getting Episodes from Server..."
 
 #: kodi_utils.py
 msgctxt "#30164"
-msgid "Waiting for respond from Server..."
-msgstr "Waiting for respond from Server..."
+msgid "Waiting for response from Server..."
+msgstr "Waiting for response from Server..."
 
 #: kodi_utils.py
 msgctxt "#30165"
