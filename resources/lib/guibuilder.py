@@ -37,27 +37,28 @@ def title_coloring(title, episode_count, total_count, special_count, total_speci
     :return: colorized title
     """
     color_title = title
-    if airing:
-        if episode_count == total_count:
-            if total_special_count == 0:
-                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing'), title)
-            elif special_count == total_special_count:
-                # its possible if set to local_size in setting
-                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing_special'), title)
-            elif special_count < total_special_count:
-                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing'), title)
-        elif episode_count < total_count:
-            color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing_missing'), title)
-    else:
-        if episode_count == total_count:
-            if total_special_count == 0:
-                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish'), title)
-            elif special_count == total_special_count:
-                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish_special'), title)
-            elif special_count < total_special_count:
-                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish'), title)
-        elif episode_count < total_count:
-            color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish_missing'), title)
+    if addon.getSetting('color_title') == "true":
+        if airing:
+            if episode_count == total_count:
+                if total_special_count == 0:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing'), title)
+                elif special_count == total_special_count:
+                    # its possible if set to local_size in setting
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing_special'), title)
+                elif special_count < total_special_count:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing'), title)
+            elif episode_count < total_count:
+                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing_missing'), title)
+        else:
+            if episode_count == total_count:
+                if total_special_count == 0:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish'), title)
+                elif special_count == total_special_count:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish_special'), title)
+                elif special_count < total_special_count:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish'), title)
+            elif episode_count < total_count:
+                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish_missing'), title)
 
     return color_title
 
