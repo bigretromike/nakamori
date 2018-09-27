@@ -54,7 +54,7 @@ def play_video(video_parameters):
         pass
 
 
-if nt.addon.getSetting('skip_information') != '1':
+if nt.addon.getSetting('skip_information') == 'false':
     nt.show_information()
 
 if nt.addon.getSetting('wizard') != '0' and nt.get_server_status():
