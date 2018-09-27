@@ -250,7 +250,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = nt.set_parameter(url_peep, 'file_id', str(file_id))
 
                     # Play
-                    if nt.addon.getSetting('context_show_play'):
+                    if nt.addon.getSetting('context_show_play') == 'true':
                         context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
 
                     # Resume
