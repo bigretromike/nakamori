@@ -1469,10 +1469,12 @@ def build_serie_episodes(params):
                                         'hide_rating_type') != 'Series' and watched <= 0:  # Episodes|Both
                                     details['rating'] = ''
 
-                            season = str(body.get('season', '1'))
+                            season = str(video.get('season', '1'))
                             try:
                                 if season != '1':
                                     season = season.split('x')[0]
+                                    if season == '0':
+                                        season = '1'
                             except Exception as w:
                                 nt.error(w, season)
                             details['season'] = nt.safe_int(season)
