@@ -24,6 +24,24 @@ busy = xbmcgui.DialogProgress()
 addon = xbmcaddon.Addon()
 _img = os.path.join(xbmcaddon.Addon(nt.addon.getSetting('icon_pack')).getAddonInfo('path'), 'resources', 'media')
 
+map_types = {
+                    "Credits": "Credits",
+                    "Episode": "Episodes",
+                    "Special": "Specials",
+                    "Trailer": "Trailers",
+                    "Parody": "Parodies",
+                    "Other": "Others"
+                }
+
+map_shortcuts_x_types = {
+                    "Credits": "C",
+                    "Episode": "E",
+                    "Special": "S",
+                    "Trailer": "T",
+                    "Parody": "P",
+                    "Other": "O"
+}
+
 
 def title_coloring(title, episode_count, total_count, special_count, total_special_count, airing=False):
     """
@@ -1196,15 +1214,6 @@ def build_serie_episodes_types(params):
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
 
-                map_types = {
-                    "Credits": "Credits",
-                    "Episode": "Episodes",
-                    "Special": "Specials",
-                    "Trailer": "Trailers",
-                    "Parody": "Parodies",
-                    "Other": "Others"
-                }
-
                 for content in content_type:
                     try:
                         type_of = map_types[content]
@@ -1353,14 +1362,17 @@ def build_serie_episodes(params):
                                        "Next episode", os.path.join(_img, 'poster', 'other.png'), "4",
                                        str(next_episode))
                         else:
-                            ep_size = nt.safe_int(body.get('local_sizes', {}).get('Episodes', 0))
-                            ep_total_size = nt.safe_int(body.get('total_sizes', {}).get('Episodes', 0))
-                            status_label = "[ Ep: %s/%s" % (ep_size, ep_total_size)
-                            sp_size = nt.safe_int(body.get('local_sizes', {}).get('Specials', 0))
-                            sp_total_size = nt.safe_int(body.get('total_sizes', {}).get('Specials', 0))
-                            if sp_total_size != 0:
-                                status_label += " Sp: %s/%s" % (sp_size, sp_total_size)
-                            status_label += " ]"
+                            if "type" in params:  # type folder
+                                types = str(params['type'])
+                                row_type = map_types[types]
+                            else:  # flat folders
+                                row_type = str(body.get('local_sizes', {}).keys()[0])
+                                types = map_types.keys()[map_types.values().index(row_type)]
+
+                            ep_size = nt.safe_int(body.get('local_sizes', {}).get(row_type, 0))
+                            ep_total_size = nt.safe_int(body.get('total_sizes', {}).get(row_type, 0))
+                            status_label = "[ %s: %s/%s ]" % (map_shortcuts_x_types[types],
+                                                              ep_size, ep_total_size)
                             nt.add_dir(status_label, '', '7', os.path.join(_img, 'thumb', 'other.png'),
                                        "Episode counter", os.path.join(_img, 'poster', 'other.png'), "4",
                                        str(next_episode))
@@ -1468,15 +1480,17 @@ def build_serie_episodes(params):
                                 if nt.addon.getSetting(
                                         'hide_rating_type') != 'Series' and watched <= 0:  # Episodes|Both
                                     details['rating'] = ''
-
-                            season = str(video.get('season', '1'))
-                            try:
-                                if season != '1':
-                                    season = season.split('x')[0]
-                                    if season == '0':
-                                        season = '1'
-                            except Exception as w:
-                                nt.error(w, season)
+                            if str(video['eptype']) != "Special":
+                                season = str(video.get('season', '1'))
+                                try:
+                                    if season != '1':
+                                        season = season.split('x')[0]
+                                        if season == '0':
+                                            season = '1'
+                                except Exception as w:
+                                    nt.error(w, season)
+                            else:
+                                season = '0'
                             details['season'] = nt.safe_int(season)
 
                             temp_date = str(details['aired']).split('-')
