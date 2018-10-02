@@ -395,9 +395,12 @@ def play_video(ep_id, raw_id, movie):
     # leave player alive so we can handle onPlayBackStopped/onPlayBackEnded
     xbmc.sleep(int(nt.addon.getSetting("player_sleep")))
 
-    while player.isPlaying():
+    # while player.isPlaying():
+    #     xbmc.sleep(500)
+    while player.PlaybackStatus != 'Stopped':
         xbmc.sleep(500)
 
+    xbmc.log('-------~ ~~ ~ ----> ' + str(xbmc.abortRequested), xbmc.LOGWARNING)
     return 0
 
 
