@@ -98,6 +98,11 @@ msgid "API Key"
 msgstr "API Key"
 
 #: settings.xml
+msgctxt "#30019"
+msgid "Title color conditions"
+msgstr "Title color conditions"
+
+#: settings.xml
 msgctxt "#30020"
 msgid "Enable \'Resume\'"
 msgstr "Enable \'Resume\'"
@@ -153,6 +158,11 @@ msgid "Enable Cache"
 msgstr "Enable Cache"
 
 #: settings.xml
+msgctxt "#30031"
+msgid "Finished Series with all normal episodes"
+msgstr "Finished Series with all normal episodes"
+
+#: settings.xml
 msgctxt "#30032"
 msgid "Trigger Voting after each episode"
 msgstr "Trigger Voting after each episode"
@@ -198,9 +208,19 @@ msgid "Use local file count for total episodes"
 msgstr "Use local file count for total episodes"
 
 #: settings.xml
+msgctxt "#30041"
+msgid "Airing Series with all normal episodes"
+msgstr "Airing Series with all normal episodes"
+
+#: settings.xml
 msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
 msgstr "Spam the Log with info (only enable if told to)"
+
+#: settings.xml
+msgctxt "#30043"
+msgid "Finished Series with missing normal episodes"
+msgstr "Finished Series with missing normal episodes"
 
 #: settings.xml
 msgctxt "#30044"
@@ -278,6 +298,16 @@ msgid "Date format"
 msgstr "Date format"
 
 #: settings.xml
+msgctxt "#30059"
+msgid "Airing Series with missing normal episodes"
+msgstr "Airing Series with missing normal episodes"
+
+#: settings.xml
+msgctxt "#30060"
+msgid "Finished Series with all episodes (including specials)"
+msgstr "Finished Series with all episodes (including specials)"
+
+#: settings.xml
 msgctxt "#30061"
 msgid "Switch Calendar to Directory based"
 msgstr "Switch Calendar to Directory based"
@@ -328,6 +358,22 @@ msgid "Hide setting tags (time/place/etc)"
 msgstr "Hide setting tags (time/place/etc)"
 
 #: settings.xml
+msgctxt "#30071"
+msgid "Airing Series with all episodes (including specials)"
+msgstr "Airing Series with all episodes (including specials)"
+
+#: settings.xml
+# convert this to a selection!
+msgctxt "#30072"
+msgid "Replace -continue- with Episode counter"
+msgstr "Replace -continue- with Episode counter"
+
+#: settings.xml
+msgctxt "#30073"
+msgid "Enable Title colorization"
+msgstr "Enable Title colorization"
+
+#: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
 msgstr "Setup Wizard"
@@ -369,8 +415,8 @@ msgstr "Wait (s) to buffer starting"
 
 #: settings.xml
 msgctxt "#30090"
-msgid "Advance settings"
-msgstr "Advance settings"
+msgid "Advanced settings"
+msgstr "Advanced settings"
 
 #: settings.xml
 msgctxt "#30091"
@@ -675,8 +721,8 @@ msgstr "Getting Episodes from Server..."
 
 #: kodi_utils.py
 msgctxt "#30164"
-msgid "Waiting for respond from Server..."
-msgstr "Waiting for respond from Server..."
+msgid "Waiting for response from Server..."
+msgstr "Waiting for response from Server..."
 
 #: kodi_utils.py
 msgctxt "#30165"

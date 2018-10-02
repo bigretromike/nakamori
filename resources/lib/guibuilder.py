@@ -21,8 +21,64 @@ from collections import defaultdict
 list_items = []
 handle = int(sys.argv[1])
 busy = xbmcgui.DialogProgress()
-
+addon = xbmcaddon.Addon()
 _img = os.path.join(xbmcaddon.Addon(nt.addon.getSetting('icon_pack')).getAddonInfo('path'), 'resources', 'media')
+
+map_types = {
+                    "Credits": "Credits",
+                    "Episode": "Episodes",
+                    "Special": "Specials",
+                    "Trailer": "Trailers",
+                    "Parody": "Parodies",
+                    "Other": "Others"
+                }
+
+map_shortcuts_x_types = {
+                    "Credits": "C",
+                    "Episode": "E",
+                    "Special": "S",
+                    "Trailer": "T",
+                    "Parody": "P",
+                    "Other": "O"
+}
+
+
+def title_coloring(title, episode_count, total_count, special_count, total_special_count, airing=False):
+    """
+    Color title based on conditions
+    :param title: title to color
+    :param episode_count: episode number
+    :param total_count: total episode number
+    :param special_count: special episode number
+    :param total_special_count: total special episode number
+    :param airing: is series still airing
+    :return: colorized title
+    """
+    color_title = title
+    if addon.getSetting('color_title') == "true":
+        if airing:
+            if episode_count == total_count:
+                if total_special_count == 0:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing'), title)
+                elif special_count == total_special_count:
+                    # its possible if set to local_size in setting
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing_special'), title)
+                elif special_count < total_special_count:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing'), title)
+            elif episode_count < total_count:
+                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_airing_missing'), title)
+        else:
+            if episode_count == total_count:
+                if total_special_count == 0:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish'), title)
+                elif special_count == total_special_count:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish_special'), title)
+                elif special_count < total_special_count:
+                    color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish'), title)
+            elif episode_count < total_count:
+                color_title = "[COLOR %s]%s[/COLOR]" % (addon.getSetting('title_color_finish_missing'), title)
+
+    return color_title
 
 
 def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=0, force_select=False):
@@ -173,7 +229,15 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                         else:
                             liz.setProperty('TotalTime', '100')
                             liz.setProperty('ResumeTime', '50')
+                # set colors for titles
+                # TODO airing flag missing from api
+                liz.setLabel(title_coloring(details.get('title', 'Unknown'),
+                                            extra_data.get('local_size'),
+                                            extra_data.get('total_size'),
+                                            extra_data.get('local_special_size'),
+                                            extra_data.get('total_special_size')))
 
+            # For series/groups/episodes
             if extra_data.get('thumb'):
                 liz.setArt({"thumb": extra_data.get('thumb', '')})
                 liz.setArt({"icon": extra_data.get('thumb', '')})
@@ -204,7 +268,8 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
                     url_peep = nt.set_parameter(url_peep, 'file_id', str(file_id))
 
                     # Play
-                    context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
+                    if nt.addon.getSetting('context_show_play') == 'true':
+                        context.append((nt.addon.getLocalizedString(30065), 'Action(Select)'))
 
                     # Resume
                     if 'resume' in extra_data:
@@ -439,8 +504,8 @@ def add_serie_item(node, parent_title, destination_playlist=False):
                 list_cast = result_list[0]
                 list_cast_and_role = result_list[1]
 
+    local_sizes = node.get("local_sizes", {})
     if nt.addon.getSetting("local_total") == "true":
-        local_sizes = node.get("local_sizes", {})
         if len(local_sizes) > 0:
             total = nt.safe_int(local_sizes.get("Episodes", 0)) + nt.safe_int(local_sizes.get("Specials", 0))
         else:
@@ -451,6 +516,10 @@ def add_serie_item(node, parent_title, destination_playlist=False):
             total = nt.safe_int(sizes.get("Episodes", 0)) + nt.safe_int(sizes.get("Specials", 0))
         else:
             total = nt.safe_int(node.get("localsize", ''))
+    local_size = nt.safe_int(local_sizes.get("Episodes", 0))
+    total_size = nt.safe_int(node.get("total_sizes", {}).get("Episodes", 0))
+    local_special_size = nt.safe_int(local_sizes.get("Specials", 0))
+    total_special_size = nt.safe_int(node.get("total_sizes", {}).get("Specials", 0))
 
     if watched > total:
         watched = total
@@ -493,7 +562,7 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         # 'Studio'       : studio, < ---
         # 'Tagline'      : tagline,
         # 'Writer'       : writer,
-        'tvshowtitle'  : nt.decode(parent_title),
+        'tvshowtitle':      nt.decode(parent_title),
         'tvshowname':       title,
         # 'premiered'    : premiered,
         # 'Status'       : status,
@@ -549,7 +618,11 @@ def add_serie_item(node, parent_title, destination_playlist=False):
         'banner':               banner,
         'key':                  key,
         'actors':               actors,
-        'serie_id':             key_id
+        'serie_id':             key_id,
+        'local_size':           local_size,
+        'total_size':           total_size,  # TotalEpisode = episodes + specials
+        'local_special_size':   local_special_size,
+        'total_special_size':   total_special_size
     }
 
     serie_url = key
@@ -1141,15 +1214,6 @@ def build_serie_episodes_types(params):
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
                 xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
 
-                map_types = {
-                    "Credits": "Credits",
-                    "Episode": "Episodes",
-                    "Special": "Specials",
-                    "Trailer": "Trailers",
-                    "Parody": "Parodies",
-                    "Other": "Others"
-                }
-
                 for content in content_type:
                     try:
                         type_of = map_types[content]
@@ -1293,8 +1357,25 @@ def build_serie_episodes(params):
                 # add item to move to next not played item (not marked as watched)
                 if nt.addon.getSetting("show_continue") == "true":
                     if nt.decode(parent_title).lower() != "unsort":
-                        nt.add_dir("-continue-", '', '7', os.path.join(_img, 'thumb', 'other.png'),
-                                   "Next episode", os.path.join(_img, 'poster', 'other.png'), "4", str(next_episode))
+                        if nt.addon.getSetting("replace_continue") == "false":
+                            nt.add_dir("-continue-", '', '7', os.path.join(_img, 'thumb', 'other.png'),
+                                       "Next episode", os.path.join(_img, 'poster', 'other.png'), "4",
+                                       str(next_episode))
+                        else:
+                            if "type" in params:  # type folder
+                                types = str(params['type'])
+                                row_type = map_types[types]
+                            else:  # flat folders
+                                row_type = str(body.get('local_sizes', {}).keys()[0])
+                                types = map_types.keys()[map_types.values().index(row_type)]
+
+                            ep_size = nt.safe_int(body.get('local_sizes', {}).get(row_type, 0))
+                            ep_total_size = nt.safe_int(body.get('total_sizes', {}).get(row_type, 0))
+                            status_label = "[ %s: %s/%s ]" % (map_shortcuts_x_types[types],
+                                                              ep_size, ep_total_size)
+                            nt.add_dir(status_label, '', '7', os.path.join(_img, 'thumb', 'other.png'),
+                                       "Episode counter", os.path.join(_img, 'poster', 'other.png'), "4",
+                                       str(next_episode))
                 selected_list_item = False
                 for video in body['eps']:
                     item_count += 1
@@ -1399,13 +1480,17 @@ def build_serie_episodes(params):
                                 if nt.addon.getSetting(
                                         'hide_rating_type') != 'Series' and watched <= 0:  # Episodes|Both
                                     details['rating'] = ''
-
-                            season = str(body.get('season', '1'))
-                            try:
-                                if season != '1':
-                                    season = season.split('x')[0]
-                            except Exception as w:
-                                nt.error(w, season)
+                            if str(video['eptype']) != "Special":
+                                season = str(video.get('season', '1'))
+                                try:
+                                    if season != '1':
+                                        season = season.split('x')[0]
+                                        if season == '0':
+                                            season = '1'
+                                except Exception as w:
+                                    nt.error(w, season)
+                            else:
+                                season = '0'
                             details['season'] = nt.safe_int(season)
 
                             temp_date = str(details['aired']).split('-')
