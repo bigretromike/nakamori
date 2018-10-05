@@ -62,7 +62,7 @@
         <setting label="30051" type="bool" id="useSeasons" default="false"/>
         <setting label="30040" type="bool" id="local_total" default="true"/>
         <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
-        <setting label="30111" type="labelenum" id="hide_rating" default="Never" values="Never|Unwatched|Always"/>
+        <setting label="30111" type="labelenum" id="hide_rating" default="Never" values="Never|Unwatched|All Unwatched|Always"/>
         <!-- Kodi has errors in comparing text in visibility and enabled status. This should be fixed in Leia -->
         <setting label="30113" type="labelenum" id="hide_rating_type" default="Both" values="Episodes|Series|Both" enable="!eq(-1,Never)" visible="!eq(-1,Never)"/>
         <setting label="30028" type="bool" id="short_tag_list" default="true"/>
