@@ -29,7 +29,7 @@ def perform_server_action(command, id=None, refresh='refresh10', post=False):
     """
     key_url = nt.server + "/api/" + command
     if id is not None and id != 0 and id != '':
-        key_url += 'id', id
+        nt.set_parameter(key_url, 'id', id)
     if nt.addon.getSetting('log_spam') == 'true':
         xbmc.log('id: ' + str(id), xbmc.LOGWARNING)
         xbmc.log('key: ' + key_url, xbmc.LOGWARNING)
