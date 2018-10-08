@@ -374,6 +374,36 @@ msgid "Enable Title colorization"
 msgstr "Enable Title colorization"
 
 #: settings.xml
+msgctxt "#30074"
+msgid "Spoiler control"
+msgstr "Spoiler control"
+
+#: settings.xml
+msgctxt "#30075"
+msgid "Hide episode title for unwatched"
+msgstr "Hide episode title for unwatched"
+
+#: guibuilder.py
+msgctxt "#30076"
+msgid "Episode"
+msgstr "Episode"
+
+#: settings.xml
+msgctxt "#30077"
+msgid "Replace images for unwatched episodes"
+msgstr "Replace images for unwatched episodes"
+
+#: settings.xml
+msgctxt "#30078"
+msgid "Hide Episode plot for unwatched episodes"
+msgstr "Hide Episode plot for unwatched episodes"
+
+#: guibuilder.py
+msgctxt "#30079"
+msgid " - spoiler protection -"
+msgstr "Hide plot for unwatched episodes"
+
+#: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
 msgstr "Setup Wizard"

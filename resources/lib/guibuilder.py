@@ -1483,12 +1483,19 @@ def build_serie_episodes(params):
                                 if nt.addon.getSetting('hide_rating_type') != 'Episodes':  # Series|Both
                                     details['rating'] = 0
                             elif nt.addon.getSetting('hide_rating') == 'Unwatched':
-                                if nt.addon.getSetting(
-                                        'hide_rating_type') != 'Episodes' and watched < total:  # Series|Both
-                                    details['rating'] = 0
-                            elif nt.addon.getSetting('hide_rating') == 'All Unwatched':
                                 if nt.addon.getSetting('hide_rating_type') != 'Episodes' and watched < 1:  # Series|Both
                                     details['rating'] = 0
+
+                            if nt.addon.getSetting('hide_title') != 'Never' and watched < 1:
+                                if str(video['eptype']) == "Special":
+                                    if nt.addon.getSetting('hide_title') != 'Episodes':  # both,specials
+                                        details['title'] = nt.addon.getLocalizedString(30076)
+                                elif str(video['eptype']) == "Episode":
+                                    if nt.addon.getSetting('hide_title') != 'Specials':  # both,episodes
+                                        details['title'] = nt.addon.getLocalizedString(30076)
+
+                            if nt.addon.getSetting('hide_plot') == "true" and watched < 1:
+                                details['plot'] = nt.addon.getLocalizedString(30079)
 
                             if str(video['eptype']) != "Special":
                                 season = str(video.get('season', '1'))
@@ -1522,6 +1529,12 @@ def build_serie_episodes(params):
                                 banner = video["art"]["banner"][0]["url"]
                                 if banner is not None and ":" not in banner:
                                     banner = nt.server + banner
+
+                            if nt.addon.getSetting('hide_images') == "true" and watched < 1:
+                                #TODO add default spoiler_protected images to resources package
+                                thumb = ''
+                                fanart = ''
+                                banner = ''
 
                             key = video["files"][0]["url"]
 
