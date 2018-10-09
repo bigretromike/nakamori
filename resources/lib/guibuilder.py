@@ -1416,7 +1416,7 @@ def build_serie_episodes(params):
                             if title is None:
                                 title = 'Episode ' + str(video.get('epnumber', '??'))
 
-                            watched = int(nt.safe_int(video.get("view", '0')))
+                            is_watched = int(nt.safe_int(video.get("view", '0')))
                             # Required listItem entries for XBMC
                             details = {
                                 # OFFICIAL General Values
@@ -1483,14 +1483,13 @@ def build_serie_episodes(params):
                                 if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
                                     details['rating'] = 0
                             elif nt.addon.getSetting('hide_rating') == 'Unwatched':
-                                if nt.addon.getSetting(
-                                        'hide_rating_type') != 'Series' and watched < item_count:  # Episodes|Both
+                                if nt.addon.getSetting('hide_rating_type') != 'Series' and is_watched == 0:  # Episodes|Both
                                     details['rating'] = 0
                             elif nt.addon.getSetting('hide_rating') == 'All Unwatched':
-                                if nt.addon.getSetting('hide_rating_type') != 'Series' and watched < 1:  # Episodes|Both
+                                if nt.addon.getSetting('hide_rating_type') != 'Series' and is_watched == 0:  # Episodes|Both
                                     details['rating'] = 0
 
-                            if nt.addon.getSetting('hide_title') != 'Never' and watched < 1:
+                            if nt.addon.getSetting('hide_title') != 'Never' and is_watched == 0:
                                 if str(video['eptype']) == "Special":
                                     if nt.addon.getSetting('hide_title') != 'Episodes':  # both,specials
                                         details['title'] = nt.addon.getLocalizedString(30076)
@@ -1498,7 +1497,7 @@ def build_serie_episodes(params):
                                     if nt.addon.getSetting('hide_title') != 'Specials':  # both,episodes
                                         details['title'] = nt.addon.getLocalizedString(30076)
 
-                            if nt.addon.getSetting('hide_plot') == "true" and watched < 1:
+                            if nt.addon.getSetting('hide_plot') == "true" and is_watched == 0:
                                 details['plot'] = nt.addon.getLocalizedString(30079)
 
                             if str(video['eptype']) != "Special":
@@ -1534,8 +1533,8 @@ def build_serie_episodes(params):
                                 if banner is not None and ":" not in banner:
                                     banner = nt.server + banner
 
-                            if nt.addon.getSetting('hide_images') == "true" and watched < 1:
-                                #TODO add default spoiler_protected images to resources package
+                            if nt.addon.getSetting('hide_images') == "true" and is_watched == 0:
+                                # TODO add default spoiler_protected images to resources package
                                 thumb = ''
                                 fanart = ''
                                 banner = ''
@@ -1568,7 +1567,7 @@ def build_serie_episodes(params):
                                 model_utils.video_file_information(video['files'][0]['media'], extra_data)
 
                             # Determine what type of watched flag [overlay] to use
-                            if watched > 0:
+                            if is_watched > 0:
                                 details['playcount'] = 1
                                 details['overlay'] = 5
                                 # details['lastplayed'] = '2010-10-10 11:00:00'
