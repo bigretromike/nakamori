@@ -1479,27 +1479,6 @@ def build_serie_episodes(params):
                                 'tvshowname': grandparent_title
                             }
 
-                            if nt.addon.getSetting('hide_rating') == 'Always':
-                                if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
-                                    details['rating'] = 0
-                            elif nt.addon.getSetting('hide_rating') == 'Unwatched':
-                                if nt.addon.getSetting('hide_rating_type') != 'Series' and is_watched == 0:  # Episodes|Both
-                                    details['rating'] = 0
-                            elif nt.addon.getSetting('hide_rating') == 'All Unwatched':
-                                if nt.addon.getSetting('hide_rating_type') != 'Series' and is_watched == 0:  # Episodes|Both
-                                    details['rating'] = 0
-
-                            if nt.addon.getSetting('hide_title') != 'Never' and is_watched == 0:
-                                if str(video['eptype']) == "Special":
-                                    if nt.addon.getSetting('hide_title') != 'Episodes':  # both,specials
-                                        details['title'] = nt.addon.getLocalizedString(30076)
-                                elif str(video['eptype']) == "Episode":
-                                    if nt.addon.getSetting('hide_title') != 'Specials':  # both,episodes
-                                        details['title'] = nt.addon.getLocalizedString(30076)
-
-                            if nt.addon.getSetting('hide_plot') == "true" and is_watched == 0:
-                                details['plot'] = nt.addon.getLocalizedString(30079)
-
                             if str(video['eptype']) != "Special":
                                 season = str(video.get('season', '1'))
                                 try:
@@ -1589,6 +1568,29 @@ def build_serie_episodes(params):
                                           " for Unwatched Items in the Video Library Settings."
                                     extra_data['thumb'] = thumb
                                     extra_data['fanart_image'] = fanart
+
+                            # handle these after watched stuff is handled
+                            if nt.addon.getSetting('hide_rating') == 'Always':
+                                if nt.addon.getSetting('hide_rating_type') != 'Series':  # Episodes|Both
+                                    details['rating'] = 0
+                            elif nt.addon.getSetting('hide_rating') == 'Unwatched':
+                                if nt.addon.getSetting(
+                                        'hide_rating_type') != 'Series' and is_watched < 1:  # Episodes|Both
+                                    details['rating'] = 0
+                            elif nt.addon.getSetting('hide_rating') == 'All Unwatched':
+                                if nt.addon.getSetting('hide_rating_type') != 'Series' and next_episode <= 1:  # Episodes|Both
+                                    details['rating'] = 0
+
+                            if nt.addon.getSetting('hide_title') != 'Never' and is_watched < 1:
+                                if str(video['eptype']) == "Special":
+                                    if nt.addon.getSetting('hide_title') != 'Episodes':  # both,specials
+                                        details['title'] = nt.addon.getLocalizedString(30076)
+                                elif str(video['eptype']) == "Episode":
+                                    if nt.addon.getSetting('hide_title') != 'Specials':  # both,episodes
+                                        details['title'] = nt.addon.getLocalizedString(30076)
+
+                            if nt.addon.getSetting('hide_plot') == "true" and is_watched < 1:
+                                details['plot'] = nt.addon.getLocalizedString(30079)
 
                             context = None
 
