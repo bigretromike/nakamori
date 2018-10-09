@@ -88,7 +88,8 @@
         <setting label="30131" type="bool" id="context_refresh" default="true"/>
         <!-- maintenance -->
 		<setting label="30097" type="lsep"/>
-        <setting label="30080" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=32)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
+        <setting label="30080" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=32)" option="close"/>
+        <setting label="30139" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=33)" option="close"/>
     </category>
     <category label="30046">
         <!-- tag blacklist -->

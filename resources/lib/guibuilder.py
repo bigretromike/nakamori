@@ -1483,6 +1483,10 @@ def build_serie_episodes(params):
                                 if nt.addon.getSetting('hide_rating_type') != 'Episodes':  # Series|Both
                                     details['rating'] = 0
                             elif nt.addon.getSetting('hide_rating') == 'Unwatched':
+                                if nt.addon.getSetting(
+                                        'hide_rating_type') != 'Episodes' and watched < item_count:  # Series|Both
+                                    details['rating'] = 0
+                            elif nt.addon.getSetting('hide_rating') == 'All Unwatched':
                                 if nt.addon.getSetting('hide_rating_type') != 'Episodes' and watched < 1:  # Series|Both
                                     details['rating'] = 0
 

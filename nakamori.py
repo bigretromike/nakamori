@@ -214,6 +214,8 @@ if nt.addon.getSetting('wizard') != '0' and nt.get_server_status():
                     search.clear_search_history(parameters)
                 elif mode == 32:  # remove watch marks from kodi db
                     kodi_utils.fix_mark_watch_in_kodi_db()
+                elif mode == 33:  # clear image cache from kodi db
+                    kodi_utils.clear_image_cache_in_kodi_db()
                 else:
                     # starting point
                     gb.build_filters_menu()
