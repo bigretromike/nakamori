@@ -86,6 +86,9 @@
         <setting label="30123" type="bool" id="context_show_info" default="true"/>
         <setting label="30134" type="bool" id="context_view_cast" default="true"/>
         <setting label="30131" type="bool" id="context_refresh" default="true"/>
+        <!-- maintenance -->
+		<setting label="30097" type="lsep"/>
+        <setting label="30080" type="action" id="action" action="RunPlugin(plugin://plugin.video.nakamori/?mode=32)" enable="System.HasAddon(script.module.nakamori)" option="close"/>
     </category>
     <category label="30046">
         <!-- tag blacklist -->

@@ -401,7 +401,17 @@ msgstr "Hide Episode plot for unwatched episodes"
 #: guibuilder.py
 msgctxt "#30079"
 msgid " - spoiler protection -"
-msgstr "Hide plot for unwatched episodes"
+msgstr " - spoiler protection -"
+
+#: settings.xml
+msgctxt "#30080"
+msgid "Fix unsync watch marks in Kodi database"
+msgstr "Fix unsync watch marks in Kodi database"
+
+#: kodi_utils.py
+msgctxt "#30081"
+msgid "This function will execute a DELETE command against your Kodi Database file. This shouldn't affect you in any negative way, but you have been warned."
+msgstr "This function will execute a DELETE command against your Kodi Database file. This shouldn't affect you in any negative way, but you have been warned."
 
 #: settings.xml
 msgctxt "#30082"
@@ -513,6 +523,10 @@ msgctxt "#30103"
 msgid "Show Calendar"
 msgstr "Show Calendar"
 
+#: kodi_utils.py
+msgctxt "#30104"
+msgid "Warning"
+msgstr "Warning"
 
 #: settings.xml
 msgctxt "#30105"
@@ -548,6 +562,11 @@ msgstr "Clear Search Terms"
 msgctxt "#30111"
 msgid "Hide Ratings ..."
 msgstr "Hide Ratings ..."
+
+#: kodi_utils.py
+msgctxt "#30112"
+msgid "Would you like to Proceed?"
+msgstr "msgid "Would you like to Proceed?""
 
 #: settings.xml
 msgctxt "#30113"
@@ -673,6 +692,11 @@ msgstr "Push status update ..."
 msgctxt "#30137"
 msgid "Generate Missing MediaInfo"
 msgstr "Generate Missing MediaInfo"
+
+#: kodi_utils.py
+msgctxt "#30138"
+msgid "Job finished"
+msgstr "Job finished"
 
 #: guibuilder.py
 msgctxt "#30140"

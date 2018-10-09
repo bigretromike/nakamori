@@ -212,6 +212,8 @@ if nt.addon.getSetting('wizard') != '0' and nt.get_server_status():
                     xbmc.executebuiltin('RunScript(script.module.nakamori,?info=calendar)')
                 elif mode == 31:  # Clear Search History
                     search.clear_search_history(parameters)
+                elif mode == 32:  # remove watch marks from kodi db
+                    kodi_utils.fix_mark_watch_in_kodi_db()
                 else:
                     # starting point
                     gb.build_filters_menu()

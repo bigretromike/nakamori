@@ -12,6 +12,11 @@ from resources.lib import model_utils
 import nakamoritools as nt
 import nakamoriplayer as nplayer
 
+try:
+    from sqlite3 import dbapi2 as database
+except:
+    from pysqlite2 import dbapi2 as database
+
 if sys.version_info < (3, 0):
     from urllib import unquote
 else:
@@ -427,3 +432,29 @@ def detect_kodi18():
                 nt.addon.setSetting(id='kodi18', value='1')
             else:
                 nt.addon.setSetting(id='kodi18', value='0')
+
+
+def fix_mark_watch_in_kodi_db():
+    """
+    Clear mark for nakamori files in kodi db
+    :param params:
+    :return:
+    """
+    ret = xbmcgui.Dialog().yesno(nt.addon.getLocalizedString(30104),
+                                 nt.addon.getLocalizedString(30081), nt.addon.getLocalizedString(30112))
+    if ret:
+        db_files = []
+        db_path = os.path.join(xbmc.translatePath('special://home').decode("utf-8"), 'userdata')
+        db_path = os.path.join(db_path, 'Database')
+        for r, d, f in os.walk(db_path):
+            for files in f:
+                if "MyVideos" in files:
+                    db_files.append(files)
+        for db_file in db_files:
+            db_connection = database.connect(os.path.join(db_path, db_file))
+            db_cursor = db_connection.cursor()
+            db_cursor.execute("DELETE FROM files WHERE strFilename like '%plugin.video.nakamori%'")
+            db_connection.commit()
+            db_connection.close()
+        if len(db_files) > 0:
+            xbmcgui.Dialog().ok('', nt.addon.getLocalizedString(30138))
