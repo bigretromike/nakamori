@@ -976,7 +976,8 @@ def build_filters_menu():
                     soon_url = nt.server + "/api/serie/soon"
                     title = nt.addon.getLocalizedString(30222)
                     liz = xbmcgui.ListItem(label=title, label2=title, path=soon_url)
-                    liz.setArt({"icon": os.path.join(_img, 'icons', 'calendar.png'),
+                    thumb = os.path.join(_img, 'icons', 'calendar.png')
+                    liz.setArt({"icon": thumb, "poster": thumb, "thumb": thumb,
                                 "fanart": os.path.join(_img, 'backgrounds', 'calendar.jpg')})
                     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
                     u = sys.argv[0]
@@ -991,7 +992,8 @@ def build_filters_menu():
                     search_url = nt.server + "/api/search"
                     title = nt.addon.getLocalizedString(30221)
                     liz = xbmcgui.ListItem(label=title, label2=title, path=search_url)
-                    liz.setArt({"icon": os.path.join(_img, 'icons', 'search.png'),
+                    thumb = os.path.join(_img, 'icons', 'search.png')
+                    liz.setArt({"icon": thumb, "poster": thumb, "thumb": thumb,
                                 "fanart": os.path.join(_img, 'backgrounds', 'search.jpg')})
                     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
                     u = sys.argv[0]
@@ -1005,7 +1007,8 @@ def build_filters_menu():
                 if nt.addon.getSetting("show_settings") == "true":
                     title = nt.addon.getLocalizedString(30107)
                     liz = xbmcgui.ListItem(label=title, label2=title)
-                    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                    thumb = os.path.join(_img, 'icons', 'settings.png')
+                    liz.setArt({"icon": thumb, "poster": thumb, "thumb": thumb,
                                 "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
                     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
                     u = sys.argv[0]
@@ -1019,7 +1022,8 @@ def build_filters_menu():
                 if nt.addon.getSetting("show_shoko") == "true":
                     title = nt.addon.getLocalizedString(30115)
                     liz = xbmcgui.ListItem(label=title, label2=title)
-                    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                    thumb = os.path.join(_img, 'icons', 'settings.png')
+                    liz.setArt({"icon": thumb, "poster": thumb, "thumb": thumb,
                                 "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
                     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
                     u = sys.argv[0]
@@ -1033,7 +1037,8 @@ def build_filters_menu():
                 if nt.addon.getSetting("onepunchmen") == "true":
                     title = 'Experiment'
                     liz = xbmcgui.ListItem(label=title, label2=title)
-                    liz.setArt({"icon": os.path.join(_img, 'icons', 'settings.png'),
+                    thumb = os.path.join(_img, 'icons', 'settings.png'),
+                    liz.setArt({"icon": thumb, "poster": thumb, "thumb": thumb,
                                 "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
                     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
                     u = sys.argv[0]
