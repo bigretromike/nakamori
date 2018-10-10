@@ -1037,7 +1037,7 @@ def build_filters_menu():
                 if nt.addon.getSetting("onepunchmen") == "true":
                     title = 'Experiment'
                     liz = xbmcgui.ListItem(label=title, label2=title)
-                    thumb = os.path.join(_img, 'icons', 'settings.png'),
+                    thumb = os.path.join(_img, 'icons', 'settings.png')
                     liz.setArt({"icon": thumb, "poster": thumb, "thumb": thumb,
                                 "fanart": os.path.join(_img, 'backgrounds', 'settings.jpg')})
                     liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
