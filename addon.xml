@@ -17,7 +17,7 @@
 		<description lang="he_il">Nakamori נותן לך את היכולת לתקשר עם אוסף Shoko שלך עבור התקנים התומכים ב- Kodi. אתה יכול להשתמש בפקודות רבות זמינות משולחן העבודה ממש מתוך Kodi, כגון סימון מצב נצפה, הצבעה, סריקה, עיבוד קבצים, ועוד!</description>
 		<disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 		<disclaimer lang="he_il">אם שרת Shoko נמצא במחשב אחר, הגדר את כתובת ה- IP בהגדרות של Nakamori לפני שתתחיל</disclaimer>
-		<news>3.0.8[CR]- Proper handling episode numbers for specials seasons[CR]- Option to replace -continue- item to series information counter[CR]- New commands inside Settigs to clear commons errors with Nakamori[CR]- Spoiler control in settings that give control over what you want to see before watching series[CR]- a lot of logic error bugs have been fixed !</news>
+		<news>3.0.8[CR]- Proper handling episode numbers for specials seasons[CR]- Option to replace -continue- item to series information counter[CR]- New commands inside Settings to clear commons errors with Nakamori[CR]- Spoiler control in settings that give control over what you want to see before watching series[CR]- a lot of logic error bugs have been fixed !</news>
 		<platform>all</platform>
 		<language>en</language>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
