@@ -955,6 +955,7 @@ def build_filters_menu():
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_DATE)
     xbmcplugin.addSortMethod(handle, xbmcplugin.SORT_METHOD_TITLE_IGNORE_THE)
 
+    filters_sorting = {'Airing Today': 0, 'Seasons': 1, 'Years': 2, 'Tags': 3, 'Unsort': 4}
     try:
         filters_key = nt.server + "/api/filter"
         filters_key = nt.set_parameter(filters_key, "level", 0)
@@ -977,20 +978,20 @@ def build_filters_menu():
                         airing['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'airing.jpg')})
                         airing['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'airing.png')})
                         if nt.get_version() >= nt.LooseVersion("3.8.0.0"):
-                            menu_append.append(airing)
+                            menu_append.insert(filters_sorting[title], airing)
                         menu['art'] = {}
                         menu['art']['fanart'] = []
                         menu['art']['thumb'] = []
                         menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'seasons.jpg')})
                         menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'seasons.png')})
-                        menu_append.append(menu)
+                        menu_append.insert(filters_sorting[title], menu)
                     elif title == 'Tags':
                         menu['art'] = {}
                         menu['art']['fanart'] = []
                         menu['art']['thumb'] = []
                         menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'tags.jpg')})
                         menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'tags.png')})
-                        menu_append.append(menu)
+                        menu_append.insert(filters_sorting[title], menu)
                     elif title == 'Unsort':
                         if nt.addon.getSetting("show_unsort") == "true":
                             menu['art'] = {}
@@ -998,23 +999,16 @@ def build_filters_menu():
                             menu['art']['thumb'] = []
                             menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'unsort.jpg')})
                             menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'unsort.png')})
-                            menu_append.append(menu)
+                            menu_append.insert(filters_sorting[title], menu)
                     elif title == 'Years':
                         menu['art'] = {}
                         menu['art']['fanart'] = []
                         menu['art']['thumb'] = []
                         menu['art']['fanart'].append({'url': os.path.join(_img, 'backgrounds', 'years.jpg')})
                         menu['art']['thumb'].append({'url': os.path.join(_img, 'icons', 'years.png')})
-                        menu_append.append(menu)
+                        menu_append.insert(filters_sorting[title], menu)
                 for menu in json_menu["filters"]:
-                    title = menu['name']
-                    if title == 'Unsort':
-                        continue
-                    elif title == 'Tags':
-                        continue
-                    elif title == 'Seasons':
-                        continue
-                    elif title == 'Years':
+                    if filters_sorting.has_key(menu['name']):
                         continue
                     add_filter_item(menu)
 
