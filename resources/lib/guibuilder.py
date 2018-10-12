@@ -158,43 +158,7 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         if not folder:
             liz.setProperty('sorttitle', details.get('sorttitle', details.get('title', 'Unknown')))
             if extra_data and len(extra_data) > 0:
-                if extra_data.get('type', 'video').lower() == "video":
-                    liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0].get('duration', 0)))
-                    if nt.addon.getSetting("file_resume") == "true":
-                        liz.setProperty('ResumeTime', str(extra_data.get('resume')))
-
-                    video_codec = extra_data.get('VideoStreams', {})
-                    if len(video_codec) > 0:
-                        video_codec = video_codec[0]
-                        liz.addStreamInfo('video', video_codec)
-                        liz.setProperty('VideoResolution', str(video_codec.get('xVideoResolution', '')))
-                        liz.setProperty('VideoCodec', video_codec.get('xVideoCodec', ''))
-                        liz.setProperty('VideoAspect', str(video_codec.get('aspect', '')))
-
-                    if len(extra_data.get('AudioStreams', {})) > 0:
-                        audio = extra_data.get('AudioStreams')
-                        liz.setProperty('AudioCodec', audio.get('xAudioCodec', ''))
-                        liz.setProperty('AudioChannels', str(audio.get('xAudioChannels', '')))
-                        for stream in extra_data['AudioStreams']:
-                            if not isinstance(extra_data['AudioStreams'][stream], dict):
-                                continue
-                            liz.setProperty('AudioCodec.' + str(stream), str(extra_data['AudioStreams'][stream]
-                                                                             ['AudioCodec']))
-                            liz.setProperty('AudioChannels.' + str(stream), str(extra_data['AudioStreams'][stream]
-                                                                                ['AudioChannels']))
-                            audio_codec = dict()
-                            audio_codec['codec'] = str(extra_data['AudioStreams'][stream]['AudioCodec'])
-                            audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
-                            audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
-                            liz.addStreamInfo('audio', audio_codec)
-
-                    if len(extra_data.get('SubStreams', {})) > 0:
-                        for stream2 in extra_data['SubStreams']:
-                            liz.setProperty('SubtitleLanguage.' + str(stream2),
-                                            str(extra_data['SubStreams'][stream2]['SubtitleLanguage']))
-                            subtitle_codec = dict()
-                            subtitle_codec['language'] = str(extra_data['SubStreams'][stream2]['SubtitleLanguage'])
-                            liz.addStreamInfo('subtitle', subtitle_codec)
+                set_stream_info(liz, extra_data)
 
             # UMS/PSM Jumpy plugin require 'path' to play video
             key_file = str(extra_data.get('key', 'empty'))
@@ -347,6 +311,46 @@ def add_gui_item(gui_url, details, extra_data, context=None, folder=True, index=
         nt.error("util.error during add_gui_item", str(e))
 
 
+def set_stream_info(liz, extra_data):
+    if extra_data.get('type', 'video').lower() == "video":
+        liz.setProperty('TotalTime', str(extra_data['VideoStreams'][0].get('duration', 0)))
+        if nt.addon.getSetting("file_resume") == "true":
+            liz.setProperty('ResumeTime', str(extra_data.get('resume')))
+
+        video_codec = extra_data.get('VideoStreams', {})
+        if len(video_codec) > 0:
+            video_codec = video_codec[0]
+            liz.addStreamInfo('video', video_codec)
+            liz.setProperty('VideoResolution', str(video_codec.get('xVideoResolution', '')))
+            liz.setProperty('VideoCodec', video_codec.get('xVideoCodec', ''))
+            liz.setProperty('VideoAspect', str(video_codec.get('aspect', '')))
+
+        if len(extra_data.get('AudioStreams', {})) > 0:
+            audio = extra_data.get('AudioStreams')
+            liz.setProperty('AudioCodec', audio.get('xAudioCodec', ''))
+            liz.setProperty('AudioChannels', str(audio.get('xAudioChannels', '')))
+            for stream in extra_data['AudioStreams']:
+                if not isinstance(extra_data['AudioStreams'][stream], dict):
+                    continue
+                liz.setProperty('AudioCodec.' + str(stream), str(extra_data['AudioStreams'][stream]
+                                                                 ['AudioCodec']))
+                liz.setProperty('AudioChannels.' + str(stream), str(extra_data['AudioStreams'][stream]
+                                                                    ['AudioChannels']))
+                audio_codec = dict()
+                audio_codec['codec'] = str(extra_data['AudioStreams'][stream]['AudioCodec'])
+                audio_codec['channels'] = int(extra_data['AudioStreams'][stream]['AudioChannels'])
+                audio_codec['language'] = str(extra_data['AudioStreams'][stream]['AudioLanguage'])
+                liz.addStreamInfo('audio', audio_codec)
+
+        if len(extra_data.get('SubStreams', {})) > 0:
+            for stream2 in extra_data['SubStreams']:
+                liz.setProperty('SubtitleLanguage.' + str(stream2),
+                                str(extra_data['SubStreams'][stream2]['SubtitleLanguage']))
+                subtitle_codec = dict()
+                subtitle_codec['language'] = str(extra_data['SubStreams'][stream2]['SubtitleLanguage'])
+                liz.addStreamInfo('subtitle', subtitle_codec)
+
+
 def end_of_directory(cache=True, force_sort=-1, place='filter'):
     """
     Leave this in nakamori.py! It needs to be here to access listitems properly
@@ -374,13 +378,58 @@ def add_raw_files(node):
         key = node["url"]
         raw_url = nt.server + "/api/file?id=" + str(file_id)
         title = nt.os.path.split(str(name))[1]
+        # it's an unsorted file, but we can still use basic metadata and watched status
+        # when it is scanned, it'll take the watched status with it
+
+        # Check for empty duration from MediaInfo check fail and handle it properly
+        tmp_duration = 1
+        try:
+            tmp_duration = node['duration']
+        except:
+            pass
+        if tmp_duration == 1:
+            duration = 1
+        else:
+            duration = int(tmp_duration) / 1000
+
+        if nt.addon.getSetting('kodi18') == 1:
+            duration = str(datetime.timedelta(seconds=duration))
+
+        details = {
+            "Title": title,
+            "Plot": title,
+            "Duration": duration,
+            "Size": node.get('size', '0')
+        }
+
+        # as for now, there are few ways to mark these, but future or something!
+        watched = int(nt.safe_int(node.get("view", '0'))) == '1'
+        if watched:
+            details['playcount'] = 1
+            details['overlay'] = 5
+        else:
+            details['playcount'] = 0
+            details['overlay'] = 4
+
         thumb = os.path.join(_img, 'thumb', 'other.png')
         fanart = os.path.join(_img, 'fanart', 'other.png')
         banner = os.path.join(_img, 'banner', 'other.png')
         poster = os.path.join(_img, 'poster', 'other.png')
         liz = xbmcgui.ListItem(label=title, label2=title, path=raw_url)
         liz.setArt({'thumb': thumb, 'poster': poster, 'icon': 'DefaultVideo.png', 'fanart': fanart, 'banner': banner})
-        liz.setInfo(type="Video", infoLabels={"Title": title, "Plot": title})
+        liz.setInfo(type="Video", infoLabels=details)
+
+        # Information about streams inside video file
+        extra_data = defaultdict()
+        if not watched:
+            extra_data['resume'] = int(int(node.get('offset', '0')) / 1000)
+
+        if len(node.get("media", {})) > 0:
+            model_utils.video_file_information(node['media'], extra_data)
+
+        if extra_data and len(extra_data) > 0:
+            set_stream_info(liz, extra_data)
+
         u = sys.argv[0]
         u = nt.set_parameter(u, 'url', raw_url)
         u = nt.set_parameter(u, 'mode', 1)
@@ -389,7 +438,8 @@ def add_raw_files(node):
         u = nt.set_parameter(u, 'type', "raw")
         u = nt.set_parameter(u, 'file', key)
         u = nt.set_parameter(u, 'ep_id', '0')
-        u = nt.set_parameter(u, 'vl', node["import_folder_id"])
+        # this is used for rescan and rehash, which takes the VideoLocalID
+        u = nt.set_parameter(u, 'vl', file_id)
         context = [(nt.addon.getLocalizedString(30120), 'RunPlugin(%s&cmd=rescan)' % u),
                    (nt.addon.getLocalizedString(30121), 'RunPlugin(%s&cmd=rehash)' % u),
                    (nt.addon.getLocalizedString(30122), 'RunPlugin(%s&cmd=missing)' % u)]
@@ -1554,6 +1604,8 @@ def build_serie_episodes(params):
                             if is_watched > 0:
                                 details['playcount'] = 1
                                 details['overlay'] = 5
+                                # don't show resume if the file is watched (fixes an issue with resume > 80%)
+                                del extra_data['resume']
                                 # details['lastplayed'] = '2010-10-10 11:00:00'
                             else:
                                 details['playcount'] = 0
