@@ -18,26 +18,29 @@ localization_refresh_map = {
 }
 
 
-def perform_server_action(command, id=None, refresh='refresh10', post=False):
+def perform_server_action(command, object_id=None, refresh='refresh10', post=False):
     """
     Performs an action on the server
     Args:
-        id: the id or None
-        command: string representing api/command?id=...
+        object_id: the object_id or None
+        command: string representing api/command?object_id=...
         refresh: whether to refresh
         post: is it a POST endpoint
     """
     key_url = nt.server + "/api/" + command
-    if id is not None and id != 0 and id != '':
-        nt.set_parameter(key_url, 'id', id)
-    if nt.addon.getSetting('log_spam') == 'true':
-        xbmc.log('id: ' + str(id), xbmc.LOGWARNING)
+    if object_id is not None and object_id != 0 and object_id != '':
+        key_url = nt.set_parameter(key_url, 'id', object_id)
+    if nt.addon.getSetting('spamLog') == 'true':
+        xbmc.log('object_id: ' + str(object_id), xbmc.LOGWARNING)
         xbmc.log('key: ' + key_url, xbmc.LOGWARNING)
 
     if post:
-        nt.post_json(key_url, '')
+        response = nt.post_json(key_url, '')
     else:
-        nt.get_json(key_url)
+        response = nt.get_json(key_url)
+
+    if nt.addon.getSetting('spamLog') == 'true':
+        xbmc.log('response: ' + response, xbmc.LOGWARNING)
 
     refresh_message = localization_refresh_map.get(refresh, '')
     xbmc.executebuiltin("XBMC.Notification(%s, %s, 2000, %s)" % (
@@ -50,20 +53,20 @@ def perform_server_action(command, id=None, refresh='refresh10', post=False):
         nt.refresh()
 
 
-def rescan_file(id):
+def rescan_file(object_id):
     """
     This rescans a file for info from AniDB.
-    :param id: VideoLocalID
+    :param object_id: VideoLocalID
     """
-    perform_server_action('rescan', id)
+    perform_server_action('rescan', object_id=object_id)
 
 
-def rehash_file(id):
+def rehash_file(object_id):
     """
     This rehashes and rescans a file
-    :param id: VideoLocalID
+    :param object_id: VideoLocalID
     """
-    perform_server_action('rehash', id)
+    perform_server_action('rehash', object_id=object_id)
 
 
 def folder_list():
@@ -99,11 +102,11 @@ def run_import():
     pass
 
 
-def scan_folder(id):
+def scan_folder(object_id):
     """
     THE API FOR THIS IS BROKEN. DON'T TRY TO USE IT
     Scans an import folder. This checks files for hashes and adds new ones. It takes longer than run import
-    :param id:
+    :param object_id:
     :return:
     """
     pass

@@ -374,9 +374,9 @@ def add_raw_files(node):
     """
     try:
         name = nt.decode(node.get("filename", ''))
-        file_id = node["id"]
+        file_id = str(node["id"])
         key = node["url"]
-        raw_url = nt.server + "/api/file?id=" + str(file_id)
+        raw_url = nt.server + "/api/file?id=" + file_id
         title = nt.os.path.split(str(name))[1]
         # it's an unsorted file, but we can still use basic metadata and watched status
         # when it is scanned, it'll take the watched status with it
