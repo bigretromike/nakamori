@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="3.0.8" provider-name="BigRetroMike, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="3.0.9" provider-name="BigRetroMike, da3dsoul">
 	<requires>
-		<import addon="script.module.nakamori" version="3.0.7"/>
-		<import addon="script.module.nakamoriplayer" version="3.0.7"/>
+		<import addon="script.module.nakamori" version="3.0.8"/>
+		<import addon="script.module.nakamoriplayer" version="3.0.8"/>
 		<import addon="resource.images.nakamori" version="3.0.0"/>
 		<import addon="script.module.future" version="0.16.0.4"/>
 		<import addon="script.module.web-pdb" optional="true"/>
@@ -17,7 +17,7 @@
 		<description lang="he_il">Nakamori נותן לך את היכולת לתקשר עם אוסף Shoko שלך עבור התקנים התומכים ב- Kodi. אתה יכול להשתמש בפקודות רבות זמינות משולחן העבודה ממש מתוך Kodi, כגון סימון מצב נצפה, הצבעה, סריקה, עיבוד קבצים, ועוד!</description>
 		<disclaimer lang="en_GB">If Shoko Server is on a different machine, set up the ip address in Nakamori's settings before starting</disclaimer>
 		<disclaimer lang="he_il">אם שרת Shoko נמצא במחשב אחר, הגדר את כתובת ה- IP בהגדרות של Nakamori לפני שתתחיל</disclaimer>
-		<news>3.0.8[CR]- Proper handling episode numbers for specials seasons[CR]- Option to replace -continue- item to series information counter[CR]- New commands inside Settings to clear commons errors with Nakamori[CR]- Spoiler control in settings that give control over what you want to see before watching series[CR]- a lot of logic error bugs have been fixed !</news>
+		<news>3.0.9[CR]- turning off votes/watch_marks for unsort files[CR]- fix rescan and rehash commands[CR]- better icon support for non-default skins[CR]- disable resume for already watched episodes[CR]- populate more metadata about unsort files[CR]- sort the filters menu more nicely</news>
 		<platform>all</platform>
 		<language>en</language>
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
