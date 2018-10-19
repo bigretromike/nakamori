@@ -1417,17 +1417,30 @@ def build_serie_episodes(params):
                                        "Next episode", os.path.join(_img, 'poster', 'other.png'), "4",
                                        str(next_episode))
                         else:
-                            if "type" in params:  # type folder
-                                types = str(params['type'])
-                                row_type = map_types[types]
-                            else:  # flat folders
-                                row_type = str(body.get('local_sizes', {}).keys()[0])
-                                types = map_types.keys()[map_types.values().index(row_type)]
+                            # show status for only one type when set to local size
+                            if nt.addon.getSetting("local_total") == "true":
+                                if "type" in params:  # type folder
+                                    types = str(params['type'])
+                                    row_type = map_types[types]
+                                else:  # flat folders
+                                    row_type = str(body.get('local_sizes', {}).keys()[0])
+                                    types = map_types.keys()[map_types.values().index(row_type)]
+                                ep_size = nt.safe_int(body.get('local_sizes', {}).get(row_type, 0))
+                                ep_total_size = nt.safe_int(body.get('total_sizes', {}).get(row_type, 0))
+                                status_label = "[ %s: %s/%s ]" % (map_shortcuts_x_types[types],
+                                                                  ep_size, ep_total_size)
+                            # show all type status for server size settings - that way you know what you are missing
+                            else:
+                                status_label = '[ '
+                                for row_type in body.get('total_sizes', {}).keys():
+                                    size_local = nt.safe_int(body.get('local_sizes', {}).get(row_type, 0))
+                                    total_size = nt.safe_int(body.get('total_sizes', {}).get(row_type, 0))
+                                    if total_size != 0:
+                                        status_label += "%s: %s/%s" % (map_shortcuts_x_types[map_types.keys()[
+                                            map_types.values().index(row_type)]], size_local, total_size)
+                                        status_label += " "
+                                status_label += ']'
 
-                            ep_size = nt.safe_int(body.get('local_sizes', {}).get(row_type, 0))
-                            ep_total_size = nt.safe_int(body.get('total_sizes', {}).get(row_type, 0))
-                            status_label = "[ %s: %s/%s ]" % (map_shortcuts_x_types[types],
-                                                              ep_size, ep_total_size)
                             nt.add_dir(status_label, '', '7', os.path.join(_img, 'thumb', 'other.png'),
                                        "Episode counter", os.path.join(_img, 'poster', 'other.png'), "4",
                                        str(next_episode))
