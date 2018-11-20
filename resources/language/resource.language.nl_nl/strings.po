@@ -97,11 +97,6 @@ msgctxt "#30018"
 msgid "API Key"
 msgstr "API sleutel"
 
-#: 
-msgctxt "#30019"
-msgid "Rows span"
-msgstr "Rijen overspanning"
-
 #: settings.xml
 msgctxt "#30020"
 msgid "Enable \'Resume\'"
@@ -157,11 +152,6 @@ msgctxt "#30030"
 msgid "Enable Cache"
 msgstr "Schakel Cache in"
 
-#: 
-msgctxt "#30031"
-msgid "Community"
-msgstr "Gemeenschap"
-
 #: settings.xml
 msgctxt "#30032"
 msgid "Trigger Voting after each episode"
@@ -207,20 +197,10 @@ msgctxt "#30040"
 msgid "Use local file count for total episodes"
 msgstr "Gebruik het lokale aantal bestanden voor de totale afleveringen"
 
-#: 
-msgctxt "#30041"
-msgid "Skip Extra Info on Long Series"
-msgstr "Sla extra info over de lange reeks over"
-
 #: settings.xml
 msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
 msgstr "Spam het logboek met info (alleen inschakelen indien verteld)"
-
-#: 
-msgctxt "#30043"
-msgid "Max episodes before data will be truncated"
-msgstr "Max afleveringen voordat gegevens worden afgebroken"
 
 #: settings.xml
 msgctxt "#30044"
@@ -297,16 +277,6 @@ msgctxt "#30058"
 msgid "Date format"
 msgstr "Datumnotatie"
 
-#: 
-msgctxt "#30059"
-msgid "Series per column"
-msgstr "Serie per kolom"
-
-#: 
-msgctxt "#30060"
-msgid "Columns to show"
-msgstr "Kolommen om te tonen"
-
 #: settings.xml
 msgctxt "#30061"
 msgid "Switch Calendar to Directory based"
@@ -357,61 +327,6 @@ msgctxt "#30070"
 msgid "Hide setting tags (time/place/etc)"
 msgstr "Instellingslabels verbergen (tijd / plaats / etc)"
 
-#: 
-msgctxt "#30071"
-msgid "Columns span"
-msgstr "Kolommen overspannen"
-
-#: 
-msgctxt "#30072"
-msgid "Test"
-msgstr "Test"
-
-#: 
-msgctxt "#30073"
-msgid "Save"
-msgstr "Opslaan"
-
-#: 
-msgctxt "#30074"
-msgid "IP Address/Hostname"
-msgstr "IP-adres / hostnaam"
-
-#: 
-msgctxt "#30075"
-msgid "Port"
-msgstr "Haven"
-
-#: 
-msgctxt "#30076"
-msgid "Login"
-msgstr "Log in"
-
-#: 
-msgctxt "#30077"
-msgid "Password"
-msgstr "Wachtwoord"
-
-#: 
-msgctxt "#30078"
-msgid "Close"
-msgstr "Dichtbij"
-
-#: 
-msgctxt "#30079"
-msgid "Warning"
-msgstr "Waarschuwing"
-
-#: 
-msgctxt "#30080"
-msgid "Could not connect to Shoko Server"
-msgstr "Kon geen verbinding maken met Shoko Server"
-
-#: 
-msgctxt "#30081"
-msgid "Would you like to stop setup process and close this window?"
-msgstr "Wilt u het installatieproces stoppen en dit venster sluiten?"
-
 #: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
@@ -451,11 +366,6 @@ msgstr "Aantal pogingen voordat u opgeeft"
 msgctxt "#30089"
 msgid "Wait (s) to buffer starting"
 msgstr "Wacht (s) om het starten te bufferen"
-
-#: settings.xml
-msgctxt "#30090"
-msgid "Advance settings"
-msgstr "Geavanceerde instellingen"
 
 #: settings.xml
 msgctxt "#30091"
@@ -519,11 +429,6 @@ msgstr "Toon instellingen"
 
 #: settings.xml
 msgctxt "#30103"
-msgid "Show Calendar"
-msgstr "Toon kalender"
-
-#: 
-msgctxt "#30104"
 msgid "Show Calendar"
 msgstr "Toon kalender"
 
@@ -687,16 +592,6 @@ msgctxt "#30137"
 msgid "Generate Missing MediaInfo"
 msgstr "Genereer Missing MediaInfo"
 
-#: 
-msgctxt "#30138"
-msgid "to be used"
-msgstr "om gebruikt te worden"
-
-#: 
-msgctxt "#30139"
-msgid "to be used"
-msgstr "om gebruikt te worden"
-
 #: guibuilder.py
 msgctxt "#30140"
 msgid "Import Folders"
@@ -769,11 +664,6 @@ msgid "Getting Episodes from Server..."
 msgstr "Episodes van server halen ..."
 
 #: kodi_utils.py
-msgctxt "#30164"
-msgid "Waiting for respond from Server..."
-msgstr "Wachten op antwoorden van server ..."
-
-#: kodi_utils.py
 msgctxt "#30165"
 msgid "Sending request to Transcode server..."
 msgstr "Verzoek verzenden naar Transcode-server ..."
@@ -804,31 +694,6 @@ msgctxt "#30183"
 msgid "You already finished this."
 msgstr "Je hebt dit al gedaan."
 
-#: 
-msgctxt "#30184"
-msgid "Series Voting"
-msgstr "Serie stemmen"
-
-#: 
-msgctxt "#30185"
-msgid "You Voted"
-msgstr "Jij stemde"
-
-#: 
-msgctxt "#30186"
-msgid "Episode Voting"
-msgstr "Aflevering stemmen"
-
-#: 
-msgctxt "#30187"
-msgid "Watched Status Changed"
-msgstr "Bekeken status gewijzigd"
-
-#: 
-msgctxt "#30188"
-msgid "Marked as"
-msgstr "Gemarkeerd als"
-
 #: shoko_utils.py
 msgctxt "#30189"
 msgid "Queued File for Rehash"
@@ -843,11 +708,6 @@ msgstr "In wachtrij geplaatst bestand voor opnieuw scannen"
 msgctxt "#30191"
 msgid "Refreshing in 10 seconds"
 msgstr "Vernieuwen in 10 seconden"
-
-#: 
-msgctxt "#30192"
-msgid "Queued Remove Missing Files"
-msgstr "In de wachtrij Verwijder ontbrekende bestanden"
 
 #: shoko_utils.py
 msgctxt "#30193"
