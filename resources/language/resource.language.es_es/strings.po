@@ -98,11 +98,6 @@ msgctxt "#30018"
 msgid "API Key"
 msgstr "Llave API"
 
-#: 
-msgctxt "#30019"
-msgid "Rows span"
-msgstr "Lapso entre lineas"
-
 #: settings.xml
 msgctxt "#30020"
 msgid "Enable \'Resume\'"
@@ -158,11 +153,6 @@ msgctxt "#30030"
 msgid "Enable Cache"
 msgstr "Prender Cache"
 
-#: 
-msgctxt "#30031"
-msgid "Community"
-msgstr "Comunidad"
-
 #: settings.xml
 msgctxt "#30032"
 msgid "Trigger Voting after each episode"
@@ -208,20 +198,10 @@ msgctxt "#30040"
 msgid "Use local file count for total episodes"
 msgstr "Usar el conteo local de archivos para el total de episodios"
 
-#: 
-msgctxt "#30041"
-msgid "Skip Extra Info on Long Series"
-msgstr "Saltear información adicional en series largas"
-
 #: settings.xml
 msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
 msgstr "Espamear el log con información"
-
-#: 
-msgctxt "#30043"
-msgid "Max episodes before data will be truncated"
-msgstr "Máximo numero de episodios antes que los datos sean truncados"
 
 #: settings.xml
 msgctxt "#30044"
@@ -298,16 +278,6 @@ msgctxt "#30058"
 msgid "Date format"
 msgstr "Formato de la fecha"
 
-#: 
-msgctxt "#30059"
-msgid "Series per column"
-msgstr "Series por columna"
-
-#: 
-msgctxt "#30060"
-msgid "Columns to show"
-msgstr "Columnas a mostrar"
-
 #: settings.xml
 msgctxt "#30061"
 msgid "Switch Calendar to Directory based"
@@ -358,61 +328,6 @@ msgctxt "#30070"
 msgid "Hide setting tags (time/place/etc)"
 msgstr "Ocultar etiquetas de ajustes (tiempo/lugar/etc)"
 
-#: 
-msgctxt "#30071"
-msgid "Columns span"
-msgstr "Lapso entre columnas"
-
-#: 
-msgctxt "#30072"
-msgid "Test"
-msgstr "Prueba"
-
-#: 
-msgctxt "#30073"
-msgid "Save"
-msgstr "Guardar"
-
-#: 
-msgctxt "#30074"
-msgid "IP Address/Hostname"
-msgstr "Dirección de IP/Nombre"
-
-#: 
-msgctxt "#30075"
-msgid "Port"
-msgstr "Puerto"
-
-#: 
-msgctxt "#30076"
-msgid "Login"
-msgstr "Usuario"
-
-#: 
-msgctxt "#30077"
-msgid "Password"
-msgstr "Clave"
-
-#: 
-msgctxt "#30078"
-msgid "Close"
-msgstr "Cerrar"
-
-#: 
-msgctxt "#30079"
-msgid "Warning"
-msgstr "Cuidado"
-
-#: 
-msgctxt "#30080"
-msgid "Could not connect to Shoko Server"
-msgstr "No me puedo conectar al servidor Shoko"
-
-#: 
-msgctxt "#30081"
-msgid "Would you like to stop setup process and close this window?"
-msgstr "Te gustaría parar el proceso de ajuste y cerrar esta ventana"
-
 #: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
@@ -452,11 +367,6 @@ msgstr "Número de intentos antes renunciar"
 msgctxt "#30089"
 msgid "Wait (s) to buffer starting"
 msgstr "Espera en segundos a que el buffer comience"
-
-#: settings.xml
-msgctxt "#30090"
-msgid "Advance settings"
-msgstr "Ajustes avanzados"
 
 #: settings.xml
 msgctxt "#30091"
@@ -520,11 +430,6 @@ msgstr "Mostrar Ajustes"
 
 #: settings.xml
 msgctxt "#30103"
-msgid "Show Calendar"
-msgstr "Mostrar Calendario"
-
-#: 
-msgctxt "#30104"
 msgid "Show Calendar"
 msgstr "Mostrar Calendario"
 
@@ -688,16 +593,6 @@ msgctxt "#30137"
 msgid "Generate Missing MediaInfo"
 msgstr "Generar mediainfo faltante"
 
-#: 
-msgctxt "#30138"
-msgid "to be used"
-msgstr "para ser usado"
-
-#: 
-msgctxt "#30139"
-msgid "to be used"
-msgstr "para ser usado"
-
 #: guibuilder.py
 msgctxt "#30140"
 msgid "Import Folders"
@@ -770,11 +665,6 @@ msgid "Getting Episodes from Server..."
 msgstr "Obteniendo episodios del Servidor..."
 
 #: kodi_utils.py
-msgctxt "#30164"
-msgid "Waiting for respond from Server..."
-msgstr "Esperando respuesta del Servidor..."
-
-#: kodi_utils.py
 msgctxt "#30165"
 msgid "Sending request to Transcode server..."
 msgstr "Enviando petición al servidor de Transcoding"
@@ -805,31 +695,6 @@ msgctxt "#30183"
 msgid "You already finished this."
 msgstr "Ya has finalizado esto"
 
-#: 
-msgctxt "#30184"
-msgid "Series Voting"
-msgstr "Votación de Series"
-
-#: 
-msgctxt "#30185"
-msgid "You Voted"
-msgstr "Has votado"
-
-#: 
-msgctxt "#30186"
-msgid "Episode Voting"
-msgstr "Votación de episodios"
-
-#: 
-msgctxt "#30187"
-msgid "Watched Status Changed"
-msgstr "Estado de Visto Cambiado"
-
-#: 
-msgctxt "#30188"
-msgid "Marked as"
-msgstr "Marcado como"
-
 #: shoko_utils.py
 msgctxt "#30189"
 msgid "Queued File for Rehash"
@@ -844,11 +709,6 @@ msgstr "Encolando el archivo para escudriñar"
 msgctxt "#30191"
 msgid "Refreshing in 10 seconds"
 msgstr "Refrescando en 10 segundos"
-
-#: 
-msgctxt "#30192"
-msgid "Queued Remove Missing Files"
-msgstr "Encolando remover archivos perdidos"
 
 #: shoko_utils.py
 msgctxt "#30193"
