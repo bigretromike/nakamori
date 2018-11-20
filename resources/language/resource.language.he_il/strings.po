@@ -98,11 +98,6 @@ msgctxt "#30018"
 msgid "API Key"
 msgstr "מפתח API"
 
-#: 
-msgctxt "#30019"
-msgid "Rows span"
-msgstr ""
-
 #: settings.xml
 msgctxt "#30020"
 msgid "Enable \'Resume\'"
@@ -158,11 +153,6 @@ msgctxt "#30030"
 msgid "Enable Cache"
 msgstr "אפשר מטמון"
 
-#: 
-msgctxt "#30031"
-msgid "Community"
-msgstr "קהילה"
-
 #: settings.xml
 msgctxt "#30032"
 msgid "Trigger Voting after each episode"
@@ -208,20 +198,10 @@ msgctxt "#30040"
 msgid "Use local file count for total episodes"
 msgstr "השתמש בספירת קבצים מקומית עבור סך כל הפרקים"
 
-#: 
-msgctxt "#30041"
-msgid "Skip Extra Info on Long Series"
-msgstr "דלג על מידע נוסף בסדרות ארוכות"
-
 #: settings.xml
 msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
 msgstr "הכנס ליומן מידע ספאם (מאופשר רק אם כך הוגדר)"
-
-#: 
-msgctxt "#30043"
-msgid "Max episodes before data will be truncated"
-msgstr "מספר פרקים מקסימלי לפני חיתוך הנתונים"
 
 #: settings.xml
 msgctxt "#30044"
@@ -298,16 +278,6 @@ msgctxt "#30058"
 msgid "Date format"
 msgstr ""
 
-#: 
-msgctxt "#30059"
-msgid "Series per column"
-msgstr ""
-
-#: 
-msgctxt "#30060"
-msgid "Columns to show"
-msgstr ""
-
 #: settings.xml
 msgctxt "#30061"
 msgid "Switch Calendar to Directory based"
@@ -358,61 +328,6 @@ msgctxt "#30070"
 msgid "Hide setting tags (time/place/etc)"
 msgstr ""
 
-#: 
-msgctxt "#30071"
-msgid "Columns span"
-msgstr ""
-
-#: 
-msgctxt "#30072"
-msgid "Test"
-msgstr ""
-
-#: 
-msgctxt "#30073"
-msgid "Save"
-msgstr ""
-
-#: 
-msgctxt "#30074"
-msgid "IP Address/Hostname"
-msgstr ""
-
-#: 
-msgctxt "#30075"
-msgid "Port"
-msgstr ""
-
-#: 
-msgctxt "#30076"
-msgid "Login"
-msgstr ""
-
-#: 
-msgctxt "#30077"
-msgid "Password"
-msgstr ""
-
-#: 
-msgctxt "#30078"
-msgid "Close"
-msgstr ""
-
-#: 
-msgctxt "#30079"
-msgid "Warning"
-msgstr ""
-
-#: 
-msgctxt "#30080"
-msgid "Could not connect to Shoko Server"
-msgstr ""
-
-#: 
-msgctxt "#30081"
-msgid "Would you like to stop setup process and close this window?"
-msgstr ""
-
 #: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
@@ -451,11 +366,6 @@ msgstr ""
 #: settings.xml
 msgctxt "#30089"
 msgid "Wait (s) to buffer starting"
-msgstr ""
-
-#: settings.xml
-msgctxt "#30090"
-msgid "Advance settings"
 msgstr ""
 
 #: settings.xml
@@ -520,11 +430,6 @@ msgstr ""
 
 #: settings.xml
 msgctxt "#30103"
-msgid "Show Calendar"
-msgstr ""
-
-#: 
-msgctxt "#30104"
 msgid "Show Calendar"
 msgstr ""
 
@@ -688,16 +593,6 @@ msgctxt "#30137"
 msgid "Generate Missing MediaInfo"
 msgstr ""
 
-#: 
-msgctxt "#30138"
-msgid "to be used"
-msgstr ""
-
-#: 
-msgctxt "#30139"
-msgid "to be used"
-msgstr ""
-
 #: guibuilder.py
 msgctxt "#30140"
 msgid "Import Folders"
@@ -770,11 +665,6 @@ msgid "Getting Episodes from Server..."
 msgstr "מקבל פרקים מהשרת..."
 
 #: kodi_utils.py
-msgctxt "#30164"
-msgid "Waiting for respond from Server..."
-msgstr ""
-
-#: kodi_utils.py
 msgctxt "#30165"
 msgid "Sending request to Transcode server..."
 msgstr ""
@@ -805,31 +695,6 @@ msgctxt "#30183"
 msgid "You already finished this."
 msgstr "אתה כבר סיימת את זה."
 
-#: 
-msgctxt "#30184"
-msgid "Series Voting"
-msgstr "הצבעות לסדרות"
-
-#: 
-msgctxt "#30185"
-msgid "You Voted"
-msgstr "אתה הצבעת"
-
-#: 
-msgctxt "#30186"
-msgid "Episode Voting"
-msgstr "הצבעה לפרק"
-
-#: 
-msgctxt "#30187"
-msgid "Watched Status Changed"
-msgstr "מצב נצפה השתנה"
-
-#: 
-msgctxt "#30188"
-msgid "Marked as"
-msgstr "סמן כ"
-
 #: shoko_utils.py
 msgctxt "#30189"
 msgid "Queued File for Rehash"
@@ -844,11 +709,6 @@ msgstr "קבצים בתור לסריקה"
 msgctxt "#30191"
 msgid "Refreshing in 10 seconds"
 msgstr "מרענן בעוד 10 שניות"
-
-#: 
-msgctxt "#30192"
-msgid "Queued Remove Missing Files"
-msgstr "מסיר קבצים חסרים בתור"
 
 #: shoko_utils.py
 msgctxt "#30193"
