@@ -98,11 +98,6 @@ msgctxt "#30018"
 msgid "API Key"
 msgstr "API ключ"
 
-#: 
-msgctxt "#30019"
-msgid "Rows span"
-msgstr "Число рядов"
-
 #: settings.xml
 msgctxt "#30020"
 msgid "Enable \'Resume\'"
@@ -158,11 +153,6 @@ msgctxt "#30030"
 msgid "Enable Cache"
 msgstr "Включить кэш"
 
-#: 
-msgctxt "#30031"
-msgid "Community"
-msgstr "Сообщество"
-
 #: settings.xml
 msgctxt "#30032"
 msgid "Trigger Voting after each episode"
@@ -208,20 +198,10 @@ msgctxt "#30040"
 msgid "Use local file count for total episodes"
 msgstr "Использовать локальный счетчик эпизодов"
 
-#: 
-msgctxt "#30041"
-msgid "Skip Extra Info on Long Series"
-msgstr "Запрашивать меньше информации для больших шоу"
-
 #: settings.xml
 msgctxt "#30042"
 msgid "Spam the Log with info (only enable if told to)"
 msgstr "Spam the Log with info (only enable if told to)"
-
-#: 
-msgctxt "#30043"
-msgid "Max episodes before data will be truncated"
-msgstr "Max episodes before data will be truncated"
 
 #: settings.xml
 msgctxt "#30044"
@@ -298,16 +278,6 @@ msgctxt "#30058"
 msgid "Date format"
 msgstr "Формат даты"
 
-#: 
-msgctxt "#30059"
-msgid "Series per column"
-msgstr "Шоу на столбец"
-
-#: 
-msgctxt "#30060"
-msgid "Columns to show"
-msgstr "Показывать столбцы"
-
 #: settings.xml
 msgctxt "#30061"
 msgid "Switch Calendar to Directory based"
@@ -358,61 +328,6 @@ msgctxt "#30070"
 msgid "Hide setting tags (time/place/etc)"
 msgstr "Скрыть теги настроек (время / место / и т. Д.)"
 
-#: 
-msgctxt "#30071"
-msgid "Columns span"
-msgstr "Пропуск колонок"
-
-#: 
-msgctxt "#30072"
-msgid "Test"
-msgstr "Проверить"
-
-#: 
-msgctxt "#30073"
-msgid "Save"
-msgstr "Сохранить"
-
-#: 
-msgctxt "#30074"
-msgid "IP Address/Hostname"
-msgstr "IP-адрес / имя хоста"
-
-#: 
-msgctxt "#30075"
-msgid "Port"
-msgstr "Порт"
-
-#: 
-msgctxt "#30076"
-msgid "Login"
-msgstr "Логин"
-
-#: 
-msgctxt "#30077"
-msgid "Password"
-msgstr "Пароль"
-
-#: 
-msgctxt "#30078"
-msgid "Close"
-msgstr "Закрыть"
-
-#: 
-msgctxt "#30079"
-msgid "Warning"
-msgstr "Предупреждение"
-
-#: 
-msgctxt "#30080"
-msgid "Could not connect to Shoko Server"
-msgstr "Не удалось подключиться к серверу Shoko"
-
-#: 
-msgctxt "#30081"
-msgid "Would you like to stop setup process and close this window?"
-msgstr "Вы хотите остановить процесс установки и закрыть это окно?"
-
 #: settings.xml
 msgctxt "#30082"
 msgid "Setup Wizard"
@@ -452,11 +367,6 @@ msgstr "Число попыток"
 msgctxt "#30089"
 msgid "Wait (s) to buffer starting"
 msgstr "Подождите, пока не запустится буфер"
-
-#: settings.xml
-msgctxt "#30090"
-msgid "Advance settings"
-msgstr "Продвинутые настройки"
 
 #: settings.xml
 msgctxt "#30091"
@@ -520,11 +430,6 @@ msgstr "Показать настройки"
 
 #: settings.xml
 msgctxt "#30103"
-msgid "Show Calendar"
-msgstr "Показать календарь"
-
-#: 
-msgctxt "#30104"
 msgid "Show Calendar"
 msgstr "Показать календарь"
 
@@ -688,16 +593,6 @@ msgctxt "#30137"
 msgid "Generate Missing MediaInfo"
 msgstr "Создать отсутствующий MediaInfo"
 
-#: 
-msgctxt "#30138"
-msgid "to be used"
-msgstr "быть использованным"
-
-#: 
-msgctxt "#30139"
-msgid "to be used"
-msgstr "быть использованным"
-
 #: guibuilder.py
 msgctxt "#30140"
 msgid "Import Folders"
@@ -770,11 +665,6 @@ msgid "Getting Episodes from Server..."
 msgstr "Получение эпизодов с сервера ..."
 
 #: kodi_utils.py
-msgctxt "#30164"
-msgid "Waiting for respond from Server..."
-msgstr "Ожидание ответа от сервера ..."
-
-#: kodi_utils.py
 msgctxt "#30165"
 msgid "Sending request to Transcode server..."
 msgstr "Отправка запроса на сервер Transcode ..."
@@ -805,31 +695,6 @@ msgctxt "#30183"
 msgid "You already finished this."
 msgstr "Вы уже закончили это."
 
-#: 
-msgctxt "#30184"
-msgid "Series Voting"
-msgstr "Голосование по шоу"
-
-#: 
-msgctxt "#30185"
-msgid "You Voted"
-msgstr "Вы проголосовали"
-
-#: 
-msgctxt "#30186"
-msgid "Episode Voting"
-msgstr "Голосование за эпизод"
-
-#: 
-msgctxt "#30187"
-msgid "Watched Status Changed"
-msgstr "Изменено состояние просмотра"
-
-#: 
-msgctxt "#30188"
-msgid "Marked as"
-msgstr "Отмечено как"
-
 #: shoko_utils.py
 msgctxt "#30189"
 msgid "Queued File for Rehash"
@@ -844,11 +709,6 @@ msgstr "Файл в очереди для повторного сканиров�
 msgctxt "#30191"
 msgid "Refreshing in 10 seconds"
 msgstr "Обновление через 10 секунд"
-
-#: 
-msgctxt "#30192"
-msgid "Queued Remove Missing Files"
-msgstr "Очередь Удаление отсутствующих файлов"
 
 #: shoko_utils.py
 msgctxt "#30193"
