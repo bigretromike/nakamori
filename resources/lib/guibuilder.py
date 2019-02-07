@@ -1987,9 +1987,10 @@ def create_playlist(serie_id):
     """
     serie_url = nt.server + "/api/serie?id=" + str(serie_id) + "&level=2&nocast=1&notag=1"
     serie_body = nt.json.loads(nt.get_json(serie_url))
-    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
-    playlist.clear()
+    # playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO)
+    # playlist.clear()
     item_count = 0
+    ep_list = []
     # TODO sort by epnumber and eptype so it wont get mixed
     if 'eps' in serie_body:
         if len(serie_body['eps']) > 0:
@@ -1998,14 +1999,27 @@ def create_playlist(serie_id):
                     if 'view' in serie:
                         if serie['view'] == 1:
                             continue
-                    video = serie['files'][0]['url']
-                    details = add_serie_item(serie, serie_body['name'], True)
-                    liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
-                    liz.setInfo(type='Video', infoLabels=details)
+                    ep_id = serie['id']
+                    # video = serie['files'][0]['url']
+                    # details = add_serie_item(serie, serie_body['name'], True)
+                    # liz = xbmcgui.ListItem(details.get('title', 'Unknown'))
+                    # liz.setInfo(type='Video', infoLabels=details)
                     item_count += 1
-                    playlist.add(url=video, listitem=liz, index=item_count)
-    if item_count > 0:
-        xbmc.Player().play(playlist)
+                    # playlist.add(url=video, listitem=liz, index=item_count)
+                    ep_list.append(ep_id)
+    if len(ep_list) > 0:
+        # xbmc.Player().play(playlist)
+        for ep in ep_list:
+            xbmc.log('play this : ' + str(ep), xbmc.LOGWARNING)
+            video_parameters = dict()
+            video_parameters['ep_id'] = str(ep)
+            if kodi_utils.play_video(video_parameters['ep_id'], "0", 0) >= 0:
+                video_parameters['watched'] = True
+                nt.mark_watch_status(video_parameters)
+            else:
+                # should be -1 when STOP
+                xbmc.log('You hit STOP, so we end playlist', xbmc.LOGWARNING)
+                break
 
 
 def build_shoko_menu():

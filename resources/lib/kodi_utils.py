@@ -402,8 +402,14 @@ def play_video(ep_id, raw_id, movie):
 
     # while player.isPlaying():
     #     xbmc.sleep(500)
-    while player.PlaybackStatus != 'Stopped':
+    while player.PlaybackStatus != 'Stopped' and player.PlaybackStatus != 'Ended':
         xbmc.sleep(500)
+
+    if player.PlaybackStatus == 'Ended':
+        xbmc.log(' Ended -------~ ~~ ~ ----> ' + str(xbmc.abortRequested), xbmc.LOGWARNING)
+        return -1
+    else:
+        xbmc.log('player.PlaybackStatus=============' + str(player.PlaybackStatus))
 
     xbmc.log('-------~ ~~ ~ ----> ' + str(xbmc.abortRequested), xbmc.LOGWARNING)
     return 0
