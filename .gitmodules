@@ -16,3 +16,6 @@
 [submodule "nakamori.service"]
 	path = nakamori.service
 	url = https://github.com/BigRetroMike/nakamori.service
+[submodule "KodiStubs"]
+	path = KodiStubs
+	url = https://github.com/romanvm/Kodistubs
