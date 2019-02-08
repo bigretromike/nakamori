@@ -18,6 +18,8 @@ def get_all_file_paths(directory):
                 continue
             if 'README' in filepath:
                 continue
+            if 'LICENSE' in filepath:
+                continue
             if '.idea' in filepath:
                 continue
             if '.git' in filepath:
@@ -39,15 +41,17 @@ def get_all_file_paths(directory):
 
 
 nakamori_files = [
-    'nakamori',
+    'nakamori.lib',
     'nakamori.player',
+    'nakamori.plugin',
     'nakamori.resource',
-    'nakamori.script'
+    'nakamori.script',
+    'nakamori.service'
 ]
 
 
 def main():
-    root_path = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
+    root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     for directory in nakamori_files:
         try:
             plugin_path = os.path.join(root_path, directory)
@@ -58,7 +62,9 @@ def main():
             for file_name in file_paths:
                 print(file_name)
 
-            out = os.path.join(root_path, 'bin')
+            out = os.path.join(root_path, 'build')
+            if not os.path.exists(out):
+                os.mkdir(out)
             out = os.path.join(out, directory + '.zip')
             if os.path.exists(out):
                 os.remove(out)
