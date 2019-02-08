@@ -8,17 +8,17 @@ As some of you may have discovered, Kodi does not handle anime well. With lots o
 
 ## Features
 
-- Watched States, Resuming, and Scrobbling\
+- **Watched States, Resuming, and Scrobbling**\
   Nakamori syncs your watched states, progress, and votes automatically to Shoko. No extra work needs to be done. It has convenient context menu items to mark entire series and groups, as well. Since it is synced to Shoko, you can grab a laptop or tablet and finish watching on-the-go.
-- Group Filters\
+- **Group Filters**\
   Nakamori has full support for displaying Shoko Group Filters, from Continue Watching to directory style filters like Years, Tags, and Seasons. You can create all kinds of filters in Shoko Desktop and choose to hide or show them in Nakamori.
-- Grouping\
+- **Grouping**\
   A less known feature of Shoko is the ability to automatically group seasons and related anime together. No more fiddling with [Bakemonogatari](http://anidb.net/perl-bin/animedb.pl?show=rel&aid=6327). We've been there, and we took care of it. Nakamori supports these without any extra effort.
-- Fuzzy Searching\
+- **Fuzzy Searching**\
   Can you spell Hououin Kyouma without googling it? Well, the rest of us appreciate a search that doesn't insist you commit seppuku when you butcher an innocent foreign name. It's common, so don't worry if you're one of them. There is an entertaining ongoing bug that makes results not show when you spell it exactly right, but it's not on purpose. We swear.
-- Lots of Display Options\
+- **Lots of Display Options**\
   Aside from supporting basically every skin in existence, we take the approach of more settings is better than less. I might know what looks good better than you, but why should you care! If you want to make the text red and illegible, that's your choice! Don't want spoilers? Hide them! I don't care, but *you* might.
-- More! Probably...\
+- **More! Probably...**\
   I may be a developer who spends *way* too much time making a program to sort my Chinese Cartoon Porn™, but I forget things, too. Maybe I got lazy and didn't feel the need to update this document. Maybe I spent weeks rewriting everything because I think it's ugly and then didn't care enough to tell anyone. This is in active development by several people, so in the worst case, just shoot us a message. We're around.
 
 ---------------------------------------------------------
@@ -29,6 +29,14 @@ This was initially based on [JAVStream](http://www.ptom.co.uk/home/). The code i
 [plugin.video.plexbmc](https://github.com/hippojay/plugin.video.plexbmc/) showed how to do some stuff for UI and other handy things.
 A big thanks to the Kodi community for helping with many Kodi related issues over the years.
 An even bigger thanks to the Kodi Team for never giving up, no matter how annoying we all are.
+
+---------------------------------------------------------
+
+## Installation
+
+There are two ways to install Nakamori.\
+The first is to install the [repository](https://shokunin.monogatari.pl/repo/repository.nakamori.zip) and let it install and upate everything for you. It also has a modified version of Estuary with a different default layout and some extra perks.\
+The other way is to clone this repository using  `git clone --recursive https://github.com/bigretromike/nakamori`, running build.py with Python, and then manually installing each zip in order of dependency. Generally, you should only use this method if you need to and know what you are doing.
 
 ---------------------------------------------------------
 
