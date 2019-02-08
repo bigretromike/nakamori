@@ -19,7 +19,7 @@ As some of you may have discovered, Kodi does not handle anime well. With lots o
 - **Lots of Display Options**\
   Aside from supporting basically every skin in existence, we take the approach of more settings is better than less. I might know what looks good better than you, but why should you care! If you want to make the text red and illegible, that's your choice! Don't want spoilers? Hide them! I don't care, but *you* might.
 - **More! Probably...**\
-  I may be a developer who spends *way* too much time making a program to sort my Chinese Cartoon Porn™, but I forget things, too. Maybe I got lazy and didn't feel the need to update this document. Maybe I spent weeks rewriting everything because I think it's ugly and then didn't care enough to tell anyone. This is in active development by several people, so in the worst case, just shoot us a message. We're around.
+  We may be a developers who spends *way* too much time making a program to sort our Chinese Cartoon Porn™, but We forget things, too. Maybe we got lazy and didn't feel the need to update this document. Maybe we spent weeks rewriting everything because we think it's ugly and then didn't care enough to tell anyone. This is in active development by several people, so in the worst case, just shoot us a message. We're around.
 
 ---------------------------------------------------------
 
@@ -59,6 +59,3 @@ The other way is to clone this repository using  `git clone --recursive https://
 
 **Q: Something...happened...I don't know?**\
 **A:** Yeah, shit happens. Shoko is old. We try, but there are bugs. The first thing we'll tell you is to check if it shows the proper response in Desktop. If it does, then it's probably an issue in the API or Nakamori. Tell us about it, and we can go from there.
-
-**Q: Why are you such an ass?**\
-**A:** I'm a programmer. I literally make things just to watch them break unintentionally. I'm considerate enough to explain it, and I have plenty of patience if you're willing to give me your time and be reasonable. Just remember that every one of us does this for free because we want to. Don't be that guy who thinks that we need to be nice. We are nice because no one gives a reason not to be. We are all smart enough to teach computers how to recognize and sort anime in multiple languages, too, so if we feel that you need to be made a fool of, we are capable. That said, we are all nice people most days, so try not to let the blunt sarcasm scare you away if you just need help or want to chill.
