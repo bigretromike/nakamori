@@ -1,4 +1,4 @@
-# Nakamori -- A Kodi addon for Shoko
+# Nakamori — A Kodi addon for Shoko
 
 ---------------------------------------------------------
 
@@ -25,9 +25,9 @@ As some of you may have discovered, Kodi does not handle anime well. With lots o
 
 ## Thanks
 
-This was initially based on [JAVStream](http://www.ptom.co.uk/home/). The code is far from it at this point, but they still deserve a thanks.
-[plugin.video.plexbmc](https://github.com/hippojay/plugin.video.plexbmc/) showed how to do some stuff for UI and other handy things.
-A big thanks to the Kodi community for helping with many Kodi related issues over the years.
+This was initially based on [JAVStream](http://www.ptom.co.uk/home/). The code is far from it at this point, but they still deserve a thanks.\
+[plugin.video.plexbmc](https://github.com/hippojay/plugin.video.plexbmc/) showed how to do some stuff for UI and other handy things.\
+A big thanks to the Kodi community for helping with many Kodi related issues over the years.\
 An even bigger thanks to the Kodi Team for never giving up, no matter how annoying we all are.
 
 ---------------------------------------------------------
