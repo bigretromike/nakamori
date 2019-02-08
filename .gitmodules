@@ -1,18 +1,18 @@
-[submodule ".\\nakamori.lib\\"]
-	path = .\\nakamori.lib\\
+[submodule "nakamori.lib"]
+	path = nakamori.lib
 	url = https://github.com/BigRetroMike/nakamori.lib
-[submodule ".\\nakamori.plugin\\"]
-	path = .\\nakamori.plugin\\
+[submodule "nakamori.plugin"]
+	path = nakamori.plugin
 	url = https://github.com/BigRetroMike/nakamori.plugin
-[submodule ".\\nakamori.player\\"]
-	path = .\\nakamori.player\\
+[submodule "nakamori.player"]
+	path = nakamori.player
 	url = https://github.com/BigRetroMike/nakamori.player
-[submodule ".\\nakamori.resource\\"]
-	path = .\\nakamori.resource\\
+[submodule "nakamori.resource"]
+	path = nakamori.resource
 	url = https://github.com/BigRetroMike/nakamori.resource
-[submodule ".\\nakamori.script\\"]
-	path = .\\nakamori.script\\
+[submodule "nakamori.script"]
+	path = nakamori.script
 	url = https://github.com/BigRetroMike/nakamori.script
-[submodule ".\\nakamori.service\\"]
-	path = .\\nakamori.service\\
+[submodule "nakamori.service"]
+	path = nakamori.service
 	url = https://github.com/BigRetroMike/nakamori.service
