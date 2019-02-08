@@ -19,7 +19,7 @@ As some of you may have discovered, Kodi does not handle anime well. With lots o
 - **Lots of Display Options**\
   Aside from supporting basically every skin in existence, we take the approach of more settings is better than less. I might know what looks good better than you, but why should you care! If you want to make the text red and illegible, that's your choice! Don't want spoilers? Hide them! I don't care, but *you* might.
 - **More! Probably...**\
-  We may be a developers who spends *way* too much time making a program to sort our Chinese Cartoon Porn™, but We forget things, too. Maybe we got lazy and didn't feel the need to update this document. Maybe we spent weeks rewriting everything because we think it's ugly and then didn't care enough to tell anyone. This is in active development by several people, so in the worst case, just shoot us a message. We're around.
+  We may be developers who spend *way* too much time making a program to sort our Chinese Cartoon Porn™, but we forget things, too. Maybe we got lazy and didn't feel the need to update this document. Maybe we spent weeks rewriting everything because we think it's ugly and then didn't care enough to tell anyone. This is in active development by several people, so in the worst case, just shoot us a message. We're around.
 
 ---------------------------------------------------------
 
