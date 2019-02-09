@@ -19,3 +19,6 @@
 [submodule "KodiStubs"]
 	path = KodiStubs
 	url = https://github.com/romanvm/Kodistubs
+[submodule "kodi-plugin-routing"]
+	path = kodi-plugin-routing
+	url = https://github.com/tamland/kodi-plugin-routing

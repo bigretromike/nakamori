@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/KodiStubs" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.lib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.player" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.plugin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.resource" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.script" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.service" vcs="Git" />
+  </component>
+</project>
