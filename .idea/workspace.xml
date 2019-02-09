@@ -2,26 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2cfe28b6-e3ec-48fd-9e08-93f768103b43" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Nakamori.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kodi-plugin-routing" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitmodules" beforeDir="false" afterPath="$PROJECT_DIR$/.gitmodules" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.player" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.player" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.player/lib/nakamoriplayer.py" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.player/lib/nakamoriplayer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.script" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/default.py" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.script/default.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/lib/Cache/Cache.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/lib/Cache/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/lib/nakamoritools/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/lib/nakamoritools/nakamoritools.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/lib/windows/calendar.py" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.script/lib/windows/calendar.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/lib/windows/wizard.py" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.script/lib/windows/wizard.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nakamori.script/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/nakamori.script/plugin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nakamori.lib/resources/fanart.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/nakamori.lib/resources/icon.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,8 +29,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/nakamori.lib/addon.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="11" column="68" lean-forward="true" selection-start-line="11" selection-start-column="68" selection-end-line="11" selection-end-column="68" />
+            <state relative-caret-position="161">
+              <caret line="7" column="32" lean-forward="true" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -94,6 +77,12 @@
             <path>
               <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
               <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
+              <item name="nakamori.lib" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
               <item name="nakamori.player" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -121,6 +110,12 @@
               <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
               <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
               <item name="nakamori.service" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
+              <item name="nakamori.service" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -166,17 +161,32 @@
       <option name="presentableId" value="Default" />
       <updated>1549707152502</updated>
       <workItem from="1549707156452" duration="688000" />
-      <workItem from="1549707870145" duration="3477000" />
+      <workItem from="1549707870145" duration="4336000" />
     </task>
+    <task id="LOCAL-00001" summary="Attempt PyCharm commits to submodules in one go">
+      <created>1549711965265</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1549711965265</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Except nakamori.lib, as it didn't have a branch yet...">
+      <created>1549712108879</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1549712108879</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4165000" />
+    <option name="totallyTimeSpent" value="5024000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25302014" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25302014" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -190,7 +200,7 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="11" visible="true" weight="0.3286119" />
+      <window_info anchor="bottom" id="Terminal" order="11" visible="true" weight="0.3286119" />
       <window_info anchor="bottom" id="Python Console" order="12" />
       <window_info anchor="right" id="Git Scope" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -202,6 +212,11 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Attempt PyCharm commits to submodules in one go" />
+    <MESSAGE value="Except nakamori.lib, as it didn't have a branch yet..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Except nakamori.lib, as it didn't have a branch yet..." />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/nakamori.plugin/resources/lib/debug.py">
@@ -251,13 +266,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="8" selection-start-column="8" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nakamori.plugin/nakamori.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="230">
@@ -268,10 +276,22 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="8" selection-start-column="8" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nakamori.script/resources/language/resource.language.en_gb/strings.po">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3749" />
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/nakamori.lib/addon.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="11" column="68" lean-forward="true" selection-start-line="11" selection-start-column="68" selection-end-line="11" selection-end-column="68" />
+        <state relative-caret-position="161">
+          <caret line="7" column="32" lean-forward="true" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
         </state>
       </provider>
     </entry>
