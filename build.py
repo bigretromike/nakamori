@@ -41,12 +41,13 @@ def get_all_file_paths(directory):
 
 
 nakamori_files = [
-    'nakamori.lib',
-    'nakamori.player',
-    'nakamori.plugin',
     'nakamori.resource',
-    'nakamori.script',
-    'nakamori.service'
+    'plugin.video.nakamori',
+    'script.module.nakamori',
+    'script.module.nakamori-lib',
+    'script.module.nakamoriplayer',
+    'service.nakamori',
+    'script.module.pydevd-pycharm'
 ]
 
 

@@ -3,11 +3,13 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/KodiStubs" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/nakamori.lib" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/nakamori.player" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/nakamori.plugin" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/kodi-plugin-routing" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/nakamori.resource" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/nakamori.script" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/nakamori.service" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/plugin.video.nakamori" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/script.module.nakamori" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/script.module.nakamori-lib" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/script.module.nakamoriplayer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/script.module.pydevd-pycharm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/service.nakamori" vcs="Git" />
   </component>
 </project>

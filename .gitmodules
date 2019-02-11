@@ -1,20 +1,20 @@
-[submodule "nakamori.lib"]
-	path = nakamori.lib
+[submodule "script.module.nakamori-lib"]
+	path = script.module.nakamori-lib
 	url = https://github.com/BigRetroMike/nakamori.lib
-[submodule "nakamori.plugin"]
-	path = nakamori.plugin
+[submodule "plugin.video.nakamori"]
+	path = plugin.video.nakamori
 	url = https://github.com/BigRetroMike/nakamori.plugin
-[submodule "nakamori.player"]
-	path = nakamori.player
+[submodule "script.module.nakamoriplayer"]
+	path = script.module.nakamoriplayer
 	url = https://github.com/BigRetroMike/nakamori.player
 [submodule "nakamori.resource"]
 	path = nakamori.resource
 	url = https://github.com/BigRetroMike/nakamori.resource
-[submodule "nakamori.script"]
-	path = nakamori.script
+[submodule "script.module.nakamori"]
+	path = script.module.nakamori
 	url = https://github.com/BigRetroMike/nakamori.script
-[submodule "nakamori.service"]
-	path = nakamori.service
+[submodule "service.nakamori"]
+	path = service.nakamori
 	url = https://github.com/BigRetroMike/nakamori.service
 [submodule "KodiStubs"]
 	path = KodiStubs
@@ -22,3 +22,6 @@
 [submodule "kodi-plugin-routing"]
 	path = kodi-plugin-routing
 	url = https://github.com/tamland/kodi-plugin-routing
+[submodule "script.module.pydevd-pycharm"]
+	path = script.module.pydevd-pycharm
+	url = https://github.com/da3dsoul/script.module.pydevd-pycharm
