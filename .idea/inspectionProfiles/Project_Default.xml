@@ -23,6 +23,7 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="web_pdb" />
+          <option value="lib.kodi_utils.pysqlite2" />
         </list>
       </option>
     </inspection_tool>
