@@ -4,8 +4,9 @@
     <list default="true" id="2cfe28b6-e3ec-48fd-9e08-93f768103b43" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Remote_Debug.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Remote_Debug.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.nakamori/default.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori/default.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.nakamori/plugin.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori/plugin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py" beforeDir="false" afterPath="$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin.video.nakamori/nakamori.py" beforeDir="false" afterPath="$PROJECT_DIR$/plugin.video.nakamori/nakamori.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.nakamori" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,22 +20,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/nakamoritools.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15939">
-              <caret line="712" column="20" selection-start-line="712" selection-start-column="20" selection-end-line="712" selection-end-column="20" />
-              <folding>
-                <element signature="e#24#34#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamori.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="357">
-              <caret line="205" column="91" lean-forward="true" selection-start-line="205" selection-start-column="91" selection-end-line="205" selection-end-column="91" />
+            <state relative-caret-position="46">
+              <caret line="57" selection-start-line="57" selection-end-line="57" />
               <folding>
                 <element signature="e#24#90#0" expanded="true" />
               </folding>
@@ -74,10 +63,10 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script.module.nakamori/default.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
+            <state relative-caret-position="23">
               <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -107,14 +96,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3795">
-              <caret line="181" column="59" selection-start-line="181" selection-start-column="59" selection-end-line="181" selection-end-column="59" />
-              <folding>
-                <element signature="e#79#94#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="391">
+              <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
             </state>
           </provider>
         </entry>
@@ -188,7 +174,7 @@
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="DONT_SYNC" />
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/script.module.nakamori" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/plugin.video.nakamori" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -237,13 +223,13 @@
         <option value="$PROJECT_DIR$/plugin.video.nakamori/lib/shoko_utils.py" />
         <option value="$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/kodi_version_proxy.py" />
         <option value="$PROJECT_DIR$/plugin.video.nakamori/lib/debug.py" />
-        <option value="$PROJECT_DIR$/plugin.video.nakamori/nakamori.py" />
         <option value="$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/nakamoritools.py" />
-        <option value="$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py" />
         <option value="$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py" />
         <option value="$PROJECT_DIR$/plugin.video.nakamori/lib/kodi_utils.py" />
         <option value="$PROJECT_DIR$/script.module.nakamori/plugin.py" />
         <option value="$PROJECT_DIR$/script.module.nakamori/default.py" />
+        <option value="$PROJECT_DIR$/plugin.video.nakamori/nakamori.py" />
+        <option value="$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py" />
       </list>
     </option>
   </component>
@@ -429,7 +415,7 @@
       <workItem from="1549883508992" duration="980000" />
       <workItem from="1549899936088" duration="10496000" />
       <workItem from="1549977923778" duration="20129000" />
-      <workItem from="1550194856096" duration="844000" />
+      <workItem from="1550194856096" duration="1710000" />
     </task>
     <task id="LOCAL-00001" summary="Attempt PyCharm commits to submodules in one go">
       <created>1549711965265</created>
@@ -494,11 +480,18 @@
       <option name="project" value="LOCAL" />
       <updated>1550062027092</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Remove unnecessary reference to nakamoritools">
+      <created>1550200165827</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1550200165827</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="85058000" />
+    <option name="totallyTimeSpent" value="85924000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -600,7 +593,8 @@
     <MESSAGE value="Lots of refactoring. This is tested and working now.&#10;Debugging work. PyCharm debug addon made and included.&#10;Now I can really dig into it!" />
     <MESSAGE value="More refactoring. Start on some proxies. Change debugger to not suspend automatically.&#10;Include a remote debug profile for reference" />
     <MESSAGE value="More work on proxies. This might run in Python 3 now." />
-    <option name="LAST_COMMIT_MESSAGE" value="More work on proxies. This might run in Python 3 now." />
+    <MESSAGE value="Remove unnecessary reference to nakamoritools" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove unnecessary reference to nakamoritools" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -646,7 +640,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/nakamori.service/nakamori_service.py" />
     <entry file="file://$PROJECT_DIR$/nakamori.script/lib/windows/wizard.py" />
     <entry file="file://$PROJECT_DIR$/nakamori.script/default.py" />
     <entry file="file://$PROJECT_DIR$/nakamori.script/plugin.py" />
@@ -881,16 +874,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3795">
-          <caret line="181" column="59" selection-start-line="181" selection-start-column="59" selection-end-line="181" selection-end-column="59" />
-          <folding>
-            <element signature="e#79#94#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="69">
@@ -920,16 +903,6 @@
     <entry file="file://$PROJECT_DIR$/script.module.nakamori/addon.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamori.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="357">
-          <caret line="205" column="91" lean-forward="true" selection-start-line="205" selection-start-column="91" selection-end-line="205" selection-end-column="91" />
-          <folding>
-            <element signature="e#24#90#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori/plugin.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-55">
@@ -939,11 +912,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori/default.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
+        <state relative-caret-position="23">
           <caret line="8" column="27" lean-forward="true" selection-start-line="8" selection-start-column="27" selection-end-line="8" selection-end-column="27" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamori.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="46">
+          <caret line="57" selection-start-line="57" selection-end-line="57" />
+          <folding>
+            <element signature="e#24#90#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/lib/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/lib/guibuilder.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="17" column="22" lean-forward="true" selection-start-line="17" selection-start-column="22" selection-end-line="17" selection-end-column="22" />
         </state>
       </provider>
     </entry>
