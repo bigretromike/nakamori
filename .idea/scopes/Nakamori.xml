@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Nakamori" pattern="file[Nakamori]:plugin.video.nakamori//*||file[Nakamori]:script.module.nakamori//*||file[Nakamori]:script.module.nakamori-lib//*||file[Nakamori]:script.module.nakamoriplayer//*||file[Nakamori]:service.nakamori//*" />
+</component>
