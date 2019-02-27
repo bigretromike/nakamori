@@ -14,25 +14,9 @@ def get_all_file_paths(directory):
         for filename in files:
             # join the two strings in order to form the full filepath.
             filepath = os.path.join(root, filename)
-            if 'build.py' in filepath:
-                continue
-            if 'README' in filepath:
-                continue
-            if 'LICENSE' in filepath:
-                continue
-            if '.idea' in filepath:
-                continue
-            if '.git' in filepath:
-                continue
-            if 'xbmc.py' in filepath:
-                continue
-            if 'xbmcaddon.py' in filepath:
-                continue
-            if 'xbmcgui.py' in filepath:
-                continue
-            if 'xbmcplugin.py' in filepath:
-                continue
-            if 'xbmcvfs.py' in filepath:
+            files = ['build.py','README','LICENSE','.idea','.git','xbmc.py','xbmcaddon.py','xbmcgui.py',
+                     'xbmcplugin.py','xbmcvfs.py']
+            if any(x in filepath for x in files):
                 continue
             file_paths.append(filepath)
 
