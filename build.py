@@ -1,6 +1,7 @@
 import sys
 import traceback
 import zipfile
+import zlib
 from zipfile import ZipFile
 import os
 
@@ -9,17 +10,30 @@ def get_all_file_paths(directory):
     # initializing empty file paths list
     file_paths = []
 
-    # crawling through directory and subdirectories
-    for root, directories, files in os.walk(directory):
-        for filename in files:
-            # join the two strings in order to form the full filepath.
-            filepath = os.path.join(root, filename)
-            files = ['build.py', 'README', 'LICENSE', '.idea', '.git', 'xbmc.py', 'xbmcaddon.py', 'xbmcgui.py',
-                     'xbmcplugin.py', 'xbmcvfs.py']
-            if any(x in filepath for x in files):
-                continue
-            file_paths.append(filepath)
+    # make hash.sfv
+    if not os.path.exists(os.path.join(directory, 'resources')):
+        os.mkdir(os.path.join(directory, 'resources'))
+    check_file = os.path.join(directory, 'resources', 'hash.sfv')
+    os.remove(check_file)
+    with open(check_file, 'a') as the_file:
 
+        # crawling through directory and subdirectories
+        for root, directories, files in os.walk(directory):
+            for filename in files:
+                # join the two strings in order to form the full filepath.
+                filepath = os.path.join(root, filename)
+                files = ['build.py', 'README', 'LICENSE', '.idea', '.git', 'xbmc.py', 'xbmcaddon.py', 'xbmcgui.py',
+                         'xbmcplugin.py', 'xbmcvfs.py', 'hash.sfv']
+                if any(x in filepath for x in files):
+                    continue
+
+                buf = open(filepath, 'rb').read()
+                buf = format(zlib.crc32(buf) & 0xFFFFFFFF, 'x')
+                the_file.write(filename + ' ' + buf + '\n')
+                file_paths.append(filepath)
+
+    # add hash file
+    file_paths.append(check_file)
     # returning all file paths
     return file_paths
 
