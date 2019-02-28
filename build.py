@@ -14,7 +14,8 @@ def get_all_file_paths(directory):
     if not os.path.exists(os.path.join(directory, 'resources')):
         os.mkdir(os.path.join(directory, 'resources'))
     check_file = os.path.join(directory, 'resources', 'hash.sfv')
-    os.remove(check_file)
+    if os.path.exists(check_file):
+        os.remove(check_file)
     with open(check_file, 'a') as the_file:
 
         # crawling through directory and subdirectories
