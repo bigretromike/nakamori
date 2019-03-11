@@ -46,7 +46,8 @@ nakamori_files = [
     'script.module.nakamori-lib',
     'script.module.nakamoriplayer',
     'service.nakamori',
-    'script.module.pydevd-pycharm'
+    'script.module.pydevd-pycharm',
+    'kodi-plugin-routing'
 ]
 
 
