@@ -2,6 +2,8 @@ import sys
 import traceback
 import zipfile
 import zlib
+from collections import defaultdict
+from distutils.version import LooseVersion
 from zipfile import ZipFile
 import os
 
@@ -40,8 +42,8 @@ def get_all_file_paths(directory):
 
 
 nakamori_files = [
-    'nakamori.resource',
     'plugin.video.nakamori',
+    'nakamori.resource',
     'script.module.nakamori',
     'script.module.nakamori-lib',
     'script.module.nakamoriplayer',
@@ -51,8 +53,71 @@ nakamori_files = [
 ]
 
 
+def get_news():
+    root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+    changelog_txt_path = os.path.join(root_path, nakamori_files[0], 'changelog.txt')
+    fstream = open(changelog_txt_path, 'r')
+    changelog = defaultdict(list)
+    current_version = None
+    for line in fstream.readlines():
+        try:
+            line = line.strip()
+            if line == '':
+                continue
+            if line.startswith('#'):
+                continue
+            if line.startswith('!--'):
+                try:
+                    current_version = LooseVersion(line.replace('!--', '').strip())
+                    # current line is version so go to next line
+                    continue
+                except:
+                    pass
+            if current_version is None:
+                continue
+            changelog[current_version.vstring].append(line)
+        except:
+            pass
+    changelog.default_factory = None
+
+    # build the text based on previous version.
+    # This is important, as someone might open kodi for the first time in a while and skip several versions
+    max_version = (LooseVersion('0'), [])
+    for k, v in changelog.items():
+        if LooseVersion(k) > max_version[0]:
+            max_version = (LooseVersion(k), v)
+
+    changelog_text = 'Version ' + max_version[0].vstring
+    for line in max_version[1]:
+        changelog_text += '[CR]- ' + line
+
+    return changelog_text
+
+
+def replace_news():
+    replace_me = '{NEWS REPLACE ME}'
+    news = get_news()
+    root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+    addon_xml_path = os.path.join(root_path, nakamori_files[0], 'addon.xml')
+
+    with open(addon_xml_path) as f:
+        s = f.read()
+        if replace_me not in s:
+            return
+
+    with open(addon_xml_path, 'w') as f:
+        print('Adding news to ')
+        s = s.replace(replace_me, news)
+        f.write(s)
+
+
 def main():
     root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+    try:
+        replace_news()
+    except:
+        pass
+
     for directory in nakamori_files:
         try:
             plugin_path = os.path.join(root_path, directory)
