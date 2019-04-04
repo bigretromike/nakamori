@@ -4,6 +4,7 @@ import zipfile
 import zlib
 from collections import defaultdict
 from distutils.version import LooseVersion
+from shutil import copy2
 from zipfile import ZipFile
 import os
 
@@ -100,6 +101,8 @@ def replace_news():
     root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     addon_xml_path = os.path.join(root_path, nakamori_files[0], 'addon.xml')
 
+    copy2(addon_xml_path, root_path)
+
     with open(addon_xml_path) as f:
         s = f.read()
         if replace_me not in s:
@@ -109,6 +112,15 @@ def replace_news():
         print('Adding news to ')
         s = s.replace(replace_me, news)
         f.write(s)
+
+
+def restore_backup():
+    root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+    addon_xml_path = os.path.join(root_path, nakamori_files[0])
+    addon_xml_path_temp = os.path.join(root_path, 'addon.xml')
+
+    copy2(addon_xml_path_temp, addon_xml_path)
+    os.remove(addon_xml_path_temp)
 
 
 def main():
@@ -149,6 +161,11 @@ def main():
                 print(str(exc_type) + " at line " + str(exc_tb.tb_lineno) + " in file " + str(
                     os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]))
                 traceback.print_exc()
+
+        try:
+            restore_backup()
+        except:
+            pass
 
 
 if __name__ == '__main__':
