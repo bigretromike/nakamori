@@ -41,10 +41,16 @@ def get_all_file_paths(directory):
     # returning all file paths
     return file_paths
 
+nakamori_double_folder = [
+    os.path.join('nakamori.contextmenu', 'context.nakamori.calendar'),
+    os.path.join('nakamori.contextmenu', 'context.nakamori.vote'),
+]
 
 nakamori_files = [
     'plugin.video.nakamori',
     'nakamori.resource',
+    'context.nakamori.calendar',
+    'context.nakamori.vote',
     'script.module.nakamori',
     'script.module.nakamori-lib',
     'script.module.nakamoriplayer',
@@ -123,12 +129,30 @@ def restore_backup():
     os.remove(addon_xml_path_temp)
 
 
+def move_folders_out_folder():
+    from distutils.dir_util import copy_tree
+    root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
+    for directory in nakamori_double_folder:
+        try:
+            source = os.path.join(root_path, directory)
+            destination = os.path.join(root_path, os.path.basename(os.path.normpath(source)))
+            if not os.path.exists(destination):
+                os.makedirs(destination)
+            copy_tree(source, destination)
+        except Exception as ex:
+            print(str(ex))
+            pass
+
+
 def main():
     root_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
     try:
         replace_news()
     except:
         pass
+
+    move_folders_out_folder()
 
     for directory in nakamori_files:
         try:
