@@ -4,6 +4,7 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/KodiStubs" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/kodi-plugin-routing" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/nakamori.contextmenu" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/nakamori.resource" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/plugin.video.nakamori" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/script.module.nakamori" vcs="Git" />
