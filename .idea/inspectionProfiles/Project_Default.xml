@@ -27,11 +27,13 @@
       </option>
     </inspection_tool>
     <inspection_tool class="PyProtectedMemberInspection" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="PySameParameterValueInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="ERROR" enabled_by_default="true">
       <option name="ignoredIdentifiers">
         <list>
           <option value="web_pdb" />
           <option value="lib.kodi_utils.pysqlite2" />
+          <option value="ujson" />
         </list>
       </option>
     </inspection_tool>
