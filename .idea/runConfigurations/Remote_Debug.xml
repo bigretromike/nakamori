@@ -5,7 +5,10 @@
     <option name="HOST" value="localhost" />
     <PathMappingSettings>
       <option name="pathMappings">
-        <list />
+        <list>
+          <mapping local-root="$PROJECT_DIR$" remote-root="C:/Users/da3ds/AppData/Roaming/Kodi/addons" />
+          <mapping local-root="$PROJECT_DIR$/plugin.video.nakamori/lib/debug.py" remote-root="C:/Users/da3ds/AppData/Roaming/Kodi/addons/plugin.video.nakamori/lib/debug.py" />
+        </list>
       </option>
     </PathMappingSettings>
     <option name="REDIRECT_OUTPUT" value="true" />
