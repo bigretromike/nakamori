@@ -9,6 +9,20 @@ from zipfile import ZipFile
 import os
 
 
+def calculate_file_crc(the_file, filepath, dirs, x):
+    if os.path.isfile(filepath):
+        y = os.path.join('..', dirs, x)
+
+        excluded_files = ['build.py', 'README', 'LICENSE', '.idea', '.git', 'xbmc.py', 'xbmcaddon.py',
+                          'xbmcgui.py', 'xbmcplugin.py', 'xbmcvfs.py', 'hash.sfv']
+        if any(xx in os.path.basename(filepath) for xx in excluded_files):
+            pass
+        else:
+            buf = open(filepath, 'rb').read()
+            buf = format(zlib.crc32(buf) & 0xFFFFFFFF, 'x')
+            the_file.write(y + ' ' + buf + '\n')
+
+
 def get_all_file_paths(directory):
     # initializing empty file paths list
     file_paths = []
@@ -16,30 +30,30 @@ def get_all_file_paths(directory):
     # make hash.sfv
     if not os.path.exists(os.path.join(directory, 'resources')):
         os.mkdir(os.path.join(directory, 'resources'))
+
+    # calculate hash
     check_file = os.path.join(directory, 'resources', 'hash.sfv')
     if os.path.exists(check_file):
         os.remove(check_file)
     with open(check_file, 'a') as the_file:
-
         # crawling through directory and subdirectories
         for root, directories, files in os.walk(directory):
-            for filename in files:
-                # join the two strings in order to form the full filepath.
-                filepath = os.path.join(root, filename)
-                excluded_files = ['build.py', 'README', 'LICENSE', '.idea', '.git', 'xbmc.py', 'xbmcaddon.py',
-                                  'xbmcgui.py', 'xbmcplugin.py', 'xbmcvfs.py', 'hash.sfv']
-                if any(x in filepath for x in excluded_files):
-                    continue
+            for dirs in directories:
+                for x in os.listdir(os.path.join(root, dirs)):
+                    filepath = os.path.join(root, dirs, x)
+                    calculate_file_crc(the_file, filepath, dirs, x)
+                    file_paths.append(filepath)
 
-                buf = open(filepath, 'rb').read()
-                buf = format(zlib.crc32(buf) & 0xFFFFFFFF, 'x')
-                the_file.write(filename + ' ' + buf + '\n')
+            for f in files:
+                filepath = os.path.join(root, f)
+                calculate_file_crc(the_file, filepath, '', f)
                 file_paths.append(filepath)
 
-    # add hash file
-    file_paths.append(check_file)
+            break
+
     # returning all file paths
     return file_paths
+
 
 nakamori_double_folder = [
     os.path.join('nakamori.contextmenu', 'context.nakamori.calendar'),
