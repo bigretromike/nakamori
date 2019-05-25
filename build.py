@@ -9,18 +9,33 @@ from zipfile import ZipFile
 import os
 
 
-def calculate_file_crc(the_file, filepath, dirs, x):
-    if os.path.isfile(filepath):
-        y = os.path.join('..', dirs, x)
-
-        excluded_files = ['build.py', 'README', 'LICENSE', '.idea', '.git', 'xbmc.py', 'xbmcaddon.py',
-                          'xbmcgui.py', 'xbmcplugin.py', 'xbmcvfs.py', 'hash.sfv']
-        if any(xx in os.path.basename(filepath) for xx in excluded_files):
-            pass
-        else:
+def calculate_file_crc(check_file, filepath, file_with_dir):
+    if not file_with_dir.endswith('hash.sfv'):
+        with open(check_file, 'a') as the_file:
             buf = open(filepath, 'rb').read()
             buf = format(zlib.crc32(buf) & 0xFFFFFFFF, 'x')
-            the_file.write(y + ' ' + buf + '\n')
+            the_file.write(file_with_dir + ' ' + buf + '\n')
+
+
+def add_file(list_of_processed_files, hash_path, full_path, filename):
+    if full_path not in list_of_processed_files:
+        # excluded from adding to list
+        excluded_files = ['build.py', '.idea', '.git', 'xbmc.py', 'xbmcaddon.py',
+                          'xbmcgui.py', 'xbmcplugin.py', 'xbmcvfs.py', 'sh.exe.stackdump']
+
+        if os.path.basename(filename) not in excluded_files:
+            list_of_processed_files.append(full_path)
+            calculate_file_crc(hash_path, full_path, filename)
+
+
+def look_inside(origin_path, path, list_of_files, file_paths):
+    for files in os.listdir(path):
+        y = os.path.join(path, files)
+        if os.path.isfile(y):
+            file_path = str(y).replace(origin_path, '..')
+            add_file(list_of_files, file_paths, y, file_path)
+        elif os.path.isdir(y):
+            look_inside(origin_path, y, list_of_files, file_paths)
 
 
 def get_all_file_paths(directory):
@@ -31,25 +46,14 @@ def get_all_file_paths(directory):
     if not os.path.exists(os.path.join(directory, 'resources')):
         os.mkdir(os.path.join(directory, 'resources'))
 
-    # calculate hash
+    # check hash file (wipe)
     check_file = os.path.join(directory, 'resources', 'hash.sfv')
     if os.path.exists(check_file):
         os.remove(check_file)
-    with open(check_file, 'a') as the_file:
-        # crawling through directory and subdirectories
-        for root, directories, files in os.walk(directory):
-            for dirs in directories:
-                for x in os.listdir(os.path.join(root, dirs)):
-                    filepath = os.path.join(root, dirs, x)
-                    calculate_file_crc(the_file, filepath, dirs, x)
-                    file_paths.append(filepath)
 
-            for f in files:
-                filepath = os.path.join(root, f)
-                calculate_file_crc(the_file, filepath, '', f)
-                file_paths.append(filepath)
-
-            break
+    # iterate over ALL files make list of those for zip and calculate hash
+    # crawling through directory and subdirectories
+    look_inside(directory, directory, file_paths, check_file)
 
     # returning all file paths
     return file_paths
