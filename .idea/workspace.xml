@@ -2,14 +2,95 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2cfe28b6-e3ec-48fd-9e08-93f768103b43" name="Default Changelist" comment="Follow scrobble setting in player">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Remote_Debug.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Remote_Debug.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.nakamori-lib/lib/shoko_models/v2.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori-lib/lib/shoko_models/v2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.nakamori-lib" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori-lib" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.nakamoriplayer" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamoriplayer" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_completer.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_completer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_imports_tipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_imports_tipper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_jy_imports_tipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_jy_imports_tipper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_console_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_console_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_import_hook.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_import_hook.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_imports.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_imports.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console_011.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console_011.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_is_thread_alive.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_is_thread_alive.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_localhost.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_localhost.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_log.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey_qt.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey_qt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_override.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_override.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_umd.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_umd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_imps/_pydev_execfile.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_imps/_pydev_execfile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel_client.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_pytest2.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_pytest2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_xml_rpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_xml_rpc.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevconsole_code_for_ironpython.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevconsole_code_for_ironpython.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info_regular.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info_regular.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_breakpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_breakpoints.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_comm.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_comm.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_console.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_console.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_constants.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_custom_frames.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_custom_frames.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_extension_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_extension_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_io.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_io.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_kill_all_pydevd_threads.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_kill_all_pydevd_threads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_process_net_command.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_process_net_command.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_referrers.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_referrers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_resolver.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_resolver.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_save_locals.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_save_locals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_signature.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_signature.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_stackless.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_stackless.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch_regular.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch_regular.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_traceproperty.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_traceproperty.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_vars.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_vars.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_xml.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_xml.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_cython_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_cython_wrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_tracing.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_tracing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_modify_bytecode.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_modify_bytecode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/build_binaries_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/build_binaries_windows.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/generate_code.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/generate_code.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/names_to_rename.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/names_to_rename.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/rename_pep8.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/rename_pep8.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/interpreterInfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/interpreterInfo.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_coverage.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_coverage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhook.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhook.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhookqt5.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhookqt5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/matplotlibtools.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/matplotlibtools.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt_for_kernel.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt_for_kernel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_sitecustomize/sitecustomize.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_sitecustomize/sitecustomize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevconsole.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevconsole.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/_test_attach_to_process_linux.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/_test_attach_to_process_linux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/add_code_to_python_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/add_code_to_python_process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_pydevd.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_pydevd.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/gdb_threads_settrace.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/gdb_threads_settrace.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_concurrency_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_concurrency_logger.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_thread_wrappers.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_thread_wrappers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_file_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_file_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/django_debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/django_debug.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/pydevd_plugin_numpy_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/pydevd_plugin_numpy_types.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/jinja2_debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/jinja2_debug.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/runfiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/runfiles.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/setup_cython.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/setup_cython.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/service.nakamori" beforeDir="false" afterPath="$PROJECT_DIR$/service.nakamori" afterDir="false" />
     </list>
     <ignored path="C:\Users\da3ds\Documents\GitHub\Nakamori\.idea\shelf/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -64,292 +145,25 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/addon.xml">
+        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="11" column="65" selection-start-line="11" selection-start-column="65" selection-end-line="11" selection-end-column="65" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/build.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3280">
-              <caret line="172" selection-start-line="172" selection-end-line="172" />
-              <folding>
-                <element signature="e#0#10#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1680">
-              <caret line="86" column="49" selection-end-line="96" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="600">
-              <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
+            <state relative-caret-position="135">
+              <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/addon.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="60">
-              <caret line="3" column="55" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kodi-plugin-routing/lib/routing.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="280">
-              <caret line="14" column="45" selection-start-line="14" selection-start-column="45" selection-end-line="14" selection-end-column="45" />
-              <folding>
-                <element signature="e#703#712#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/changelog.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="760">
-              <caret line="38" column="15" selection-start-line="38" selection-start-column="15" selection-end-line="38" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori/nakamoriscript.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="620">
-              <caret line="45" column="27" selection-start-line="45" selection-start-column="27" selection-end-line="45" selection-end-column="27" />
-              <folding>
-                <element signature="e#46#58#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/class_dump.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="580">
-              <caret line="30" column="27" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori/lib/windows/information.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="24" selection-start-line="24" selection-end-line="24" />
-              <folding>
-                <element signature="e#24#59#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori/resources/skins/default/1080i/information.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="580">
-              <caret line="29" column="37" selection-start-line="29" selection-start-column="37" selection-end-line="29" selection-end-column="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/error_handler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3520">
-              <caret line="185" column="46" selection-start-line="185" selection-start-column="40" selection-end-line="185" selection-end-column="46" />
-              <folding>
-                <element signature="e#24#38#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamoriplayer/lib/nakamori_player.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7660">
-              <caret line="392" column="29" selection-start-line="392" selection-start-column="29" selection-end-line="392" selection-end-column="29" />
-              <folding>
-                <element signature="e#24#57#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2440">
-              <caret line="122" column="108" selection-end-line="122" selection-end-column="108" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/kodi_version_proxy.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="8" column="50" selection-start-line="8" selection-start-column="50" selection-end-line="8" selection-end-column="50" />
-              <folding>
-                <element signature="e#0#42#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori/addon.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="80">
-              <caret line="4" column="68" selection-start-line="4" selection-start-column="68" selection-end-line="4" selection-end-column="68" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamoriplayer/addon.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="5" column="15" selection-start-line="5" selection-start-column="15" selection-end-line="5" selection-end-column="15" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori/lib/windows/wizard.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1640">
-              <caret line="87" column="97" selection-start-line="87" selection-start-column="97" selection-end-line="87" selection-end-column="97" />
-              <folding>
-                <element signature="e#24#44#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori/resources/skins/default/1080i/login_wizard.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2360">
-              <caret line="118" column="45" selection-start-line="118" selection-start-column="45" selection-end-line="118" selection-end-column="45" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/KodiStubs/xbmcgui.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="18260">
-              <caret line="915" column="85" selection-start-line="915" selection-start-column="85" selection-end-line="915" selection-end-column="85" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/script_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1860">
-              <caret line="94" column="25" selection-start-line="94" selection-start-column="25" selection-end-line="94" selection-end-column="25" />
-              <folding>
-                <element signature="e#140#151#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py">
+        <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriplugin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="367" column="19" selection-start-line="367" selection-start-column="19" selection-end-line="367" selection-end-column="19" />
-              <folding>
-                <element signature="e#24#35#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="6780">
-              <caret line="350" column="35" selection-start-line="350" selection-start-column="35" selection-end-line="350" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/RecalculateGroup.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
-              <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="35" selection-end-column="5" />
+            <state relative-caret-position="221">
+              <caret line="581" column="24" selection-start-line="581" selection-start-column="24" selection-end-line="581" selection-end-column="24" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/RegenerateGroup/setup.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="14" column="58" selection-start-line="14" selection-start-column="58" selection-end-line="14" selection-end-column="58" />
-              <folding>
-                <element signature="e#0#32#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="219">
-              <caret line="16" column="48" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://C:/Program Files (x86)/Python27/Lib/urllib2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="147">
-              <caret line="176" column="6" selection-start-line="176" selection-start-column="6" selection-end-line="176" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -357,8 +171,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/shoko_models/v2.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="1496" column="32" lean-forward="true" selection-start-line="1496" selection-start-column="32" selection-end-line="1496" selection-end-column="32" />
+            <state relative-caret-position="22290">
+              <caret line="1496" column="32" selection-start-line="1496" selection-start-column="32" selection-end-line="1496" selection-end-column="32" />
               <folding>
                 <element signature="e#46#57#0" expanded="true" />
               </folding>
@@ -374,7 +188,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/model_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="640">
+            <state relative-caret-position="480">
               <caret line="39" column="46" selection-start-line="39" selection-start-column="46" selection-end-line="39" selection-end-column="46" />
             </state>
           </provider>
@@ -383,7 +197,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/resources/language/resource.language.en_GB/strings.po">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10060">
+            <state relative-caret-position="7545">
               <caret line="503" column="21" selection-start-line="503" selection-start-column="21" selection-end-line="503" selection-end-column="21" />
             </state>
           </provider>
@@ -392,7 +206,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/kodi_utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5380">
+            <state relative-caret-position="4035">
               <caret line="281" column="61" selection-start-line="281" selection-start-column="61" selection-end-line="281" selection-end-column="61" />
               <folding>
                 <element signature="e#24#35#0" expanded="true" />
@@ -402,18 +216,9 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="380">
-              <caret line="20" selection-start-line="20" selection-end-line="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/kodi_models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3940">
+            <state relative-caret-position="2955">
               <caret line="203" selection-start-line="203" selection-end-line="203" />
               <folding>
                 <element signature="e#0#10#0" expanded="true" />
@@ -425,7 +230,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/cache.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1560">
+            <state relative-caret-position="1170">
               <caret line="78" column="15" selection-start-line="78" selection-start-column="15" selection-end-line="78" selection-end-column="15" />
             </state>
           </provider>
@@ -509,7 +314,7 @@
   <component name="Git.Settings">
     <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/script.module.nakamori-lib" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/plugin.video.nakamori" />
     <option name="RESET_MODE" value="SOFT" />
   </component>
   <component name="IdeDocumentHistory">
@@ -575,8 +380,8 @@
     </order>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-100" />
-    <option name="width" value="1940" />
+    <option name="x" value="1276" />
+    <option name="width" value="1928" />
     <option name="height" value="1050" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -585,144 +390,23 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
+              <item name="addons" type="b2602c69:ProjectViewProjectNode" />
+              <item name="addons" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="kodi-plugin-routing" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="kodi-plugin-routing" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
+              <item name="addons" type="b2602c69:ProjectViewProjectNode" />
+              <item name="addons" type="462c0819:PsiDirectoryNode" />
               <item name="plugin.video.nakamori" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin.video.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="windows" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="skins" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="skins" type="462c0819:PsiDirectoryNode" />
-              <item name="default" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-              <item name="skins" type="462c0819:PsiDirectoryNode" />
-              <item name="default" type="462c0819:PsiDirectoryNode" />
-              <item name="1080i" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori-lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori-lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori-lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="nakamori_utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori-lib" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="shoko_models" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamori-lib" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamoriplayer" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="script.module.nakamoriplayer" type="462c0819:PsiDirectoryNode" />
-              <item name="lib" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Nakamori" type="462c0819:PsiDirectoryNode" />
-              <item name="service.nakamori" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
-            </path>
-            <path>
-              <item name="Nakamori" type="b2602c69:ProjectViewProjectNode" />
-              <item name="Scratches and Consoles" type="1a2a3e82:ScratchProjectViewPane$MyProjectNode" />
-              <item name="Scratches" type="d62648e6:ScratchProjectViewPane$MyRootNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -735,7 +419,7 @@
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python&#10;TEXT&#10;PythonRegExp&#10;JSON" />
     <property name="database.console.LAST_STATE" value="false" />
     <property name="last.edited.regexp" value="" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/script.module.nakamori-lib/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -777,7 +461,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.Build">
+  <component name="RunManager" selected="Python Remote Debug.Remote Debug">
     <configuration name="Build" type="PythonConfigurationType" factoryName="Python">
       <module name="Nakamori" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -1064,6 +748,7 @@
       <workItem from="1558215432776" duration="8416000" />
       <workItem from="1558298416594" duration="6246000" />
       <workItem from="1558440678577" duration="1911000" />
+      <workItem from="1559578821923" duration="1824000" />
     </task>
     <task id="LOCAL-00127" summary="Fix Inspect Files and pick_file setting. Fix context menu on Unsorted files">
       <created>1554099185614</created>
@@ -1444,19 +1129,18 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="854568000" />
+    <option name="totallyTimeSpent" value="856392000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
+    <frame x="1276" y="0" width="1928" height="1050" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.427157" visible="true" weight="0.24597855" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.427157" visible="true" weight="0.16488793" />
       <window_info id="Structure" order="1" sideWeight="0.572843" side_tool="true" weight="0.22117962" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3281471" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49865952" weight="0.3069307" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4986577" weight="0.39886847" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.4986577" visible="true" weight="0.39804772" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Python Console" order="6" weight="0.32956153" />
@@ -1670,21 +1354,26 @@
           <line>137</line>
           <option name="timeStamp" value="118" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriplugin.py</url>
+          <line>578</line>
+          <option name="timeStamp" value="119" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Nakamori$scratch_2.coverage" NAME="scratch_2 Coverage Results" MODIFIED="1555439784076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Nakamori$setup.coverage" NAME="setup Coverage Results" MODIFIED="1558230997275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/RegenerateGroup" />
     <SUITE FILE_PATH="coverage/Nakamori$Build.coverage" NAME="Build Coverage Results" MODIFIED="1558343888058" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Nakamori$pytest_in_tests_py.coverage" NAME="pytest in tests.py Coverage Results" MODIFIED="1553364182076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/Nakamori$RecalculateGroup.coverage" NAME="RecalculateGroup Coverage Results" MODIFIED="1558299198615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Nakamori$tests.coverage" NAME="tests Coverage Results" MODIFIED="1551678573039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/kodi-plugin-routing/lib" />
     <SUITE FILE_PATH="coverage/Nakamori$scratch_1.coverage" NAME="scratch_1 Coverage Results" MODIFIED="1553601449171" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Nakamori$scratch_3.coverage" NAME="scratch_3 Coverage Results" MODIFIED="1555552048720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
-    <SUITE FILE_PATH="coverage/Nakamori$ErrorHandler.coverage" NAME="ErrorHandler Coverage Results" MODIFIED="1551743615972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/script.module.nakamori-lib/lib" />
-    <SUITE FILE_PATH="coverage/Nakamori$test.coverage" NAME="test Coverage Results" MODIFIED="1552358214323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
     <SUITE FILE_PATH="coverage/Nakamori$scratch_4.coverage" NAME="scratch_4 Coverage Results" MODIFIED="1557299476370" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Nakamori$RecalculateGroup.coverage" NAME="RecalculateGroup Coverage Results" MODIFIED="1558299198615" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Nakamori$test.coverage" NAME="test Coverage Results" MODIFIED="1552358214323" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Nakamori$scratch_3.coverage" NAME="scratch_3 Coverage Results" MODIFIED="1555552048720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Nakamori$tests.coverage" NAME="tests Coverage Results" MODIFIED="1551678573039" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/kodi-plugin-routing/lib" />
+    <SUITE FILE_PATH="coverage/Nakamori$scratch_2.coverage" NAME="scratch_2 Coverage Results" MODIFIED="1555439784076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$APPLICATION_CONFIG_DIR$/scratches" />
+    <SUITE FILE_PATH="coverage/Nakamori$ErrorHandler.coverage" NAME="ErrorHandler Coverage Results" MODIFIED="1551743615972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/script.module.nakamori-lib/lib" />
+    <SUITE FILE_PATH="coverage/Nakamori$pytest_in_tests_py.coverage" NAME="pytest in tests.py Coverage Results" MODIFIED="1553364182076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="breakpointCondition">
@@ -1748,14 +1437,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/KodiStubs/xbmcplugin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="89" column="51" lean-forward="true" selection-start-line="89" selection-start-column="51" selection-end-line="89" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriscraper.py" />
     <entry file="file://$PROJECT_DIR$/KodiStubs/xbmc.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="347">
@@ -1763,44 +1444,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriplugin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="9280">
-          <caret line="478" column="20" selection-start-line="478" selection-start-column="20" selection-end-line="478" selection-end-column="20" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../Kodi18/portable_data/addons/plugin.video.nakamori/nakamoriplugin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8440">
-          <caret line="436" column="50" selection-start-line="436" selection-start-column="50" selection-end-line="436" selection-end-column="50" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/plugin.video.nakamori/nakamoriplugin.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2500">
-          <caret line="139" selection-start-line="139" selection-end-line="139" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori/nakamoriscript.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1320">
-          <caret line="80" selection-start-line="80" selection-end-line="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori/lib/windows/information.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="30" column="45" selection-start-line="30" selection-start-column="45" selection-end-line="30" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/../../Kodi18/portable_data/addons/plugin.video.nakamori/nakamoriplugin.py" />
+    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/plugin.video.nakamori/nakamoriplugin.py" />
+    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori/nakamoriscript.py" />
+    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori/lib/windows/information.py" />
     <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/resources/settings.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="580">
@@ -1817,34 +1464,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/proxy/python_version_proxy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4160">
-          <caret line="215" selection-start-line="215" selection-end-line="215" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/cache.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2040">
-          <caret line="102" column="38" selection-start-line="102" selection-start-column="38" selection-end-line="102" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Python37/Lib/urllib/request.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="221" selection-start-line="221" selection-end-line="221" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Python37/Lib/http/client.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="613">
-          <caret line="1208" column="38" lean-forward="true" selection-start-line="1208" selection-start-column="38" selection-end-line="1208" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/proxy/python_version_proxy.py" />
+    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/cache.py" />
+    <entry file="file://C:/Program Files (x86)/Python37/Lib/urllib/request.py" />
+    <entry file="file://C:/Program Files (x86)/Python37/Lib/http/client.py" />
     <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/addon.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="220">
@@ -1862,26 +1485,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1680">
-          <caret line="86" column="49" selection-end-line="96" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="33" column="11" selection-start-line="33" selection-start-column="11" selection-end-line="33" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_2.py" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_3.py" />
     <entry file="file://$PROJECT_DIR$/kodi-plugin-routing/lib/routing.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="280">
@@ -1956,13 +1561,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2440">
-          <caret line="122" column="108" selection-end-line="122" selection-end-column="108" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.txt" />
     <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/kodi_version_proxy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="100">
@@ -2021,29 +1620,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py">
+    <entry file="file://$USER_HOME$/AppData/Roaming/Kodi/addons/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/RecalculateGroup.py" />
+    <entry file="file://$USER_HOME$/RegenerateGroup/setup.py" />
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py" />
+    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/addon.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="6780">
-          <caret line="350" column="35" selection-start-line="350" selection-start-column="35" selection-end-line="350" selection-end-column="35" />
+        <state relative-caret-position="60">
+          <caret line="3" column="55" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/RecalculateGroup.py">
+    <entry file="file://C:/Program Files (x86)/Python27/Lib/urllib2.py" />
+    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
-          <caret line="31" column="4" selection-start-line="31" selection-start-column="4" selection-end-line="35" selection-end-column="5" />
+        <state relative-caret-position="299">
+          <caret line="367" column="19" selection-start-line="367" selection-start-column="19" selection-end-line="367" selection-end-column="19" />
+          <folding>
+            <element signature="e#24#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/RegenerateGroup/setup.py">
+    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/shoko_models/v2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="14" column="58" selection-start-line="14" selection-start-column="58" selection-end-line="14" selection-end-column="58" />
+        <state relative-caret-position="22290">
+          <caret line="1496" column="32" selection-start-line="1496" selection-start-column="32" selection-end-line="1496" selection-end-column="32" />
           <folding>
-            <element signature="e#0#32#0" expanded="true" />
+            <element signature="e#46#57#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2053,21 +1667,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/model_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="640">
+        <state relative-caret-position="480">
           <caret line="39" column="46" selection-start-line="39" selection-start-column="46" selection-end-line="39" selection-end-column="46" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/resources/language/resource.language.en_GB/strings.po">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10060">
+        <state relative-caret-position="7545">
           <caret line="503" column="21" selection-start-line="503" selection-start-column="21" selection-end-line="503" selection-end-column="21" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/kodi_utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5380">
+        <state relative-caret-position="4035">
           <caret line="281" column="61" selection-start-line="281" selection-start-column="61" selection-end-line="281" selection-end-column="61" />
           <folding>
             <element signature="e#24#35#0" expanded="true" />
@@ -2075,16 +1689,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch_1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="380">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/kodi_models.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3940">
+        <state relative-caret-position="2955">
           <caret line="203" selection-start-line="203" selection-end-line="203" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
@@ -2094,51 +1701,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/cache.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1560">
+        <state relative-caret-position="1170">
           <caret line="78" column="15" selection-start-line="78" selection-start-column="15" selection-end-line="78" selection-end-column="15" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/addon.xml">
+    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamori.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="3" column="55" selection-start-line="3" selection-start-column="55" selection-end-line="3" selection-end-column="55" />
+        <state relative-caret-position="-284" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/debug.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="313">
+          <caret line="56" selection-start-line="56" selection-end-line="57" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/shoko_models/v2.py">
+    <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriplugin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="1496" column="32" lean-forward="true" selection-start-line="1496" selection-start-column="32" selection-end-line="1496" selection-end-column="32" />
-          <folding>
-            <element signature="e#46#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/proxy/python_version_proxy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="16" column="48" selection-start-line="16" selection-start-column="48" selection-end-line="16" selection-end-column="48" />
+        <state relative-caret-position="221">
+          <caret line="581" column="24" selection-start-line="581" selection-start-column="24" selection-end-line="581" selection-end-column="24" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Program Files (x86)/Python27/Lib/urllib2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="176" column="6" selection-start-line="176" selection-start-column="6" selection-end-line="176" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/script.module.nakamori-lib/lib/nakamori_utils/shoko_utils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="367" column="19" selection-start-line="367" selection-start-column="19" selection-end-line="367" selection-end-column="19" />
-          <folding>
-            <element signature="e#24#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
