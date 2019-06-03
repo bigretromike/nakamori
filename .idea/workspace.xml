@@ -2,94 +2,321 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2cfe28b6-e3ec-48fd-9e08-93f768103b43" name="Default Changelist" comment="Follow scrobble setting in player">
-      <change beforePath="$PROJECT_DIR$/.idea/runConfigurations/Remote_Debug.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/runConfigurations/Remote_Debug.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/.settings/org.eclipse.core.resources.prefs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/.settings/org.python.pydev.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/.travis.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/.travis_install_jython_deps.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/.travis_install_python_deps.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/LICENSE" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/MANIFEST.in" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/README.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/__main__pydevd_gen_debug_adapter_protocol.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/debugProtocol.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/debugProtocolCustom.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/pydevd_base_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/pydevd_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/_debug_adapter/pydevd_schema_log.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_collect_try_except_info.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_comm_constants.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython.pxd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython.pyx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_filtering.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_json_debug_options.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_net_command.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_net_command_factory_json.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_net_command_factory_xml.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_process_net_command_json.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_safe_repr.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_suspended_frames.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_evaluator.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_evaluator.pxd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_evaluator.pyx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/release_mem.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/appveyor.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/pydevd_release_process.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/conftest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/jython_test_deps/ant.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/jython_test_deps/junit.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/README" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_run_in_console.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_sitecustomize/__not_in_default_pythonpath.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/README.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_amd64.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_x86.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_x86.dylib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_x86_64.dylib" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/attach.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/attach.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/compile_dll.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/python.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/stdafx.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/stdafx.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/dll/targetver.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/attach_linux.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/compile_mac.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/compile_so.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/python.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/winappdbg/plugins/README" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_tracing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pytest.ini" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_check_pydevconsole.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_get_referrers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_jyserver.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_jysimpleTipper.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_pydev_ipython_011.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_pydevconsole.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_pyserver.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests/test_simpleTipper.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/README" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-glut.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-gtk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-gtk3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-pyglet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-qt.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-tk.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_mainloop/gui-wx.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/debug_constants.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/debugger_fixtures.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/debugger_unittest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/flask1/app.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/flask1/templates/bad.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/flask1/templates/hello.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/manage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/inherited.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/inherits.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/name.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/no_var_error.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/template_error.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/templates/my_app/template_error2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/tests.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_app/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_django_proj_17/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_django_proj_17/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_django_proj_17/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_17/my_django_proj_17/wsgi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/manage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/admin.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/apps.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/forms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/migrations/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/index.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/inherited.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/inherits.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/name.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/no_var_error.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/template_error.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/templates/my_app/template_error2.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_app/views.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_django_proj_21/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_django_proj_21/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_django_proj_21/urls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_django_proj_21/my_django_proj_21/wsgi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_extensions/pydevd_plugins/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_extensions/pydevd_plugins/extensions/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_extensions/pydevd_plugins/extensions/pydevd_plugin_test_events.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/my_extensions/pydevd_plugins/extensions/pydevd_plugin_test_exttype.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/performance_check.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/regression_check.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resource_path_translation/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resource_path_translation/other.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_bytecode_many_names_example.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_bytecode_overflow_example.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case13.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case14.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case15.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case15_execfile.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case16.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case17.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case17a.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case18.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case19.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case20.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case4.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case56.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case89.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_adjust_breakpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_breakpoint.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_breakpoint2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_breakpoint_condition_exc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_breakpoint_remote.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_breakpoint_remote_no_import.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_change_breaks.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_check_tracer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_completions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_custom_frames.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_deep_stacks.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_dont_trace.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_dont_trace_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_evaluate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_event_ext.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_exceptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_frame_eval.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_generator_py2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_generator_py3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_get_next_statement_targets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_get_thread_stack.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_gevent.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_import_imported.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_import_main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_lamda.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_large_exception_stack.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_local_variables.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_local_variables2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_local_variables_hex.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_m_switch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_m_switch_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_matplotlib.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_module_entry_point.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_multiple_threads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_multiprocessing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_multiprocessing_stopped_threads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_path_translation.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_pause_continue.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_print.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_qthread1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_qthread2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_qthread3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_qthread4.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_quoting.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_redirect.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_remote.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_remote_1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_remote_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_remote_unhandled_exceptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_remote_unhandled_exceptions2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_return_value.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_scapy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_set_next_statement.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_settrace.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_simple_calls.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_skip_breakpoint_in_exceptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_source_reference.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_stepping.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_suspend_all.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_suspend_policy.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_sysexit.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_thread_creation_deadlock.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_trace_dispatch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_tracing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_type_ext.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_unhandled_exception_get_stack.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_unhandled_exceptions.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_unhandled_exceptions_on_top_level.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_unhandled_exceptions_on_top_level2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_debugger_case_zip_files.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_performance_1.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_performance_2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_performance_3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_pydev_coverage_cyrillic_encoding_py2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_pydev_coverage_cyrillic_encoding_py3.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/_pydev_coverage_syntax_error.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/launch/foo/__main__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/launch/foo/bar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/launch_py2/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/launch_py2/foo/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/launch_py2/foo/__main__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/launch_py2/foo/bar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/my_code/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/my_code/my_code.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/my_code/my_code_exception.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/my_code/my_code_exception_on_other.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/not_my_code/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/resources/not_my_code/other.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_additional_thread_info.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_bytecode_modification.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_collect_try_except_info.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_collect_try_except_info/test_collect_try_except_info.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_collect_try_except_info/test_iter_bytecode.py26.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_collect_try_except_info/test_iter_bytecode.py27.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_collect_try_except_info/test_iter_bytecode.py36.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_collect_try_except_info/test_iter_bytecode.py37.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_console.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_convert_utilities.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_debugger.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_debugger_json.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_dump_threads.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_extract_token.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_fixtures.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_frame_eval_and_tracing.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_frame_evaluator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_null.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_process_command_line.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_pydev_monkey.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_pydevcoverage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_pydevd_filtering.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_pydevd_io.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_resolvers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_run.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_safe_repr.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_save_locals.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_schema.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_suspended_frames_manager.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_tracing_gotchas.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_tracing_on_top_level.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/test_utilities.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_python/tests_single_notification.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/not_in_default_pythonpath.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/.cvsignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/.cvsignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested2/.cvsignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested2/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested2/deep_nest_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested2/non_test_file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested3/.cvsignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested3/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested3/junk.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/nested3/non_test_file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/non_test_file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/nested_dir/simple4_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/non_test_file.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/not_in_default_pythonpath.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/simple2_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/simple3_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/simpleClass_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/simpleModule_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/samples/simple_test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/test_pydevd_property.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/test_pydevdio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/tests_runfiles/test_runfiles.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/pep8/lib2to3/lib2to3/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/pep8/lib2to3/lib2to3/Grammar.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/pep8/lib2to3/lib2to3/PatternGrammar.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/wrapped_for_pydev/ctypes/_ctypes.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/wrapped_for_pydev/ctypes/ctypes-README.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/wrapped_for_pydev/ctypes/macholib/.cvsignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/third_party/wrapped_for_pydev/not_in_default_pythonpath.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/script.module.nakamori-lib" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamori-lib" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/script.module.nakamoriplayer" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.nakamoriplayer" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_completer.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_completer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_imports_tipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_imports_tipper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_jy_imports_tipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/_pydev_jy_imports_tipper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_console_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_console_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_import_hook.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_import_hook.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_imports.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_imports.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console_011.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_ipython_console_011.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_is_thread_alive.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_is_thread_alive.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_localhost.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_localhost.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_log.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_log.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey_qt.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_monkey_qt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_override.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_override.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_umd.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_bundle/pydev_umd.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_imps/_pydev_execfile.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_imps/_pydev_execfile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_parallel_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_pytest2.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_pytest2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_xml_rpc.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydev_runfiles/pydev_runfiles_xml_rpc.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevconsole_code_for_ironpython.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevconsole_code_for_ironpython.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info_regular.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_additional_thread_info_regular.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_breakpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_breakpoints.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_comm.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_comm.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_console.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_console.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_constants.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_constants.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_custom_frames.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_custom_frames.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_cython_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_dont_trace_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_extension_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_extension_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_frame_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_io.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_io.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_kill_all_pydevd_threads.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_kill_all_pydevd_threads.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_process_net_command.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_process_net_command.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_referrers.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_referrers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_resolver.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_resolver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_save_locals.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_save_locals.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_signature.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_signature.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_stackless.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_stackless.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch_regular.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_trace_dispatch_regular.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_traceproperty.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_traceproperty.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_vars.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_vars.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_xml.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_bundle/pydevd_xml.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_cython_wrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_cython_wrapper.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_eval_main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_tracing.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_frame_tracing.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_modify_bytecode.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/_pydevd_frame_eval/pydevd_modify_bytecode.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/build_binaries_windows.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/build_binaries_windows.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/generate_code.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/generate_code.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/names_to_rename.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/names_to_rename.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/rename_pep8.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/build_tools/rename_pep8.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/interpreterInfo.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/interpreterInfo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_coverage.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_coverage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhook.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhook.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhookqt5.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/inputhookqt5.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/matplotlibtools.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/matplotlibtools.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt_for_kernel.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_ipython/qt_for_kernel.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_sitecustomize/sitecustomize.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydev_sitecustomize/sitecustomize.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevconsole.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevconsole.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/_test_attach_to_process_linux.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/_test_attach_to_process_linux.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/add_code_to_python_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/add_code_to_python_process.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_pydevd.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/attach_pydevd.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/gdb_threads_settrace.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_attach_to_process/linux/gdb_threads_settrace.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_concurrency_logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_concurrency_logger.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_thread_wrappers.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_concurrency_analyser/pydevd_thread_wrappers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_file_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_file_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/django_debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/django_debug.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/pydevd_plugin_numpy_types.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/extensions/types/pydevd_plugin_numpy_types.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/jinja2_debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/pydevd_plugins/jinja2_debug.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/runfiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/runfiles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/setup_cython.py" beforeDir="false" afterPath="$PROJECT_DIR$/script.module.pydevd-pycharm/lib/setup_cython.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/service.nakamori" beforeDir="false" afterPath="$PROJECT_DIR$/service.nakamori" afterDir="false" />
     </list>
     <ignored path="C:\Users\da3ds\Documents\GitHub\Nakamori\.idea\shelf/" />
@@ -159,7 +386,7 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriplugin.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="221">
+            <state relative-caret-position="239">
               <caret line="581" column="24" selection-start-line="581" selection-start-column="24" selection-end-line="581" selection-end-column="24" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -312,6 +539,11 @@
     </replaceStrings>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="bigretromike &lt;bigretromike@users.noreply.github.com&gt;" />
+      </list>
+    </option>
     <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/plugin.video.nakamori" />
@@ -396,11 +628,6 @@
             <path>
               <item name="addons" type="b2602c69:ProjectViewProjectNode" />
               <item name="addons" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="addons" type="b2602c69:ProjectViewProjectNode" />
-              <item name="addons" type="462c0819:PsiDirectoryNode" />
-              <item name="plugin.video.nakamori" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -748,14 +975,7 @@
       <workItem from="1558215432776" duration="8416000" />
       <workItem from="1558298416594" duration="6246000" />
       <workItem from="1558440678577" duration="1911000" />
-      <workItem from="1559578821923" duration="1824000" />
-    </task>
-    <task id="LOCAL-00127" summary="Fix Inspect Files and pick_file setting. Fix context menu on Unsorted files">
-      <created>1554099185614</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1554099185614</updated>
+      <workItem from="1559578821923" duration="2446000" />
     </task>
     <task id="LOCAL-00128" summary="Fix Run Import. Mark some things as needing localization.">
       <created>1554133521037</created>
@@ -1093,7 +1313,14 @@
       <option name="project" value="LOCAL" />
       <updated>1558382421347</updated>
     </task>
-    <option name="localTasksCounter" value="176" />
+    <task id="LOCAL-00176" summary="Follow scrobble setting in player">
+      <created>1559581094047</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1559581094047</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1129,7 +1356,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="856392000" />
+    <option name="totallyTimeSpent" value="857014000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1276" y="0" width="1928" height="1050" extended-state="6" />
@@ -1140,13 +1367,13 @@
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3281471" />
       <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49865952" weight="0.3069307" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.4986577" visible="true" weight="0.39804772" />
+      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.4986577" weight="0.39804772" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Python Console" order="6" weight="0.32956153" />
       <window_info anchor="bottom" id="TODO" order="7" />
       <window_info anchor="bottom" id="Docker" order="8" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="9" weight="0.3281471" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="9" visible="true" weight="0.3275488" />
       <window_info anchor="bottom" id="Database Changes" order="10" />
       <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.5013405" side_tool="true" weight="0.3281471" />
       <window_info anchor="bottom" id="Terminal" order="12" weight="0.3281471" />
@@ -1298,13 +1525,13 @@
     <MESSAGE value="Update submodules and bump" />
     <MESSAGE value="Fix login. Bump Version" />
     <MESSAGE value="Update submodules" />
-    <MESSAGE value="Follow scrobble setting in player" />
     <MESSAGE value="Fix an error in some odd cases." />
     <MESSAGE value="Update" />
     <MESSAGE value="Maybe hopefully fix the issues with logging in and connecting" />
     <MESSAGE value="Bump version" />
     <MESSAGE value="Verbose Network logging.&#10;We should probably consider breaking out the logging to allow only spamming certain types of actions." />
-    <option name="LAST_COMMIT_MESSAGE" value="Verbose Network logging.&#10;We should probably consider breaking out the logging to allow only spamming certain types of actions." />
+    <MESSAGE value="Follow scrobble setting in player" />
+    <option name="LAST_COMMIT_MESSAGE" value="Follow scrobble setting in player" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1720,7 +1947,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/plugin.video.nakamori/nakamoriplugin.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
+        <state relative-caret-position="239">
           <caret line="581" column="24" selection-start-line="581" selection-start-column="24" selection-end-line="581" selection-end-column="24" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
