@@ -6,8 +6,8 @@
     <PathMappingSettings>
       <option name="pathMappings">
         <list>
-          <mapping local-root="$PROJECT_DIR$" remote-root="C:/Users/da3ds/AppData/Roaming/Kodi/addons" />
-          <mapping local-root="$PROJECT_DIR$/plugin.video.nakamori/lib/debug.py" remote-root="C:/Users/da3ds/AppData/Roaming/Kodi/addons/plugin.video.nakamori/lib/debug.py" />
+          <mapping local-root="$PROJECT_DIR$/plugin.video.nakamori/lib/debug.py" remote-root="/home/brm/.kodi/addons/plugin.video.nakamori/lib/debug.py" />
+          <mapping local-root="$PROJECT_DIR$" remote-root="/home/brm/.kodi/addons" />
         </list>
       </option>
     </PathMappingSettings>
