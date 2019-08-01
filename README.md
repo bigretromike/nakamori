@@ -59,3 +59,5 @@ The other way is to clone this repository using  `git clone --recursive https://
 
 **Q: Something...happened...I don't know?**\
 **A:** Yeah, shit happens. Shoko is old. We try, but there are bugs. The first thing we'll tell you is to check if it shows the proper response in Desktop. If it does, then it's probably an issue in the API or Nakamori. Tell us about it, and we can go from there.
+
+[![HitCount](http://hits.dwyl.io/bigretromike/nakamori.svg)](http://hits.dwyl.io/bigretromike/nakamori)
