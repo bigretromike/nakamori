@@ -5,7 +5,10 @@
     <option name="HOST" value="localhost" />
     <PathMappingSettings>
       <option name="pathMappings">
-        <list />
+        <list>
+          <mapping local-root="$PROJECT_DIR$/plugin.video.nakamori/lib/debug.py" remote-root="/home/brm/.kodi/addons/plugin.video.nakamori/lib/debug.py" />
+          <mapping local-root="$PROJECT_DIR$" remote-root="/home/brm/.kodi/addons" />
+        </list>
       </option>
     </PathMappingSettings>
     <option name="REDIRECT_OUTPUT" value="true" />

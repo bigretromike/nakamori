@@ -24,7 +24,7 @@
 	url = https://github.com/da3dsoul/kodi-plugin-routing
 [submodule "script.module.pydevd-pycharm"]
 	path = script.module.pydevd-pycharm
-	url = https://github.com/da3dsoul/script.module.pydevd-pycharm
+	url = https://github.com/bigretromike/script.module.pydevd-pycharm
 [submodule "nakamori.contextmenu"]
 	path = nakamori.contextmenu
 	url = https://github.com/bigretromike/nakamori.contextmenu.git
