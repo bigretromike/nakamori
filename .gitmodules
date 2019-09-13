@@ -21,7 +21,7 @@
 	url = https://github.com/romanvm/Kodistubs
 [submodule "kodi-plugin-routing"]
 	path = kodi-plugin-routing
-	url = https://github.com/da3dsoul/kodi-plugin-routing
+	url = https://github.com/bigretromike/kodi-plugin-routing
 [submodule "script.module.pydevd-pycharm"]
 	path = script.module.pydevd-pycharm
 	url = https://github.com/bigretromike/script.module.pydevd-pycharm
