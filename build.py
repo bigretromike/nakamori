@@ -29,6 +29,8 @@ def add_file(list_of_processed_files, hash_path, full_path, filename):
 
 
 def look_inside(origin_path, path, list_of_files, file_paths):
+    if '.git' in path:
+        return
     for files in os.listdir(path):
         y = os.path.join(path, files)
         if os.path.isfile(y):
