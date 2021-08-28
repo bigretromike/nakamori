@@ -370,7 +370,7 @@ def filter():
 # region tree
 
 
-tree_api_url = '/api/v{}/Filter'
+tree_api_url = '/api/v{}/{}'
 
 
 def _tree_api_(command='', call_type=Api.GET, data={}):
@@ -380,20 +380,26 @@ def _tree_api_(command='', call_type=Api.GET, data={}):
 
 def tree_filter(includeEmpty=False, includeInvisible=False):
     from models import Filter
-    response = _tree_api_(command='?includeEmpty={}&includeInvisible={}'.format(bool(includeEmpty), bool(includeInvisible)))
-    return json.loads(response, object_hook=Filter.Decoder) # cls=json.JSONDecoder) #
+    response = _tree_api_(command='Filter?includeEmpty={}&includeInvisible={}'.format(bool(includeEmpty), bool(includeInvisible)))
+    return json.loads(response, object_hook=Filter.Decoder)  # cls=json.JSONDecoder) #
 
 
 def tree_group_in_filter_by_id(id):
-    _tree_api_(command='/{}/Group'.format(int(id)))
+    from models import Group
+    response = _tree_api_(command='Filter/{}/Group'.format(int(id)))
+    return json.loads(response, object_hook=Group.Decoder)
 
 
 def tree_group_by_id_in_filter_by_id(fid, gid):
-    _tree_api_(command='/{}/Group/{}/Series'.format(int(fid), int(gid)))
+    from models import Series
+    response = _tree_api_(command='Filter/{}/Group/{}/Series'.format(int(fid), int(gid)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def tree_episode_in_series_by_id(id, includeMissing=False):
-    _tree_api_(command='/Series/{}/Episode?includeMissing={}'.format(int(id), bool(includeMissing)))
+    from models import Episode
+    response = _tree_api_(command='Series/{}/Episode?includeMissing={}'.format(int(id), bool(includeMissing)))
+    return json.loads(response, object_hook=Episode.Decoder)
 
 
 # endregion
@@ -689,8 +695,21 @@ def series_starts_with(query):
 
 # flow
 # 0.check if online/busy
-# 1.login
-api_key = login_user('default', '', 'pycharm').apikey
-# 2.save apikey ( apikey is user+device )
-print(str(tree_filter()))
+# 1.login (login='default' password='')
+api_key = login_user('default', '', 'from-inside-ide').apikey
+x = api_key
+print(x)
+# 2.save apikey ( apikey is user+device ) / or store it in api_key for debugging
+# 3. list all available filters
+x = tree_filter()
+print(x)
+# 4. list all availables groups in filter of id:8  /8 - newly added series
+x = tree_group_in_filter_by_id(8)
+print(x)
+# 5. list all availables series in group of id: 3981 (mine is this)
+x = tree_group_by_id_in_filter_by_id(8, 3981)
+print(x)
+# 6. list all episodes for give series :
+x = tree_episode_in_series_by_id(22, True)
+print(x)
 

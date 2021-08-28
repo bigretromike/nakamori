@@ -115,6 +115,86 @@ class Filter:
         return obj
 
 
+class Group:
+    def __init__(self, ids, name, size, sizes):
+    # b'[{"IDs":{"ID":3981},"Name":"AWOL Compression Re-Mix","Size":1,"Sizes":{}]'
+        self.ids = ids
+        self.name = name
+        self.size = size
+        self.sizes = sizes  # {"Local":{"Episodes":4},"Watched":{},"Total":{"Episodes":4}}
+
+    def __repr__(self):
+        return '<Group(ids: {}, name: {}, size: {})>'.format(self.ids, self.name, self.size)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'IDs' in obj.keys():
+            return Group(obj.get('IDs', None), obj.get('Name', None), obj.get('Size', None), obj.get('Sizes', None))
+        return obj
+
+
+class Series:
+    def __init__(self, ids, images, created, updated, name, size, sizes):
+    # b'[{"IDs":{"AniDB":16539,"ID":3981},
+    # "Images":{"Posters":[{"Source":"AniDB","Type":"Poster","ID":"16539","RelativeFilepath":"/AniDB/16/263387.jpg"}]},
+    # "Created":"2021-08-27T23:25:31.6502042+02:00",
+    # "Updated":"2021-08-27T23:28:02.0002872+02:00",
+    # "Name":"AWOL Compression Re-Mix",
+    # "Size":4,
+    # "Sizes":{"Local":{"Episodes":4},"Watched":{},"Total":{"Episodes":4}}}]'
+        self.ids = ids
+        self.images = images  #{"Posters":[{"Source":"AniDB","Type":"Poster","ID":"16539","RelativeFilepath":"/AniDB/16/263387.jpg"}]}
+        self.created = created
+        self.updated = updated
+        self.name = name
+        self.size = size
+        self.sizes = sizes  # {"Local":{"Episodes":4},"Watched":{},"Total":{"Episodes":4}}
+
+    def __repr__(self):
+        return '<Series(ids: {}, name: {}, size: {})>'.format(self.ids, self.name, self.size)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'IDs' in obj.keys():
+            return Series(obj.get('IDs', None), obj.get('Images', None), obj.get('Created', None), obj.get('Updated', None), obj.get('Name', None), obj.get('Size', None), obj.get('Sizes', None))
+        return obj
+
+
+class Episode:
+    def __init__(self, ids, duration, name):
+    # b'[{"IDs":{"AniDB":213179,"ID":473},
+    # "Duration":"00:20:00",
+    # "Name":"Target: Yuki - Sexual Guidance! Punish That Cheeky Girl"},
+    # {"IDs":{"AniDB":214732,"ID":474},
+    # "Duration":"00:20:00",
+    # "Name":"Target: Yuki - Bitch Training! Milk That Beautiful-Breasted Tsundere Dry","Size":1},
+    # {"IDs":{"AniDB":216620,"ID":475},
+    # "Duration":"00:20:00",
+    # "Name":"Target: Sayaka - Revelation of One\'s True Nature! Strip the Busty Honor Student\'s Disguise off Her","Size":1}]'
+        self.ids = ids
+        self.name = name
+        self.duration = duration
+
+    def __repr__(self):
+        return '<Episode(ids: {}, name: {}, duration: {})>'.format(self.ids, self.name, self.duration)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'IDs' in obj.keys():
+            return Episode(obj.get('IDs', None), obj.get('Duration', None), obj.get('Name', None))
+        return obj
 
 # endregion
 
