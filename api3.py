@@ -91,13 +91,6 @@ def _api_call_(url, call_type=Api.GET, data={}, auth=True):
 
     return data
 
-
-
-
-
-
-
-
 # region action api
 action_api_url = '/api/v{}/Action/{}'
 
@@ -603,24 +596,30 @@ def integrity_check_by_id(id):
 # region reverse tree
 
 
-reverse_tree_api_url = '/api/v{}/'
+reverse_tree_api_url = '/api/v{}/{}'
 
 
 def _reverse_tree_api(command='', call_type=Api.GET, data={}):
     url = reverse_tree_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def group_from_series_by_id(id):
-    _reverse_tree_api(command='Series/{}/Group'.format(int(id)))
+    from models import Group
+    response = _reverse_tree_api(command='Series/{}/Group'.format(int(id)))
+    return json.loads(response, object_hook=Group.Decoder)
 
 
 def series_from_episode_by_id(id):
-    _reverse_tree_api(command='/Episode/{}/Series'.format(int(id)))
+    from models import Series
+    response = _reverse_tree_api(command='Episode/{}/Series'.format(int(id)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def episode_from_file_by_id(id):
-    _reverse_tree_api(command='/File/{}/Episode'.format(int(id)))
+    from models import Episode
+    response = _reverse_tree_api(command='File/{}/Episode'.format(int(id)))
+    return json.loads(response, object_hook=Episode.Decoder)
 
 # endregion
 
@@ -737,7 +736,7 @@ print(x)
 x = tree_episode_in_series_by_id(22, True)
 print(x)
 
-### TEST SERIES ###
+# region ### TEST SERIES ###
 x = series()
 print(x)
 
@@ -774,3 +773,19 @@ print(x)
 
 x = series_starts_with('ano')
 print(x)
+
+# endregion
+
+# region REVERSE_TREE
+
+
+x = group_from_series_by_id(20)
+print(x)
+
+x = series_from_episode_by_id(20)
+print(x)
+
+x = episode_from_file_by_id(20)
+print(x)
+
+# endregion
