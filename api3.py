@@ -455,17 +455,19 @@ def recreate_all_groups():
 # region image
 
 
-image_api_url = '/api/v{}/Image/'
+image_api_url = '/api/v{}/Image/{}'
 
 
 def _image_api(command='', call_type=Api.GET, data={}):
     url = image_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def image(source, type, value):
-    _image_api(command='{}/{}/{}'.format(str(source), str(type), str(value)))
-
+    from models import Images
+    response = _image_api(command='{}/{}/{}'.format(str(source), str(type), str(value)))
+    # return binary image
+    return response
 
 # endregion
 
@@ -736,7 +738,8 @@ print(x)
 x = tree_episode_in_series_by_id(22, True)
 print(x)
 
-# region ### TEST SERIES ###
+# region TEST
+# region SERIES
 x = series()
 print(x)
 
@@ -788,4 +791,12 @@ print(x)
 x = episode_from_file_by_id(20)
 print(x)
 
+# endregion
+
+# region IMAGE
+
+x = image('AniDB', 'Poster', 1)
+print(x)
+
+# endregion
 # endregion
