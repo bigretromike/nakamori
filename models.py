@@ -85,19 +85,19 @@ class DefaultUser:
 
 class Filter:
     def __init__(self, ids, locked, name, size, directory, applyateerieslevel):
-    # b'[{"IDs":{"ID":2},"Locked":true,"Name":"All","Size":3981},
-    # {"IDs":{"ID":1},"Locked":true,"Name":"Continue Watching (SYSTEM)","Size":28},
-    # {"IDs":{"ID":7},"Name":"Missing Episodes","Size":506},
-    # {"IDs":{"ID":8},"Name":"Newly Added Series","Size":1},
-    # {"IDs":{"ID":5},"Locked":true,"Directory":true,"Name":"Seasons","Size":232},
-    # {"IDs":{"ID":3},"Locked":true,"Directory":true,"Name":"Tags","Size":1554},
-    # {"IDs":{"ID":12},"ApplyAtSeriesLevel":true,"Name":"TvDB/MovieDB Link Missing","Size":2778},
-    # {"IDs":{"ID":10},"ApplyAtSeriesLevel":true,"Name":"Votes Needed","Size":62},
-    # {"IDs":{"ID":4},"Locked":true,"Directory":true,"Name":"Years","Size":95}]'
+        # b'[{"IDs":{"ID":2},"Locked":true,"Name":"All","Size":3981},
+        # {"IDs":{"ID":1},"Locked":true,"Name":"Continue Watching (SYSTEM)","Size":28},
+        # {"IDs":{"ID":7},"Name":"Missing Episodes","Size":506},
+        # {"IDs":{"ID":8},"Name":"Newly Added Series","Size":1},
+        # {"IDs":{"ID":5},"Locked":true,"Directory":true,"Name":"Seasons","Size":232},
+        # {"IDs":{"ID":3},"Locked":true,"Directory":true,"Name":"Tags","Size":1554},
+        # {"IDs":{"ID":12},"ApplyAtSeriesLevel":true,"Name":"TvDB/MovieDB Link Missing","Size":2778},
+        # {"IDs":{"ID":10},"ApplyAtSeriesLevel":true,"Name":"Votes Needed","Size":62},
+        # {"IDs":{"ID":4},"Locked":true,"Directory":true,"Name":"Years","Size":95}]'
         self.ids = ids
         self.locked = locked
         self.name = name
-        self.size = size
+        self.size = size if size is not None else 0
         self.directory = directory
         self.applyateerieslevel = applyateerieslevel
 
@@ -351,6 +351,36 @@ class Tags:
     @staticmethod
     def Decoder(obj):
         return Tag(obj.get('Name', None), obj.get('Description', None), obj.get('Weight', None))
+
+
+class Conditions:
+    def __init__(self, conditions):
+        # b'{"Conditions":[{"Type":14,"Operator":1,"Parameter":""}]}'
+        self.conditions = [Condition(condition.get('Type', None),condition.get('Operator', None),condition.get('Parameter', None)) for condition in conditions.get('Conditions', [])]
+
+    def __repr__(self):
+        return '<Conditions({})>'.format(self.conditions)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'Conditions' in obj:
+            return Conditions(obj)  # Cast(obj.get('Staff', None), obj.get('Character', None), obj.get('RoleName', None), obj.get('RoleDetails', None))
+        return obj
+
+
+class Condition:
+    def __init__(self, type, operator, parameter):
+        # b'{"Conditions":[{"Type":14,"Operator":1,"Parameter":""}]}'
+        self.type = type
+        self.operator = operator
+        self.parameter = parameter
+
+    def __repr__(self):
+        return '<Condition({}, {}, {})>'.format(self.type, self.operator, self.parameter)
 
 
 class CastImage:

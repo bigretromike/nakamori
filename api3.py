@@ -356,9 +356,9 @@ def filter_by_id_filter(id):
 
 
 def filter_by_id_conditions(id):
-    from models import Filter
+    from models import Conditions
     response = _filter_api_(command='{}/Conditions'.format(id))
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Conditions.Decoder)
 
 
 def filter_by_id_sorting(id):
@@ -369,7 +369,7 @@ def filter_by_id_sorting(id):
 
 def filter_preview():
     from models import Filter
-    response = _filter_api_(command='Filter/Preview', call_type=Api.POST)
+    response = _filter_api_(command='Preview', call_type=Api.POST)
     return json.loads(response, object_hook=Filter.Decoder)
 
 
@@ -872,24 +872,28 @@ print(x)
 x = filter_by_id(6)
 print(x)
 
-# TODO not doing thins now
-#x = remove_filter_by_id(id)
-#print(x)
+# TODO not doing this now
+# x = remove_filter_by_id(id)
+# print(x)
 
-x = filter_by_id_filter(6)
-print(x)
+# TODO HTTP Error 400: Bad Request broken or im missing something
+# x = filter_by_id_filter(1)
+# print(x)
 
 x = filter_by_id_conditions(6)
 print(x)
 
+# TODO [] am i'm missing something ?
 x = filter_by_id_sorting(6)
 print(x)
 
-x = filter_preview()
-print(x)
+# TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Testing Filter before add ?
+# x = filter_preview()
+# print(x)
 
-x = filter()
-print(x)
+# TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Adding Filter ?
+# x = filter()
+# print(x)
 
 # endregion
 # endregion
