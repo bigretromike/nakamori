@@ -221,17 +221,81 @@ class Series:
         return obj
 
 
+class Title:
+    def __init__(self, name, language, source):
+        self.name = name
+        self.language = language
+        self.source = source
+
+    def __repr__(self):
+        return '<Title({}, {}, {})>'.format(self.name, self.language, self.source)
+
+
+class Rating:
+    def __init__(self, value, maxvalue, source, votes):
+        # {"Value":3.94,"MaxValue":10,"Source":"AniDB","Votes":2}
+        self.value = value
+        self.maxvalue = maxvalue
+        self.source = source
+        self.votes = votes
+
+    def __repr__(self):
+        return '<Rating({}, {})>'.format(self.value, self.votes)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+
+class EpisodeAniDB:
+    def __init__(self, id, type, episodenumber, airdate, titles, description, rating):
+        # b'{
+        # "ID":225445,
+        # "Type":1,
+        # "EpisodeNumber":1,"
+        # AirDate":"2020-01-04",
+        # "Titles":[{"Name":"\xe5\x88\x9d\xe9\x99\xa3[\xe3\x83\x95\xe3\x82\xa1\xe3\x83\xbc\xe3\x82\xb9\xe3\x83\x88\xe3\x82\xb2\xe3\x83\xbc\xe3\x83\xa0]","Language":"JA","Source":"AniDB"},
+        #           {"Name":"First Game","Language":"EN","Source":"AniDB"},
+        #           {"Name":"First Game - Premier combat","Language":"FR","Source":"AniDB"},
+        #           {"Name":"\xd8\xa7\xd9\x84\xd9\x84\xd8\xb9\xd8\xa8\xd8\xa9 \xd8\xa7\xd9\x84\xd8\xa3\xd9\x88\xd9\x84\xd9\x89","Language":"AR","Source":"AniDB"},
+        #           {"Name":"First Game","Language":"X-JAT","Source":"AniDB"}],
+        # "Description":"One day, high school student Kaname Sudo\xe2\x80\x99s average life is interrupted by the arrival of an emailed invitation to join \xe2\x80\x9cDarwin\xe2\x80\x99s Game.\xe2\x80\x9d Without even thinking, he opens the app, thereby becoming a player in the game. Just as Kaname begins to suspect there\xe2\x80\x99s more to the shady app than meets the eye, his first battle suddenly begins, with a mysterious man in a panda suit lunging at him with a butcher knife. \\nWill Kaname survive his first, desperate battle against a bloodthirsty killer?\\nSource: crunchyroll",
+        # "Rating":{"Value":3.94,"MaxValue":10,"Source":"AniDB","Votes":2}}'
+        self.id = id
+        self.type = type
+        self.episodenumber = episodenumber
+        self.airdate = airdate
+        self.titles = [Title(title.get('Name', None), title.get('Language', None), title.get('Source', None)) for title in titles]
+        self.description = description
+        self.rating = Rating(rating.get('Value', None), rating.get('MaxValue', None), rating.get('Source', None), rating.get('Votes', None))
+
+    def __repr__(self):
+        return '<EpisodeAniDB({}, {}, {})>'.format(self.id, self.type, self.episodenumber)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'ID' in obj.keys():
+            return EpisodeAniDB(obj.get('ID', None), obj.get('Type', None), obj.get('EpisodeNumber', None),
+                                obj.get('AirDate', None), obj.get('Titles', None), obj.get('Description', None),
+                                obj.get('Rating', None))
+        return obj
+
+
 class Episode:
     def __init__(self, ids, duration, name):
-    # b'[{"IDs":{"AniDB":213179,"ID":473},
-    # "Duration":"00:20:00",
-    # "Name":"Target: Yuki - Sexual Guidance! Punish That Cheeky Girl"},
-    # {"IDs":{"AniDB":214732,"ID":474},
-    # "Duration":"00:20:00",
-    # "Name":"Target: Yuki - Bitch Training! Milk That Beautiful-Breasted Tsundere Dry","Size":1},
-    # {"IDs":{"AniDB":216620,"ID":475},
-    # "Duration":"00:20:00",
-    # "Name":"Target: Sayaka - Revelation of One\'s True Nature! Strip the Busty Honor Student\'s Disguise off Her","Size":1}]'
+        # b'[{"IDs":{"AniDB":213179,"ID":473},
+        # "Duration":"00:20:00",
+        # "Name":"Target: Yuki - Sexual Guidance! Punish That Cheeky Girl"},
+        # {"IDs":{"AniDB":214732,"ID":474},
+        # "Duration":"00:20:00",
+        # "Name":"Target: Yuki - Bitch Training! Milk That Beautiful-Breasted Tsundere Dry","Size":1},
+        # {"IDs":{"AniDB":216620,"ID":475},
+        # "Duration":"00:20:00",
+        # "Name":"Target: Sayaka - Revelation of One\'s True Nature! Strip the Busty Honor Student\'s Disguise off Her","Size":1}]'
         self.ids = ids
         self.name = name
         self.duration = duration

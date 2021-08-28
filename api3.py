@@ -74,7 +74,8 @@ def _api_call_(url, call_type=Api.GET, data={}, auth=True):
     else:
         print('??? {}'.format(url))
 
-    timeout = 120
+    # TODO timeout is currently hardcoded
+    timeout = 600
 
     response = urlopen(req, timeout=int(timeout))
 
@@ -236,28 +237,34 @@ def series_summary():
 
 # region episode
 
-episode_api_url = 'api/v{}/Episode/'
+episode_api_url = '/api/v{}/Episode/{}'
 
 
 def _episode_api_(command='', call_type=Api.GET, data={}):
     url = episode_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def episode_by_id(id):
-    _episode_api_(command='{}'.format(int(id)))
+    from models import Episode
+    response = _episode_api_(command='{}'.format(int(id)))
+    return json.loads(response, object_hook=Episode.Decoder)
 
 
 def episode_by_id_anidb_info(id):
-    _episode_api_(command='{}/AniDB'.format(int(id)))
+    from models import EpisodeAniDB
+    response = _episode_api_(command='{}/AniDB'.format(int(id)))
+    return json.loads(response, object_hook=EpisodeAniDB.Decoder)
 
 
 def episode_by_id_tvdb_info(id):
-    _episode_api_(command='{}/TvDB'.format(int(id)))
+    from models import Episode
+    response = _episode_api_(command='{}/TvDB'.format(int(id)))
+    return json.loads(response, object_hook=Episode.Decoder)
 
 
 def episode_by_id_watched_state(id, watched=True):
-    _episode_api_(command='{}/watched/{}'.format(int(id), int(watched)), call_type=Api.POST)
+    return _episode_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=Api.POST)
 
 # endregion
 
@@ -321,42 +328,56 @@ def unrecognized_file():
 
 # region filter
 
-filter_api_url = '/api/v{}/Filter/'
+filter_api_url = '/api/v{}/Filter/{}'
 
 
 def _filter_api_(command='', call_type=Api.GET, data={}):
     url = filter_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def filter_by_id(id):
-    _filter_api_(command='{}'.format(int(id)))
+    from models import Filter
+    response = _filter_api_(command='{}'.format(int(id)))
+    return json.loads(response, object_hook=Filter.Decoder)
 
 
 def remove_filter_by_id(id):
-    _filter_api_(command='{}'.format(int(id)), call_type=Api.DELETE)
+    from models import Filter
+    response = _filter_api_(command='{}'.format(int(id)), call_type=Api.DELETE)
+    return json.loads(response, object_hook=Filter.Decoder)
 
 
 def filter_by_id_filter(id):
+    from models import Filter
     # duplicate of filter_by_id ?
-    _filter_api_(command='{}/Filter'.format(int(id)))
+    response = _filter_api_(command='{}/Filter'.format(int(id)))
+    return json.loads(response, object_hook=Filter.Decoder)
 
 
 def filter_by_id_conditions(id):
-    _filter_api_(command='{}/Conditions'.format(id))
+    from models import Filter
+    response = _filter_api_(command='{}/Conditions'.format(id))
+    return json.loads(response, object_hook=Filter.Decoder)
 
 
 def filter_by_id_sorting(id):
-    _filter_api_(command='{}/Sorting'.format(id))
+    from models import Filter
+    response = _filter_api_(command='{}/Sorting'.format(id))
+    return json.loads(response, object_hook=Filter.Decoder)
 
 
 def filter_preview():
-    _filter_api_(command='Filter/Preview', call_type=Api.POST)
+    from models import Filter
+    response = _filter_api_(command='Filter/Preview', call_type=Api.POST)
+    return json.loads(response, object_hook=Filter.Decoder)
 
 
 def filter():
     # duplicate filter_preview?
-    _filter_api_(command='', call_type=Api.POST)
+    from models import Filter
+    response = _filter_api_(command='', call_type=Api.POST)
+    return json.loads(response, object_hook=Filter.Decoder)
 
 # endregion
 
@@ -419,32 +440,36 @@ def folder(path):
 
 # region group
 
-group_api_url = '/api/v{}/Group'
+group_api_url = '/api/v{}/Group{}'
 
 
 def _group_api(command='', call_type=Api.GET, data={}):
     url = group_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def group():
-    _group_api()
+    from models import Group
+    response = _group_api()
+    return json.loads(response, object_hook=Group.Decoder)
 
 
 def group_add(data):
-    _group_api(call_type=Api.POST, data=data)
+    return _group_api(call_type=Api.POST, data=data)
 
 
 def group_by_id(id):
-    _group_api(command='/{}'.format(int(id)))
+    from models import Group
+    response = _group_api(command='/{}'.format(int(id)))
+    return json.loads(response, object_hook=Group.Decoder)
 
 
 def group_by_id_recalculate(id):
-    _group_api(command='/{}/Recalculate'.format(int(id)), call_type=Api.POST)
+    return _group_api(command='/{}/Recalculate'.format(int(id)), call_type=Api.POST)
 
 
 def delete_group_by_id(id, deleteSeries=False, deleteFiles=False):
-    _group_api(command='/{}?deleteSeries={}&deleteFiles={}'.format(int(id), bool(deleteSeries), bool(deleteFiles)))
+    return _group_api(command='/{}?deleteSeries={}&deleteFiles={}'.format(int(id), bool(deleteSeries), bool(deleteFiles)))
 
 
 def recreate_all_groups():
@@ -464,7 +489,6 @@ def _image_api(command='', call_type=Api.GET, data={}):
 
 
 def image(source, type, value):
-    from models import Images
     response = _image_api(command='{}/{}/{}'.format(str(source), str(type), str(value)))
     # return binary image
     return response
@@ -796,6 +820,75 @@ print(x)
 # region IMAGE
 
 x = image('AniDB', 'Poster', 1)
+print(x)
+
+# endregion
+
+# region GROUP
+
+# get ALL GROUPS TIME HEAVY !!!!!!
+#x = group()
+#print(x)
+
+# TODO not doing this now
+#x = group_add(data)
+#print(x)
+
+x = group_by_id(1)
+print(x)
+
+# time consuming even for one id
+# x = group_by_id_recalculate(1)
+# b''
+# print(x)
+
+# TODO not doing this now
+#x = delete_group_by_id(id, deleteSeries=False, deleteFiles=False)
+#print(x)
+
+# TODO not doing this now
+#x = recreate_all_groups()
+#print(x)
+# endregion
+
+# region EPISODE
+x = episode_by_id(1)
+print(x)
+
+x = episode_by_id_anidb_info(1)
+print(x)
+
+# TODO nothing i get nothing ? is this broken or i'm missing something ?
+x = episode_by_id_tvdb_info(1)
+print(x)
+
+x = episode_by_id_watched_state(1, watched=True)
+# b''
+print(x)
+
+# endregion
+
+# region FILTER
+x = filter_by_id(6)
+print(x)
+
+# TODO not doing thins now
+#x = remove_filter_by_id(id)
+#print(x)
+
+x = filter_by_id_filter(6)
+print(x)
+
+x = filter_by_id_conditions(6)
+print(x)
+
+x = filter_by_id_sorting(6)
+print(x)
+
+x = filter_preview()
+print(x)
+
+x = filter()
 print(x)
 
 # endregion
