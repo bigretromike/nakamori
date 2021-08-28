@@ -627,60 +627,84 @@ def episode_from_file_by_id(id):
 # region series
 
 
-series_api_url = '/api/v{}/Series'
+series_api_url = '/api/v{}/Series{}'
 
 
 def _series_api(command='', call_type=Api.GET, data={}):
     url = series_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def series():
-    _series_api()
+    from models import Series
+    response = _series_api()
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def series_by_id(id):
-    _series_api(command='/{}'.format(int(id)))
+    from models import Series
+    response = _series_api(command='/{}'.format(int(id)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def series_path_ending_with(path):
-    _series_api(command='/PathEndsWith{}'.format(str(path)))
+    from models import Series
+    response = _series_api(command='/PathEndsWith/{}'.format(str(path)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def series_by_id_anidb_info(id):
-    _series_api(command='/{}/AniDB'.format(int(id)))
+    from models import Series
+    response = _series_api(command='/{}/AniDB'.format(int(id)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def series_by_id_tvdb_info(id):
-    _series_api(command='/{}/TvDB'.format(int(id)))
+    from models import Series
+    response =_series_api(command='/{}/TvDB'.format(int(id)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def images_from_series_by_id(id, includeDisabled=True):
-    _series_api(command='/{}/Images/{}'.format(int(id), bool(includeDisabled )))
+    from models import Images
+    response =_series_api(command='/{}/Images/{}'.format(int(id), bool(includeDisabled )))
+    return json.loads(response, object_hook=Images.Decoder)
 
 
 def tag_from_series_by_id_and_filter(id, filter):
-    _series_api(command='/{}/Tags/{}'.format(int(id), int(filter)))
+    from models import Tags
+    response = _series_api(command='/{}/Tags/{}'.format(int(id), int(filter)))
+    return json.loads(response, object_hook=Tags.Decoder)
 
 
 def cast_from_series_by_id(id):
-    _series_api(command='/{}/Cast'.format(int(id)))
+    from models import FullCast
+    response = _series_api(command='/{}/Cast'.format(int(id)))
+    return json.loads(response, object_hook=FullCast.Decoder)
 
 
 def move_series_to_group(sid, gid):
-    _series_api(command='/{}/Move/{}'.format(int(sid), int(gid)), call_type=Api.PATCH)
+    from models import Series
+    response = _series_api(command='/{}/Move/{}'.format(int(sid), int(gid)), call_type=Api.PATCH)
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def delete_series_by_id(id):
-    _series_api(command='/{}'.format(int(id)), call_type=Api.DELETE)
+    from models import Series
+    response = _series_api(command='/{}'.format(int(id)), call_type=Api.DELETE)
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def search_series(query):
-    _series_api(command='/{}'.format(str(query)))
+    from models import Series
+    response = _series_api(command='/Search/{}'.format(str(query)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 def series_starts_with(query):
-    _series_api(command='/StartsWith/{}'.format(str(query)))
+    from models import Series
+    response = _series_api(command='/StartsWith/{}'.format(str(query)))
+    return json.loads(response, object_hook=Series.Decoder)
 
 
 # endregion
@@ -713,3 +737,40 @@ print(x)
 x = tree_episode_in_series_by_id(22, True)
 print(x)
 
+### TEST SERIES ###
+x = series()
+print(x)
+
+x = series_by_id(22)
+print(x)
+
+x = series_path_ending_with('naruto')
+print(x)
+
+x = series_by_id_anidb_info(22)
+print(x)
+
+# TODO got empty, sure ?
+x = series_by_id_tvdb_info(22)
+print(x)
+
+x = images_from_series_by_id(22, includeDisabled=True)
+print(x)
+
+x = tag_from_series_by_id_and_filter(22, 8)
+print(x)
+
+x = cast_from_series_by_id(22)
+print(x)
+
+# TODO not doing this right now
+# x = move_series_to_group(sid, gid)
+
+# TODO not doing this right now
+# x = delete_series_by_id(id)
+
+x = search_series('naruto')
+print(x)
+
+x = series_starts_with('ano')
+print(x)
