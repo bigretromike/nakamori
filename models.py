@@ -589,13 +589,48 @@ class FileAniDB:
 
 
 class FolderDrives:
-    def __init__(self):
-        pass
+    def __init__(self, drivetype, path, canaccess, sizes):
+        # b'[{"DriveType":"Fixed","Path":"C:\\\\","CanAccess":true,"Sizes":{"Folders":20,"Files":3}},]'
+        self.drivetype = drivetype
+        self.path = path
+        self.canaccess = canaccess
+        self.sizes = sizes
+
+    def __repr__(self):
+        return '<FolderDriver({})>'.format(self.path)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'DriveType' in obj:
+            return FolderDrives(obj.get('DriveType', None), obj.get('Path', None), obj.get('CanAccess', None),
+                             obj.get('Sizes', None))
+        return obj
 
 
 class Folder:
-    def __init__(self):
-        pass
+    def __init__(self, path, canaccess, sizes):
+        # b'[{"Path":"C:\\\\Program Files (x86)\\\\Shoko\\\\Shoko Server\\\\cs","CanAccess":true,"Sizes":{"Files":19}}]'
+        self.path = path
+        self.canaccess = canaccess
+        self.sizes = sizes
+
+    def __repr__(self):
+        return '<Folder({})>'.format(self.path)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'Path' in obj:
+            return Folder(obj.get('Path', None), obj.get('CanAccess', None),
+                             obj.get('Sizes', None))
+        return obj
 
 
 class ImportFolder:

@@ -956,8 +956,9 @@ print(x)
 # x = file_ends_with_path('a')
 # print(x)
 
-x = file_path_regex('naruto')
-print(x)
+# OK, BUT SLOWDOWN DEBUG
+# x = file_path_regex('naruto')
+# print(x)
 
 x = recent_file(10)
 print(x)
@@ -969,11 +970,10 @@ print(x)
 
 # region Folder
 
-
 x = folder_drives()
 print(x)
 
-x = folder(path)
+x = folder('c:')
 print(x)
 
 # endregion
