@@ -539,6 +539,7 @@ def import_folder_update(data):
 
 def import_folder_by_id(id):
     from models import ImportFolder
+    # TODO PATCH
     response = _import_folder_api(command='/{}'.format(int(id)), call_type=Api.PATCH)
     return json.loads(response, object_hook=ImportFolder.Decoder)
 
@@ -565,14 +566,12 @@ def _init_api(command='', call_type=Api.GET, data={}):
 
 def version():
     from models import Version
-
     response = _init_api(command='Version')
     return json.loads(response, object_hook=Version.Decoder)
 
 
 def status():
     from models import Status
-
     response = _init_api(command='status')
     return json.loads(response, object_hook=Status.Decoder)
 
@@ -604,7 +603,7 @@ def database_test():
 
 
 def database_instance():
-    response = _init_api(command='database/sqlserverinstance')
+    return _init_api(command='database/sqlserverinstance')
 
 # endregion
 
@@ -960,11 +959,13 @@ print(x)
 # x = file_path_regex('naruto')
 # print(x)
 
-x = recent_file(10)
-print(x)
+# ok, but slowdown
+# x = recent_file(10)
+# print(x)
 
-x = unrecognized_file()
-print(x)
+# ok, but slowdown
+# x = unrecognized_file()
+# print(x)
 
 # endregion
 
@@ -983,20 +984,25 @@ print(x)
 x = import_folder()
 print(x)
 
-x = import_folder_add(data)
-print(x)
+# TODO not right now
+# x = import_folder_add(data)
+# print(x)
 
-x = import_folder_update(data)
-print(x)
+# TODO not right now
+# x = import_folder_update(data)
+# print(x)
 
-x = import_folder_by_id(id)
-print(x)
+# TODO this one need patch and body
+# x = import_folder_by_id(4)
+# print(x)
 
-x = delete_import_folder_by_id(id, removeRecords=True, updateMyList=True)
-print(x)
+# TODO not right now
+# x = delete_import_folder_by_id(2, removeRecords=True, updateMyList=True)
+# print(x)
 
-x = scan_import_folder_by_id(id)
-print(x)
+# b'' ok
+# x = scan_import_folder_by_id(4)
+# print(x)
 
 # endregion
 
@@ -1011,20 +1017,26 @@ print(x)
 x = inuse()
 print(x)
 
-x = default_user()
-print(x)
+# TODO HTTP Error 403: Forbidden (only in firstrun ?)
+# x = default_user()
+# print(x)
 
-x = create_default_user(username, password)
-print(x)
+# TODO not needed now
+# x = create_default_user(username, password)
+# print(x)
 
-x = start_server()
-print(x)
+# TODO HTTP Error 400: Bad Request
+# TODO NOT NEEDED NOW
+# x = start_server()
+# print(x)
 
-x = database_test()
-print(x)
+# TODO HTTP Error 403: Forbidden (only in firstrun ?)
+# x = database_test()
+# print(x)
 
-x = database_instance()
-print(x)
+# TODO HTTP Error 403: Forbidden (only in firstrun ?)
+# x = database_instance()
+# print(x)
 
 # endregion
 # endregion

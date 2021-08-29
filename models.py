@@ -634,8 +634,29 @@ class Folder:
 
 
 class ImportFolder:
-    def __init__(self):
-        pass
+    def __init__(self, id, dropfoldertype, path, filesszie, name, size):
+        # b'[{"ID":2,"DropFolderType":2,"Path":"\\\\\\\\AKIRA\\\\anime\\\\","FileSize":18158552044584,"Name":"NA","Size":3976},{"ID":4,"DropFolderType":1,"Path":"\\\\\\\\AKIRA\\\\photo\\\\NewNew\\\\","FileSize":20485918470,"Name":"NA","Size":2}]'
+        self.id = id
+        self.dropfoldertype = dropfoldertype
+        self.path = path
+        self.filessize = filesszie
+        self.name = name
+        self.size = size
+
+    def __repr__(self):
+        return '<ImportFolder({})>'.format(self.path)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'Path' in obj:
+            return ImportFolder(obj.get('ID', None), obj.get('DropFolderType', None), obj.get('Path', None),
+                                obj.get('FileSize', None), obj.get('Name', None), obj.get('Size', None))
+        return obj
+
 # endregion
 
 
