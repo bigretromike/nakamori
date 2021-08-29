@@ -451,6 +451,156 @@ class FullCast:
             return FullCast(obj)  # Cast(obj.get('Staff', None), obj.get('Character', None), obj.get('RoleName', None), obj.get('RoleDetails', None))
         return obj
 
+
+class Hashes:
+    def __init__(self, hashes):
+        # {"ED2K":"F0D28BF0603E78DED467003C3C1B9EE4","SHA1":"4B25AE178DC9D87EE55AF83D0432ECB202F1A1DF","CRC32":"D7A0BEE4","MD5":"B34A4D71ABB885C4DE1CA9AF7B47FC35"}
+        if hashes is not None:
+            self.ed2k = hashes.get('ED2k', None)
+            self.sha1 = hashes.get('SHA1', None)
+            self.crc32 = hashes.get('CRC32', None)
+            self.md5 = hashes.get('MD5', None)
+
+    def __repr__(self):
+        return '<Hashes({}, {})>'.format(self.ed2k if self.ed2k is not None else '', self.crc32)
+
+
+class Location:
+    def __init__(self, importfolderid, relativepath):
+        self.importfolderid = importfolderid
+        self.relativepath = relativepath
+
+    def __repr__(self):
+        return '<Location({}, {})>'.format(self.importfolderid, self.relativepath)
+
+
+class IDsList:
+    def __init__(self, seriesid, episodeid):
+        # {"SeriesID":{"AniDB":12661,"ID":4},"EpisodeIDs":[{"AniDB":209780,"ID":140}]}
+        self.seriesid = seriesid
+        self.episodeid = episodeid
+
+    def __repr__(self):
+        return '<IDs({}, {})>'.format(self.seriesid, self.episodeid)
+
+
+class File:
+    def __init__(self, id, size, hashes, locations, resumeposition, created, seriesids=[]):
+        # b'{
+        # "ID":3,
+        # "Size":1441021183,
+        # "Hashes":{"ED2K":"F0D28BF0603E78DED467003C3C1B9EE4","SHA1":"4B25AE178DC9D87EE55AF83D0432ECB202F1A1DF","CRC32":"D7A0BEE4","MD5":"B34A4D71ABB885C4DE1CA9AF7B47FC35"},
+        # "Locations":[{"ImportFolderID":2,"RelativePath":"Boku no Tonari ni Ankoku Hakaishin ga Imasu\xe2\x80\xa4\\\\[HorribleSubs] Boku no Tonari ni Ankoku Hakaishin ga Imasu - 05 [1080p].mkv"}],
+        # "ResumePosition":0,
+        # "Created":"2020-03-03T16:55:42"}'
+        # ----- DETAILED VERSION ----
+        # b'{"SeriesIDs":[{"SeriesID":{"AniDB":12661,"ID":4},"EpisodeIDs":[{"AniDB":209780,"ID":140}]}'
+        self.id = id
+        self.size = size
+        self.hashes = Hashes(hashes)
+        if locations is not None:
+            self.locations = [Location(location.get('ImportFolderID', None), location.get('RelativePath', None)) for location in locations]
+        self.resumeposition = resumeposition
+        self.created = created
+        # TODO fix __repr__ for IDs
+        self.seriesids = [IDsList(seriesid.get('SeriesID', None), seriesid.get('EpisodeIDs', None)) for seriesid in seriesids]
+
+    def __repr__(self):
+        return '<File({}, {}, {})>'.format(self.id, self.size, self.created)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'ID' in obj:
+            return File(obj.get('ID', None), obj.get('Size', None), obj.get('Hashes', None), obj.get('Locations', None),
+                        obj.get('ResumePosition', None), obj.get('Created', None), obj.get('SeriesIDs', []))
+        return obj
+
+
+class FileMediaInfo:
+    def __init__(self):
+        pass
+
+
+class ReleaseGroup:
+    def __init__(self, name, shortname, id):
+        # {"Name": "HorribleSubs", "ShortName": "HorribleSubs", "ID": 7172}
+        self.name = name
+        self.shortname = shortname
+        self.id = id
+
+    def __repr__(self):
+        return '<ReleaseGroup({}, {}, {})>'.format(self.id, self.name, self.shortname)
+
+
+class FileAniDB:
+    def __init__(self, id, source, releasegroup, releasedate, version, originalfilename, filesize, duration, resolution,
+                 descirption, audiocodes, audiolanguages, sublanguage, videocodec, updated):
+        # b'{"ID":2450313,
+        # "Source":"www",
+        # "ReleaseGroup":{"Name":"HorribleSubs","ShortName":"HorribleSubs","ID":7172},
+        # "ReleaseDate":"2020-02-08",
+        # "Version":1,
+        # "OriginalFileName":"[HorribleSubs] Boku no Tonari ni Ankoku Hakaishin ga Imasu - 05 [1080p].mkv",
+        # "FileSize":1441021183,
+        # "Duration":"00:23:40",
+        # "Resolution":"1920x1080",
+        # "Description":"",
+        # "AudioCodecs":["(HE-)AAC"],
+        # "AudioLanguages":["japanese"],
+        # "SubLanguages":["english"],
+        # "VideoCodec":"H264/AVC",
+        # "Updated":"2020-03-03T16:58:34"}'
+        self.id = id
+        self.source = source
+        self.releasegroup = ReleaseGroup(releasegroup.get('Name', None), releasegroup.get('ShortName', None), releasegroup.get('ID', None))
+        self.releasedate = releasedate
+        self.version = version
+        self.originalfilename = originalfilename
+        self.filesize = filesize
+        self.duration = duration
+        self.resolution = resolution
+        self.descirption = descirption
+        self.audiocodes = audiocodes
+        self.audiolanguages = audiolanguages
+        self.sublanguage = sublanguage
+        self.videocodec = videocodec
+        self.updated = updated
+
+    def __repr__(self):
+        return '<FileAniDB({}, {}, {})>'.format(self.id, self.source, self.version)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'ID' in obj and 'ShortName' not in obj:
+            return FileAniDB(obj.get('ID', None), obj.get('Source', None), obj.get('ReleaseGroup', None),
+                        obj.get('ReleaseDate', None), obj.get('Version', None), obj.get('OriginalFileName', None),
+                        obj.get('FileSize', None), obj.get('Duration', None), obj.get('Resolution', None),
+                        obj.get('Description', None), obj.get('AudioCodecs', None), obj.get('AudioLanguages', None),
+                        obj.get('SubLanguages', None), obj.get('VideoCodec', None), obj.get('Updated', None))
+        return obj
+
+
+class FolderDrives:
+    def __init__(self):
+        pass
+
+
+class Folder:
+    def __init__(self):
+        pass
+
+
+class ImportFolder:
+    def __init__(self):
+        pass
 # endregion
 
 

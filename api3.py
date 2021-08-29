@@ -276,52 +276,66 @@ file_api_url = '/api/v{}/File/{}'
 
 def _file_api_(command='', call_type=Api.GET, data={}):
     url = file_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def file_by_id(id):
-    _file_api_(command='{}'.format(int(id)))
+    from models import File
+    response = _file_api_(command='{}'.format(int(id)))
+    return json.loads(response, object_hook=File.Decoder)
 
 
 def remove_file_by_id(id, removeFolder):
-    _file_api_(command='{}?removeFolder={}'.format(int(id), bool(removeFolder)), call_type=Api.DELETE)
+    return _file_api_(command='{}?removeFolder={}'.format(int(id), bool(removeFolder)), call_type=Api.DELETE)
 
 
 def file_by_id_anidb_info(id):
-    _file_api_(command='{}/AniDB'.format(int(id)))
+    from models import FileAniDB
+    response = _file_api_(command='{}/AniDB'.format(int(id)))
+    return json.loads(response, object_hook=FileAniDB.Decoder)
 
 
 def file_by_id_MediaInfo(id):
-    _file_api_(command='{}/MediaInfo'.format(int(id)))
+    from models import FileMediaInfo
+    response = _file_api_(command='{}/MediaInfo'.format(int(id)))
+    return json.loads(response, object_hook=FileMediaInfo.Decoder)
 
 
 def file_api_watched_state(id, watched=True):
-    _file_api_(command='{}/watched/{}'.format(int(id), int(watched)), call_type=Api.POST)
+    return _file_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=Api.POST)
 
 
 def file_by_id_scrobble(id, watched=True, resumePosition=0):
-    _file_api_(command='{}/Scrobble?watched={}&resumePosition={}'.format(int(id), bool(watched), int(resumePosition)), call_type=Api.PATCH)
+    return _file_api_(command='{}/Scrobble?watched={}&resumePosition={}'.format(int(id), bool(watched), int(resumePosition)), call_type=Api.PATCH)
 
 
 def file_by_id_avdump(id, FullOutput, Ed2k):
     data = {'FullOutput': FullOutput, "Ed2k": Ed2k}
-    _file_api_(command='{}/avdump'.format(int(id)), call_type=Api.POST, data=data)
+    return _file_api_(command='{}/avdump'.format(int(id)), call_type=Api.POST, data=data)
 
 
 def file_ends_with_path(path):
-    _file_api_(command='PathEndsWith/{}'.format(str(path)))
+    from models import File
+    response = _file_api_(command='PathEndsWith/{}'.format(str(path)))
+    return json.loads(response, object_hook=File.Decoder)
 
 
 def file_path_regex(path):
-    _file_api_(command='PathRegex/{}'.format(str(path)))
+    from models import File
+    response = _file_api_(command='PathRegex/{}'.format(str(path)))
+    return json.loads(response, object_hook=File.Decoder)
 
 
 def recent_file(limit):
-    _file_api_(command='Recent/{}'.format(int(limit)))
+    from models import File
+    response = _file_api_(command='Recent/{}'.format(int(limit)))
+    return json.loads(response, object_hook=File.Decoder)
 
 
 def unrecognized_file():
-    _file_api_(command='Unrecognized')
+    from models import File
+    response = _file_api_(command='Unrecognized')
+    return json.loads(response, object_hook=File.Decoder)
 
 
 # endregion
@@ -420,20 +434,24 @@ def tree_episode_in_series_by_id(id, includeMissing=False):
 
 # region folder
 
-folder_api_url = '/api/v{}/Folder'
+folder_api_url = '/api/v{}/Folder{}'
 
 
 def _folder_api(command='', call_type=Api.GET, data={}):
     url = folder_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def folder_drives():
-    _folder_api(command='/drives')
+    from models import FolderDrives
+    response = _folder_api(command='/drives')
+    return json.loads(response, object_hook=FolderDrives.Decoder)
 
 
 def folder(path):
-    _folder_api(command='?path={}'.format(str(path)))
+    from models import Folder
+    response = _folder_api(command='?path={}'.format(str(path)))
+    return json.loads(response, object_hook=Folder.Decoder)
 
 
 # endregion
@@ -497,36 +515,40 @@ def image(source, type, value):
 
 # region import folder
 
-import_folder_api_url = '/api/v{}/ImportFolder'
+import_folder_api_url = '/api/v{}/ImportFolder{}'
 
 
 def _import_folder_api(command='', call_type=Api.GET, data={}):
     url = import_folder_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def import_folder():
-    _import_folder_api()
+    from models import ImportFolder
+    response = _import_folder_api()
+    return json.loads(response, object_hook=ImportFolder.Decoder)
 
 
 def import_folder_add(data):
-    _import_folder_api(data=data, call_type=Api.POST)
+    return _import_folder_api(data=data, call_type=Api.POST)
 
 
 def import_folder_update(data):
-    _import_folder_api(date=data, call_type=Api.PUT)
+    return _import_folder_api(date=data, call_type=Api.PUT)
 
 
 def import_folder_by_id(id):
-    _import_folder_api(command='/{}'.format(int(id)), call_type=Api.PATCH)
+    from models import ImportFolder
+    response = _import_folder_api(command='/{}'.format(int(id)), call_type=Api.PATCH)
+    return json.loads(response, object_hook=ImportFolder.Decoder)
 
 
 def delete_import_folder_by_id(id, removeRecords=True, updateMyList=True):
-    _import_folder_api(command='/{}?removeRecords={}&'.format(int(id), bool(removeRecords), bool(updateMyList)), call_type=Api.DELETE)
+    return _import_folder_api(command='/{}?removeRecords={}&updateMyList={}'.format(int(id), bool(removeRecords), bool(updateMyList)), call_type=Api.DELETE)
 
 
 def scan_import_folder_by_id(id):
-    _import_folder_api(command='/{}/Scan'.format(int(id)))
+    return _import_folder_api(command='/{}/Scan'.format(int(id)))
 
 
 # endregion
@@ -546,7 +568,6 @@ def version():
 
     response = _init_api(command='Version')
     return json.loads(response, object_hook=Version.Decoder)
-    # json.dumps(y, cls=Version.Encoder)
 
 
 def status():
@@ -575,11 +596,11 @@ def create_default_user(username, password):
 
 
 def start_server():
-    response = _init_api(command='startserver')
+    return _init_api(command='startserver')
 
 
 def database_test():
-    response = _init_api(command='database/test')
+    return _init_api(command='database/test')
 
 
 def database_instance():
@@ -862,9 +883,10 @@ print(x)
 x = episode_by_id_tvdb_info(1)
 print(x)
 
-x = episode_by_id_watched_state(1, watched=True)
+# OK
+# x = episode_by_id_watched_state(1, watched=True)
 # b''
-print(x)
+# print(x)
 
 # endregion
 
@@ -894,6 +916,115 @@ print(x)
 # TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Adding Filter ?
 # x = filter()
 # print(x)
+
+# endregion
+
+# region File
+
+#  400: Bad Request  === missing row - someone had bad day
+#  TAKE SOME TIME, WORKING
+# x = file_by_id(3)
+# print(x)
+
+# TODO not doing this
+#x = remove_file_by_id(1, removeFolder=False)
+#print(x)
+
+# HTTP Error 400: Bad Request ?? == missing row
+x = file_by_id_anidb_info(3)
+print(x)
+
+# TODO is it broken ? or its me ?
+# x = file_by_id_MediaInfo(3)
+# b''
+# print(x)
+
+# working results in b'' but trigger
+#x = file_api_watched_state(3, watched=True)
+# b''
+# print(x)
+
+# TODO not important right now
+# x = file_by_id_scrobble(id, watched=True, resumePosition=0)
+# print(x)
+
+# TODO not doing this right now
+#x = file_by_id_avdump(id, FullOutput, Ed2k)
+#print(x)
+
+# TODO APIv3 broken, throw 500
+# x = file_ends_with_path('a')
+# print(x)
+
+x = file_path_regex('naruto')
+print(x)
+
+x = recent_file(10)
+print(x)
+
+x = unrecognized_file()
+print(x)
+
+# endregion
+
+# region Folder
+
+
+x = folder_drives()
+print(x)
+
+x = folder(path)
+print(x)
+
+# endregion
+
+# region ImportFolder
+
+x = import_folder()
+print(x)
+
+x = import_folder_add(data)
+print(x)
+
+x = import_folder_update(data)
+print(x)
+
+x = import_folder_by_id(id)
+print(x)
+
+x = delete_import_folder_by_id(id, removeRecords=True, updateMyList=True)
+print(x)
+
+x = scan_import_folder_by_id(id)
+print(x)
+
+# endregion
+
+# region Init
+
+x = version()
+print(x)
+
+x = status()
+print(x)
+
+x = inuse()
+print(x)
+
+x = default_user()
+print(x)
+
+x = create_default_user(username, password)
+print(x)
+
+x = start_server()
+print(x)
+
+x = database_test()
+print(x)
+
+x = database_instance()
+print(x)
 
 # endregion
 # endregion
