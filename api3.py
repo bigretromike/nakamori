@@ -98,7 +98,7 @@ action_api_url = '/api/v{}/Action/{}'
 
 def _action_api_(command='', call_type=Api.GET):
     url = action_api_url.format(api_version, command)
-    _api_call_(url, call_type)
+    return _api_call_(url, call_type)
 
 
 def run_import():
@@ -192,13 +192,13 @@ def login_user(user='', password='', device=''):
 
 
 def delete_user_apikey(apikey=''):
-    data = {'apikey': apikey}
-    response = _auth_api_(call_type=Api.DELETE, data=data)
+    data = apikey
+    return _auth_api_(call_type=Api.DELETE, data=data)
 
 
-def change_user_password(password):
+def change_user_password(password=''):
     data = password
-    response = _auth_api_(command='ChangePassword', call_type=Api.POST, data=data)
+    return _auth_api_(command='ChangePassword', call_type=Api.POST, data=data)
 
 # endregion
 
@@ -210,27 +210,27 @@ dashboard_api_url = '/api/v{}/Dashboard/{}'
 
 def _dashboard_api_(command='', call_type=Api.GET, data={}):
     url = dashboard_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def get_stats():
-    _dashboard_api_(command='Stats')
+    return _dashboard_api_(command='Stats')
 
 
 def get_top_tags():
-    _dashboard_api_(command='TopTags')
+    return _dashboard_api_(command='TopTags')
 
 
 def get_top_tags_by_page(page):
-    _dashboard_api_(command='TopTags/{}'.format(int(page)))
+    return _dashboard_api_(command='TopTags/{}'.format(int(page)))
 
 
 def queue_summary():
-    _dashboard_api_(command='QueueSummary')
+    return _dashboard_api_(command='QueueSummary')
 
 
 def series_summary():
-    _dashboard_api_(command='SeriesSummary')
+    return _dashboard_api_(command='SeriesSummary')
 
 
 # endregion
@@ -515,6 +515,7 @@ def image(source, type, value):
 
 # region import folder
 
+
 import_folder_api_url = '/api/v{}/ImportFolder{}'
 
 
@@ -615,21 +616,60 @@ integrity_check_api_url = '/api/v{}/IntegrityCheck'
 
 def _integrity_check_api(command='', call_type=Api.GET, data={}):
     url = integrity_check_api_url.format(api_version, command)
-    _api_call_(url=url, call_type=call_type, data=data)
+    return _api_call_(url=url, call_type=call_type, data=data)
 
 
 def integrity_check(data):
-    _init_api(call_type=Api.POST, data=data)
+    return _init_api(call_type=Api.POST, data=data)
 
 
 def integrity_check_by_id(id):
-    _init_api(command='/{}/Start')
+    return _init_api(command='/{}/Start')
 
 # endregion
 
 # region plex webhook
 
-# TODO PLEX
+
+plex_api_url = '/plex{}'
+
+
+def _plex_api(command='', call_type=Api.GET, data={}):
+    url = plex_api_url.format(api_version, command)
+    return _api_call_(url=url, call_type=call_type, data=data)
+
+
+def plex_magic_that_only_plex_need(data):
+    return _plex_api(command='.json', call_type=Api.POST, data=data)
+
+
+def plex_magic_that_only_plex_need2(data):
+    return _plex_api(call_type=Api.POST, data=data)
+
+
+def plex_login_url():
+    return _plex_api(command='/loginurl')
+
+
+def plex_pin_authenticated():
+    return _plex_api(command='/pin/authenticated')
+
+
+def plex_token_invalidate():
+    return _plex_api(command='/token/invalidate')
+
+
+def plex_sync():
+    return _plex_api(command='/sync')
+
+
+def plex_sync_all():
+    return _plex_api(command='/sync/all')
+
+
+def plex_sync_by_id(id):
+    return _plex_api(command='/sync/{}'.format(int(id)))
+
 
 # endregion
 
@@ -755,7 +795,33 @@ def series_starts_with(query):
 # endregion
 
 # region settings
-# TODO settings
+
+
+settings_api_url = '/api/v{}/Settings{}'
+
+
+def _settings_api(command='', call_type=Api.GET, data={}):
+    url = settings_api_url.format(api_version, command)
+    return _api_call_(url=url, call_type=call_type, data=data)
+
+
+def settings_get():
+    from models import Settings
+    response = _settings_api()
+    return json.loads(response, object_hook=Settings.Decoder)
+
+
+def settings_set(data):
+    from models import Settings
+    response = _settings_api(call_type=Api.PATCH, data=data)
+    return json.loads(response, object_hook=Settings.Decoder)
+
+
+def settings_anidb_test(username, password):
+    data = {'Username': username, 'Password': password}
+    return _settings_api(call_type=Api.POST, data=data)
+
+
 # endregion
 
 # region user
@@ -1039,4 +1105,129 @@ print(x)
 # print(x)
 
 # endregion
+
+# region Auth
+
+x = login_user(user='default', password='', device='something')
+print(x.apikey)
+
+# TODO HTTP Error 400: Bad Request
+# x = delete_user_apikey(apikey=x.apikey)
+# print(x)
+
+# TODO HTTP Error 500: Internal Server Error
+# x = change_user_password('password')
+# print(x)
+
+# endregion
+
+# region Action
+
+
+x = run_import()
+print(x)
+
+x = sync_hashes()
+print(x)
+
+x = sync_votes()
+print(x)
+
+x = sync_trakt()
+print(x)
+
+x = remove_missing_files()
+print(x)
+
+x = update_all_tvdbinfo()
+print(x)
+
+x = update_all_images()
+print(x)
+
+x = update_all_moviedb_info()
+print(x)
+
+x = update_all_trakt_info()
+print(x)
+
+x = validate_all_images()
+print(x)
+
+x = avdump_mismatched_files()
+print(x)
+
+x = download_missing_anidb_anime_data()
+print(x)
+
+x = regenerate_all_tvdb_episodes_matching()
+print(x)
+
+x = sync_mylist()
+print(x)
+
+x = update_all_anidb_info()
+print(x)
+
+x =  update_all_mediainfo()
+print(x)
+
+x = update_series_stats()
+print(x)
+# endregion
+
+# region IntegrityCheck
+
+# TODO not right now
+# data = {'ScanID': 0, 'CreationTIme': "2021-08-29T08:32:44.284Z", "ImportFolders": "string", "Status": 0}
+# x = integrity_check(data)
+# print(x)
+
+x = integrity_check_by_id(6)
+print(x)
+
+# endregion
+
+# region Users
+# endregion
+
+# region Settings
+
+x = settings_get()
+print(x)
+
+# TODO we not doing this right now
+#x = settings_set(data):
+#print(x)
+
+# bruteForce Anidb and get ban
+x = settings_anidb_test('username', 'password')
+print(x)
+
+# endregion
+
+# region Dashboard
+
+x = get_stats()
+print(x)
+
+x = get_top_tags()
+print(x)
+
+x = get_top_tags_by_page(1)
+print(x)
+
+x = queue_summary()
+print(x)
+
+x = series_summary()
+print(x)
+
+# endregion
+
+# region PLEX
+
+# TODO no way to test, why would we need it ?:-) is this a time-machine property ? someone doing exclusive shit ?
+# endregion
+
 # endregion

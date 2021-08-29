@@ -657,6 +657,19 @@ class ImportFolder:
                                 obj.get('FileSize', None), obj.get('Name', None), obj.get('Size', None))
         return obj
 
+
+class Settings:
+    def __init__(self, settings):
+        # TODO change this to better model, as we need it to Post later
+        self.settings = settings
+
+    def __repr__(self):
+        return '<Settings()>'
+
+    @staticmethod
+    def Decoder(obj):
+        return Settings(obj)
+
 # endregion
 
 
