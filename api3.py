@@ -93,6 +93,8 @@ def _api_call_(url, call_type=Api.GET, data={}, auth=True):
     return data
 
 # region action api
+
+
 action_api_url = '/api/v{}/Action/{}'
 
 
@@ -102,71 +104,71 @@ def _action_api_(command='', call_type=Api.GET):
 
 
 def run_import():
-    _action_api_('RunImport')
+    return _action_api_('RunImport')
 
 
 def sync_hashes():
-    _action_api_('SyncHashes')
+    return _action_api_('SyncHashes')
 
 
 def sync_votes():
-    _action_api_('SyncVotes')
+    return _action_api_('SyncVotes')
 
 
 def sync_trakt():
-    _action_api_('SyncTrakt')
+    return _action_api_('SyncTrakt')
 
 
 def remove_missing_files():
-    _action_api_('RemoveMissingFiles/{removeFromMyList}')
+    return _action_api_('RemoveMissingFiles/{removeFromMyList}')
 
 
 def update_all_tvdbinfo():
-    _action_api_('UpdateAllTvDBInfo')
+    return _action_api_('UpdateAllTvDBInfo')
 
 
 def update_all_images():
-    _action_api_('UpdateAllImages')
+    return _action_api_('UpdateAllImages')
 
 
 def update_all_moviedb_info():
-    _action_api_('UpdateAllMovieDBInfo')
+    return _action_api_('UpdateAllMovieDBInfo')
 
 
 def update_all_trakt_info():
-    _action_api_('UpdateAllTraktInfo')
+    return _action_api_('UpdateAllTraktInfo')
 
 
 def validate_all_images():
-    _action_api_('ValidateAllImages')
+    return _action_api_('ValidateAllImages')
 
 
 def avdump_mismatched_files():
-    _action_api_('AVDumpMismatchedFiles')
+    return _action_api_('AVDumpMismatchedFiles')
 
 
 def download_missing_anidb_anime_data():
-    _action_api_('DownloadMissingAniDBAnimeData')
+    return _action_api_('DownloadMissingAniDBAnimeData')
 
 
 def regenerate_all_tvdb_episodes_matching():
-    _action_api_('RegenerateAllTvDBEpisodeMatchings')
+    return _action_api_('RegenerateAllTvDBEpisodeMatchings')
 
 
 def sync_mylist():
-    _action_api_('SyncMyList')
+    return _action_api_('SyncMyList')
 
 
 def update_all_anidb_info():
-    _action_api_('UpdateAllAniDBInfo')
+    return _action_api_('UpdateAllAniDBInfo')
 
 
 def update_all_mediainfo():
-    _action_api_('UpdateAllMediaInfo')
+    return _action_api_('UpdateAllMediaInfo')
 
 
 def update_series_stats():
-    _action_api_('UpdateSeriesStats')
+    return _action_api_('UpdateSeriesStats')
 
 # endregion
 
@@ -1123,57 +1125,66 @@ print(x.apikey)
 
 # region Action
 
+# ok
+# x = run_import()
+# print(x)
 
-x = run_import()
-print(x)
+# TODO HTTP Error 400: Bad Request
+# x = sync_hashes()
+# print(x)
 
-x = sync_hashes()
-print(x)
+# NO LOG ? IS THIS EVEN WORKING ?
+# x = sync_votes()
+# print(x)
 
-x = sync_votes()
-print(x)
+# TODO HTTP Error 400: Bad Request
+# x = sync_trakt()
+# print(x)
 
-x = sync_trakt()
-print(x)
+# x = remove_missing_files()
+# print(x)
 
-x = remove_missing_files()
-print(x)
+# x = update_all_tvdbinfo()
+# print(x)
 
-x = update_all_tvdbinfo()
-print(x)
+# ok - log but with big delay
+# x = update_all_images()
+# print(x)
 
-x = update_all_images()
-print(x)
+# ok - log -ok
+# x = update_all_moviedb_info()
+# print(x)
 
-x = update_all_moviedb_info()
-print(x)
+# HTTP Error 400: Bad Request (track issue??)
+# x = update_all_trakt_info()
+# print(x)
 
-x = update_all_trakt_info()
-print(x)
+# region TEST LATER
+# TODO check this on small database because it could be ban releated and time consumig
+# x = validate_all_images()
+# print(x)
 
-x = validate_all_images()
-print(x)
+# x = avdump_mismatched_files()
+# print(x)
 
-x = avdump_mismatched_files()
-print(x)
+# x = download_missing_anidb_anime_data()
+# print(x)
 
-x = download_missing_anidb_anime_data()
-print(x)
+# x = regenerate_all_tvdb_episodes_matching()
+# print(x)
 
-x = regenerate_all_tvdb_episodes_matching()
-print(x)
+# x = sync_mylist()
+# print(x)
 
-x = sync_mylist()
-print(x)
+# x = update_all_anidb_info()
+# print(x)
 
-x = update_all_anidb_info()
-print(x)
+# x = update_all_mediainfo()
+# print(x)
 
-x =  update_all_mediainfo()
-print(x)
-
-x = update_series_stats()
-print(x)
+# x = update_series_stats()
+# print(x)
+# endregion
 # endregion
 
 # region IntegrityCheck
