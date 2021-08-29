@@ -216,15 +216,21 @@ def _dashboard_api_(command='', call_type=Api.GET, data={}):
 
 
 def get_stats():
-    return _dashboard_api_(command='Stats')
+    from models import Stats
+    response = _dashboard_api_(command='Stats')
+    return json.loads(response, object_hook=Stats.Decoder)
 
 
 def get_top_tags():
-    return _dashboard_api_(command='TopTags')
+    from models import Tags
+    response = _dashboard_api_(command='TopTags')
+    return json.loads(response, object_hook=Tags.Decoder)
 
 
 def get_top_tags_by_page(page):
-    return _dashboard_api_(command='TopTags/{}'.format(int(page)))
+    from models import Tags
+    response = _dashboard_api_(command='TopTags/{}'.format(int(page)))
+    return json.loads(response, object_hook=Tags.Decoder)
 
 
 def queue_summary():
@@ -232,7 +238,9 @@ def queue_summary():
 
 
 def series_summary():
-    return _dashboard_api_(command='SeriesSummary')
+    from models import Summary
+    response = _dashboard_api_(command='SeriesSummary')
+    return json.loads(response, object_hook=Summary.Decoder)
 
 
 # endregion

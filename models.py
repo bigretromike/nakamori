@@ -353,6 +353,29 @@ class Tags:
         return Tag(obj.get('Name', None), obj.get('Description', None), obj.get('Weight', None))
 
 
+class Summary:
+    def __init__(self, series, ova, movie, special, web, other):
+        # b'{"Series":1481,"OVA":1627,"Movie":655,"Special":65,"Web":114,"Other":39}'
+        self.series = series
+        self.ova = ova
+        self.movie = movie
+        self.special = special
+        self.web = web
+        self.other = other
+
+    def __repr__(self):
+        return '<Summary(series={}, ova={}, movie={}, special={}, web={}, other={})>'.format(self.series, self.ova, self.movie, self.special, self.web, self.other)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        return Summary(obj.get('Series', None), obj.get('OVA', None), obj.get('Movie', None), obj.get('Special', None),
+                       obj.get('Web', None), obj.get('Other', None))
+
+
 class Conditions:
     def __init__(self, conditions):
         # b'{"Conditions":[{"Type":14,"Operator":1,"Parameter":""}]}'
@@ -708,6 +731,52 @@ class User:
         if 'ID' in obj and 'Username' in obj:
             return User(obj.get('ID', None), obj.get('Username', None), obj.get('IsAdmin', None),
                         obj.get('CommunitySites', None), obj.get('TagBlacklist', None))
+        return obj
+
+
+class Stats:
+    def __init__(self, filecount, seriescount, groupcount, filesize, finishedseries, watchedepisodes, percentduplicate,
+                 missingepisodes, missingepisodescollecting, unrecognizedfiles, serieswithmissinglinks, episodeswithmultiplefiles):
+        # b'{"FileCount":34632,
+        # "SeriesCount":3981,
+        # "GroupCount":3981,
+        # "FileSize":18159103377429,
+        # "FinishedSeries":86,
+        # "WatchedEpisodes":2677,
+        # "PercentDuplicate":1.57,
+        # "MissingEpisodes":13518,
+        # "MissingEpisodesCollecting":6633,
+        # "UnrecognizedFiles":185,
+        # "SeriesWithMissingLinks":2779,
+        # "EpisodesWithMultipleFiles":544}'
+        self.filecount = filecount
+        self.seriescount = seriescount
+        self.groupcount = groupcount
+        self.filesize = filesize
+        self.finishedseries = finishedseries
+        self.watchedepisodes = watchedepisodes
+        self.percentduplicate = percentduplicate
+        self.missingepisodes = missingepisodes
+        self.missingepisodescollecting = missingepisodescollecting
+        self.unrecognizedfiles = unrecognizedfiles
+        self.serieswithmissinglinks = serieswithmissinglinks
+        self.episodeswithmultiplefiles = episodeswithmultiplefiles
+
+    def __repr__(self):
+        return '<Stats(files={}, series={}, groups={})>'.format(self.filecount, self.seriescount, self.groupcount)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'FileCount' in obj:
+            return Stats(obj.get('FileCount', None), obj.get('SeriesCount', None), obj.get('GroupCount', None),
+                         obj.get('FileSize', None), obj.get('FinishedSeries', None), obj.get('WatchedEpisodes', None),
+                         obj.get('PercentDuplicate', None), obj.get('MissingEpisodes', None),
+                         obj.get('MissingEpisodesCollecting', None), obj.get('UnrecognizedFiles', None),
+                         obj.get('SeriesWithMissingLinks', None), obj.get('EpisodesWithMultipleFiles', None))
         return obj
 
 # endregion
