@@ -613,7 +613,7 @@ def database_instance():
 # region integrity check
 
 
-integrity_check_api_url = '/api/v{}/IntegrityCheck'
+integrity_check_api_url = '/api/v{}/IntegrityCheck{}'
 
 
 def _integrity_check_api(command='', call_type=Api.GET, data={}):
@@ -626,7 +626,7 @@ def integrity_check(data):
 
 
 def integrity_check_by_id(id):
-    return _init_api(command='/{}/Start')
+    return _init_api(command='{}/Start'.format(int(id)))
 
 # endregion
 
@@ -827,7 +827,46 @@ def settings_anidb_test(username, password):
 # endregion
 
 # region user
-# TODO user
+
+
+user_api_url = '/api/v{}/User{}'
+
+
+def _user_api(command='', call_type=Api.GET, data={}):
+    url = user_api_url.format(api_version, command)
+    return _api_call_(url=url, call_type=call_type, data=data)
+
+
+def user_get():
+    from models import User
+    response = _user_api()
+    return json.loads(response, object_hook=User.Decoder)
+
+
+def user_add(data=''):
+    from models import User
+    response = _user_api(call_type=Api.POST, data=data)
+    return json.loads(response, object_hook=User.Decoder)
+
+
+def user_update(data=''):
+    from models import User
+    response = _user_api(call_type=Api.PUT, data=data)
+    return json.loads(response, object_hook=User.Decoder)
+
+
+def user_patch(id, data=''):
+    from models import User
+    # TODO MAP THIS
+    data = [{"path": "string", "op": "string", "from": "string" }]
+    response = _user_api(command='/{}'.format(int(id)), call_type=Api.PATCH, data=data)
+    return json.loads(response, object_hook=User.Decoder)
+
+
+def user_delete(id):
+    return _user_api(command='/{}'.format(int(id)), call_type=Api.DELETE)
+
+
 # endregion
 
 # flow
@@ -1194,12 +1233,34 @@ print(x.apikey)
 # x = integrity_check(data)
 # print(x)
 
-x = integrity_check_by_id(6)
-print(x)
+# TODO 404, because you need to add SCAN ?queue? and ten start it
+# x = integrity_check_by_id(0)
+# print(x)
 
 # endregion
 
 # region Users
+
+
+x = user_get()
+print(x)
+
+# TODO MAYBE LATER
+# x = user_add(data='')
+# print(x)
+
+# TODO MAYBE LATER
+# x = user_update(data='')
+# print(x)
+
+# TODO MAYBE LATER
+# x = user_patch(id, data='')
+# print(x)
+
+# TODO NOT DOING THIS RIGHT NOW
+# x = user_delete(id)
+# print(x)
+
 # endregion
 
 # region Settings
@@ -1211,9 +1272,10 @@ print(x)
 #x = settings_set(data):
 #print(x)
 
+# TODO HTTP Error 405: Method Not Allowed
 # bruteForce Anidb and get ban
-x = settings_anidb_test('username', 'password')
-print(x)
+# x = settings_anidb_test('username', 'password')
+# print(x)
 
 # endregion
 

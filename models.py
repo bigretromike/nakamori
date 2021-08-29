@@ -644,7 +644,7 @@ class ImportFolder:
         self.size = size
 
     def __repr__(self):
-        return '<ImportFolder({})>'.format(self.path)
+        return '<ImportFolder({}, {})>'.format(self.id, self.path)
 
     class Encoder(JSONEncoder):
         def default(self, o):
@@ -661,6 +661,21 @@ class ImportFolder:
 class Settings:
     def __init__(self, settings):
         # TODO change this to better model, as we need it to Post later
+        # b'{"AnimeXmlDirectory":"C:\\\\ProgramData\\\\ShokoServer\\\\Anime_HTTP",
+        # "MyListDirectory":"C:\\\\ProgramData\\\\ShokoServer\\\\MyList",
+        # "ServerPort":8111,"PluginAutoWatchThreshold":0.89,
+        # "Culture":"en",
+        # "WebUI_Settings":"{\\"v3\\":{\\"actions\\":[\\"remove-missing-files-mylist\\",\\"update-series-stats\\",\\"update-all-anidb-info\\",\\"update-all-tvdb-info\\",\\"plex-sync-all\\",\\"run-import\\"],\\"layout\\":{\\"dashboard\\":{\\"lg\\":[{\\"i\\":\\"collectionBreakdown\\",\\"x\\":0,\\"y\\":0,\\"w\\":6,\\"h\\":6,\\"minW\\":5,\\"minH\\":6,\\"maxH\\":8,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"seriesBreakdown\\",\\"x\\":6,\\"y\\":0,\\"w\\":6,\\"h\\":6,\\"minW\\":5,\\"minH\\":6,\\"maxH\\":8,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"commandQueue\\",\\"x\\":0,\\"y\\":6,\\"w\\":5,\\"h\\":10,\\"minW\\":5,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"importFolders\\",\\"x\\":5,\\"y\\":6,\\"w\\":4,\\"h\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"importBreakdown\\",\\"x\\":0,\\"y\\":16,\\"w\\":9,\\"h\\":11,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"actionItems\\",\\"x\\":9,\\"y\\":6,\\"w\\":3,\\"h\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"filesBreakdown\\",\\"x\\":9,\\"y\\":16,\\"w\\":3,\\"h\\":11,\\"moved\\":false,\\"static\\":false}],\\"sm\\":[{\\"w\\":6,\\"h\\":6,\\"x\\":0,\\"y\\":0,\\"i\\":\\"collectionBreakdown\\",\\"minW\\":5,\\"minH\\":6,\\"maxH\\":8,\\"moved\\":false,\\"static\\":false},{\\"w\\":6,\\"h\\":6,\\"x\\":0,\\"y\\":6,\\"i\\":\\"seriesBreakdown\\",\\"minW\\":5,\\"minH\\":6,\\"maxH\\":8,\\"moved\\":false,\\"static\\":false},{\\"w\\":5,\\"h\\":10,\\"x\\":0,\\"y\\":12,\\"i\\":\\"commandQueue\\",\\"minW\\":5,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"w\\":4,\\"h\\":10,\\"x\\":2,\\"y\\":22,\\"i\\":\\"importFolders\\",\\"moved\\":false,\\"static\\":false},{\\"w\\":6,\\"h\\":11,\\"x\\":0,\\"y\\":42,\\"i\\":\\"importBreakdown\\",\\"moved\\":false,\\"static\\":false},{\\"w\\":3,\\"h\\":10,\\"x\\":3,\\"y\\":32,\\"i\\":\\"actionItems\\",\\"moved\\":false,\\"static\\":false},{\\"w\\":3,\\"h\\":11,\\"x\\":3,\\"y\\":53,\\"i\\":\\"filesBreakdown\\",\\"moved\\":false,\\"static\\":false}]},\\"importFolders\\":{\\"lg\\":[{\\"i\\":\\"importBreakdown\\",\\"x\\":0,\\"y\\":0,\\"w\\":8,\\"h\\":11,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"importFolders\\",\\"x\\":8,\\"y\\":0,\\"w\\":4,\\"h\\":11,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"seriesInImportFolder\\",\\"x\\":0,\\"y\\":11,\\"w\\":12,\\"h\\":11,\\"moved\\":false,\\"static\\":false}]},\\"actions\\":{\\"lg\\":[{\\"i\\":\\"anidb\\",\\"x\\":0,\\"y\\":0,\\"w\\":4,\\"h\\":9,\\"minW\\":3,\\"minH\\":5,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"shoko\\",\\"x\\":4,\\"y\\":0,\\"w\\":4,\\"h\\":9,\\"minW\\":3,\\"minH\\":5,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"import\\",\\"x\\":8,\\"y\\":0,\\"w\\":4,\\"h\\":9,\\"minW\\":3,\\"minH\\":5,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"moviedb\\",\\"x\\":0,\\"y\\":14,\\"w\\":4,\\"h\\":4,\\"minW\\":3,\\"minH\\":4,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"images\\",\\"x\\":4,\\"y\\":9,\\"w\\":4,\\"h\\":9,\\"minW\\":3,\\"minH\\":5,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"plex\\",\\"x\\":8,\\"y\\":9,\\"w\\":4,\\"h\\":4,\\"minW\\":3,\\"minH\\":4,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"trakt\\",\\"x\\":8,\\"y\\":14,\\"w\\":4,\\"h\\":5,\\"minW\\":3,\\"minH\\":5,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"tvdb\\",\\"x\\":0,\\"y\\":9,\\"w\\":4,\\"h\\":5,\\"minW\\":3,\\"minH\\":5,\\"maxH\\":10,\\"moved\\":false,\\"static\\":false}]},\\"settings\\":{\\"lg\\":[{\\"i\\":\\"general\\",\\"x\\":0,\\"y\\":0,\\"w\\":4,\\"h\\":15,\\"minW\\":3,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"anidb-login\\",\\"x\\":0,\\"y\\":15,\\"w\\":4,\\"h\\":8,\\"minW\\":3,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"relation\\",\\"x\\":0,\\"y\\":23,\\"w\\":4,\\"h\\":10,\\"minW\\":3,\\"minH\\":3,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"anidb\\",\\"x\\":4,\\"y\\":0,\\"w\\":4,\\"h\\":21,\\"minW\\":3,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"import\\",\\"x\\":4,\\"y\\":21,\\"w\\":4,\\"h\\":7,\\"minW\\":3,\\"minH\\":3,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"plex\\",\\"x\\":4,\\"y\\":28,\\"w\\":4,\\"h\\":5,\\"minW\\":3,\\"minH\\":3,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"tvdb\\",\\"x\\":8,\\"y\\":0,\\"w\\":4,\\"h\\":12,\\"minW\\":3,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"moviedb\\",\\"x\\":8,\\"y\\":12,\\"w\\":4,\\"h\\":7,\\"minW\\":3,\\"minH\\":5,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"language\\",\\"x\\":8,\\"y\\":19,\\"w\\":4,\\"h\\":9,\\"minW\\":3,\\"minH\\":3,\\"moved\\":false,\\"static\\":false},{\\"i\\":\\"trakt\\",\\"x\\":8,\\"y\\":28,\\"w\\":4,\\"h\\":5,\\"minW\\":3,\\"minH\\":3,\\"moved\\":false,\\"static\\":false}]}},\\"notifications\\":true,\\"theme\\":\\"\\",\\"toastPosition\\":\\"bottom-right\\",\\"updateChannel\\":\\"stable\\"}}","LegacyRenamerMaxEpisodeLength":33,"LogRotator":{"Enabled":true,"Zip":true,"Delete":true,"Delete_Days":""},"Database":{"MySqliteDirectory":"C:\\\\ProgramData\\\\ShokoServer\\\\SQLite","DatabaseBackupDirectory":"C:\\\\ProgramData\\\\ShokoServer\\\\DatabaseBackup","Type":"SQLite","Username":"","Password":"","Schema":"","Hostname":"","SQLite_DatabaseFile":"C:\\\\ProgramData\\\\ShokoServer\\\\SQLite\\\\JMMServer.db3"},"AniDb":{"Username":"bigretromike","Password":"qwerty123456","ServerAddress":"api.anidb.net","ServerPort":9000,"ClientPort":4556,"AVDumpKey":"","AVDumpClientPort":4557,"DownloadRelatedAnime":true,"DownloadSimilarAnime":true,"MyList_AddFiles":true,"MyList_StorageState":2,"MyList_DeleteType":2,"MyList_ReadUnwatched":true,"MyList_ReadWatched":true,"MyList_SetWatched":true,"MyList_SetUnwatched":true,"MyList_UpdateFrequency":1,"Calendar_UpdateFrequency":3,"Anime_UpdateFrequency":4,"MyListStats_UpdateFrequency":4,"File_UpdateFrequency":4,"DownloadCharacters":true,"DownloadCreators":true,"MaxRelationDepth":3},"WebCache":{"Address":"https://localhost:44307","XRefFileEpisode_Get":true,"XRefFileEpisode_Send":true,"TvDB_Get":true,"TvDB_Send":true,"Trakt_Get":true,"Trakt_Send":true},"TvDB":{"AutoFanart":true,"AutoFanartAmount":3,"AutoWideBanners":true,"AutoWideBannersAmount":3,"AutoPosters":true,"AutoPostersAmount":3,"UpdateFrequency":3,"Language":"en"},"MovieDb":{"AutoFanart":true,"AutoFanartAmount":3,"AutoPosters":true,"AutoPostersAmount":3},"Import":{"VideoExtensions":["MKV","AVI","MP4","MOV","OGM","WMV","MPG","MPEG","MK3D","M4V","FLAC","ASS","SRT","MKA","SSA","AC3","MP3","RM","RMVB","FLV"],"Exclude":["[\\\\\\\\\\\\/]\\\\$RECYCLE\\\\.BIN[\\\\\\\\\\\\/]","[\\\\\\\\\\\\/]\\\\.Recycle\\\\.Bin[\\\\\\\\\\\\/]","[\\\\\\\\\\\\/]\\\\.Trash-\\\\d+[\\\\\\\\\\\\/]"],"DefaultSeriesLanguage":1,"DefaultEpisodeLanguage":1,"UseExistingFileWatchedStatus":true,"FileLockChecking":true,"AggressiveFileLockChecking":true,"FileLockWaitTimeMS":4000,"AggressiveFileLockWaitTimeSeconds":8,"RenameOnImport":true,"MoveOnImport":true,"MediaInfoTimeoutMinutes":5},"Plex":{"ThumbnailAspects":"Default, 0.6667, IOS, 1.0, Android, 1.3333","Token":"","Server":""},"Plugins":{},"AutoGroupSeriesRelationExclusions":"same setting|character","FileQualityPreferences":{"Require10BitVideo":true,"MaxNumberOfFilesToKeep":1,"PreferredTypes":[1,0,3,8,7,6,4,5,2],"PreferredAudioCodecs":["flac","dca","aac","ac3","wmav2","wmapro","adpcm_ms","mp3","mp2","vp6f"],"PreferredResolutions":["2160p","1440p","1080p","720p","480p"],"PreferredSubGroups":["fffpeeps","doki","commie","horriblesubs"],"PreferredVideoCodecs":["hevc","h264","mpeg4","vc1","flv","mpeg2","mpeg1","vp6f"],"RequiredTypes":[1,6,2],"RequiredAudioCodecs":{"Operator":3,"Value":["flac","dca","aac"]},"RequiredAudioStreamCount":{"Operator":2,"Value":1},"RequiredResolutions":{"Operator":2,"Value":["1080p"]},"RequiredSources":{"Operator":3,"Value":["bd","dvd"]},"RequiredSubGroups":{"Operator":4,"Value":["horriblesubs"]},"RequiredSubStreamCount":{"Operator":2,"Value":1},"RequiredVideoCodecs":{"Operator":3,"Value":["hevc","h264"]},"PreferredSources":["bd","dvd","tv","www","unknown"]},"LanguagePreference":["x-jat","en"],
+        # "EpisodeLanguagePreference":"",
+        # "LanguageUseSynonyms":true,
+        # "CloudWatcherTime":3,
+        # "EpisodeTitleSource":1,
+        # "SeriesDescriptionSource":1,
+        # "SeriesNameSource":1,
+        # "TraktTv":{"PIN":"","AuthToken":"","RefreshToken":"","TokenExpirationDate":"","UpdateFrequency":4,"SyncFrequency":4},
+        # "UpdateChannel":"Stable",
+        # "Linux":{"UID":-1,"GID":-1},
+        # "GA_ClientId":"ca962955-2d36-4068-a858-6b1f792603c8"}'
         self.settings = settings
 
     def __repr__(self):
@@ -669,6 +684,31 @@ class Settings:
     @staticmethod
     def Decoder(obj):
         return Settings(obj)
+
+
+class User:
+    def __init__(self, id, username, isadmin, communitysites, tagblacklist=[]):
+        #b'[{"ID":1,"Username":"Default","IsAdmin":true,"CommunitySites":[1,2]},
+        # {"ID":2,"Username":"Family Friendly","IsAdmin":true,"CommunitySites":[1,2],"TagBlacklist":["ecchi","nudity","sex","sexual abuse","horror","erotic game","incest","18 restricted"]}]'
+        self.id = id
+        self.username = username
+        self.isadmin = isadmin
+        self.communitysites = communitysites
+        self.tagblacklist = tagblacklist
+
+    def __repr__(self):
+        return '<User({}, {}, {})>'.format(self.id, self.username, self.isadmin)
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(obj):
+        if 'ID' in obj and 'Username' in obj:
+            return User(obj.get('ID', None), obj.get('Username', None), obj.get('IsAdmin', None),
+                        obj.get('CommunitySites', None), obj.get('TagBlacklist', None))
+        return obj
 
 # endregion
 
