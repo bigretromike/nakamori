@@ -9,6 +9,7 @@ from enum import Enum
 from io import BytesIO
 from urllib.request import Request, urlopen
 from api2models import *
+from sample_jsons import _sample_cast_search_, _sample_cast_search_short_
 
 
 class Api(Enum):
@@ -181,24 +182,22 @@ def cast_by_series(id: int):
     }
     return _common_api_(command='cast/byseries', call_type=Api.GET, query=data)
 def cast_search(opts: QueryOptions = QueryOptions()):
-    return _common_api_(command='cast/search', call_type=Api.GET, query=opts.__dict__)
+    response = _common_api_(command='cast/search', call_type=Api.GET, query=opts.__dict__)
+    
+    _json = json.loads(response)
+    return Filter.Decoder(_json)
 
 def ping():
     return _common_api_('ping', call_type=Api.GET)
+
+
 
 api_key = login_user('default', '', 'api-v2-device').apikey
 print(api_key)
 
 
-# response = filter()
-# print(response)
-
-# response = group_watch(1)
-# print(response)
-
-
-response = cast_by_series(15)
-print(json.loads(response))
-
-response = cast_search(QueryOptions(query="Eguchi Takuya"))
-print(json.loads(response))
+resp = cast_search(QueryOptions(query="Murase Ayumu"))
+for group in resp.groups:
+    group: Group
+    for serie in group.series:
+        print(serie.name)
