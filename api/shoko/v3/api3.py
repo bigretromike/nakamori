@@ -184,13 +184,13 @@ def _auth_api_(command='', call_type=Api.GET, data={}):
 
 
 def login_user(user='', password='', device=''):
-    from models import AuthUser
+    from api.shoko.v3.api3models import AuthUser
     data = {"user": user,
             "pass": password,
             "device": device
             }
     response = _auth_api_(call_type=Api.POST, data=data)
-    return json.loads(response, object_hook=AuthUser.Decoder)
+    return json.loads(response, object_hook=AuthUser.decoder)
 
 
 def delete_user_apikey(apikey=''):
@@ -216,21 +216,21 @@ def _dashboard_api_(command='', call_type=Api.GET, data={}):
 
 
 def get_stats():
-    from models import Stats
+    from api3models import Stats
     response = _dashboard_api_(command='Stats')
-    return json.loads(response, object_hook=Stats.Decoder)
+    return json.loads(response, object_hook=Stats.decoder)
 
 
 def get_top_tags():
-    from models import Tags
+    from api3models import Tags
     response = _dashboard_api_(command='TopTags')
-    return json.loads(response, object_hook=Tags.Decoder)
+    return json.loads(response, object_hook=Tags.decoder)
 
 
 def get_top_tags_by_page(page):
-    from models import Tags
+    from api3models import Tags
     response = _dashboard_api_(command='TopTags/{}'.format(int(page)))
-    return json.loads(response, object_hook=Tags.Decoder)
+    return json.loads(response, object_hook=Tags.decoder)
 
 
 def queue_summary():
@@ -238,9 +238,9 @@ def queue_summary():
 
 
 def series_summary():
-    from models import Summary
+    from api3models import Summary
     response = _dashboard_api_(command='SeriesSummary')
-    return json.loads(response, object_hook=Summary.Decoder)
+    return json.loads(response, object_hook=Summary.decoder)
 
 
 # endregion
@@ -256,21 +256,21 @@ def _episode_api_(command='', call_type=Api.GET, data={}):
 
 
 def episode_by_id(id):
-    from models import Episode
+    from api3models import Episode
     response = _episode_api_(command='{}'.format(int(id)))
-    return json.loads(response, object_hook=Episode.Decoder)
+    return json.loads(response, object_hook=Episode.decoder)
 
 
 def episode_by_id_anidb_info(id):
-    from models import EpisodeAniDB
+    from api3models import EpisodeAniDB
     response = _episode_api_(command='{}/AniDB'.format(int(id)))
-    return json.loads(response, object_hook=EpisodeAniDB.Decoder)
+    return json.loads(response, object_hook=EpisodeAniDB.decoder)
 
 
 def episode_by_id_tvdb_info(id):
-    from models import Episode
+    from api3models import Episode
     response = _episode_api_(command='{}/TvDB'.format(int(id)))
-    return json.loads(response, object_hook=Episode.Decoder)
+    return json.loads(response, object_hook=Episode.decoder)
 
 
 def episode_by_id_watched_state(id, watched=True):
@@ -290,9 +290,9 @@ def _file_api_(command='', call_type=Api.GET, data={}):
 
 
 def file_by_id(id):
-    from models import File
+    from api3models import File
     response = _file_api_(command='{}'.format(int(id)))
-    return json.loads(response, object_hook=File.Decoder)
+    return json.loads(response, object_hook=File.decoder)
 
 
 def remove_file_by_id(id, removeFolder):
@@ -300,15 +300,15 @@ def remove_file_by_id(id, removeFolder):
 
 
 def file_by_id_anidb_info(id):
-    from models import FileAniDB
+    from api3models import FileAniDB
     response = _file_api_(command='{}/AniDB'.format(int(id)))
-    return json.loads(response, object_hook=FileAniDB.Decoder)
+    return json.loads(response, object_hook=FileAniDB.decoder)
 
 
 def file_by_id_MediaInfo(id):
-    from models import FileMediaInfo
+    from api3models import FileMediaInfo
     response = _file_api_(command='{}/MediaInfo'.format(int(id)))
-    return json.loads(response, object_hook=FileMediaInfo.Decoder)
+    return json.loads(response, object_hook=FileMediaInfo.decoder)
 
 
 def file_api_watched_state(id, watched=True):
@@ -325,27 +325,27 @@ def file_by_id_avdump(id, FullOutput, Ed2k):
 
 
 def file_ends_with_path(path):
-    from models import File
+    from api3models import File
     response = _file_api_(command='PathEndsWith/{}'.format(str(path)))
-    return json.loads(response, object_hook=File.Decoder)
+    return json.loads(response, object_hook=File.decoder)
 
 
 def file_path_regex(path):
-    from models import File
+    from api3models import File
     response = _file_api_(command='PathRegex/{}'.format(str(path)))
-    return json.loads(response, object_hook=File.Decoder)
+    return json.loads(response, object_hook=File.decoder)
 
 
 def recent_file(limit):
-    from models import File
+    from api3models import File
     response = _file_api_(command='Recent/{}'.format(int(limit)))
-    return json.loads(response, object_hook=File.Decoder)
+    return json.loads(response, object_hook=File.decoder)
 
 
 def unrecognized_file():
-    from models import File
+    from api3models import File
     response = _file_api_(command='Unrecognized')
-    return json.loads(response, object_hook=File.Decoder)
+    return json.loads(response, object_hook=File.decoder)
 
 
 # endregion
@@ -361,47 +361,47 @@ def _filter_api_(command='', call_type=Api.GET, data={}):
 
 
 def filter_by_id(id):
-    from models import Filter
+    from api3models import Filter
     response = _filter_api_(command='{}'.format(int(id)))
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Filter.decoder)
 
 
 def remove_filter_by_id(id):
-    from models import Filter
+    from api3models import Filter
     response = _filter_api_(command='{}'.format(int(id)), call_type=Api.DELETE)
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Filter.decoder)
 
 
 def filter_by_id_filter(id):
-    from models import Filter
+    from api3models import Filter
     # duplicate of filter_by_id ?
     response = _filter_api_(command='{}/Filter'.format(int(id)))
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Filter.decoder)
 
 
 def filter_by_id_conditions(id):
-    from models import Conditions
+    from api3models import Conditions
     response = _filter_api_(command='{}/Conditions'.format(id))
-    return json.loads(response, object_hook=Conditions.Decoder)
+    return json.loads(response, object_hook=Conditions.decoder)
 
 
 def filter_by_id_sorting(id):
-    from models import Filter
+    from api3models import Filter
     response = _filter_api_(command='{}/Sorting'.format(id))
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Filter.decoder)
 
 
 def filter_preview():
-    from models import Filter
+    from api3models import Filter
     response = _filter_api_(command='Preview', call_type=Api.POST)
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Filter.decoder)
 
 
 def filter():
     # duplicate filter_preview?
-    from models import Filter
+    from api3models import Filter
     response = _filter_api_(command='', call_type=Api.POST)
-    return json.loads(response, object_hook=Filter.Decoder)
+    return json.loads(response, object_hook=Filter.decoder)
 
 # endregion
 
@@ -417,27 +417,27 @@ def _tree_api_(command='', call_type=Api.GET, data={}):
 
 
 def tree_filter(includeEmpty=False, includeInvisible=False):
-    from models import Filter
+    from api3models import Filter
     response = _tree_api_(command='Filter?includeEmpty={}&includeInvisible={}'.format(bool(includeEmpty), bool(includeInvisible)))
-    return json.loads(response, object_hook=Filter.Decoder)  # cls=json.JSONDecoder) #
+    return json.loads(response, object_hook=Filter.decoder)  # cls=json.JSONdecoder) #
 
 
 def tree_group_in_filter_by_id(id):
-    from models import Group
+    from api3models import Group
     response = _tree_api_(command='Filter/{}/Group'.format(int(id)))
-    return json.loads(response, object_hook=Group.Decoder)
+    return json.loads(response, object_hook=Group.decoder)
 
 
 def tree_group_by_id_in_filter_by_id(fid, gid):
-    from models import Series
+    from api3models import Series
     response = _tree_api_(command='Filter/{}/Group/{}/Series'.format(int(fid), int(gid)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def tree_episode_in_series_by_id(id, includeMissing=False):
-    from models import Episode
+    from api3models import Episode
     response = _tree_api_(command='Series/{}/Episode?includeMissing={}'.format(int(id), bool(includeMissing)))
-    return json.loads(response, object_hook=Episode.Decoder)
+    return json.loads(response, object_hook=Episode.decoder)
 
 
 # endregion
@@ -453,15 +453,15 @@ def _folder_api(command='', call_type=Api.GET, data={}):
 
 
 def folder_drives():
-    from models import FolderDrives
+    from api3models import FolderDrives
     response = _folder_api(command='/drives')
-    return json.loads(response, object_hook=FolderDrives.Decoder)
+    return json.loads(response, object_hook=FolderDrives.decoder)
 
 
 def folder(path):
-    from models import Folder
+    from api3models import Folder
     response = _folder_api(command='?path={}'.format(str(path)))
-    return json.loads(response, object_hook=Folder.Decoder)
+    return json.loads(response, object_hook=Folder.decoder)
 
 
 # endregion
@@ -477,9 +477,9 @@ def _group_api(command='', call_type=Api.GET, data={}):
 
 
 def group():
-    from models import Group
+    from api3models import Group
     response = _group_api()
-    return json.loads(response, object_hook=Group.Decoder)
+    return json.loads(response, object_hook=Group.decoder)
 
 
 def group_add(data):
@@ -487,9 +487,9 @@ def group_add(data):
 
 
 def group_by_id(id):
-    from models import Group
+    from api3models import Group
     response = _group_api(command='/{}'.format(int(id)))
-    return json.loads(response, object_hook=Group.Decoder)
+    return json.loads(response, object_hook=Group.decoder)
 
 
 def group_by_id_recalculate(id):
@@ -535,9 +535,9 @@ def _import_folder_api(command='', call_type=Api.GET, data={}):
 
 
 def import_folder():
-    from models import ImportFolder
+    from api3models import ImportFolder
     response = _import_folder_api()
-    return json.loads(response, object_hook=ImportFolder.Decoder)
+    return json.loads(response, object_hook=ImportFolder.decoder)
 
 
 def import_folder_add(data):
@@ -549,10 +549,10 @@ def import_folder_update(data):
 
 
 def import_folder_by_id(id):
-    from models import ImportFolder
+    from api3models import ImportFolder
     # TODO PATCH
     response = _import_folder_api(command='/{}'.format(int(id)), call_type=Api.PATCH)
-    return json.loads(response, object_hook=ImportFolder.Decoder)
+    return json.loads(response, object_hook=ImportFolder.decoder)
 
 
 def delete_import_folder_by_id(id, removeRecords=True, updateMyList=True):
@@ -576,28 +576,28 @@ def _init_api(command='', call_type=Api.GET, data={}):
 
 
 def version():
-    from models import Version
+    from api3models import Version
     response = _init_api(command='Version')
-    return json.loads(response, object_hook=Version.Decoder)
+    return json.loads(response, object_hook=Version.decoder)
 
 
 def status():
-    from models import Status
+    from api3models import Status
     response = _init_api(command='status')
-    return json.loads(response, object_hook=Status.Decoder)
+    return json.loads(response, object_hook=Status.decoder)
 
 
 def inuse():
-    from models import InUse
+    from api3models import InUse
 
     response = _init_api(command='inuse')
-    return json.loads(response, object_hook=InUse.Decoder)
+    return json.loads(response, object_hook=InUse.decoder)
 
 
 def default_user():
-    from models import DefaultUser
+    from api3models import DefaultUser
     response = _init_api(command='defaultuser')
-    return json.loads(response, object_hook=DefaultUser.Decoder)
+    return json.loads(response, object_hook=DefaultUser.decoder)
 
 
 def create_default_user(username, password):
@@ -701,21 +701,21 @@ def _reverse_tree_api(command='', call_type=Api.GET, data={}):
 
 
 def group_from_series_by_id(id):
-    from models import Group
+    from api3models import Group
     response = _reverse_tree_api(command='Series/{}/Group'.format(int(id)))
-    return json.loads(response, object_hook=Group.Decoder)
+    return json.loads(response, object_hook=Group.decoder)
 
 
 def series_from_episode_by_id(id):
-    from models import Series
+    from api3models import Series
     response = _reverse_tree_api(command='Episode/{}/Series'.format(int(id)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def episode_from_file_by_id(id):
-    from models import Episode
+    from api3models import Episode
     response = _reverse_tree_api(command='File/{}/Episode'.format(int(id)))
-    return json.loads(response, object_hook=Episode.Decoder)
+    return json.loads(response, object_hook=Episode.decoder)
 
 # endregion
 
@@ -731,75 +731,75 @@ def _series_api(command='', call_type=Api.GET, data={}):
 
 
 def series():
-    from models import Series
+    from api3models import Series
     response = _series_api()
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def series_by_id(id):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/{}'.format(int(id)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def series_path_ending_with(path):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/PathEndsWith/{}'.format(str(path)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def series_by_id_anidb_info(id):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/{}/AniDB'.format(int(id)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def series_by_id_tvdb_info(id):
-    from models import Series
+    from api3models import Series
     response =_series_api(command='/{}/TvDB'.format(int(id)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def images_from_series_by_id(id, includeDisabled=True):
-    from models import Images
+    from api3models import Images
     response =_series_api(command='/{}/Images/{}'.format(int(id), bool(includeDisabled )))
-    return json.loads(response, object_hook=Images.Decoder)
+    return json.loads(response, object_hook=Images.decoder)
 
 
 def tag_from_series_by_id_and_filter(id, filter):
-    from models import Tags
+    from api3models import Tags
     response = _series_api(command='/{}/Tags/{}'.format(int(id), int(filter)))
-    return json.loads(response, object_hook=Tags.Decoder)
+    return json.loads(response, object_hook=Tags.decoder)
 
 
 def cast_from_series_by_id(id):
-    from models import FullCast
+    from api3models import FullCast
     response = _series_api(command='/{}/Cast'.format(int(id)))
-    return json.loads(response, object_hook=FullCast.Decoder)
+    return json.loads(response, object_hook=FullCast.decoder)
 
 
 def move_series_to_group(sid, gid):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/{}/Move/{}'.format(int(sid), int(gid)), call_type=Api.PATCH)
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def delete_series_by_id(id):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/{}'.format(int(id)), call_type=Api.DELETE)
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def search_series(query):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/Search/{}'.format(str(query)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 def series_starts_with(query):
-    from models import Series
+    from api3models import Series
     response = _series_api(command='/StartsWith/{}'.format(str(query)))
-    return json.loads(response, object_hook=Series.Decoder)
+    return json.loads(response, object_hook=Series.decoder)
 
 
 # endregion
@@ -816,15 +816,15 @@ def _settings_api(command='', call_type=Api.GET, data={}):
 
 
 def settings_get():
-    from models import Settings
+    from api3models import Settings
     response = _settings_api()
-    return json.loads(response, object_hook=Settings.Decoder)
+    return json.loads(response, object_hook=Settings.decoder)
 
 
 def settings_set(data):
-    from models import Settings
+    from api3models import Settings
     response = _settings_api(call_type=Api.PATCH, data=data)
-    return json.loads(response, object_hook=Settings.Decoder)
+    return json.loads(response, object_hook=Settings.decoder)
 
 
 def settings_anidb_test(username, password):
@@ -846,29 +846,29 @@ def _user_api(command='', call_type=Api.GET, data={}):
 
 
 def user_get():
-    from models import User
+    from api3models import User
     response = _user_api()
-    return json.loads(response, object_hook=User.Decoder)
+    return json.loads(response, object_hook=User.decoder)
 
 
 def user_add(data=''):
-    from models import User
+    from api3models import User
     response = _user_api(call_type=Api.POST, data=data)
-    return json.loads(response, object_hook=User.Decoder)
+    return json.loads(response, object_hook=User.decoder)
 
 
 def user_update(data=''):
-    from models import User
+    from api3models import User
     response = _user_api(call_type=Api.PUT, data=data)
-    return json.loads(response, object_hook=User.Decoder)
+    return json.loads(response, object_hook=User.decoder)
 
 
 def user_patch(id, data=''):
-    from models import User
+    from api3models import User
     # TODO MAP THIS
     data = [{"path": "string", "op": "string", "from": "string" }]
     response = _user_api(command='/{}'.format(int(id)), call_type=Api.PATCH, data=data)
-    return json.loads(response, object_hook=User.Decoder)
+    return json.loads(response, object_hook=User.decoder)
 
 
 def user_delete(id):
@@ -876,439 +876,439 @@ def user_delete(id):
 
 
 # endregion
-
-# flow
-# 0.check if online/busy
-# 1.login (login='default' password='')
-api_key = login_user('default', '', 'from-inside-ide').apikey
-x = api_key
-print(x)
-# 2.save apikey ( apikey is user+device ) / or store it in api_key for debugging
-# 3. list all available filters
-x = tree_filter()
-print(x)
-# 4. list all availables groups in filter of id:8  /8 - newly added series
-x = tree_group_in_filter_by_id(8)
-print(x)
-# 5. list all availables series in group of id: 3981 (mine is this)
-x = tree_group_by_id_in_filter_by_id(8, 3981)
-print(x)
-# 6. list all episodes for give series :
-x = tree_episode_in_series_by_id(22, True)
-print(x)
-
-# region TEST
-# region SERIES
-x = series()
-print(x)
-
-x = series_by_id(22)
-print(x)
-
-x = series_path_ending_with('naruto')
-print(x)
-
-x = series_by_id_anidb_info(22)
-print(x)
-
-# TODO got empty, sure ?
-x = series_by_id_tvdb_info(22)
-print(x)
-
-x = images_from_series_by_id(22, includeDisabled=True)
-print(x)
-
-x = tag_from_series_by_id_and_filter(22, 8)
-print(x)
-
-x = cast_from_series_by_id(22)
-print(x)
-
-# TODO not doing this right now
-# x = move_series_to_group(sid, gid)
-
-# TODO not doing this right now
-# x = delete_series_by_id(id)
-
-x = search_series('naruto')
-print(x)
-
-x = series_starts_with('ano')
-print(x)
-
-# endregion
-
-# region REVERSE_TREE
-
-
-x = group_from_series_by_id(20)
-print(x)
-
-x = series_from_episode_by_id(20)
-print(x)
-
-x = episode_from_file_by_id(20)
-print(x)
-
-# endregion
-
-# region IMAGE
-
-x = image('AniDB', 'Poster', 1)
-print(x)
-
-# endregion
-
-# region GROUP
-
-# get ALL GROUPS TIME HEAVY !!!!!!
-#x = group()
-#print(x)
-
-# TODO not doing this now
-#x = group_add(data)
-#print(x)
-
-x = group_by_id(1)
-print(x)
-
-# time consuming even for one id
-# x = group_by_id_recalculate(1)
-# b''
+#
+# # flow
+# # 0.check if online/busy
+# # 1.login (login='default' password='')
+# api_key = login_user('default', '', 'from-inside-ide').apikey
+# x = api_key
 # print(x)
-
-# TODO not doing this now
-#x = delete_group_by_id(id, deleteSeries=False, deleteFiles=False)
-#print(x)
-
-# TODO not doing this now
-#x = recreate_all_groups()
-#print(x)
-# endregion
-
-# region EPISODE
-x = episode_by_id(1)
-print(x)
-
-x = episode_by_id_anidb_info(1)
-print(x)
-
-# TODO nothing i get nothing ? is this broken or i'm missing something ?
-x = episode_by_id_tvdb_info(1)
-print(x)
-
-# OK
-# x = episode_by_id_watched_state(1, watched=True)
-# b''
+# # 2.save apikey ( apikey is user+device ) / or store it in api_key for debugging
+# # 3. list all available filters
+# x = tree_filter()
 # print(x)
-
-# endregion
-
-# region FILTER
-x = filter_by_id(6)
-print(x)
-
-# TODO not doing this now
-# x = remove_filter_by_id(id)
+# # 4. list all availables groups in filter of id:8  /8 - newly added series
+# x = tree_group_in_filter_by_id(8)
 # print(x)
-
-# TODO HTTP Error 400: Bad Request broken or im missing something
-# x = filter_by_id_filter(1)
+# # 5. list all availables series in group of id: 3981 (mine is this)
+# x = tree_group_by_id_in_filter_by_id(8, 3981)
 # print(x)
-
-x = filter_by_id_conditions(6)
-print(x)
-
-# TODO [] am i'm missing something ?
-x = filter_by_id_sorting(6)
-print(x)
-
-# TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Testing Filter before add ?
-# x = filter_preview()
+# # 6. list all episodes for give series :
+# x = tree_episode_in_series_by_id(22, True)
 # print(x)
-
-# TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Adding Filter ?
-# x = filter()
+#
+# # region TEST
+# # region SERIES
+# x = series()
 # print(x)
-
-# endregion
-
-# region File
-
-#  400: Bad Request  === missing row - someone had bad day
-#  TAKE SOME TIME, WORKING
-# x = file_by_id(3)
+#
+# x = series_by_id(22)
 # print(x)
-
-# TODO not doing this
-#x = remove_file_by_id(1, removeFolder=False)
-#print(x)
-
-# HTTP Error 400: Bad Request ?? == missing row
-x = file_by_id_anidb_info(3)
-print(x)
-
-# TODO is it broken ? or its me ?
-# x = file_by_id_MediaInfo(3)
-# b''
+#
+# x = series_path_ending_with('naruto')
 # print(x)
-
-# working results in b'' but trigger
-#x = file_api_watched_state(3, watched=True)
-# b''
+#
+# x = series_by_id_anidb_info(22)
 # print(x)
-
-# TODO not important right now
-# x = file_by_id_scrobble(id, watched=True, resumePosition=0)
+#
+# # TODO got empty, sure ?
+# x = series_by_id_tvdb_info(22)
 # print(x)
-
-# TODO not doing this right now
-#x = file_by_id_avdump(id, FullOutput, Ed2k)
-#print(x)
-
-# TODO APIv3 broken, throw 500
-# x = file_ends_with_path('a')
+#
+# x = images_from_series_by_id(22, includeDisabled=True)
 # print(x)
-
-# OK, BUT SLOWDOWN DEBUG
-# x = file_path_regex('naruto')
+#
+# x = tag_from_series_by_id_and_filter(22, 8)
 # print(x)
-
-# ok, but slowdown
-# x = recent_file(10)
+#
+# x = cast_from_series_by_id(22)
 # print(x)
-
-# ok, but slowdown
-# x = unrecognized_file()
+#
+# # TODO not doing this right now
+# # x = move_series_to_group(sid, gid)
+#
+# # TODO not doing this right now
+# # x = delete_series_by_id(id)
+#
+# x = search_series('naruto')
 # print(x)
-
-# endregion
-
-# region Folder
-
-x = folder_drives()
-print(x)
-
-x = folder('c:')
-print(x)
-
-# endregion
-
-# region ImportFolder
-
-x = import_folder()
-print(x)
-
-# TODO not right now
-# x = import_folder_add(data)
+#
+# x = series_starts_with('ano')
 # print(x)
-
-# TODO not right now
-# x = import_folder_update(data)
+#
+# # endregion
+#
+# # region REVERSE_TREE
+#
+#
+# x = group_from_series_by_id(20)
 # print(x)
-
-# TODO this one need patch and body
-# x = import_folder_by_id(4)
+#
+# x = series_from_episode_by_id(20)
 # print(x)
-
-# TODO not right now
-# x = delete_import_folder_by_id(2, removeRecords=True, updateMyList=True)
+#
+# x = episode_from_file_by_id(20)
 # print(x)
-
-# b'' ok
-# x = scan_import_folder_by_id(4)
+#
+# # endregion
+#
+# # region IMAGE
+#
+# x = image('AniDB', 'Poster', 1)
 # print(x)
-
-# endregion
-
-# region Init
-
-x = version()
-print(x)
-
-x = status()
-print(x)
-
-x = inuse()
-print(x)
-
-# TODO HTTP Error 403: Forbidden (only in firstrun ?)
-# x = default_user()
+#
+# # endregion
+#
+# # region GROUP
+#
+# # get ALL GROUPS TIME HEAVY !!!!!!
+# #x = group()
+# #print(x)
+#
+# # TODO not doing this now
+# #x = group_add(data)
+# #print(x)
+#
+# x = group_by_id(1)
 # print(x)
-
-# TODO not needed now
-# x = create_default_user(username, password)
+#
+# # time consuming even for one id
+# # x = group_by_id_recalculate(1)
+# # b''
+# # print(x)
+#
+# # TODO not doing this now
+# #x = delete_group_by_id(id, deleteSeries=False, deleteFiles=False)
+# #print(x)
+#
+# # TODO not doing this now
+# #x = recreate_all_groups()
+# #print(x)
+# # endregion
+#
+# # region EPISODE
+# x = episode_by_id(1)
 # print(x)
-
-# TODO HTTP Error 400: Bad Request
-# TODO NOT NEEDED NOW
-# x = start_server()
+#
+# x = episode_by_id_anidb_info(1)
 # print(x)
-
-# TODO HTTP Error 403: Forbidden (only in firstrun ?)
-# x = database_test()
+#
+# # TODO nothing i get nothing ? is this broken or i'm missing something ?
+# x = episode_by_id_tvdb_info(1)
 # print(x)
-
-# TODO HTTP Error 403: Forbidden (only in firstrun ?)
-# x = database_instance()
+#
+# # OK
+# # x = episode_by_id_watched_state(1, watched=True)
+# # b''
+# # print(x)
+#
+# # endregion
+#
+# # region FILTER
+# x = filter_by_id(6)
 # print(x)
-
-# endregion
-
-# region Auth
-
-x = login_user(user='default', password='', device='something')
-print(x.apikey)
-
-# TODO HTTP Error 400: Bad Request
-# x = delete_user_apikey(apikey=x.apikey)
+#
+# # TODO not doing this now
+# # x = remove_filter_by_id(id)
+# # print(x)
+#
+# # TODO HTTP Error 400: Bad Request broken or im missing something
+# # x = filter_by_id_filter(1)
+# # print(x)
+#
+# x = filter_by_id_conditions(6)
 # print(x)
-
-# TODO HTTP Error 500: Internal Server Error
-# x = change_user_password('password')
+#
+# # TODO [] am i'm missing something ?
+# x = filter_by_id_sorting(6)
 # print(x)
-
-# endregion
-
-# region Action
-
-# ok
-# x = run_import()
+#
+# # TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Testing Filter before add ?
+# # x = filter_preview()
+# # print(x)
+#
+# # TODO HTTP Error 400: Bad Request im missing data to post ? looks like Filter object, Adding Filter ?
+# # x = filter()
+# # print(x)
+#
+# # endregion
+#
+# # region File
+#
+# #  400: Bad Request  === missing row - someone had bad day
+# #  TAKE SOME TIME, WORKING
+# # x = file_by_id(3)
+# # print(x)
+#
+# # TODO not doing this
+# #x = remove_file_by_id(1, removeFolder=False)
+# #print(x)
+#
+# # HTTP Error 400: Bad Request ?? == missing row
+# x = file_by_id_anidb_info(3)
 # print(x)
-
-# TODO HTTP Error 400: Bad Request
-# x = sync_hashes()
+#
+# # TODO is it broken ? or its me ?
+# # x = file_by_id_MediaInfo(3)
+# # b''
+# # print(x)
+#
+# # working results in b'' but trigger
+# #x = file_api_watched_state(3, watched=True)
+# # b''
+# # print(x)
+#
+# # TODO not important right now
+# # x = file_by_id_scrobble(id, watched=True, resumePosition=0)
+# # print(x)
+#
+# # TODO not doing this right now
+# #x = file_by_id_avdump(id, FullOutput, Ed2k)
+# #print(x)
+#
+# # TODO APIv3 broken, throw 500
+# # x = file_ends_with_path('a')
+# # print(x)
+#
+# # OK, BUT SLOWDOWN DEBUG
+# # x = file_path_regex('naruto')
+# # print(x)
+#
+# # ok, but slowdown
+# # x = recent_file(10)
+# # print(x)
+#
+# # ok, but slowdown
+# # x = unrecognized_file()
+# # print(x)
+#
+# # endregion
+#
+# # region Folder
+#
+# x = folder_drives()
 # print(x)
-
-# NO LOG ? IS THIS EVEN WORKING ?
-# x = sync_votes()
+#
+# x = folder('c:')
 # print(x)
-
-# TODO HTTP Error 400: Bad Request
-# x = sync_trakt()
+#
+# # endregion
+#
+# # region ImportFolder
+#
+# x = import_folder()
 # print(x)
-
-# x = remove_missing_files()
+#
+# # TODO not right now
+# # x = import_folder_add(data)
+# # print(x)
+#
+# # TODO not right now
+# # x = import_folder_update(data)
+# # print(x)
+#
+# # TODO this one need patch and body
+# # x = import_folder_by_id(4)
+# # print(x)
+#
+# # TODO not right now
+# # x = delete_import_folder_by_id(2, removeRecords=True, updateMyList=True)
+# # print(x)
+#
+# # b'' ok
+# # x = scan_import_folder_by_id(4)
+# # print(x)
+#
+# # endregion
+#
+# # region Init
+#
+# x = version()
 # print(x)
-
-# x = update_all_tvdbinfo()
+#
+# x = status()
 # print(x)
-
-# ok - log but with big delay
-# x = update_all_images()
+#
+# x = inuse()
 # print(x)
-
-# ok - log -ok
-# x = update_all_moviedb_info()
+#
+# # TODO HTTP Error 403: Forbidden (only in firstrun ?)
+# # x = default_user()
+# # print(x)
+#
+# # TODO not needed now
+# # x = create_default_user(username, password)
+# # print(x)
+#
+# # TODO HTTP Error 400: Bad Request
+# # TODO NOT NEEDED NOW
+# # x = start_server()
+# # print(x)
+#
+# # TODO HTTP Error 403: Forbidden (only in firstrun ?)
+# # x = database_test()
+# # print(x)
+#
+# # TODO HTTP Error 403: Forbidden (only in firstrun ?)
+# # x = database_instance()
+# # print(x)
+#
+# # endregion
+#
+# # region Auth
+#
+# x = login_user(user='default', password='', device='something')
+# print(x.apikey)
+#
+# # TODO HTTP Error 400: Bad Request
+# # x = delete_user_apikey(apikey=x.apikey)
+# # print(x)
+#
+# # TODO HTTP Error 500: Internal Server Error
+# # x = change_user_password('password')
+# # print(x)
+#
+# # endregion
+#
+# # region Action
+#
+# # ok
+# # x = run_import()
+# # print(x)
+#
+# # TODO HTTP Error 400: Bad Request
+# # x = sync_hashes()
+# # print(x)
+#
+# # NO LOG ? IS THIS EVEN WORKING ?
+# # x = sync_votes()
+# # print(x)
+#
+# # TODO HTTP Error 400: Bad Request
+# # x = sync_trakt()
+# # print(x)
+#
+# # x = remove_missing_files()
+# # print(x)
+#
+# # x = update_all_tvdbinfo()
+# # print(x)
+#
+# # ok - log but with big delay
+# # x = update_all_images()
+# # print(x)
+#
+# # ok - log -ok
+# # x = update_all_moviedb_info()
+# # print(x)
+#
+# # HTTP Error 400: Bad Request (track issue??)
+# # x = update_all_trakt_info()
+# # print(x)
+#
+# # region TEST LATER
+# # TODO check this on small database because it could be ban releated and time consumig
+# # x = validate_all_images()
+# # print(x)
+#
+# # x = avdump_mismatched_files()
+# # print(x)
+#
+# # x = download_missing_anidb_anime_data()
+# # print(x)
+#
+# # x = regenerate_all_tvdb_episodes_matching()
+# # print(x)
+#
+# # x = sync_mylist()
+# # print(x)
+#
+# # x = update_all_anidb_info()
+# # print(x)
+#
+# # x = update_all_mediainfo()
+# # print(x)
+#
+# # x = update_series_stats()
+# # print(x)
+# # endregion
+# # endregion
+#
+# # region IntegrityCheck
+#
+# # TODO not right now
+# # data = {'ScanID': 0, 'CreationTIme': "2021-08-29T08:32:44.284Z", "ImportFolders": "string", "Status": 0}
+# # x = integrity_check(data)
+# # print(x)
+#
+# # TODO 404, because you need to add SCAN ?queue? and ten start it
+# # x = integrity_check_by_id(0)
+# # print(x)
+#
+# # endregion
+#
+# # region Users
+#
+#
+# x = user_get()
 # print(x)
-
-# HTTP Error 400: Bad Request (track issue??)
-# x = update_all_trakt_info()
+#
+# # TODO MAYBE LATER
+# # x = user_add(data='')
+# # print(x)
+#
+# # TODO MAYBE LATER
+# # x = user_update(data='')
+# # print(x)
+#
+# # TODO MAYBE LATER
+# # x = user_patch(id, data='')
+# # print(x)
+#
+# # TODO NOT DOING THIS RIGHT NOW
+# # x = user_delete(id)
+# # print(x)
+#
+# # endregion
+#
+# # region Settings
+#
+# x = settings_get()
 # print(x)
-
-# region TEST LATER
-# TODO check this on small database because it could be ban releated and time consumig
-# x = validate_all_images()
+#
+# # TODO we not doing this right now
+# #x = settings_set(data):
+# #print(x)
+#
+# # TODO HTTP Error 405: Method Not Allowed
+# # bruteForce Anidb and get ban
+# # x = settings_anidb_test('username', 'password')
+# # print(x)
+#
+# # endregion
+#
+# # region Dashboard
+#
+# x = get_stats()
 # print(x)
-
-# x = avdump_mismatched_files()
+#
+# x = get_top_tags()
 # print(x)
-
-# x = download_missing_anidb_anime_data()
+#
+# x = get_top_tags_by_page(1)
 # print(x)
-
-# x = regenerate_all_tvdb_episodes_matching()
+#
+# x = queue_summary()
 # print(x)
-
-# x = sync_mylist()
+#
+# x = series_summary()
 # print(x)
-
-# x = update_all_anidb_info()
-# print(x)
-
-# x = update_all_mediainfo()
-# print(x)
-
-# x = update_series_stats()
-# print(x)
-# endregion
-# endregion
-
-# region IntegrityCheck
-
-# TODO not right now
-# data = {'ScanID': 0, 'CreationTIme': "2021-08-29T08:32:44.284Z", "ImportFolders": "string", "Status": 0}
-# x = integrity_check(data)
-# print(x)
-
-# TODO 404, because you need to add SCAN ?queue? and ten start it
-# x = integrity_check_by_id(0)
-# print(x)
-
-# endregion
-
-# region Users
-
-
-x = user_get()
-print(x)
-
-# TODO MAYBE LATER
-# x = user_add(data='')
-# print(x)
-
-# TODO MAYBE LATER
-# x = user_update(data='')
-# print(x)
-
-# TODO MAYBE LATER
-# x = user_patch(id, data='')
-# print(x)
-
-# TODO NOT DOING THIS RIGHT NOW
-# x = user_delete(id)
-# print(x)
-
-# endregion
-
-# region Settings
-
-x = settings_get()
-print(x)
-
-# TODO we not doing this right now
-#x = settings_set(data):
-#print(x)
-
-# TODO HTTP Error 405: Method Not Allowed
-# bruteForce Anidb and get ban
-# x = settings_anidb_test('username', 'password')
-# print(x)
-
-# endregion
-
-# region Dashboard
-
-x = get_stats()
-print(x)
-
-x = get_top_tags()
-print(x)
-
-x = get_top_tags_by_page(1)
-print(x)
-
-x = queue_summary()
-print(x)
-
-x = series_summary()
-print(x)
-
-# endregion
-
-# region PLEX
-
-# TODO no way to test, why would we need it ?:-) is this a time-machine property ? someone doing exclusive shit ?
-# endregion
-
-# endregion
+#
+# # endregion
+#
+# # region PLEX
+#
+# # TODO no way to test, why would we need it ?:-) is this a time-machine property ? someone doing exclusive shit ?
+# # endregion
+#
+# # endregion

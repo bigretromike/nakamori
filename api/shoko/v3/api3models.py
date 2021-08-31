@@ -6,16 +6,24 @@ from json import JSONDecoder
 
 
 class AuthUser:
-    def __init__(self, apikey):
+    def __init__(self, apikey: []):
         self.apikey = apikey['apikey']
+
+    def __repr__(self):
+        return f'<AuthUser({self.apikey})>'
 
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return AuthUser(obj)
+
+    def __eq__(self, other):
+        if isinstance(other, AuthUser):
+            return self.apikey == other.apikey
+        return False
 
 # endregion
 
@@ -24,7 +32,7 @@ class AuthUser:
 
 
 class Version:
-    def __init__(self, name, version):
+    def __init__(self, name: str, version: str):
         self.name, self.version = name, version
 
     class Encoder(JSONEncoder):
@@ -32,8 +40,13 @@ class Version:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return Version(obj['Name'], obj['Version'])
+
+    def __eq__(self, other):
+        if isinstance(other, Version):
+            return self.name == other.name and self.version == other.version
+        return False
 
 
 class Status:
@@ -46,7 +59,7 @@ class Status:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'State' in obj.keys():
             return Status(obj['State'], obj['Uptime'], obj['DatabaseBlocked'])
         return ''
@@ -62,7 +75,7 @@ class InUse:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return InUse(obj)
 
 
@@ -75,7 +88,7 @@ class DefaultUser:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return InUse(obj)
 
 # endregion
@@ -109,7 +122,7 @@ class Filter:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'IDs' in obj.keys():
             return Filter(obj.get('IDs', None), obj.get('Locked', None), obj.get('Name', None), obj.get('Size', None), obj.get('Directory', None), obj.get('ApplyAtSeriesLevel', None))
         return obj
@@ -131,7 +144,7 @@ class Group:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'IDs' in obj.keys():
             return Group(obj.get('IDs', None), obj.get('Name', None), obj.get('Size', None), obj.get('Sizes', None))
         return obj
@@ -165,7 +178,7 @@ class Images:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'IDs' in obj.keys():
             return Series(obj.get('IDs', None), obj.get('Images', None), obj.get('Created', None),
                           obj.get('Updated', None), obj.get('Name', None), obj.get('Size', None),
@@ -210,7 +223,7 @@ class Series:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'IDs' in obj.keys():
             return Series(obj.get('IDs', None), obj.get('Images', None), obj.get('Created', None),
                           obj.get('Updated', None), obj.get('Name', None), obj.get('Size', None),
@@ -277,7 +290,7 @@ class EpisodeAniDB:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'ID' in obj.keys():
             return EpisodeAniDB(obj.get('ID', None), obj.get('Type', None), obj.get('EpisodeNumber', None),
                                 obj.get('AirDate', None), obj.get('Titles', None), obj.get('Description', None),
@@ -308,7 +321,7 @@ class Episode:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'IDs' in obj.keys():
             return Episode(obj.get('IDs', None), obj.get('Duration', None), obj.get('Name', None))
         return obj
@@ -328,7 +341,7 @@ class Tag:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return Tag(obj)
 
 
@@ -349,7 +362,7 @@ class Tags:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return Tag(obj.get('Name', None), obj.get('Description', None), obj.get('Weight', None))
 
 
@@ -371,7 +384,7 @@ class Summary:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return Summary(obj.get('Series', None), obj.get('OVA', None), obj.get('Movie', None), obj.get('Special', None),
                        obj.get('Web', None), obj.get('Other', None))
 
@@ -389,7 +402,7 @@ class Conditions:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'Conditions' in obj:
             return Conditions(obj)  # Cast(obj.get('Staff', None), obj.get('Character', None), obj.get('RoleName', None), obj.get('RoleDetails', None))
         return obj
@@ -469,7 +482,7 @@ class FullCast:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'Staff' in obj:
             return FullCast(obj)  # Cast(obj.get('Staff', None), obj.get('Character', None), obj.get('RoleName', None), obj.get('RoleDetails', None))
         return obj
@@ -536,7 +549,7 @@ class File:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'ID' in obj:
             return File(obj.get('ID', None), obj.get('Size', None), obj.get('Hashes', None), obj.get('Locations', None),
                         obj.get('ResumePosition', None), obj.get('Created', None), obj.get('SeriesIDs', []))
@@ -601,7 +614,7 @@ class FileAniDB:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'ID' in obj and 'ShortName' not in obj:
             return FileAniDB(obj.get('ID', None), obj.get('Source', None), obj.get('ReleaseGroup', None),
                         obj.get('ReleaseDate', None), obj.get('Version', None), obj.get('OriginalFileName', None),
@@ -627,7 +640,7 @@ class FolderDrives:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'DriveType' in obj:
             return FolderDrives(obj.get('DriveType', None), obj.get('Path', None), obj.get('CanAccess', None),
                              obj.get('Sizes', None))
@@ -649,7 +662,7 @@ class Folder:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'Path' in obj:
             return Folder(obj.get('Path', None), obj.get('CanAccess', None),
                              obj.get('Sizes', None))
@@ -674,7 +687,7 @@ class ImportFolder:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'Path' in obj:
             return ImportFolder(obj.get('ID', None), obj.get('DropFolderType', None), obj.get('Path', None),
                                 obj.get('FileSize', None), obj.get('Name', None), obj.get('Size', None))
@@ -705,7 +718,7 @@ class Settings:
         return '<Settings()>'
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         return Settings(obj)
 
 
@@ -727,7 +740,7 @@ class User:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'ID' in obj and 'Username' in obj:
             return User(obj.get('ID', None), obj.get('Username', None), obj.get('IsAdmin', None),
                         obj.get('CommunitySites', None), obj.get('TagBlacklist', None))
@@ -770,7 +783,7 @@ class Stats:
             return o.__dict__
 
     @staticmethod
-    def Decoder(obj):
+    def decoder(obj):
         if 'FileCount' in obj:
             return Stats(obj.get('FileCount', None), obj.get('SeriesCount', None), obj.get('GroupCount', None),
                          obj.get('FileSize', None), obj.get('FinishedSeries', None), obj.get('WatchedEpisodes', None),
