@@ -93,9 +93,6 @@ class QueryOptions:
                                 obj.get('skip', None),)
 
 
-
-
-
 class AnimeTitle:
     def __init__(self,
                 Type: str = '',
@@ -1467,3 +1464,71 @@ class Filter:
             filter.art = ArtCollection.Decoder(json["art"])
 
         return filter
+
+
+class ImportFolder:
+    def __init__(self,
+                ImportFolderID: int = 0,
+                ImportFolderType: int = 0,
+                ImportFolderName: str = '',
+                ImportFolderLocation: str = '',
+                CloudID: int = 0,
+                IsWatched: int = 0,
+                IsDropSource: int = 0,
+                IsDropDestination: int = 0
+                ):
+        self.ImportFolderID: int = ImportFolderID
+        self.ImportFolderType: int = ImportFolderType
+        self.ImportFolderName: str = ImportFolderName
+        self.ImportFolderLocation: str = ImportFolderLocation
+        self.CloudID: int = CloudID
+        self.IsWatched: int = IsWatched
+        self.IsDropSource: int = IsDropSource
+        self.IsDropDestination: int = IsDropDestination
+        
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at ImportFolder.Decoder --- json is not dictionary")
+                return "Exception: at ImportFolder.Decoder --- json is not dictionary"
+        importfolder: ImportFolder = ImportFolder()
+        importfolder.ImportFolderID = json.get("ImportFolderID")
+        importfolder.ImportFolderType = json.get("ImportFolderType")
+        importfolder.ImportFolderName = json.get("ImportFolderName")
+        importfolder.ImportFolderLocation = json.get("ImportFolderLocation")
+        importfolder.CloudID = json.get("CloudID")
+        importfolder.IsWatched = json.get("IsWatched")
+        importfolder.IsDropSource = json.get("IsDropSource")
+        importfolder.IsDropDestination = json.get("IsDropDestination")
+
+        return importfolder
+
+class Counter:
+    def __init__(self, 
+                count: int = 0
+                ):
+        self.count: int = count
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at Counter.Decoder --- json is not dictionary")
+                return "Exception: at Counter.Decoder --- json is not dictionary"
+        counter: Counter = Counter()
+        counter.count = json.get("count")
+
+        return counter

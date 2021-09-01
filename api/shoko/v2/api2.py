@@ -147,9 +147,11 @@ def change_user_password(password):
 #
 # Common
 #
-def _common_api_(command='', call_type=Api.GET, query={}):
+
+# TODO check under Shoko.Server hood to get return types and some comment on endpoints
+def _common_api_(command='', call_type=Api.GET, query={}, data={}):
     url = f'/api/{command}'
-    return _api_call_(url=url, call_type=call_type, query=query, data={}, auth=True)
+    return _api_call_(url=url, call_type=call_type, query=query, data=data, auth=True)
 def cloud_list():
     # 501: Not Implemented
     return _common_api_(command='cloud/list', call_type=Api.GET)
@@ -183,9 +185,93 @@ def cast_by_series(id: int):
     return _common_api_(command='cast/byseries', call_type=Api.GET, query=data)
 def cast_search(opts: QueryOptions = QueryOptions()):
     response = _common_api_(command='cast/search', call_type=Api.GET, query=opts.__dict__)
-    
     _json = json.loads(response)
     return Filter.Decoder(_json)
+def links_serie(id: int):
+    data = {
+        'id': id
+    }
+    return _common_api_(command='links/serie', call_type=Api.GET, query=data)
+def folder_list():
+    response = _common_api_(command="folder/list", call_type=Api.GET)
+    _json = json.loads(response)
+    output: list[ImportFolder] = []
+    for folder in _json:
+        output.append(ImportFolder.Decoder(folder))
+    return output
+def folder_count() -> Counter:
+    response = _common_api_(command="folder/count", call_type=Api.GET)
+    _json = json.loads(response)
+    return Counter.Decoder(_json)
+def folder_add(folder: ImportFolder) -> ImportFolder:
+    response = _common_api_(command="folder/add", call_type=Api.POST, data=folder.__dict__)
+    _json = json.loads(response)
+    return ImportFolder.Decoder(_json)
+def folder_edit(folder: ImportFolder) -> ImportFolder:
+    response = _common_api_(command="folder/edit", call_type=Api.POST, data=folder.__dict__)
+    _json = json.loads(response)
+    return ImportFolder.Decoder(_json)
+def folder_delete(id: int):
+    query = {
+        'folderId': id
+    }
+    return _common_api_(command="folder/delete", call_type=Api.POST, query=query)
+def folder_import():
+    return _common_api_(command="folder/import", call_type=Api.GET)
+def folder_scan():
+    return _common_api_(command="folder/scan", call_type=Api.GET)
+def remove_missing_files():
+    return _common_api_(command="remove_missing_files", call_type=Api.GET)
+def stats_update():
+    return _common_api_(command="stats_update", call_type=Api.GET)
+def mediainfo_update():
+    # typo in API endpoint?
+    # should be media? meta?
+    # assumed to be mediainfo
+    return _common_api_(command="medainfo_update", call_type=Api.GET)
+def hash_sync():
+    return _common_api_(command="hash/sync", call_type=Api.GET)
+def foler_rescan(id: int):
+    """Accoring to Shoko.Server source code:
+    "Rescan ImportFolder (with given `id`) to recognize new episodes"
+    """
+    query = {
+        'id': id
+    }
+    return _common_api_(command="rescan", call_type=Api.GET, query=query)
+def rescan_unlinked():
+    """Accoring to Shoko.Server source code:
+    "files which have been hashed, but don't have an associated episode"
+    """
+    return _common_api_(command="rescanunlinked", call_type=Api.GET)
+def rescan_manual_links():
+    """Accoring to Shoko.Server source code:
+    "files which have been hashed, but don't have an associated episode"
+    """
+    return _common_api_(command="rescanmanuallinks", call_type=Api.GET)
+def rehash(id: int):
+    """Accoring to Shoko.Server source code:
+    "Rehash given files in given VideoLocal"
+    """
+    query = {
+        'id': id
+    }
+    return _common_api_(command="rehash", call_type=Api.GET, query=query)
+def rehash_unlinked():
+    """Accoring to Shoko.Server source code:
+    "files which have been hashed, but don't have an associated episode"
+    """
+    return _common_api_(command="rehashunlinked", call_type=Api.GET)
+def rehash_manual_links():
+    """Accoring to Shoko.Server source code:
+    "files which have been hashed, but don't have an associated episode"
+    """
+    return _common_api_(command="rehashmanuallinks", call_type=Api.GET)
+def myid_get():
+    """Accoring to Shoko.Server source code:
+    "Returns current user ID for use in legacy calls"
+    """
+    return _common_api_(command="myid/get", call_type=Api.GET)
 
 def ping():
     return _common_api_('ping', call_type=Api.GET)
@@ -196,8 +282,4 @@ api_key = login_user('default', '', 'api-v2-device').apikey
 print(api_key)
 
 
-resp = cast_search(QueryOptions(query="Murase Ayumu"))
-for group in resp.groups:
-    group: Group
-    for serie in group.series:
-        print(serie.name)
+print(myid_get())
