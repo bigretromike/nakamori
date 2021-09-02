@@ -2,9 +2,8 @@
 
 # BASED OF :8111/swagger/index.html?urls.primaryName=2.0
 
+from api.common import *
 from api2models import *
-from ...common import *
-#from sample_jsons import _sample_cast_search_, _sample_cast_search_short_
 
 
 address = "http://192.168.1.2"
@@ -23,13 +22,13 @@ api_client = APIClient(api_address=address, api_port=port, api_version=version, 
 # Auth
 #
 
-def _auth_api_(command='', call_type=APIType.GET, query={}, data={}, auth=False):
-    if command == '':
-        url = '/api/auth'
-    else:
-        url = f'/api/auth/{command}'
+# def _auth_api_(command='', call_type=APIType.GET, query={}, data={}, auth=False):
+#     if command == '':
+#         url = '/api/auth'
+#     else:
+#         url = f'/api/auth/{command}'
     
-    return api_client.call(url=url, call_type=call_type, query=query, data=data, auth=auth)
+#     return api_client.call(url=url, call_type=call_type, query=query, data=data, auth=auth)
 
 
 def login_user(user='', password='', device=''):
@@ -40,7 +39,8 @@ def login_user(user='', password='', device=''):
         "pass": password,
         "device": device
     }
-    response = _auth_api_(call_type=APIType.POST, data = data)
+    # response = _auth_api_(call_type=APIType.POST, data = data)
+    response = api_client.call(url="/api/auth", call_type=APIType.POST, data=data, auth=False)
     return json.loads(response, object_hook=AuthUser.Decoder)
 
 
@@ -48,16 +48,17 @@ def delete_user_apikey(apikey):
     """
     Delete user apikey
     """
-    data = {'apikey': apikey}
-    return _auth_api_(call_type=APIType.DELETE, query=data)
-
+    query = {'apikey': apikey}
+    # return _auth_api_(call_type=APIType.DELETE, query=data)
+    return api_client.call(url="/api/auth", call_type=APIType.DELETE, query=query, auth=False)
 
 def change_user_password(password):
     """
     Change user password
     """
     data = f"{password}"
-    return _auth_api_(command="ChangePassword", call_type=APIType.POST, data=data, auth=True)
+    return api_client.call(url="/api/auth/ChangePassword", call_type=APIType.POST, data=data)
+    # return _auth_api_(command="ChangePassword", call_type=APIType.POST, data=data, auth=True)
 
 
 
@@ -194,8 +195,6 @@ def ping():
     return _common_api_('ping', call_type=APIType.GET)
 
 
-api_client._apikey = login_user('default', '', 'api-v2-device').apikey
+api_client.apikey = login_user('sowse', 'test', 'api-v2-device').apikey
 print(api_client.apikey)
 
-
-print(myid_get())
