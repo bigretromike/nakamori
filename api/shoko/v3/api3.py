@@ -3,94 +3,21 @@
 # BASED OF :8111/swagger/index.html?urls.primaryName=3.0
 # Asahara
 
-import gzip
-import json
-from enum import Enum
-from io import BytesIO
-from urllib.request import Request, urlopen
+from api3models import *
+from ...common import *
 
 
-class Api(Enum):
-    GET = 1
-    POST = 2
-    DELETE = 3
-    PATCH = 4
-    PUT = 5
+address = "http://10.1.1.100"
+port = "8111"
+version = 3
+# api related
+apikey = ''
+# timeout waiting for response (in seconds)
+timeout = 600
 
 
-api_version = 3
-api_key = ''
+api_client = APIClient(api_address=address, api_port=port, api_version=version, api_key=apikey, timeout=timeout)
 
-
-def _responde_helper(response):
-    if response.code == 200:
-        print('ok')
-    elif response.code == 400:
-        print('bad request')
-    elif response.code == 401:
-        print('unauthorized')
-    elif response.code == 500:
-        print('shoko is buggy')
-    else:
-        print('not supported error')
-
-
-def _api_call_(url, call_type=Api.GET, data={}, auth=True):
-    url = 'http://10.1.1.100:8111' + url
-    print('{}'.format(url))
-    x = ''
-
-    headers = {
-        'Accept': '*/*',
-        'Content-Type': 'application/json'
-    }
-    if auth:
-        headers['apikey'] = api_key
-
-    if '127.0.0.1' not in url and 'localhost' not in url:
-        headers['Accept-Encoding'] = 'gzip'
-    if '/Stream/' in url:
-        headers['api-version'] = '1.0'
-
-    if call_type == Api.GET:
-        print('get {}'.format(url))
-        req = Request(url, headers=headers)
-    elif call_type == Api.POST:
-        print('post {} - {}'.format(url, data))
-        data = json.dumps(data).encode('utf-8')
-        req = Request(url, data=data, headers=headers)
-    elif call_type == Api.DELETE:
-        print('delete {}'.format(url))
-        data = json.dumps(data).encode('utf-8')
-        req = Request(url, data=data, headers=headers)
-    elif call_type == Api.PATCH:
-        print('patch {}'.format(url))
-        data = json.dumps(data).encode('utf-8')
-        req = Request(url, data=data, headers=headers)
-    elif call_type == Api.PUT:
-        print('put {}'.format(url))
-        data = json.dumps(data).encode('utf-8')
-        req = Request(url, data=data, headers=headers)
-    else:
-        print('??? {}'.format(url))
-
-    # TODO timeout is currently hardcoded
-    timeout = 600
-
-    response = urlopen(req, timeout=int(timeout))
-
-    if response.info().get('Content-Encoding') == 'gzip':
-        try:
-            buf = BytesIO(response.read())
-            f = gzip.GzipFile(fileobj=buf)
-            data = f.read()
-        except Exception as e:
-            print('Failed to decompress.{}'.format(e))
-    else:
-        data = response.read()
-    response.close()
-
-    return data
 
 # region action api
 
@@ -98,9 +25,9 @@ def _api_call_(url, call_type=Api.GET, data={}, auth=True):
 action_api_url = '/api/v{}/Action/{}'
 
 
-def _action_api_(command='', call_type=Api.GET):
-    url = action_api_url.format(api_version, command)
-    return _api_call_(url, call_type)
+def _action_api_(command='', call_type=APIType.GET):
+    url = action_api_url.format(api_client.version, command)
+    return api_client.call(url, call_type)
 
 
 def run_import():
@@ -178,29 +105,29 @@ def update_series_stats():
 auth_api_url = '/api/auth'
 
 
-def _auth_api_(command='', call_type=Api.GET, data={}):
+def _auth_api_(command='', call_type=APIType.GET, data={}):
     url = auth_api_url if command == '' else auth_api_url + '/' + command
-    return _api_call_(url, call_type, data=data, auth=False)
+    return api_client.call(url, call_type, data=data, auth=False)
 
 
 def login_user(user='', password='', device=''):
-    from api.shoko.v3.api3models import AuthUser
+
     data = {"user": user,
             "pass": password,
             "device": device
             }
-    response = _auth_api_(call_type=Api.POST, data=data)
+    response = _auth_api_(call_type=APIType.POST, data=data)
     return json.loads(response, object_hook=AuthUser.decoder)
 
 
 def delete_user_apikey(apikey=''):
     data = apikey
-    return _auth_api_(call_type=Api.DELETE, data=data)
+    return _auth_api_(call_type=APIType.DELETE, data=data)
 
 
 def change_user_password(password=''):
     data = password
-    return _auth_api_(command='ChangePassword', call_type=Api.POST, data=data)
+    return _auth_api_(command='ChangePassword', call_type=APIType.POST, data=data)
 
 # endregion
 
@@ -210,9 +137,9 @@ def change_user_password(password=''):
 dashboard_api_url = '/api/v{}/Dashboard/{}'
 
 
-def _dashboard_api_(command='', call_type=Api.GET, data={}):
-    url = dashboard_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _dashboard_api_(command='', call_type=APIType.GET, data={}):
+    url = dashboard_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def get_stats():
@@ -250,9 +177,9 @@ def series_summary():
 episode_api_url = '/api/v{}/Episode/{}'
 
 
-def _episode_api_(command='', call_type=Api.GET, data={}):
-    url = episode_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _episode_api_(command='', call_type=APIType.GET, data={}):
+    url = episode_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def episode_by_id(id):
@@ -274,7 +201,7 @@ def episode_by_id_tvdb_info(id):
 
 
 def episode_by_id_watched_state(id, watched=True):
-    return _episode_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=Api.POST)
+    return _episode_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=APIType.POST)
 
 # endregion
 
@@ -284,9 +211,9 @@ def episode_by_id_watched_state(id, watched=True):
 file_api_url = '/api/v{}/File/{}'
 
 
-def _file_api_(command='', call_type=Api.GET, data={}):
-    url = file_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _file_api_(command='', call_type=APIType.GET, data={}):
+    url = file_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def file_by_id(id):
@@ -296,7 +223,7 @@ def file_by_id(id):
 
 
 def remove_file_by_id(id, removeFolder):
-    return _file_api_(command='{}?removeFolder={}'.format(int(id), bool(removeFolder)), call_type=Api.DELETE)
+    return _file_api_(command='{}?removeFolder={}'.format(int(id), bool(removeFolder)), call_type=APIType.DELETE)
 
 
 def file_by_id_anidb_info(id):
@@ -312,16 +239,16 @@ def file_by_id_MediaInfo(id):
 
 
 def file_api_watched_state(id, watched=True):
-    return _file_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=Api.POST)
+    return _file_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=APIType.POST)
 
 
 def file_by_id_scrobble(id, watched=True, resumePosition=0):
-    return _file_api_(command='{}/Scrobble?watched={}&resumePosition={}'.format(int(id), bool(watched), int(resumePosition)), call_type=Api.PATCH)
+    return _file_api_(command='{}/Scrobble?watched={}&resumePosition={}'.format(int(id), bool(watched), int(resumePosition)), call_type=APIType.PATCH)
 
 
 def file_by_id_avdump(id, FullOutput, Ed2k):
     data = {'FullOutput': FullOutput, "Ed2k": Ed2k}
-    return _file_api_(command='{}/avdump'.format(int(id)), call_type=Api.POST, data=data)
+    return _file_api_(command='{}/avdump'.format(int(id)), call_type=APIType.POST, data=data)
 
 
 def file_ends_with_path(path):
@@ -355,9 +282,9 @@ def unrecognized_file():
 filter_api_url = '/api/v{}/Filter/{}'
 
 
-def _filter_api_(command='', call_type=Api.GET, data={}):
-    url = filter_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _filter_api_(command='', call_type=APIType.GET, data={}):
+    url = filter_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def filter_by_id(id):
@@ -368,7 +295,7 @@ def filter_by_id(id):
 
 def remove_filter_by_id(id):
     from api3models import Filter
-    response = _filter_api_(command='{}'.format(int(id)), call_type=Api.DELETE)
+    response = _filter_api_(command='{}'.format(int(id)), call_type=APIType.DELETE)
     return json.loads(response, object_hook=Filter.decoder)
 
 
@@ -393,14 +320,14 @@ def filter_by_id_sorting(id):
 
 def filter_preview():
     from api3models import Filter
-    response = _filter_api_(command='Preview', call_type=Api.POST)
+    response = _filter_api_(command='Preview', call_type=APIType.POST)
     return json.loads(response, object_hook=Filter.decoder)
 
 
 def filter():
     # duplicate filter_preview?
     from api3models import Filter
-    response = _filter_api_(command='', call_type=Api.POST)
+    response = _filter_api_(command='', call_type=APIType.POST)
     return json.loads(response, object_hook=Filter.decoder)
 
 # endregion
@@ -411,9 +338,9 @@ def filter():
 tree_api_url = '/api/v{}/{}'
 
 
-def _tree_api_(command='', call_type=Api.GET, data={}):
-    url = tree_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _tree_api_(command='', call_type=APIType.GET, data={}):
+    url = tree_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def tree_filter(includeEmpty=False, includeInvisible=False):
@@ -447,9 +374,9 @@ def tree_episode_in_series_by_id(id, includeMissing=False):
 folder_api_url = '/api/v{}/Folder{}'
 
 
-def _folder_api(command='', call_type=Api.GET, data={}):
-    url = folder_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _folder_api(command='', call_type=APIType.GET, data={}):
+    url = folder_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def folder_drives():
@@ -471,9 +398,9 @@ def folder(path):
 group_api_url = '/api/v{}/Group{}'
 
 
-def _group_api(command='', call_type=Api.GET, data={}):
-    url = group_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _group_api(command='', call_type=APIType.GET, data={}):
+    url = group_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def group():
@@ -483,7 +410,7 @@ def group():
 
 
 def group_add(data):
-    return _group_api(call_type=Api.POST, data=data)
+    return _group_api(call_type=APIType.POST, data=data)
 
 
 def group_by_id(id):
@@ -493,7 +420,7 @@ def group_by_id(id):
 
 
 def group_by_id_recalculate(id):
-    return _group_api(command='/{}/Recalculate'.format(int(id)), call_type=Api.POST)
+    return _group_api(command='/{}/Recalculate'.format(int(id)), call_type=APIType.POST)
 
 
 def delete_group_by_id(id, deleteSeries=False, deleteFiles=False):
@@ -511,9 +438,9 @@ def recreate_all_groups():
 image_api_url = '/api/v{}/Image/{}'
 
 
-def _image_api(command='', call_type=Api.GET, data={}):
-    url = image_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _image_api(command='', call_type=APIType.GET, data={}):
+    url = image_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def image(source, type, value):
@@ -529,9 +456,9 @@ def image(source, type, value):
 import_folder_api_url = '/api/v{}/ImportFolder{}'
 
 
-def _import_folder_api(command='', call_type=Api.GET, data={}):
-    url = import_folder_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _import_folder_api(command='', call_type=APIType.GET, data={}):
+    url = import_folder_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def import_folder():
@@ -541,22 +468,22 @@ def import_folder():
 
 
 def import_folder_add(data):
-    return _import_folder_api(data=data, call_type=Api.POST)
+    return _import_folder_api(data=data, call_type=APIType.POST)
 
 
 def import_folder_update(data):
-    return _import_folder_api(date=data, call_type=Api.PUT)
+    return _import_folder_api(date=data, call_type=APIType.PUT)
 
 
 def import_folder_by_id(id):
     from api3models import ImportFolder
     # TODO PATCH
-    response = _import_folder_api(command='/{}'.format(int(id)), call_type=Api.PATCH)
+    response = _import_folder_api(command='/{}'.format(int(id)), call_type=APIType.PATCH)
     return json.loads(response, object_hook=ImportFolder.decoder)
 
 
 def delete_import_folder_by_id(id, removeRecords=True, updateMyList=True):
-    return _import_folder_api(command='/{}?removeRecords={}&updateMyList={}'.format(int(id), bool(removeRecords), bool(updateMyList)), call_type=Api.DELETE)
+    return _import_folder_api(command='/{}?removeRecords={}&updateMyList={}'.format(int(id), bool(removeRecords), bool(updateMyList)), call_type=APIType.DELETE)
 
 
 def scan_import_folder_by_id(id):
@@ -570,9 +497,9 @@ def scan_import_folder_by_id(id):
 init_api_url = '/api/v{}/Init/{}'
 
 
-def _init_api(command='', call_type=Api.GET, data={}):
-    url = init_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _init_api(command='', call_type=APIType.GET, data={}):
+    url = init_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def version():
@@ -602,7 +529,7 @@ def default_user():
 
 def create_default_user(username, password):
     data = {'Username': str(username), 'Password': str(password)}
-    response = _init_api(command='defaultuser', data=data, call_type=Api.POST)
+    response = _init_api(command='defaultuser', data=data, call_type=APIType.POST)
 
 
 def start_server():
@@ -624,13 +551,13 @@ def database_instance():
 integrity_check_api_url = '/api/v{}/IntegrityCheck{}'
 
 
-def _integrity_check_api(command='', call_type=Api.GET, data={}):
-    url = integrity_check_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _integrity_check_api(command='', call_type=APIType.GET, data={}):
+    url = integrity_check_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def integrity_check(data):
-    return _init_api(call_type=Api.POST, data=data)
+    return _init_api(call_type=APIType.POST, data=data)
 
 
 def integrity_check_by_id(id):
@@ -644,17 +571,17 @@ def integrity_check_by_id(id):
 plex_api_url = '/plex{}'
 
 
-def _plex_api(command='', call_type=Api.GET, data={}):
-    url = plex_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _plex_api(command='', call_type=APIType.GET, data={}):
+    url = plex_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def plex_magic_that_only_plex_need(data):
-    return _plex_api(command='.json', call_type=Api.POST, data=data)
+    return _plex_api(command='.json', call_type=APIType.POST, data=data)
 
 
 def plex_magic_that_only_plex_need2(data):
-    return _plex_api(call_type=Api.POST, data=data)
+    return _plex_api(call_type=APIType.POST, data=data)
 
 
 def plex_login_url():
@@ -695,9 +622,9 @@ def plex_sync_by_id(id):
 reverse_tree_api_url = '/api/v{}/{}'
 
 
-def _reverse_tree_api(command='', call_type=Api.GET, data={}):
-    url = reverse_tree_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _reverse_tree_api(command='', call_type=APIType.GET, data={}):
+    url = reverse_tree_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def group_from_series_by_id(id):
@@ -725,9 +652,9 @@ def episode_from_file_by_id(id):
 series_api_url = '/api/v{}/Series{}'
 
 
-def _series_api(command='', call_type=Api.GET, data={}):
-    url = series_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _series_api(command='', call_type=APIType.GET, data={}):
+    url = series_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def series():
@@ -780,13 +707,13 @@ def cast_from_series_by_id(id):
 
 def move_series_to_group(sid, gid):
     from api3models import Series
-    response = _series_api(command='/{}/Move/{}'.format(int(sid), int(gid)), call_type=Api.PATCH)
+    response = _series_api(command='/{}/Move/{}'.format(int(sid), int(gid)), call_type=APIType.PATCH)
     return json.loads(response, object_hook=Series.decoder)
 
 
 def delete_series_by_id(id):
     from api3models import Series
-    response = _series_api(command='/{}'.format(int(id)), call_type=Api.DELETE)
+    response = _series_api(command='/{}'.format(int(id)), call_type=APIType.DELETE)
     return json.loads(response, object_hook=Series.decoder)
 
 
@@ -810,9 +737,9 @@ def series_starts_with(query):
 settings_api_url = '/api/v{}/Settings{}'
 
 
-def _settings_api(command='', call_type=Api.GET, data={}):
-    url = settings_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _settings_api(command='', call_type=APIType.GET, data={}):
+    url = settings_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def settings_get():
@@ -823,13 +750,13 @@ def settings_get():
 
 def settings_set(data):
     from api3models import Settings
-    response = _settings_api(call_type=Api.PATCH, data=data)
+    response = _settings_api(call_type=APIType.PATCH, data=data)
     return json.loads(response, object_hook=Settings.decoder)
 
 
 def settings_anidb_test(username, password):
     data = {'Username': username, 'Password': password}
-    return _settings_api(call_type=Api.POST, data=data)
+    return _settings_api(call_type=APIType.POST, data=data)
 
 
 # endregion
@@ -840,9 +767,9 @@ def settings_anidb_test(username, password):
 user_api_url = '/api/v{}/User{}'
 
 
-def _user_api(command='', call_type=Api.GET, data={}):
-    url = user_api_url.format(api_version, command)
-    return _api_call_(url=url, call_type=call_type, data=data)
+def _user_api(command='', call_type=APIType.GET, data={}):
+    url = user_api_url.format(api_client.version, command)
+    return api_client.call(url=url, call_type=call_type, data=data)
 
 
 def user_get():
@@ -853,13 +780,13 @@ def user_get():
 
 def user_add(data=''):
     from api3models import User
-    response = _user_api(call_type=Api.POST, data=data)
+    response = _user_api(call_type=APIType.POST, data=data)
     return json.loads(response, object_hook=User.decoder)
 
 
 def user_update(data=''):
     from api3models import User
-    response = _user_api(call_type=Api.PUT, data=data)
+    response = _user_api(call_type=APIType.PUT, data=data)
     return json.loads(response, object_hook=User.decoder)
 
 
@@ -867,12 +794,12 @@ def user_patch(id, data=''):
     from api3models import User
     # TODO MAP THIS
     data = [{"path": "string", "op": "string", "from": "string" }]
-    response = _user_api(command='/{}'.format(int(id)), call_type=Api.PATCH, data=data)
+    response = _user_api(command='/{}'.format(int(id)), call_type=APIType.PATCH, data=data)
     return json.loads(response, object_hook=User.decoder)
 
 
 def user_delete(id):
-    return _user_api(command='/{}'.format(int(id)), call_type=Api.DELETE)
+    return _user_api(command='/{}'.format(int(id)), call_type=APIType.DELETE)
 
 
 # endregion
