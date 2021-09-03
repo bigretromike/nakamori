@@ -4,16 +4,35 @@ from json import JSONDecoder
 
 
 class AuthUser:
-    def __init__(self, apikey):
-        self.apikey = apikey['apikey']
+    def __init__(self, 
+                user: str,
+                password: str,
+                device: str = "nakamori"):
+        self.user: str = user
+        self.password: str = password
+        self.device: str = device
 
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
-    def Decoder(obj):
-        return AuthUser(obj)
+    def Decoder(json):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at AuthUser.Decoder --- json is not dictionary")
+                return "Exception: at AuthUser.Decoder --- json is not dictionary"
+        authuser: AuthUser = AuthUser()
+        authuser.user = json.get("user")
+        authuser.password = json.get("pass")
+        authuser.device = json.get("device")
+
+        return authuser
 
 class QueryOptions:
     def __init__(self,
@@ -67,30 +86,33 @@ class QueryOptions:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(obj):
         return QueryOptions(obj.get('query', None),
-                                obj.get('limit', None),
-                                obj.get('limit_tag', None),
-                                obj.get('filter', None),
-                                obj.get('tags', None),
-                                obj.get('tagfilter', None),
-                                obj.get('fuzzy', None),
-                                obj.get('nocast', None),
-                                obj.get('notag', None),
-                                obj.get('id', None),
-                                obj.get('score', None),
-                                obj.get('offset', None),
-                                obj.get('level', None),
-                                obj.get('all', None),
-                                obj.get('progress', None),
-                                obj.get('status', None),
-                                obj.get('ismovie', None),
-                                obj.get('filename', None),
-                                obj.get('hash', None),
-                                obj.get('allpics', None),
-                                obj.get('pic', None),
-                                obj.get('skip', None),)
+                            obj.get('limit', None),
+                            obj.get('limit_tag', None),
+                            obj.get('filter', None),
+                            obj.get('tags', None),
+                            obj.get('tagfilter', None),
+                            obj.get('fuzzy', None),
+                            obj.get('nocast', None),
+                            obj.get('notag', None),
+                            obj.get('id', None),
+                            obj.get('score', None),
+                            obj.get('offset', None),
+                            obj.get('level', None),
+                            obj.get('all', None),
+                            obj.get('progress', None),
+                            obj.get('status', None),
+                            obj.get('ismovie', None),
+                            obj.get('filename', None),
+                            obj.get('hash', None),
+                            obj.get('allpics', None),
+                            obj.get('pic', None),
+                            obj.get('skip', None))
 
 
 class AnimeTitle:
@@ -106,6 +128,9 @@ class AnimeTitle:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -146,6 +171,9 @@ class Sizes:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(json: dict):
         if not isinstance(json, dict):
@@ -175,7 +203,7 @@ class Sizes:
 class Role:
     def __init__(self,
                 character: str = '',
-                charater_image: str = '',
+                character_image: str = '',
                 character_description: str = '',
                 staff: str = '',
                 staff_image: str = '',
@@ -184,7 +212,7 @@ class Role:
                 type: str = ''
                 ):
         self.character: str = character
-        self.charater_image: str = charater_image
+        self.character_image: str = character_image
         self.character_description: str = character_description
         self.staff: str = staff
         self.staff_image: str = staff_image
@@ -195,6 +223,9 @@ class Role:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -207,8 +238,8 @@ class Role:
         role: Role = Role()
         if "character" in json:
             role.character = json["character"]
-        if "charater_image" in json:
-            role.charater_image = json["charater_image"]
+        if "character_image" in json:
+            role.character_image = json["character_image"]
         if "character_description" in json:
             role.character_description = json["character_description"]
         if "staff" in json:
@@ -236,6 +267,9 @@ class Art:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -267,6 +301,9 @@ class ArtCollection:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -325,6 +362,9 @@ class General:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -449,6 +489,9 @@ class Stream:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(json: dict):
         if not isinstance(json, dict):
@@ -559,6 +602,9 @@ class MediaInfo:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -676,6 +722,9 @@ class RawFile:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -852,6 +901,9 @@ class Episode:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(json: dict):
         if not isinstance(json, dict):
@@ -998,6 +1050,9 @@ class Serie:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(json: dict):
         if not isinstance(json, dict):
@@ -1125,13 +1180,13 @@ class Group:
         self.roles: list[Role] = roles
         self.tags: list[str] = tags
         self.art: ArtCollection = art
-
-    # def __repr__(self) -> str:
-    #     return f'Group.series={self.series if self.series else "Empty"}\nGroup.type={self.type if self.type else "Empty"}\nGroup.id={self.id if self.id else "Empty"}\nGroup.name={self.name if self.name else "Empty"}\nGroup.titles={self.titles if self.titles else "Empty"}\nGroup.summary={self.summary if self.summary else "Empty"}\nGroup.url={self.url if self.url else "Empty"}\nGroup.added={self.added if self.added else "Empty"}\nGroup.edited={self.edited if self.edited else "Empty"}\nGroup.year={self.year if self.year else "Empty"}\nGroup.air={self.air if self.air else "Empty"}\nGroup.size={self.size if self.size else "Empty"}\nGroup.localsize={self.localsize if self.localsize else "Empty"}\nGroup.total_sizes={self.total_sizes if self.total_sizes else "Empty"}\nGroup.local_sizes={self.local_sizes if self.local_sizes else "Empty"}\nGroup.watched_sizes={self.watched_sizes if self.watched_sizes else "Empty"}\nGroup.viewed={self.viewed if self.viewed else "Empty"}\nGroup.rating={self.rating if self.rating else "Empty"}\nGroup.votes={self.votes if self.votes else "Empty"}\nGroup.userrating={self.userrating if self.userrating else "Empty"}\nGroup.roles={self.roles if self.roles else "Empty"}\nGroup.tags={self.tags if self.tags else "Empty"}\nGroup.art={self.art if self.art else "Empty"}\n'
     
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -1258,6 +1313,9 @@ class Filters:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(json: dict):
         if not isinstance(json, dict):
@@ -1380,13 +1438,13 @@ class Filter:
         self.tags: list[str] = tags
         self.art: ArtCollection = art
 
-
-    # def __repr__(self) -> str:
-    #     return f'Filter.type={self.type}\nFilter.groups={self.groups}\nFilter.filters={self.filters}\nFilter.id={self.id}\nFilter.name={self.name}\nFilter.titles={self.titles}\nFilter.summary={self.summary}\nFilter.url={self.url}\nFilter.added={self.added}\nFilter.edited={self.edited}\nFilter.year={self.year}\nFilter.air={self.air}\nFilter.size={self.size}\nFilter.localsize={self.localsize}\nFilter.total_sizes={self.total_sizes}\nFilter.local_sizes={self.local_sizes}\nFilter.watched_sizes={self.watched_sizes}\nFilter.viewed={self.viewed}\nFilter.rating={self.rating}\nFilter.votes={self.votes}\nFilter.userrating={self.userrating}\nFilter.roles={self.roles}\nFilter.tags={self.tags}\nFilter.art={self.art}\n'
-    
+  
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
@@ -1490,6 +1548,9 @@ class ImportFolder:
         def default(self, o):
             return o.__dict__
 
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
     @staticmethod
     def Decoder(json: dict):
         if not isinstance(json, dict):
@@ -1519,6 +1580,9 @@ class Counter:
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
 
     @staticmethod
     def Decoder(json: dict):
