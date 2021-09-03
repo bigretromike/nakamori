@@ -386,8 +386,20 @@ def queue_images_clear():
     """Clear Queue and Restart it"""
     return api_client.call(url='/api/queue/images/clear', call_type=APIType.GET)
 
-
-
+def file(id: int = 0, limit: int = 0, level: int = 0):
+    """Returns list of `RawFile` object by given `id`"""
+    # if I supply ID, then why it must response with list?
+    query = {
+        'id': id,
+        'limit': limit,
+        'level': level
+    }
+    response = api_client.call(url='/api/file', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[RawFile] = []
+    for file in _json:
+        output.append(RawFile.Decoder(file))
+    return output
 
 
 apikey = login_user(AuthUser(user="default", password=""))
@@ -395,6 +407,4 @@ api_client.apikey = apikey['apikey']
 print(api_client.apikey)
 
 
-print(queue_hasher_clear())
-print(queue_images_clear())
-print(queue_general_clear())
+print(file(id=0))
