@@ -271,15 +271,130 @@ def myid_get() -> dict:
     """
     return json.loads(api_client.call(url='/api/myid/get', call_type=APIType.GET))
 
+def news_get(max: int):
+    """
+    Return newest posts
+
+    Parameters:
+    ---
+        `max` : int
+            Limit number of news by declaring `max` value
+    """
+    query = {
+        'max': max
+    }
+    response = api_client.call(url='/api/news/get', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[WebNews] = []
+    for new in _json:
+        output.append(WebNews.Decoder(new))
+    return output
+
+def search(opts: QueryOptions = QueryOptions()):
+    response = api_client.call(url='/api/search', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Filter.Decoder(_json)
+
+def serie_startswith(opts: QueryOptions = QueryOptions()):
+    response = api_client.call(url='/api/serie/startswith', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Filter.Decoder(_json)
+
 def ping() -> dict:
     """
     Check if connection and auth is valid without ask for real data
     """
     return json.loads(api_client.call(url='/api/ping', call_type=APIType.GET))
 
+def queue_get():
+    """Get current information about Queues (hash, general, images)
+
+    Returns dictionary:
+
+    {
+        hasher : `QueueInfo`
+        general : `QueueInfo`
+        images : `QueueInfo`
+    }"""
+    response = api_client.call(url='/api/queue/get', call_type=APIType.GET)
+    _json: dict = json.loads(response)
+    output: dict[str, QueueInfo] = {}
+    for row in _json.keys():
+         queueinfo = QueueInfo.Decoder(_json.get(row))
+         output[row] = queueinfo
+    return output
+
+def queue_pause():
+    """Pause all (hasher, general, images) running Queues"""
+    return api_client.call(url='/api/queue/pause', call_type=APIType.GET)
+
+def queue_start():
+    """Start all (hasher, general, images) queues that are pasued"""
+    return api_client.call(url='/api/queue/start', call_type=APIType.GET)
+
+def queue_hasher_get() -> QueueInfo:
+    """Return information about Hasher queue"""
+    response = api_client.call(url='/api/queue/hasher/get', call_type=APIType.GET)
+    _json = json.loads(response)
+    return QueueInfo.Decoder(_json)
+
+def queue_hasher_pause():
+    """Pause hasher queue"""
+    return api_client.call(url='/api/queue/hasher/pause', call_type=APIType.GET)
+
+def queue_hasher_start():
+    """Start Queue from Pause state"""
+    return api_client.call(url='/api/queue/hasher/start', call_type=APIType.GET)
+
+def queue_hasher_clear():
+    """Clear Queue and Restart it"""
+    return api_client.call(url='/api/queue/hasher/clear', call_type=APIType.GET)
+
+def queue_general_get() -> QueueInfo:
+    """Return information about general queue"""
+    response = api_client.call(url='/api/queue/general/get', call_type=APIType.GET)
+    _json = json.loads(response)
+    return QueueInfo.Decoder(_json)
+
+def queue_general_pause():
+    """Pause general queue"""
+    return api_client.call(url='/api/queue/general/pause', call_type=APIType.GET)
+
+def queue_general_start():
+    """Start Queue from Pause state"""
+    return api_client.call(url='/api/queue/general/start', call_type=APIType.GET)
+
+def queue_general_clear():
+    """Clear Queue and Restart it"""
+    return api_client.call(url='/api/queue/general/clear', call_type=APIType.GET)
+
+def queue_images_get() -> QueueInfo:
+    """Return information about images queue"""
+    response = api_client.call(url='/api/queue/images/get', call_type=APIType.GET)
+    _json = json.loads(response)
+    return QueueInfo.Decoder(_json)
+
+def queue_images_pause():
+    """Pause images queue"""
+    return api_client.call(url='/api/queue/images/pause', call_type=APIType.GET)
+
+def queue_images_start():
+    """Start Queue from Pause state"""
+    return api_client.call(url='/api/queue/images/start', call_type=APIType.GET)
+
+def queue_images_clear():
+    """Clear Queue and Restart it"""
+    return api_client.call(url='/api/queue/images/clear', call_type=APIType.GET)
+
+
+
+
 
 apikey = login_user(AuthUser(user="default", password=""))
 api_client.apikey = apikey['apikey']
 print(api_client.apikey)
 
-print(cast_by_series(1))
+
+print(queue_hasher_clear())
+print(queue_images_clear())
+print(queue_general_clear())
