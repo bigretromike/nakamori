@@ -1596,3 +1596,78 @@ class Counter:
         counter.count = json.get("count")
 
         return counter
+
+
+class WebNews:
+    def __init__(self,
+                date: str = '',
+                link: str = '',
+                title: str = '',
+                description: str = '',
+                author: str = ''
+                ):
+        self.date: str = date
+        self.link: str = link
+        self.title: str = title
+        self.description: str = description
+        self.author: str = author
+        
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at WebNews.Decoder --- json is not dictionary")
+                return "Exception: at WebNews.Decoder --- json is not dictionary"
+        webnews: WebNews = WebNews()
+        webnews.date = json.get("date")
+        webnews.link = json.get("link")
+        webnews.title = json.get("title")
+        webnews.description = json.get("description")
+        webnews.author = json.get("author")
+        
+        return webnews
+
+
+class QueueInfo:
+    def __init__(self,
+                count: int = 0,
+                state: str = '',
+                isrunning: str = '',
+                ispause: str = ''
+                ):
+        self.count: int = count
+        self.state: str = state
+        self.isrunning: str = isrunning
+        self.ispause: str = ispause
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at QueueInfo.Decoder --- json is not dictionary")
+                return "Exception: at QueueInfo.Decoder --- json is not dictionary"
+        queueinfo: QueueInfo = QueueInfo()
+        queueinfo.count = json.get("count")
+        queueinfo.state = json.get("state")
+        queueinfo.isrunning = json.get("isrunning")
+        queueinfo.ispause = json.get("ispause")
+
+        return queueinfo
