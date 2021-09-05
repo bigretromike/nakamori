@@ -401,10 +401,166 @@ def file(id: int = 0, limit: int = 0, level: int = 0):
         output.append(RawFile.Decoder(file))
     return output
 
+def file_needs_av_dumped(level: int):
+    """Gets files whose data does not match AniDB
+    
+    Return list of `RawFile`"""
+    query = {
+        'level': level
+    }
+    response = api_client.call(url='/api/file/needsavdumped', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[RawFile] = []
+    for file in _json:
+        output.append(RawFile.Decoder(file))
+    return output
+
+def av_dump_mismatched_files():
+    """Gets files whose data does not match AniDB and dump it"""
+    return api_client.call(url='/api/avdumpmismatchedfiles', call_type=APIType.GET)
+
+def file_deprecated(level: int):
+    """
+    Gets files that are deprecated on AniDB
+    """
+    query = {
+        'level': level
+    }
+    response = api_client.call(url='/api/file/deprecated', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[RawFile] = []
+    for file in _json:
+        output.append(RawFile.Decoder(file))
+    return output
+
+def file_multiple(opts: QueryOptions = QueryOptions()):
+    response = api_client.call(url='/api/file/multiple', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for file in _json:
+        output.append(Serie.Decoder(file))
+    return output
+    # return api_client.call(url='/api/file/multiple', call_type=APIType.GET, query=opts.__dict__)
+
+def file_count() -> Counter:
+    response = api_client.call(url='/api/file/count', call_type=APIType.GET)
+    _json = json.loads(response)
+    return Counter.Decoder(_json)
+
+def file_recent(limit: int = 0, level: int = 0):
+    """Get recent files"""
+    query = {
+        'limit': limit,
+        'level': level
+    }
+    response = api_client.call(url='/api/file/recent', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[RecentFile] = []
+    for file in _json:
+        output.append(RecentFile.Decoder(file))
+    return output
+
+def file_unsort(offset: int = 0, level: int = 0, limit: int = 0):
+    """Get unsort files"""
+    query = {
+        'offset': offset,
+        'limit': limit,
+        'level': level
+    }
+    response = api_client.call(url='/api/file/unsort', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[RawFile] = []
+    for file in _json:
+        output.append(RawFile.Decoder(file))
+    return output
+
+def file_offset(opts: QueryOptions):
+    """Set file offset
+
+    `Id` and `offset` are required"""
+    return api_client.call(url='/api/offset', call_type=APIType.POST, query=opts.__dict__)
+
+def file_watch(id: int):
+    """Mark file with `id` as watched"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/watch', call_type=APIType.GET, query=query)
+
+def episodes_get(opts: QueryOptions = QueryOptions()):
+    """Get episodes"""
+    response = api_client.call(url='/api/ep', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Episode] = []
+    for episode in _json:
+        output.append(Episode.Decoder(episode))
+    return output
+
+def episode_get_by_filename(filename: str, pic: int = 1):
+    """Get episode by filename"""
+    query = {
+        'filename': filename,
+        'pic': pic
+    }
+    response = api_client.call(url='/api/ep/getbyfilename', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    return Episode.Decoder(_json)
+
+def episodes_get_by_hash(hash: str, pic: int = 1):
+    """Get episodes by hash"""
+    query = {
+        'hash': hash,
+        'pic': pic
+    }
+    response = api_client.call(url='/api/ep/getbyhash', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[Episode] = []
+    for episode in _json:
+        output.append(Episode.Decoder(episode))
+    return output
+
+def episodes_get_recent(opts: QueryOptions = QueryOptions()):
+    """Get recent episodes
+    """
+    response = api_client.call(url='/api/ep/recent', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Episode] = []
+    for episode in _json:
+        output.append(Episode.Decoder(episode))
+    return output
+
+# TODO nie podoba mi sie output i parsowanie Serie i Episode, do sprawdzenia
+def episodes_serie_get_missing(all: bool, pic: int, tagfilter: int):
+    """Get episodes with no files"""
+    query = {
+        'all': all,
+        'pic': pic,
+        'tagfilter': tagfilter
+    }
+    response = api_client.call(url='/api/ep/missing', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for serie in _json:
+        # print(serie['aid'])
+        output.append(Serie.Decoder(serie))
+    return output
 
 apikey = login_user(AuthUser(user="default", password=""))
 api_client.apikey = apikey['apikey']
 print(api_client.apikey)
 
+# rehash()
 
-print(file(id=0))
+# print(episode_get_by_filename(filename="91 Days - s01e01.mkv"))
+# print(episodes_get_by_hash(hash="ECE790DE96606EBAFB57A4342EA000BF"))
+# print(episodes_get_recent(QueryOptions(query="Days")))
+# print(episodes_serie_get_missing(True, 1, 0))
+series = episodes_serie_get_missing(False, 1, 0)
+print(series.__len__())
+serie = series[0]
+print(f"===={serie.name}===")
+print(serie.aid)
+# print(serie.eps)
+# for ep in serie.eps:
+    # print(ep.id)
+    # print(ep.name)
