@@ -832,6 +832,216 @@ class RawFile:
 
         return rawfile
         
+class RecentFile:
+    def __init__(self,
+                series_id: int = 0,
+                ep_id: int = 0,
+                type: str = '',
+                crc32: str = '',
+                ed2khash: str = '',
+                md5: str = '',
+                sha1: str = '',
+                created: str = '',
+                updated: str = '',
+                duration: int = 0,
+                filename: str = '',
+                server_path: str = '',
+                size: int = 0,
+                hash: str = '',
+                hash_source: int = 0,
+                is_ignored: int = 0,
+                media: MediaInfo = {},
+                group_full: str = '',
+                group_short: str = '',
+                group_id: int = 0,
+                recognized: bool = False,
+                offset: int = 0,
+                videolocal_place_id: int = 0,
+                import_folder_id: int = 0,
+                is_preferred: int = 0,
+                id: int = 0,
+                name: str = '',
+                titles: AnimeTitle = [],
+                summary: str = '',
+                url: str = '',
+                added: str = '',
+                edited: str = '',
+                year: str = '',
+                air: str = '',
+                localsize: int = 0,
+                total_sizes: Sizes = {},
+                local_sizes: Sizes = {},
+                watched_sizes: Sizes = {},
+                viewed: int = 0,
+                rating: str = '',
+                votes: str = '',
+                userrating: str = '',
+                roles: Role = [],
+                tags: str = [],
+                art: ArtCollection = {}
+    ):
+        self.series_id: int = series_id
+        self.ep_id: int = ep_id
+        self.type: str = type
+        self.crc32: str = crc32
+        self.ed2khash: str = ed2khash
+        self.md5: str = md5
+        self.sha1: str = sha1
+        self.created: str = created
+        self.updated: str = updated
+        self.duration: int = duration
+        self.filename: str = filename
+        self.server_path: str = server_path
+        self.hash: str = hash
+        self.hash_source: int = hash_source
+        self.is_ignored: int = is_ignored
+        self.media: MediaInfo = media
+        self.group_full: str = group_full
+        self.group_short: str = group_short
+        self.group_id: int = group_id
+        self.recognized: bool = recognized
+        self.offset: int = offset
+        self.videolocal_place_id: int = videolocal_place_id
+        self.import_folder_id: int = import_folder_id
+        self.is_preferred: int = is_preferred
+        self.id: int = id
+        self.name: str = name
+        self.titles: list[AnimeTitle] = titles
+        self.summary: str = summary
+        self.url: str = url
+        self.added: str = added
+        self.edited: str = edited
+        self.year: str = year
+        self.air: str = air
+        self.size: int = size
+        self.localsize: int = localsize
+        self.total_sizes: Sizes = total_sizes
+        self.local_sizes: Sizes = local_sizes
+        self.watched_sizes: Sizes = watched_sizes
+        self.viewed: int = viewed
+        self.rating: str = rating
+        self.votes: str = votes
+        self.userrating: str = userrating
+        self.roles: list[Role] = roles
+        self.tags: list[str] = tags
+        self.art: ArtCollection = art
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at RecentFile.Decoder --- json is not dictionary")
+                return "Exception: at RecentFile.Decoder --- json is not dictionary"
+        recentfile: RecentFile = RecentFile()
+        if "series_id" in json:
+            recentfile.series_id = json["series_id"]
+        if "ep_id" in json:
+            recentfile.ep_id = json["ep_id"]
+        if "type" in json:
+            recentfile.type = json["type"]
+        if "crc32" in json:
+            recentfile.crc32 = json["crc32"]
+        if "ed2khash" in json:
+            recentfile.ed2khash = json["ed2khash"]
+        if "md5" in json:
+            recentfile.md5 = json["md5"]
+        if "sha1" in json:
+            recentfile.sha1 = json["sha1"]
+        if "created" in json:
+            recentfile.created = json["created"]
+        if "updated" in json:
+            recentfile.updated = json["updated"]
+        if "duration" in json:
+            recentfile.duration = json["duration"]
+        if "filename" in json:
+            recentfile.filename = json["filename"]
+        if "server_path" in json:
+            recentfile.server_path = json["server_path"]
+        if "hash" in json:
+            recentfile.hash = json["hash"]
+        if "hash_source" in json:
+            recentfile.hash_source = json["hash_source"]
+        if "is_ignored" in json:
+            recentfile.is_ignored = json["is_ignored"]
+        if "media" in json:
+            recentfile.media = MediaInfo.Decoder(json["media"])
+        if "group_full" in json:
+            recentfile.group_full = json["group_full"]
+        if "group_short" in json:
+            recentfile.group_short = json["group_short"]
+        if "group_id" in json:
+            recentfile.group_id = json["group_id"]
+        if "recognized" in json:
+            recentfile.recognized = json["recognized"]
+        if "offset" in json:
+            recentfile.offset = json["offset"]
+        if "videolocal_place_id" in json:
+            recentfile.videolocal_place_id = json["videolocal_place_id"]
+        if "import_folder_id" in json:
+            recentfile.import_folder_id = json["import_folder_id"]
+        if "is_preferred" in json:
+            recentfile.is_preferred = json["is_preferred"]
+        if "id" in json:
+            recentfile.id = json["id"]
+        if "name" in json:
+            recentfile.name = json["name"]
+        if "titles" in json:
+            tmp = json["titles"]
+            for title in tmp:
+                title = AnimeTitle.Decoder(title)
+                recentfile.titles.append(title)
+        if "summary" in json:
+            recentfile.summary = json["summary"]
+        if "url" in json:
+            recentfile.url = json["url"]
+        if "added" in json:
+            recentfile.added = json["added"]
+        if "edited" in json:
+            recentfile.edited = json["edited"]
+        if "year" in json:
+            recentfile.year = json["year"]
+        if "air" in json:
+            recentfile.air = json["air"]
+        if "size" in json:
+            recentfile.size = json["size"]
+        if "localsize" in json:
+            recentfile.localsize = json["localsize"]
+        if "total_sizes" in json:
+            recentfile.total_sizes = Sizes.Decoder(json['total_sizes'])
+        if "local_sizes" in json:
+            recentfile.local_sizes = Sizes.Decoder(json['local_sizes'])
+        if "watched_sizes" in json:
+            recentfile.watched_sizes = Sizes.Decoder(json['watched_sizes'])
+        if "viewed" in json:
+            recentfile.viewed = json["viewed"]
+        if "rating" in json:
+            recentfile.rating = json["rating"]
+        if "votes" in json:
+            recentfile.votes = json["votes"]
+        if "userrating" in json:
+            recentfile.userrating = json["userrating"]
+        if "roles" in json:
+            tmp = json["roles"]
+            for role in tmp:
+                role = Role.Decoder(role)
+                recentfile.roles.append(role)        
+        if "tags" in json:
+            tmp = json["tags"]
+            for tag in tmp:
+                recentfile.tags.append(tag)        
+        if "art" in json:
+            recentfile.art = ArtCollection.Decoder(json["art"])
+
+        return recentfile
 
 class Episode:
     def __init__(self,
@@ -1070,7 +1280,9 @@ class Serie:
             serie.season = json["season"]
         if "eps" in json:
             tmp = json["eps"]
+            # print(tmp)
             for ep in tmp:
+                # print(ep)
                 ep = Episode.Decoder(ep)
                 serie.eps.append(ep)
         if "ismovie" in json:
