@@ -529,7 +529,6 @@ def episodes_get_recent(opts: QueryOptions = QueryOptions()):
         output.append(Episode.Decoder(episode))
     return output
 
-# TODO nie podoba mi sie output i parsowanie Serie i Episode, do sprawdzenia
 def episodes_serie_get_missing(all: bool, pic: int, tagfilter: int):
     """Get episodes with no files"""
     query = {
@@ -541,26 +540,176 @@ def episodes_serie_get_missing(all: bool, pic: int, tagfilter: int):
     _json = json.loads(response)
     output: list[Serie] = []
     for serie in _json:
-        # print(serie['aid'])
         output.append(Serie.Decoder(serie))
     return output
+
+def episode_watch(id: int):
+    """Mark episode watched"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/ep/watch', call_type=APIType.GET, query=query)
+
+def episode_unwatch(id: int):
+    """Mark episode not watched"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/ep/unwatch', call_type=APIType.GET, query=query)
+
+def episode_vote(id: int, score: int):
+    """Vote episode score"""
+    query = {
+        'id': id,
+        'score': score
+    }
+    return api_client.call(url='/api/ep/vote', call_type=APIType.GET, query=query)
+
+def episode_scrobble(id: int, progress: int, status: int, ismovie: bool):
+    # TODO test it
+    """Scrobble/rewind Trakt episode
+    
+    // status 1-start, 2-pause, 3-stop
+
+    // progres 0-100
+    
+    // type 1-movie, 2-episode"""
+    query = {
+        'id': id,
+        'progress': progress,
+        'status': status,
+        'ismovie': ismovie
+    }
+    return api_client.call(url='/api/ep/scrobble', call_type=APIType.GET, query=query)
+
+def episode_last_watched(query: str, pic: int, level: int, limit: int, offset: int):
+    # i guess query is date in yyyy-MM-dd format
+    """Get list of last watched `Episodes`"""
+    query = {
+        'query': query,
+        'pic': pic,
+        'level': level,
+        'limit': limit,
+        'offset': offset
+    }
+    response = api_client.call(url='/api/ep/last_watched', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    output: list[Episode] = []
+    for ep in _json:
+        output.append(Episode.Decoder(ep))
+    return output
+
+def series_get(opts: QueryOptions = QueryOptions):
+    """Get list of `Series`"""
+    response = api_client.call(url='/api/serie', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for serie in _json:
+        output.append(Serie.Decoder(serie))
+    return output
+
+def series_count() -> Counter:
+    """Get count of `Series`"""
+    response = api_client.call(url='/api/serie/count', call_type=APIType.GET)
+    _json = json.loads(response)
+    return Counter.Decoder(_json)
+
+def series_today(opts: QueryOptions = QueryOptions) -> Group:
+    """Get list of "today" `Series`
+    
+    // 1. get series airing
+
+    // 2. get eps for those series
+
+    // 3. calculate which series have most of the files released today"""
+    response = api_client.call(url='/api/serie/today', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Group.Decoder(_json)
+
+def series_bookmark(opts: QueryOptions = QueryOptions) -> Group:
+    """Return bookmarked series"""
+    response = api_client.call(url='/api/serie/bookmark', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Group.Decoder(_json)
+
+def series_bookmark_add(id: int):
+    """Add serie (by anidb `id`) to bookmark"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/serie/bookmark/add', call_type=APIType.GET, query=query)
+
+def series_bookmark_remove(id: int):
+    """Remove serie (by anidb `id`) from bookmark"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/serie/bookmark/remove', call_type=APIType.GET, query=query)
+
+def series_calendar_refresh():
+    """Refresh calendar"""
+    return api_client.call(url='/api/serie/calendar/refresh', call_type=APIType.GET)
+
+def series_soon(opts: QueryOptions = QueryOptions) -> Group:
+    """Return group of series airing soon"""
+    response = api_client.call(url='/api/serie/soon', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Group.Decoder(_json)
+
+def series_calendar(opts: QueryOptions = QueryOptions) -> Group:
+    """Return group of series airing soon"""
+    response = api_client.call(url='/api/serie/calendar', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Group.Decoder(_json)
+
+def series_get_by_folder(opts: QueryOptions = QueryOptions):
+    """Return list of series by folder"""
+    response = api_client.call(url='/api/serie/byfolder', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for serie in _json:
+        output.append(Serie.Decoder(serie))
+    return output
+
+def series_get_info_by_folder(id: int) -> FolderInfo:
+    """Return series info by folder `id`"""
+    query = {
+        'id': id
+    }
+    response = api_client.call(url='/api/serie/infobyfolder', call_type=APIType.GET, query=query)
+    _json = json.loads(response)
+    return FolderInfo.Decoder(_json)
+
+def series_get_recent(opts: QueryOptions = QueryOptions):
+    """Return list of recent series"""
+    response = api_client.call(url='/api/serie/recent', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for serie in _json:
+        output.append(Serie.Decoder(serie))
+    return output
+
+def serie_watch(id: int):
+    """Mark serie as watched"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/serie/watch', call_type=APIType.GET, query=query)
+
+def serie_unwatch(id: int):
+    """Mark serie as unwatch"""
+    query = {
+        'id': id
+    }
+    return api_client.call(url='/api/serie/unwatch', call_type=APIType.GET, query=query)
 
 apikey = login_user(AuthUser(user="default", password=""))
 api_client.apikey = apikey['apikey']
 print(api_client.apikey)
 
-# rehash()
+for serie in series_get_recent():
+    if serie.id == 12:
+        print(serie.viewed)
+    
 
-# print(episode_get_by_filename(filename="91 Days - s01e01.mkv"))
-# print(episodes_get_by_hash(hash="ECE790DE96606EBAFB57A4342EA000BF"))
-# print(episodes_get_recent(QueryOptions(query="Days")))
-# print(episodes_serie_get_missing(True, 1, 0))
-series = episodes_serie_get_missing(False, 1, 0)
-print(series.__len__())
-serie = series[0]
-print(f"===={serie.name}===")
-print(serie.aid)
-# print(serie.eps)
-# for ep in serie.eps:
-    # print(ep.id)
-    # print(ep.name)
+print(serie_watch(12))

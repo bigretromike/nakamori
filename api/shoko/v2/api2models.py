@@ -1633,3 +1633,87 @@ class QueueInfo:
         queueinfo.ispause = json.get("ispause")
 
         return queueinfo
+
+class SeriesInFolderInfo:
+    def __init__(self,
+                name: str = '',
+                id: int = 0,
+                filesize: int = 0,
+                size: int = 0, 
+                paths: list = []
+                ):
+        self.name: str = name
+        self.id: int = id
+        self.filesize: int = filesize
+        self.size: int = size
+        self.paths: list[str] = paths
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at SeriesInFolderInfo.Decoder --- json is not dictionary")
+                return SeriesInFolderInfo()
+        seriesinfolderinfo: SeriesInFolderInfo = SeriesInFolderInfo()
+
+        seriesinfolderinfo.name = json.get("name")
+        seriesinfolderinfo.id = json.get("id")
+        seriesinfolderinfo.filesize = json.get("filesize")
+        seriesinfolderinfo.size = json.get("size")
+        seriesinfolderinfo.paths = []
+        tmp = json.get("paths")
+        for path in tmp:
+            seriesinfolderinfo.paths.append(path)
+
+        return seriesinfolderinfo
+
+class FolderInfo:
+    def __init__(self,
+               id: int = 0,
+               filesize: int = 0,
+               size: int = 0,
+               series: SeriesInFolderInfo = {}
+                ):
+        self.id: int = id
+        self.filesize: int = filesize
+        self.size: int = size
+        self.series: list[SeriesInFolderInfo] = series
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print("Exception: at FolderInfo.Decoder --- json is not dictionary")
+                return FolderInfo()
+        folderinfo: FolderInfo = FolderInfo()
+
+        folderinfo.id = json.get("id")
+        folderinfo.filesize = json.get("filesize")
+        folderinfo.size = json.get("size")
+        folderinfo.series = []
+        tmp = json.get("series", [])
+        for serie in tmp:
+            serie = SeriesInFolderInfo.Decoder(serie)
+            folderinfo.series.append(serie)
+
+        return folderinfo
+
+
