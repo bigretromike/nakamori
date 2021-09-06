@@ -26,8 +26,9 @@ class AuthUser:
                 json = json.__dict__
             except:
                 print("Exception: at AuthUser.Decoder --- json is not dictionary")
-                return "Exception: at AuthUser.Decoder --- json is not dictionary"
+                return AuthUser()
         authuser: AuthUser = AuthUser()
+        
         authuser.user = json.get("user")
         authuser.password = json.get("pass")
         authuser.device = json.get("device")
@@ -139,14 +140,12 @@ class AnimeTitle:
                 json = json.__dict__
             except:
                 print("Exception: at AnimeTitle.Decoder --- json is not dictionary")
-                return "Exception: at AnimeTitle.Decoder --- json is not dictionary"
+                return AnimeTitle()
         animetitle: AnimeTitle = AnimeTitle()
-        if "Type" in json:
-            animetitle.Type = json["Type"]
-        if "Language" in json:
-            animetitle.Language = json["Language"]
-        if "Title" in json:
-            animetitle.Title = json["Title"]
+
+        animetitle.Type = json.get("Type")
+        animetitle.Language = json.get("Language")
+        animetitle.Title = json.get("Title")
 
         return animetitle
 
@@ -180,22 +179,18 @@ class Sizes:
             try:
                 json = json.__dict__
             except:
-                print(json)
-                print("Exception: at Sizes.Decoder --- json is not dictionary")
-                return "Exception: at Sizes.Decoder --- json is not dictionary"
+                # print(json)
+                # print("Exception: at Sizes.Decoder --- json is not dictionary")
+                return Sizes()
+                
         sizes: Sizes = Sizes()
-        if "Episodes" in json:
-            sizes.Episodes = json["Episodes"]
-        if "Specials" in json:
-            sizes.Specials = json["Specials"]
-        if "Credits" in json:
-            sizes.Credits = json["Credits"]
-        if "Trailers" in json:
-            sizes.Trailers = json["Trailers"]
-        if "Parodies" in json:
-            sizes.Parodies = json["Parodies"]
-        if "Others" in json:
-            sizes.Others = json["Others"]
+
+        sizes.Episodes = json.get("Episodes")
+        sizes.Specials = json.get("Specials")
+        sizes.Credits = json.get("Credits")
+        sizes.Trailers = json.get("Trailers")
+        sizes.Parodies = json.get("Parodies")
+        sizes.Others = json.get("Others")
 
         return sizes
 
@@ -234,24 +229,17 @@ class Role:
                 json = json.__dict__
             except:
                 print("Exception: at Role.Decoder --- json is not dictionary")
-                return "Exception: at Role.Decoder --- json is not dictionary"
+                return Role()
         role: Role = Role()
-        if "character" in json:
-            role.character = json["character"]
-        if "character_image" in json:
-            role.character_image = json["character_image"]
-        if "character_description" in json:
-            role.character_description = json["character_description"]
-        if "staff" in json:
-            role.staff = json["staff"]
-        if "staff_image" in json:
-            role.staff_image = json["staff_image"]
-        if "staff_description" in json:
-            role.staff_description = json["staff_description"]
-        if "role" in json:
-            role.role = json["role"]
-        if "type" in json:
-            role.type = json["type"]
+
+        role.character = json.get("character")
+        role.character_image = json.get("character_image")
+        role.character_description = json.get("character_description")
+        role.staff = json.get("staff")
+        role.staff_image = json.get("staff_image")
+        role.staff_description = json.get("staff_description")
+        role.role = json.get("role")
+        role.type = json.get("type")
 
         return role
 
@@ -278,12 +266,11 @@ class Art:
                 json = json.__dict__
             except:
                 print("Exception: at Art.Decoder --- json is not dictionary")
-                return "Exception: at Art.Decoder --- json is not dictionary"
+                return Art()
         art: Art = Art()
-        if "url" in json:
-            art.url = json["url"]
-        if "index" in json:
-            art.index = json["index"]
+
+        art.url = json.get("url")
+        art.index = json.get("index")
 
         return art
 
@@ -312,23 +299,24 @@ class ArtCollection:
                 json = json.__dict__
             except:
                 print("Exception: at ArtCollection.Decoder --- json is not dictionary")
-                return "Exception: at ArtCollection.Decoder --- json is not dictionary"
+                return ArtCollection()
         artcollection: ArtCollection = ArtCollection()
-        if "banner" in json:
-            tmp = json["banner"]
-            for art in tmp:
-                art = Art.Decoder(art)
-                artcollection.banner.append(art)
-        if "fanart" in json:
-            tmp = json["fanart"]
-            for art in tmp:
-                art = Art.Decoder(art)
-                artcollection.fanart.append(art)
-        if "thumb" in json:
-            tmp = json["thumb"]
-            for art in tmp:
-                art = Art.Decoder(art)
-                artcollection.thumb.append(art)
+
+        artcollection.banner = []
+        tmp = json.get("banner", [])
+        for art in tmp:
+            art = Art.Decoder(art)
+            artcollection.banner.append(art)
+        artcollection.fanart = []
+        tmp = json.get("fanart", [])
+        for art in tmp:
+            art = Art.Decoder(art)
+            artcollection.fanart.append(art)
+        artcollection.thumb = []
+        tmp = json.get("thumb", [])
+        for art in tmp:
+            art = Art.Decoder(art)
+            artcollection.thumb.append(art)
 
         return artcollection
 
@@ -373,30 +361,20 @@ class General:
                 json = json.__dict__
             except:
                 print("Exception: at General.Decoder --- json is not dictionary")
-                return "Exception: at General.Decoder --- json is not dictionary"
+                return General()
         general: General = General()
-        if "id" in json:
-            general.id = json["id"]
-        if "format" in json:
-            general.format = json["format"]
-        if "format_version" in json:
-            general.format_version = json["format_version"]
-        if "size" in json:
-            general.size = json["size"]
-        if "duration" in json:
-            general.duration = json["duration"]
-        if "overallbitrate" in json:
-            general.overallbitrate = json["overallbitrate"]
-        if "overallbitrate_mode" in json:
-            general.overallbitrate_mode = json["overallbitrate_mode"]
-        if "encoded" in json:
-            general.encoded = json["encoded"]
-        if "encoded_date" in json:
-            general.encoded_date = json["encoded_date"]
-        if "encoded_lib" in json:
-            general.encoded_lib = json["encoded_lib"]
-        if "attachments" in json:
-            general.attachments = json["attachments"]
+        
+        general.id = json.get("id")
+        general.format = json.get("format")
+        general.format_version = json.get("format_version")
+        general.size = json.get("size")
+        general.duration = json.get("duration")
+        general.overallbitrate = json.get("overallbitrate")
+        general.overallbitrate_mode = json.get("overallbitrate_mode")
+        general.encoded = json.get("encoded")
+        general.encoded_date = json.get("encoded_date")
+        general.encoded_lib = json.get("encoded_lib")
+        general.attachments = json.get("attachments")
 
         return general
 
@@ -499,88 +477,49 @@ class Stream:
                 json = json.__dict__
             except:
                 print("Exception: at Stream.Decoder --- json is not dictionary")
-                return "Exception: at Stream.Decoder --- json is not dictionary"
+                return Stream()
         stream: Stream = Stream()
-        if "Title" in json:
-            stream.Title = json["Title"]
-        if "Language" in json:
-            stream.Language = json["Language"]
-        if "Key" in json:
-            stream.Key = json["Key"]
-        if "Duration" in json:
-            stream.Duration = json["Duration"]
-        if "Height" in json:
-            stream.Height = json["Height"]
-        if "Width" in json:
-            stream.Width = json["Width"]
-        if "Bitrate" in json:
-            stream.Bitrate = json["Bitrate"]
-        if "SubIndex" in json:
-            stream.SubIndex = json["SubIndex"]
-        if "Id" in json:
-            stream.Id = json["Id"]
-        if "ScanType" in json:
-            stream.ScanType = json["ScanType"]
-        if "RefFrames" in json:
-            stream.RefFrames = json["RefFrames"]
-        if "Profile" in json:
-            stream.Profile = json["Profile"]
-        if "Level" in json:
-            stream.Level = json["Level"]
-        if "HeaderStripping" in json:
-            stream.HeaderStripping = json["HeaderStripping"]
-        if "HasScalingMatrix" in json:
-            stream.HasScalingMatrix = json["HasScalingMatrix"]
-        if "FrameRateMode" in json:
-            stream.FrameRateMode = json["FrameRateMode"]
-        if "File" in json:
-            stream.File = json["File"]
-        if "FrameRate" in json:
-            stream.FrameRate = json["FrameRate"]
-        if "ColorSpace" in json:
-            stream.ColorSpace = json["ColorSpace"]
-        if "CodecID" in json:
-            stream.CodecID = json["CodecID"]
-        if "ChromaSubsampling" in json:
-            stream.ChromaSubsampling = json["ChromaSubsampling"]
-        if "Cabac" in json:
-            stream.Cabac = json["Cabac"]
-        if "BitDepth" in json:
-            stream.BitDepth = json["BitDepth"]
-        if "Index" in json:
-            stream.Index = json["Index"]
-        if "Codec" in json:
-            stream.Codec = json["Codec"]
-        if "StreamType" in json:
-            stream.StreamType = json["StreamType"]
-        if "Orientation" in json:
-            stream.Orientation = json["Orientation"]
-        if "QPel" in json:
-            stream.QPel = json["QPel"]
-        if "GMC" in json:
-            stream.GMC = json["GMC"]
-        if "BVOP" in json:
-            stream.BVOP = json["BVOP"]
-        if "SamplingRate" in json:
-            stream.SamplingRate = json["SamplingRate"]
-        if "LanguageCode" in json:
-            stream.LanguageCode = json["LanguageCode"]
-        if "Channels" in json:
-            stream.Channels = json["Channels"]
-        if "Selected" in json:
-            stream.Selected = json["Selected"]
-        if "DialogNorm" in json:
-            stream.DialogNorm = json["DialogNorm"]
-        if "BitrateMode" in json:
-            stream.BitrateMode = json["BitrateMode"]
-        if "Format" in json:
-            stream.Format = json["Format"]
-        if "Default" in json:
-            stream.Default = json["Default"]
-        if "Forced" in json:
-            stream.Forced = json["Forced"]
-        if "PixelAspectRatio" in json:
-            stream.PixelAspectRatio = json["PixelAspectRatio"]
+
+        stream.Title = json.get("Title")
+        stream.Language = json.get("Language")
+        stream.Key = json.get("Key")
+        stream.Duration = json.get("Duration")
+        stream.Height = json.get("Height")
+        stream.Width = json.get("Width")
+        stream.Bitrate = json.get("Bitrate")
+        stream.SubIndex = json.get("SubIndex")
+        stream.Id = json.get("Id")
+        stream.ScanType = json.get("ScanType")
+        stream.RefFrames = json.get("RefFrames")
+        stream.Profile = json.get("Profile")
+        stream.Level = json.get("Level")
+        stream.HeaderStripping = json.get("HeaderStripping")
+        stream.HasScalingMatrix = json.get("HasScalingMatrix")
+        stream.FrameRateMode = json.get("FrameRateMode")
+        stream.File = json.get("File")
+        stream.FrameRate = json.get("FrameRate")
+        stream.ColorSpace = json.get("ColorSpace")
+        stream.CodecID = json.get("CodecID")
+        stream.ChromaSubsampling = json.get("ChromaSubsampling")
+        stream.Cabac = json.get("Cabac")
+        stream.BitDepth = json.get("BitDepth")
+        stream.Index = json.get("Index")
+        stream.Codec = json.get("Codec")
+        stream.StreamType = json.get("StreamType")
+        stream.Orientation = json.get("Orientation")
+        stream.QPel = json.get("QPel")
+        stream.GMC = json.get("GMC")
+        stream.BVOP = json.get("BVOP")
+        stream.SamplingRate = json.get("SamplingRate")
+        stream.LanguageCode = json.get("LanguageCode")
+        stream.Channels = json.get("Channels")
+        stream.Selected = json.get("Selected")
+        stream.DialogNorm = json.get("DialogNorm")
+        stream.BitrateMode = json.get("BitrateMode")
+        stream.Format = json.get("Format")
+        stream.Default = json.get("Default")
+        stream.Forced = json.get("Forced")
+        stream.PixelAspectRatio = json.get("PixelAspectRatio")
 
         return stream
         
@@ -613,18 +552,14 @@ class MediaInfo:
                 json = json.__dict__
             except:
                 print("Exception: at MediaInfo.Decoder --- json is not dictionary")
-                return "Exception: at MediaInfo.Decoder --- json is not dictionary"
+                return MediaInfo()
         mediainfo: MediaInfo = MediaInfo()
-        if "general" in json:
-            mediainfo.general = General.Decoder(json["general"])
-        if "audios" in json:
-            mediainfo.audios = Stream.Decoder(json["audios"])
-        if "videos" in json:
-            mediainfo.videos = Stream.Decoder(json["videos"])
-        if "subtitles" in json:
-            mediainfo.subtitles = Stream.Decoder(json["subtitles"])
-        if "menus" in json:
-            mediainfo.menus = json["menus"]
+
+        mediainfo.general = General.Decoder(json.get("general"))
+        mediainfo.audios = Stream.Decoder(json.get("audios"))
+        mediainfo.videos = Stream.Decoder(json.get("videos"))
+        mediainfo.subtitles = Stream.Decoder(json.get("subtitles"))
+        mediainfo.menus = json.get("menus")
 
         return mediainfo
 
@@ -733,102 +668,63 @@ class RawFile:
                 json = json.__dict__
             except:
                 print("Exception: at RawFile.Decoder --- json is not dictionary")
-                return "Exception: at RawFile.Decoder --- json is not dictionary"
+                return RawFile()
         rawfile: RawFile = RawFile()
-        if "type" in json:
-            rawfile.type = json["type"]
-        if "crc32" in json:
-            rawfile.crc32 = json["crc32"]
-        if "ed2khash" in json:
-            rawfile.ed2khash = json["ed2khash"]
-        if "md5" in json:
-            rawfile.md5 = json["md5"]
-        if "sha1" in json:
-            rawfile.sha1 = json["sha1"]
-        if "created" in json:
-            rawfile.created = json["created"]
-        if "updated" in json:
-            rawfile.updated = json["updated"]
-        if "duration" in json:
-            rawfile.duration = json["duration"]
-        if "filename" in json:
-            rawfile.filename = json["filename"]
-        if "server_path" in json:
-            rawfile.server_path = json["server_path"]
-        if "hash" in json:
-            rawfile.hash = json["hash"]
-        if "hash_source" in json:
-            rawfile.hash_source = json["hash_source"]
-        if "is_ignored" in json:
-            rawfile.is_ignored = json["is_ignored"]
-        if "media" in json:
-            rawfile.media = MediaInfo.Decoder(json["media"])
-        if "group_full" in json:
-            rawfile.group_full = json["group_full"]
-        if "group_short" in json:
-            rawfile.group_short = json["group_short"]
-        if "group_id" in json:
-            rawfile.group_id = json["group_id"]
-        if "recognized" in json:
-            rawfile.recognized = json["recognized"]
-        if "offset" in json:
-            rawfile.offset = json["offset"]
-        if "videolocal_place_id" in json:
-            rawfile.videolocal_place_id = json["videolocal_place_id"]
-        if "import_folder_id" in json:
-            rawfile.import_folder_id = json["import_folder_id"]
-        if "is_preferred" in json:
-            rawfile.is_preferred = json["is_preferred"]
-        if "id" in json:
-            rawfile.id = json["id"]
-        if "name" in json:
-            rawfile.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                rawfile.titles.append(title)
-        if "summary" in json:
-            rawfile.summary = json["summary"]
-        if "url" in json:
-            rawfile.url = json["url"]
-        if "added" in json:
-            rawfile.added = json["added"]
-        if "edited" in json:
-            rawfile.edited = json["edited"]
-        if "year" in json:
-            rawfile.year = json["year"]
-        if "air" in json:
-            rawfile.air = json["air"]
-        if "size" in json:
-            rawfile.size = json["size"]
-        if "localsize" in json:
-            rawfile.localsize = json["localsize"]
-        if "total_sizes" in json:
-            rawfile.total_sizes = Sizes.Decoder(json['total_sizes'])
-        if "local_sizes" in json:
-            rawfile.local_sizes = Sizes.Decoder(json['local_sizes'])
-        if "watched_sizes" in json:
-            rawfile.watched_sizes = Sizes.Decoder(json['watched_sizes'])
-        if "viewed" in json:
-            rawfile.viewed = json["viewed"]
-        if "rating" in json:
-            rawfile.rating = json["rating"]
-        if "votes" in json:
-            rawfile.votes = json["votes"]
-        if "userrating" in json:
-            rawfile.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                rawfile.roles.append(role)        
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                rawfile.tags.append(tag)        
-        if "art" in json:
-            rawfile.art = ArtCollection.Decoder(json["art"])
+
+        rawfile.type = json.get("type")
+        rawfile.crc32 = json.get("crc32")
+        rawfile.ed2khash = json.get("ed2khash")
+        rawfile.md5 = json.get("md5")
+        rawfile.sha1 = json.get("sha1")
+        rawfile.created = json.get("created")
+        rawfile.updated = json.get("updated")
+        rawfile.duration = json.get("duration")
+        rawfile.filename = json.get("filename")
+        rawfile.server_path = json.get("server_path")
+        rawfile.hash = json.get("hash")
+        rawfile.hash_source = json.get("hash_source")
+        rawfile.is_ignored = json.get("is_ignored")
+        rawfile.media = MediaInfo.Decoder(json.get("media"))
+        rawfile.group_full = json.get("group_full")
+        rawfile.group_short = json.get("group_short")
+        rawfile.group_id = json.get("group_id")
+        rawfile.recognized = json.get("recognized")
+        rawfile.offset = json.get("offset")
+        rawfile.videolocal_place_id = json.get("videolocal_place_id")
+        rawfile.import_folder_id = json.get("import_folder_id")
+        rawfile.is_preferred = json.get("is_preferred")
+        rawfile.id = json.get("id")
+        rawfile.name = json.get("name")
+        rawfile.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            rawfile.titles.append(title)
+        rawfile.summary = json.get("summary")
+        rawfile.url = json.get("url")
+        rawfile.added = json.get("added")
+        rawfile.edited = json.get("edited")
+        rawfile.year = json.get("year")
+        rawfile.air = json.get("air")
+        rawfile.size = json.get("size")
+        rawfile.localsize = json.get("localsize")
+        rawfile.total_sizes = Sizes.Decoder(json.get('total_sizes'))
+        rawfile.local_sizes = Sizes.Decoder(json.get('local_sizes'))
+        rawfile.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
+        rawfile.viewed = json.get("viewed")
+        rawfile.rating = json.get("rating")
+        rawfile.votes = json.get("votes")
+        rawfile.userrating = json.get("userrating")
+        rawfile.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            rawfile.roles.append(role)        
+            rawfile.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            rawfile.tags.append(tag)        
+        rawfile.art = ArtCollection.Decoder(json.get("art"))
 
         return rawfile
         
@@ -940,106 +836,65 @@ class RecentFile:
                 json = json.__dict__
             except:
                 print("Exception: at RecentFile.Decoder --- json is not dictionary")
-                return "Exception: at RecentFile.Decoder --- json is not dictionary"
+                return RecentFile()
         recentfile: RecentFile = RecentFile()
-        if "series_id" in json:
-            recentfile.series_id = json["series_id"]
-        if "ep_id" in json:
-            recentfile.ep_id = json["ep_id"]
-        if "type" in json:
-            recentfile.type = json["type"]
-        if "crc32" in json:
-            recentfile.crc32 = json["crc32"]
-        if "ed2khash" in json:
-            recentfile.ed2khash = json["ed2khash"]
-        if "md5" in json:
-            recentfile.md5 = json["md5"]
-        if "sha1" in json:
-            recentfile.sha1 = json["sha1"]
-        if "created" in json:
-            recentfile.created = json["created"]
-        if "updated" in json:
-            recentfile.updated = json["updated"]
-        if "duration" in json:
-            recentfile.duration = json["duration"]
-        if "filename" in json:
-            recentfile.filename = json["filename"]
-        if "server_path" in json:
-            recentfile.server_path = json["server_path"]
-        if "hash" in json:
-            recentfile.hash = json["hash"]
-        if "hash_source" in json:
-            recentfile.hash_source = json["hash_source"]
-        if "is_ignored" in json:
-            recentfile.is_ignored = json["is_ignored"]
-        if "media" in json:
-            recentfile.media = MediaInfo.Decoder(json["media"])
-        if "group_full" in json:
-            recentfile.group_full = json["group_full"]
-        if "group_short" in json:
-            recentfile.group_short = json["group_short"]
-        if "group_id" in json:
-            recentfile.group_id = json["group_id"]
-        if "recognized" in json:
-            recentfile.recognized = json["recognized"]
-        if "offset" in json:
-            recentfile.offset = json["offset"]
-        if "videolocal_place_id" in json:
-            recentfile.videolocal_place_id = json["videolocal_place_id"]
-        if "import_folder_id" in json:
-            recentfile.import_folder_id = json["import_folder_id"]
-        if "is_preferred" in json:
-            recentfile.is_preferred = json["is_preferred"]
-        if "id" in json:
-            recentfile.id = json["id"]
-        if "name" in json:
-            recentfile.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                recentfile.titles.append(title)
-        if "summary" in json:
-            recentfile.summary = json["summary"]
-        if "url" in json:
-            recentfile.url = json["url"]
-        if "added" in json:
-            recentfile.added = json["added"]
-        if "edited" in json:
-            recentfile.edited = json["edited"]
-        if "year" in json:
-            recentfile.year = json["year"]
-        if "air" in json:
-            recentfile.air = json["air"]
-        if "size" in json:
-            recentfile.size = json["size"]
-        if "localsize" in json:
-            recentfile.localsize = json["localsize"]
-        if "total_sizes" in json:
-            recentfile.total_sizes = Sizes.Decoder(json['total_sizes'])
-        if "local_sizes" in json:
-            recentfile.local_sizes = Sizes.Decoder(json['local_sizes'])
-        if "watched_sizes" in json:
-            recentfile.watched_sizes = Sizes.Decoder(json['watched_sizes'])
-        if "viewed" in json:
-            recentfile.viewed = json["viewed"]
-        if "rating" in json:
-            recentfile.rating = json["rating"]
-        if "votes" in json:
-            recentfile.votes = json["votes"]
-        if "userrating" in json:
-            recentfile.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                recentfile.roles.append(role)        
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                recentfile.tags.append(tag)        
-        if "art" in json:
-            recentfile.art = ArtCollection.Decoder(json["art"])
+
+        recentfile.series_id = json.get("series_id")
+        recentfile.ep_id = json.get("ep_id")
+        recentfile.type = json.get("type")
+        recentfile.crc32 = json.get("crc32")
+        recentfile.ed2khash = json.get("ed2khash")
+        recentfile.md5 = json.get("md5")
+        recentfile.sha1 = json.get("sha1")
+        recentfile.created = json.get("created")
+        recentfile.updated = json.get("updated")
+        recentfile.duration = json.get("duration")
+        recentfile.filename = json.get("filename")
+        recentfile.server_path = json.get("server_path")
+        recentfile.hash = json.get("hash")
+        recentfile.hash_source = json.get("hash_source")
+        recentfile.is_ignored = json.get("is_ignored")
+        recentfile.media = MediaInfo.Decoder(json.get("media"))
+        recentfile.group_full = json.get("group_full")
+        recentfile.group_short = json.get("group_short")
+        recentfile.group_id = json.get("group_id")
+        recentfile.recognized = json.get("recognized")
+        recentfile.offset = json.get("offset")
+        recentfile.videolocal_place_id = json.get("videolocal_place_id")
+        recentfile.import_folder_id = json.get("import_folder_id")
+        recentfile.is_preferred = json.get("is_preferred")
+        recentfile.id = json.get("id")
+        recentfile.name = json.get("name")
+        recentfile.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            recentfile.titles.append(title)
+        recentfile.summary = json.get("summary")
+        recentfile.url = json.get("url")
+        recentfile.added = json.get("added")
+        recentfile.edited = json.get("edited")
+        recentfile.year = json.get("year")
+        recentfile.air = json.get("air")
+        recentfile.size = json.get("size")
+        recentfile.localsize = json.get("localsize")
+        recentfile.total_sizes = Sizes.Decoder(json.get('total_sizes'))
+        recentfile.local_sizes = Sizes.Decoder(json.get('local_sizes'))
+        recentfile.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
+        recentfile.viewed = json.get("viewed")
+        recentfile.rating = json.get("rating")
+        recentfile.votes = json.get("votes")
+        recentfile.userrating = json.get("userrating")
+        recentfile.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            recentfile.roles.append(role)        
+            recentfile.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            recentfile.tags.append(tag)        
+        recentfile.art = ArtCollection.Decoder(json.get("art"))
 
         return recentfile
 
@@ -1121,79 +976,54 @@ class Episode:
                 json = json.__dict__
             except:
                 print("Exception: at Episode.Decoder --- json is not dictionary")
-                return "Exception: at Episode.Decoder --- json is not dictionary"
+                return Episode()
         episode: Episode = Episode()
-        if "type" in json:
-            episode.type = json["type"]
-        if "season" in json:
-            episode.season = json["season"]
-        if "view" in json:
-             episode.view = json["view"]
-        if "view_date" in json:
-             episode.view_date = json["view_date"]
-        if "eptype" in json:
-             episode.eptype = json["eptype"]
-        if "epnumber" in json:
-             episode.epnumber = json["epnumber"]
-        if "aid" in json:
-             episode.aid = json["aid"]
-        if "eid" in json:
-             episode.eid = json["eid"]
-        if "files" in json:
-            tmp = json["files"]
-            for file in tmp:
-                file = RawFile.Decoder(file)
-                episode.files.append(file)
-        if "id" in json:
-            episode.id = json["id"]
-        if "name" in json:
-            episode.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                episode.titles.append(title)
-        if "summary" in json:
-            episode.summary = json["summary"]
-        if "url" in json:
-            episode.url = json["url"]
-        if "added" in json:
-            episode.added = json["added"]
-        if "edited" in json:
-            episode.edited = json["edited"]
-        if "year" in json:
-            episode.year = json["year"]
-        if "air" in json:
-            episode.air = json["air"]
-        if "size" in json:
-            episode.size = json["size"]
-        if "localsize" in json:
-            episode.localsize = json["localsize"]
-        if "total_sizes" in json:
-            episode.total_sizes = Sizes.Decoder(json['total_sizes'])
-        if "local_sizes" in json:
-            episode.local_sizes = Sizes.Decoder(json['local_sizes'])
-        if "watched_sizes" in json:
-            episode.watched_sizes = Sizes.Decoder(json['watched_sizes'])
-        if "viewed" in json:
-            episode.viewed = json["viewed"]
-        if "rating" in json:
-            episode.rating = json["rating"]
-        if "votes" in json:
-            episode.votes = json["votes"]
-        if "userrating" in json:
-            episode.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                episode.roles.append(role)        
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                episode.tags.append(tag)        
-        if "art" in json:
-            episode.art = ArtCollection.Decoder(json["art"])
+
+        episode.type = json.get("type")
+        episode.season = json.get("season")
+        episode.view = json.get("view")
+        episode.view_date = json.get("view_date")
+        episode.eptype = json.get("eptype")
+        episode.epnumber = json.get("epnumber")
+        episode.aid = json.get("aid")
+        episode.eid = json.get("eid")
+        episode.files = []
+        tmp = json.get("files", [])
+        for file in tmp:
+            file = RawFile.Decoder(file)
+            episode.files.append(file)
+        episode.id = json.get("id")
+        episode.name = json.get("name")
+        episode.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            episode.titles.append(title)
+        episode.summary = json.get("summary")
+        episode.url = json.get("url")
+        episode.added = json.get("added")
+        episode.edited = json.get("edited")
+        episode.year = json.get("year")
+        episode.air = json.get("air")
+        episode.size = json.get("size")
+        episode.localsize = json.get("localsize")
+        episode.total_sizes = Sizes.Decoder(json.get('total_sizes'))
+        episode.local_sizes = Sizes.Decoder(json.get('local_sizes'))
+        episode.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
+        episode.viewed = json.get("viewed")
+        episode.rating = json.get("rating")
+        episode.votes = json.get("votes")
+        episode.userrating = json.get("userrating")
+        episode.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            episode.roles.append(role)        
+            episode.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            episode.tags.append(tag)        
+        episode.art = ArtCollection.Decoder(json.get("art"))
 
         return episode
 
@@ -1270,75 +1100,51 @@ class Serie:
                 json = json.__dict__
             except:
                 print("Exception: at Serie.Decoder --- json is not dictionary")
-                return "Exception: at Serie.Decoder --- json is not dictionary"
+                return Serie()
         serie: Serie = Serie()
-        if "type" in json:
-            serie.type = json["type"]
-        if "aid" in json:
-            serie.aid = json["aid"]
-        if "season" in json:
-            serie.season = json["season"]
-        if "eps" in json:
-            tmp = json["eps"]
-            # print(tmp)
-            for ep in tmp:
-                # print(ep)
-                ep = Episode.Decoder(ep)
-                serie.eps.append(ep)
-        if "ismovie" in json:
-            serie.ismovie = json["ismovie"]
-        if "filesize" in json:
-            serie.filesize = json["filesize"]
-        if "id" in json:
-            serie.id = json["id"]
-        if "name" in json:
-            serie.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                serie.titles.append(title)
-        if "summary" in json:
-            serie.summary = json["summary"]
-        if "url" in json:
-            serie.url = json["url"]
-        if "added" in json:
-            serie.added = json["added"]
-        if "edited" in json:
-            serie.edited = json["edited"]
-        if "year" in json:
-            serie.year = json["year"]
-        if "air" in json:
-            serie.air = json["air"]
-        if "size" in json:
-            serie.size = json["size"]
-        if "localsize" in json:
-            serie.localsize = json["localsize"]
-        if "total_sizes" in json:
-            serie.total_sizes = Sizes.Decoder(json['total_sizes'])
-        if "local_sizes" in json:
-            serie.local_sizes = Sizes.Decoder(json['local_sizes'])
-        if "watched_sizes" in json:
-            serie.watched_sizes = Sizes.Decoder(json['watched_sizes'])
-        if "viewed" in json:
-            serie.viewed = json["viewed"]
-        if "rating" in json:
-            serie.rating = json["rating"]
-        if "votes" in json:
-            serie.votes = json["votes"]
-        if "userrating" in json:
-            serie.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                serie.roles.append(role)        
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                serie.tags.append(tag)        
-        if "art" in json:
-            serie.art = ArtCollection.Decoder(json["art"])
+
+        serie.type = json.get("type")
+        serie.aid = json.get("aid")
+        serie.season = json.get("season")
+        serie.eps = []
+        tmp = json.get("eps", [])
+        for ep in tmp:
+            ep = Episode.Decoder(ep)
+            serie.eps.append(ep)
+        serie.ismovie = json.get("ismovie")
+        serie.filesize = json.get("filesize")
+        serie.id = json.get("id")
+        serie.name = json.get("name")
+        serie.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            serie.titles.append(title)
+        serie.summary = json.get("summary")
+        serie.url = json.get("url")
+        serie.added = json.get("added")
+        serie.edited = json.get("edited")
+        serie.year = json.get("year")
+        serie.air = json.get("air")
+        serie.size = json.get("size")
+        serie.localsize = json.get("localsize")
+        serie.total_sizes = Sizes.Decoder(json.get('total_sizes'))
+        serie.local_sizes = Sizes.Decoder(json.get('local_sizes'))
+        serie.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
+        serie.viewed = json.get("viewed")
+        serie.rating = json.get("rating")
+        serie.votes = json.get("votes")
+        serie.userrating = json.get("userrating")
+        serie.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            serie.roles.append(role)        
+        serie.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            serie.tags.append(tag)        
+        serie.art = ArtCollection.Decoder(json.get("art"))
 
         return serie
 
@@ -1407,67 +1213,47 @@ class Group:
                 json = json.__dict__
             except:
                 print("Exception: at Group.Decoder --- json is not dictionary")
-                return "Exception: at Group.Decoder --- json is not dictionary"
+                return Group()
         group: Group = Group()
-        # print(f"Group.Decoder === {json}")
-        if "series" in json:
-            # print(json["series"])
-            tmp = json["series"]
-            for serie in tmp:
-                serie = Serie.Decoder(serie)
-                group.series.append(serie)
-        if "type" in json:
-            group.type = json["type"]
-        if "id" in json:
-            group.id = json["id"]
-        if "name" in json:
-            group.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                group.titles.append(title)
-        if "summary" in json:
-            group.summary = json["summary"]
-        if "url" in json:
-            group.url = json["url"]
-        if "added" in json:
-            group.added = json["added"]
-        if "edited" in json:
-            group.edited = json["edited"]
-        if "year" in json:
-            group.year = json["year"]
-        if "air" in json:
-            group.air = json["air"]
-        if "size" in json:
-            group.size = json["size"]
-        if "localsize" in json:
-            group.localsize = json["localsize"]
-        if "total_sizes" in json:
-            group.total_sizes = Sizes.Decoder(json["total_sizes"])
-        if "local_sizes" in json:
-            group.local_sizes = Sizes.Decoder(json["local_sizes"])
-        if "watched_sizes" in json:
-            group.watched_sizes = Sizes.Decoder(json["watched_sizes"])
-        if "viewed" in json:
-            group.viewed = json["viewed"]
-        if "rating" in json:
-            group.rating = json["rating"]
-        if "votes" in json:
-            group.votes = json["votes"]
-        if "userrating" in json:
-            group.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                group.roles.append(role)
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                group.tags.append(tag)
-        if "art" in json:
-            group.art = ArtCollection.Decoder(json["art"])
+
+        group.series = []
+        tmp = json.get("series", [])
+        for serie in tmp:
+            serie = Serie.Decoder(serie)
+            group.series.append(serie)
+        group.type = json.get("type")
+        group.id = json.get("id")
+        group.name = json.get("name")
+        group.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            group.titles.append(title)
+        group.summary = json.get("summary")
+        group.url = json.get("url")
+        group.added = json.get("added")
+        group.edited = json.get("edited")
+        group.year = json.get("year")
+        group.air = json.get("air")
+        group.size = json.get("size")
+        group.localsize = json.get("localsize")
+        group.total_sizes = Sizes.Decoder(json.get("total_sizes"))
+        group.local_sizes = Sizes.Decoder(json.get("local_sizes"))
+        group.watched_sizes = Sizes.Decoder(json.get("watched_sizes"))
+        group.viewed = json.get("viewed")
+        group.rating = json.get("rating")
+        group.votes = json.get("votes")
+        group.userrating = json.get("userrating")
+        group.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            group.roles.append(role)
+        group.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            group.tags.append(tag)
+        group.art = ArtCollection.Decoder(json.get("art"))
         
         return group
 
@@ -1535,64 +1321,46 @@ class Filters:
                 json = json.__dict__
             except:
                 print("Exception: at Filters.Decoder --- json is not dictionary")
-                return "Exception: at Filters.Decoder --- json is not dictionary"
+                return Filters()
         filters: Filters = Filters()
-        if "type" in json:
-            filters.type = json["type"]
-        if "filters" in json:
-            tmp = json["filters"]
-            for filter in tmp:
-                filters.filters.append(filter)
-        if "id" in json:
-            filters.id = json["id"]
-        if "name" in json:
-            filters.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                filters.titles.append(title)
-        if "summary" in json:
-            filters.summary = json["summary"]
-        if "url" in json:
-            filters.url = json["url"]
-        if "added" in json:
-            filters.added = json["added"]
-        if "edited" in json:
-            filters.edited = json["edited"]
-        if "year" in json:
-            filters.year = json["year"]
-        if "air" in json:
-            filters.air = json["air"]
-        if "size" in json:
-            filters.size = json["size"]
-        if "localsize" in json:
-            filters.localsize = json["localsize"]
-        if "total_sizes" in json:
-            filters.total_sizes = Sizes.Decoder(json['total_sizes'])
-        if "local_sizes" in json:
-            filters.local_sizes = Sizes.Decoder(json['local_sizes'])
-        if "watched_sizes" in json:
-            filters.watched_sizes = Sizes.Decoder(json['watched_sizes'])
-        if "viewed" in json:
-            filters.viewed = json["viewed"]
-        if "rating" in json:
-            filters.rating = json["rating"]
-        if "votes" in json:
-            filters.votes = json["votes"]
-        if "userrating" in json:
-            filters.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                filters.roles.append(role)        
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                filters.tags.append(tag)        
-        if "art" in json:
-            filters.art = ArtCollection.Decoder(json["art"])
+
+        filters.type = json.get("type")
+        filters.filters = []
+        tmp = json.get("filters", [])
+        for filter in tmp:
+            filters.filters.append(filter)
+        filters.id = json.get("id")
+        filters.name = json.get("name")
+        filters.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            filters.titles.append(title)
+        filters.summary = json.get("summary")
+        filters.url = json.get("url")
+        filters.added = json.get("added")
+        filters.edited = json.get("edited")
+        filters.year = json.get("year")
+        filters.air = json.get("air")
+        filters.size = json.get("size")
+        filters.localsize = json.get("localsize")
+        filters.total_sizes = Sizes.Decoder(json.get('total_sizes'))
+        filters.local_sizes = Sizes.Decoder(json.get('local_sizes'))
+        filters.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
+        filters.viewed = json.get("viewed")
+        filters.rating = json.get("rating")
+        filters.votes = json.get("votes")
+        filters.userrating = json.get("userrating")
+        filters.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            filters.roles.append(role)        
+            filters.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            filters.tags.append(tag)        
+        filters.art = ArtCollection.Decoder(json.get("art"))
 
         return filters
 
@@ -1624,7 +1392,6 @@ class Filter:
                 tags: list = [],
                 art: object = {}
                 ):
-        # self._raw = f'Type={type} ID={id} Name={name} Summary={summary} Url={url}'
         self.type: str = type
         self.groups: list[Group] = groups
         self.filters: list[Filters] = filters
@@ -1665,73 +1432,52 @@ class Filter:
                 json = json.__dict__
             except:
                 print("Exception: at Filter.Decoder --- json is not dictionary")
-                return "Exception: at Filter.Decoder --- json is not dictionary"
+                return Filter()
         filter: Filter = Filter()
-        if "type" in json:
-            filter.type = json['type']
-        if "groups" in json:
-            # print(f"{json['groups']}")
-            tmp = json["groups"]
-            for group in tmp:
-                # print(f"1 {group}")
-                group = Group.Decoder(group)
-                # print(f"2 {group.__dict__}")
-                filter.groups.append(group)
-        if "filters" in json:
-            tmp = json["filters"]
-            for filter in tmp:
-                filter = Filter.Decoder(filter)
-                filter.filters.append(filter)
-        if "id" in json:
-            filter.id = json["id"]
-        if "name" in json:
-            filter.name = json["name"]
-        if "titles" in json:
-            tmp = json["titles"]
-            for title in tmp:
-                title = AnimeTitle.Decoder(title)
-                filter.titles.append(title)
-        if "summary" in json:
-            filter.summary = json["summary"]
-        if "url" in json:
-            filter.url = json["url"]
-        if "added" in json:
-            filter.added = json["added"]
-        if "edited" in json:
-            filter.edited = json["edited"]
-        if "year" in json:
-            filter.year = json["year"]
-        if "air" in json:
-            filter.air = json["air"]
-        if "size" in json:
-            filter.size = json["size"]
-        if "localsize" in json:
-            filter.localsize = json["localsize"]
-        if "total_sizes" in json:
-            filter.total_sizes = Sizes.Decoder(json['total_sizes'])
-        if "local_sizes" in json:
-            filter.local_sizes = Sizes.Decoder(json['local_sizes'])
-        if "watched_sizes" in json:
-            filter.watched_sizes = Sizes.Decoder(json['watched_sizes'])
-        if "viewed" in json:
-            filter.viewed = json["viewed"]
-        if "rating" in json:
-            filter.rating = json["rating"]
-        if "votes" in json:
-            filter.votes = json["votes"]
-        if "userrating" in json:
-            filter.userrating = json["userrating"]
-        if "roles" in json:
-            tmp = json["roles"]
-            for role in tmp:
-                role = Role.Decoder(role)
-                filter.roles.append(role)        
-        if "tags" in json:
-            tmp = json["tags"]
-            for tag in tmp:
-                filter.tags.append(tag)        
-        if "art" in json:
-            filter.art = ArtCollection.Decoder(json["art"])
+
+        filter.type = json.get('type')
+        filter.groups = []
+        tmp = json.get("groups", [])
+        for group in tmp:
+            group = Group.Decoder(group)
+            filter.groups.append(group)
+        filter.filters = []
+        tmp = json.get("filters", [])
+        for filter in tmp:
+            filter = Filter.Decoder(filter)
+            filter.filters.append(filter)
+        filter.id = json.get("id")
+        filter.name = json.get("name")
+        filter.titles = []
+        tmp = json.get("titles", [])
+        for title in tmp:
+            title = AnimeTitle.Decoder(title)
+            filter.titles.append(title)
+        filter.summary = json.get("summary")
+        filter.url = json.get("url")
+        filter.added = json.get("added")
+        filter.edited = json.get("edited")
+        filter.year = json.get("year")
+        filter.air = json.get("air")
+        filter.size = json.get("size")
+        filter.localsize = json.get("localsize")
+        filter.total_sizes = Sizes.Decoder(json.get('total_sizes'))
+        filter.local_sizes = Sizes.Decoder(json.get('local_sizes'))
+        filter.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
+        filter.viewed = json.get("viewed")
+        filter.rating = json.get("rating")
+        filter.votes = json.get("votes")
+        filter.userrating = json.get("userrating")
+        filter.roles = []
+        tmp = json.get("roles", [])
+        for role in tmp:
+            role = Role.Decoder(role)
+            filter.roles.append(role)        
+        filter.tags = []
+        tmp = json.get("tags", [])
+        for tag in tmp:
+            filter.tags.append(tag)        
+            filter.art = ArtCollection.Decoder(json.get("art"))
 
         return filter
 
@@ -1770,8 +1516,9 @@ class ImportFolder:
                 json = json.__dict__
             except:
                 print("Exception: at ImportFolder.Decoder --- json is not dictionary")
-                return "Exception: at ImportFolder.Decoder --- json is not dictionary"
+                return ImportFolder()
         importfolder: ImportFolder = ImportFolder()
+
         importfolder.ImportFolderID = json.get("ImportFolderID")
         importfolder.ImportFolderType = json.get("ImportFolderType")
         importfolder.ImportFolderName = json.get("ImportFolderName")
@@ -1803,8 +1550,9 @@ class Counter:
                 json = json.__dict__
             except:
                 print("Exception: at Counter.Decoder --- json is not dictionary")
-                return "Exception: at Counter.Decoder --- json is not dictionary"
+                return Counter()
         counter: Counter = Counter()
+
         counter.count = json.get("count")
 
         return counter
@@ -1838,8 +1586,9 @@ class WebNews:
                 json = json.__dict__
             except:
                 print("Exception: at WebNews.Decoder --- json is not dictionary")
-                return "Exception: at WebNews.Decoder --- json is not dictionary"
+                return WebNews()
         webnews: WebNews = WebNews()
+        
         webnews.date = json.get("date")
         webnews.link = json.get("link")
         webnews.title = json.get("title")
@@ -1875,8 +1624,9 @@ class QueueInfo:
                 json = json.__dict__
             except:
                 print("Exception: at QueueInfo.Decoder --- json is not dictionary")
-                return "Exception: at QueueInfo.Decoder --- json is not dictionary"
+                return QueueInfo()
         queueinfo: QueueInfo = QueueInfo()
+
         queueinfo.count = json.get("count")
         queueinfo.state = json.get("state")
         queueinfo.isrunning = json.get("isrunning")
