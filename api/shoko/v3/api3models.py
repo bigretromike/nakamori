@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from json import JSONEncoder
-from json import JSONDecoder
 
 # region auth
 
@@ -40,10 +39,10 @@ class Version:
             return o.__dict__
 
     @staticmethod
-    def decoder(obj):
+    def decoder(obj: dict()):
         return Version(obj['Name'], obj['Version'])
 
-    def __eq__(self, other):
+    def __eq__(self, other: object):
         if isinstance(other, Version):
             return self.name == other.name and self.version == other.version
         return False
@@ -67,7 +66,7 @@ class Status:
 
 # TODO cos jest nie tak, zwraca wartosc a nie obiekt
 class InUse:
-    def __init__(self, status):
+    def __init__(self, status: str):
         self.status = status
 
     class Encoder(JSONEncoder):
@@ -75,7 +74,7 @@ class InUse:
             return o.__dict__
 
     @staticmethod
-    def decoder(obj):
+    def decoder(obj: str):
         return InUse(obj)
 
 
@@ -793,8 +792,6 @@ class Stats:
         return obj
 
 # endregion
-
-
 
 # region Series
 

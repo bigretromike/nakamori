@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from json import JSONEncoder
-from json import JSONDecoder
+
+from typing import List
 
 
 class AuthUser:
     def __init__(self, 
-                user: str,
-                password: str,
+                user: str = '',
+                password: str = '',
                 device: str = "nakamori"):
         self.user: str = user
         self.password: str = password
@@ -92,28 +93,28 @@ class QueryOptions:
 
     @staticmethod
     def Decoder(obj):
-        return QueryOptions(obj.get('query', None),
-                            obj.get('limit', None),
-                            obj.get('limit_tag', None),
-                            obj.get('filter', None),
-                            obj.get('tags', None),
-                            obj.get('tagfilter', None),
-                            obj.get('fuzzy', None),
-                            obj.get('nocast', None),
-                            obj.get('notag', None),
-                            obj.get('id', None),
-                            obj.get('score', None),
-                            obj.get('offset', None),
-                            obj.get('level', None),
-                            obj.get('all', None),
-                            obj.get('progress', None),
-                            obj.get('status', None),
-                            obj.get('ismovie', None),
-                            obj.get('filename', None),
-                            obj.get('hash', None),
-                            obj.get('allpics', None),
-                            obj.get('pic', None),
-                            obj.get('skip', None))
+        return QueryOptions(obj.get('query'),
+                            obj.get('limit'),
+                            obj.get('limit_tag'),
+                            obj.get('filter'),
+                            obj.get('tags'),
+                            obj.get('tagfilter'),
+                            obj.get('fuzzy'),
+                            obj.get('nocast'),
+                            obj.get('notag'),
+                            obj.get('id'),
+                            obj.get('score'),
+                            obj.get('offset'),
+                            obj.get('level'),
+                            obj.get('all'),
+                            obj.get('progress'),
+                            obj.get('status'),
+                            obj.get('ismovie'),
+                            obj.get('filename'),
+                            obj.get('hash'),
+                            obj.get('allpics'),
+                            obj.get('pic'),
+                            obj.get('skip'))
 
 
 class AnimeTitle:
@@ -197,15 +198,15 @@ class Sizes:
 
 class Role:
     def __init__(self,
-                character: str = '',
-                character_image: str = '',
-                character_description: str = '',
-                staff: str = '',
-                staff_image: str = '',
-                staff_description: str = '',
-                role: str = '',
-                type: str = ''
-                ):
+                 character: str = '',
+                 character_image: str = '',
+                 character_description: str = '',
+                 staff: str = '',
+                 staff_image: str = '',
+                 staff_description: str = '',
+                 role: str = '',
+                 type: str = ''
+                 ):
         self.character: str = character
         self.character_image: str = character_image
         self.character_description: str = character_description
@@ -246,9 +247,9 @@ class Role:
 
 class Art:
     def __init__(self,
-                url: str = '',
-                index: int = 0
-                ):
+                 url: str = '',
+                 index: int = 0
+                 ):
         self.url: str = url
         self.index: int = index
 
@@ -277,13 +278,13 @@ class Art:
 
 class ArtCollection:
     def __init__(self,
-                banner: Art = [],
-                fanart: Art = [],
-                thumb: Art = []
-                ):
-        self.banner: list[Art] = banner
-        self.fanart: list[Art] = fanart
-        self.thumb: list[Art] = thumb
+                 banner: List[Art] = [],
+                 fanart: List[Art] = [],
+                 thumb: List[Art] = []
+                 ):
+        self.banner: List[Art] = banner
+        self.fanart: List[Art] = fanart
+        self.thumb: List[Art] = thumb
 
     class Encoder(JSONEncoder):
         def default(self, o):
@@ -323,18 +324,18 @@ class ArtCollection:
 
 class General:
     def __init__(self,
-                id = {},
-                format = {},
-                format_version = {},
-                size = {},
-                duration = {},
-                overallbitrate = {},
-                overallbitrate_mode = {},
-                encoded = {},
-                encoded_date = {},
-                encoded_lib = {},
-                attachments = {}
-                ):
+                 id = {},
+                 format = {},
+                 format_version = {},
+                 size = {},
+                 duration = {},
+                 overallbitrate = {},
+                 overallbitrate_mode = {},
+                 encoded = {},
+                 encoded_date = {},
+                 encoded_lib = {},
+                 attachments = {}
+                 ):
         self.id = id
         self.format = format
         self.format_version = format_version
@@ -381,47 +382,47 @@ class General:
 
 class Stream:
     def __init__(self,
-                Title: str = '',
-                Language: str = '',
-                Key: str = '',
-                Duration: int = 0,
-                Height: int = 0,
-                Width: int = 0,
-                Bitrate: int = 0,
-                SubIndex: int = 0,
-                Id: int = 0,
-                ScanType: str = '',
-                RefFrames: int = 0,
-                Profile: str = '',
-                Level: int = 0,
-                HeaderStripping: int = 0,
-                HasScalingMatrix: int = 0,
-                FrameRateMode: str = '',
-                File: str = '',
-                FrameRate: float = 0.0,
-                ColorSpace: str = '',
-                CodecID: str = '',
-                ChromaSubsampling: str = '',
-                Cabac: int = 0,
-                BitDepth: int = 0,
-                Index: int = 0,
-                Codec: str = '',
-                StreamType: int = 0,
-                Orientation: int = 0,
-                QPel: int = 0,
-                GMC: str = '',
-                BVOP: int = 0,
-                SamplingRate: int = 0,
-                LanguageCode: str = '',
-                Channels: int = 0,
-                Selected: int = 0,
-                DialogNorm: str = '',
-                BitrateMode: str = '',
-                Format: str = '',
-                Default: int = 0,
-                Forced: int = 0,
-                PixelAspectRatio: str = '',
-                ):
+                 Title: str = '',
+                 Language: str = '',
+                 Key: str = '',
+                 Duration: int = 0,
+                 Height: int = 0,
+                 Width: int = 0,
+                 Bitrate: int = 0,
+                 SubIndex: int = 0,
+                 Id: int = 0,
+                 ScanType: str = '',
+                 RefFrames: int = 0,
+                 Profile: str = '',
+                 Level: int = 0,
+                 HeaderStripping: int = 0,
+                 HasScalingMatrix: int = 0,
+                 FrameRateMode: str = '',
+                 File: str = '',
+                 FrameRate: float = 0.0,
+                 ColorSpace: str = '',
+                 CodecID: str = '',
+                 ChromaSubsampling: str = '',
+                 Cabac: int = 0,
+                 BitDepth: int = 0,
+                 Index: int = 0,
+                 Codec: str = '',
+                 StreamType: int = 0,
+                 Orientation: int = 0,
+                 QPel: int = 0,
+                 GMC: str = '',
+                 BVOP: int = 0,
+                 SamplingRate: int = 0,
+                 LanguageCode: str = '',
+                 Channels: int = 0,
+                 Selected: int = 0,
+                 DialogNorm: str = '',
+                 BitrateMode: str = '',
+                 Format: str = '',
+                 Default: int = 0,
+                 Forced: int = 0,
+                 PixelAspectRatio: str = '',
+                 ):
         self.Title: str = Title
         self.Language: str = Language
         self.Key: str = Key
@@ -591,7 +592,7 @@ class RawFile:
                 is_preferred: int = 0,
                 id: int = 0,
                 name: str = '',
-                titles: AnimeTitle = [],
+                titles: List[AnimeTitle] = [],
                 summary: str = '',
                 url: str = '',
                 added: str = '',
@@ -606,8 +607,8 @@ class RawFile:
                 rating: str = '',
                 votes: str = '',
                 userrating: str = '',
-                roles: Role = [],
-                tags: str = [],
+                roles: List[Role] = [],
+                tags: List[str] = [],
                 art: ArtCollection = {}
     ):
         self.type: str = type
@@ -634,7 +635,7 @@ class RawFile:
         self.is_preferred: int = is_preferred
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -650,8 +651,8 @@ class RawFile:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
 
     class Encoder(JSONEncoder):
@@ -727,55 +728,56 @@ class RawFile:
         rawfile.art = ArtCollection.Decoder(json.get("art"))
 
         return rawfile
-        
+
+
 class RecentFile:
     def __init__(self,
-                series_id: int = 0,
-                ep_id: int = 0,
-                type: str = '',
-                crc32: str = '',
-                ed2khash: str = '',
-                md5: str = '',
-                sha1: str = '',
-                created: str = '',
-                updated: str = '',
-                duration: int = 0,
-                filename: str = '',
-                server_path: str = '',
-                size: int = 0,
-                hash: str = '',
-                hash_source: int = 0,
-                is_ignored: int = 0,
-                media: MediaInfo = {},
-                group_full: str = '',
-                group_short: str = '',
-                group_id: int = 0,
-                recognized: bool = False,
-                offset: int = 0,
-                videolocal_place_id: int = 0,
-                import_folder_id: int = 0,
-                is_preferred: int = 0,
-                id: int = 0,
-                name: str = '',
-                titles: AnimeTitle = [],
-                summary: str = '',
-                url: str = '',
-                added: str = '',
-                edited: str = '',
-                year: str = '',
-                air: str = '',
-                localsize: int = 0,
-                total_sizes: Sizes = {},
-                local_sizes: Sizes = {},
-                watched_sizes: Sizes = {},
-                viewed: int = 0,
-                rating: str = '',
-                votes: str = '',
-                userrating: str = '',
-                roles: Role = [],
-                tags: str = [],
-                art: ArtCollection = {}
-    ):
+                 series_id: int = 0,
+                 ep_id: int = 0,
+                 type: str = '',
+                 crc32: str = '',
+                 ed2khash: str = '',
+                 md5: str = '',
+                 sha1: str = '',
+                 created: str = '',
+                 updated: str = '',
+                 duration: int = 0,
+                 filename: str = '',
+                 server_path: str = '',
+                 size: int = 0,
+                 hash: str = '',
+                 hash_source: int = 0,
+                 is_ignored: int = 0,
+                 media: MediaInfo = {},
+                 group_full: str = '',
+                 group_short: str = '',
+                 group_id: int = 0,
+                 recognized: bool = False,
+                 offset: int = 0,
+                 videolocal_place_id: int = 0,
+                 import_folder_id: int = 0,
+                 is_preferred: int = 0,
+                 id: int = 0,
+                 name: str = '',
+                 titles: List[AnimeTitle] = [],
+                 summary: str = '',
+                 url: str = '',
+                 added: str = '',
+                 edited: str = '',
+                 year: str = '',
+                 air: str = '',
+                 localsize: int = 0,
+                 total_sizes: Sizes = {},
+                 local_sizes: Sizes = {},
+                 watched_sizes: Sizes = {},
+                 viewed: int = 0,
+                 rating: str = '',
+                 votes: str = '',
+                 userrating: str = '',
+                 roles: List[Role] = [],
+                 tags: List[str] = [],
+                 art: ArtCollection = {}
+                 ):
         self.series_id: int = series_id
         self.ep_id: int = ep_id
         self.type: str = type
@@ -802,7 +804,7 @@ class RecentFile:
         self.is_preferred: int = is_preferred
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -818,8 +820,8 @@ class RecentFile:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
 
     class Encoder(JSONEncoder):
@@ -898,39 +900,40 @@ class RecentFile:
 
         return recentfile
 
+
 class Episode:
     def __init__(self,
-                type: str = '',
-                season: str = '',
-                view: int = 0,
-                view_date: str = '',
-                eptype: str = '',
-                epnumber: int = 0,
-                aid: int = 0,
-                eid: int = 0,
-                files: RawFile = [],
-                id: int = 0,
-                name: str = '',
-                titles: AnimeTitle = [],
-                summary: str = '',
-                url: str = '',
-                added: str = '',
-                edited: str = '',
-                year: str = '',
-                air: str = '',
-                size: int = 0,
-                localsize: int = 0,
-                total_sizes: Sizes = {},
-                local_sizes: Sizes = {},
-                watched_sizes: Sizes = {},
-                viewed: int = 0,
-                rating: str = '',
-                votes: str = '',
-                userrating: str = '',
-                roles: Role = [],
-                tags: str = [],
-                art: ArtCollection = {}
-                ):
+                 type: str = '',
+                 season: str = '',
+                 view: int = 0,
+                 view_date: str = '',
+                 eptype: str = '',
+                 epnumber: int = 0,
+                 aid: int = 0,
+                 eid: int = 0,
+                 files: List[RawFile] = [],
+                 id: int = 0,
+                 name: str = '',
+                 titles: List[AnimeTitle] = [],
+                 summary: str = '',
+                 url: str = '',
+                 added: str = '',
+                 edited: str = '',
+                 year: str = '',
+                 air: str = '',
+                 size: int = 0,
+                 localsize: int = 0,
+                 total_sizes: Sizes = {},
+                 local_sizes: Sizes = {},
+                 watched_sizes: Sizes = {},
+                 viewed: int = 0,
+                 rating: str = '',
+                 votes: str = '',
+                 userrating: str = '',
+                 roles: List[Role] = [],
+                 tags: List[str] = [],
+                 art: ArtCollection = {}
+                 ):
         self.type: str = type
         self.season: str = season
         self.view: int = view
@@ -939,10 +942,10 @@ class Episode:
         self.epnumber: int = epnumber
         self.aid: int = aid
         self.eid: int = eid
-        self.files: list[RawFile] = files
+        self.files: List[RawFile] = files
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -958,8 +961,8 @@ class Episode:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
 
     class Encoder(JSONEncoder):
@@ -1030,43 +1033,43 @@ class Episode:
 
 class Serie:
     def __init__(self,
-                type: str = '',
-                aid: int = 0,
-                season: str = '',
-                eps: Episode = [],
-                ismovie: int = 0,
-                filesize: int = 0,
-                id: int = 0,
-                name: str = '',
-                titles: AnimeTitle = [],
-                summary: str = '',
-                url: str = '',
-                added: str = '',
-                edited: str = '',
-                year: str = '',
-                air: str = '',
-                size: int = 0,
-                localsize: int = 0,
-                total_sizes: Sizes = {},
-                local_sizes: Sizes = {},
-                watched_sizes: Sizes = {},
-                viewed: int = 0,
-                rating: str = '',
-                votes: str = '',
-                userrating: str = '',
-                roles: Role = [],
-                tags: str = [],
-                art: ArtCollection = {}
-                ):
+                 type: str = '',
+                 aid: int = 0,
+                 season: str = '',
+                 eps: List[Episode] = [],
+                 ismovie: int = 0,
+                 filesize: int = 0,
+                 id: int = 0,
+                 name: str = '',
+                 titles: List[AnimeTitle] = [],
+                 summary: str = '',
+                 url: str = '',
+                 added: str = '',
+                 edited: str = '',
+                 year: str = '',
+                 air: str = '',
+                 size: int = 0,
+                 localsize: int = 0,
+                 total_sizes: Sizes = {},
+                 local_sizes: Sizes = {},
+                 watched_sizes: Sizes = {},
+                 viewed: int = 0,
+                 rating: str = '',
+                 votes: str = '',
+                 userrating: str = '',
+                 roles: List[Role] = [],
+                 tags: List[str] = [],
+                 art: ArtCollection = {}
+                 ):
         self.type: str = type
         self.aid: int = aid
         self.season: str = season
-        self.eps: list[Episode] = eps
+        self.eps: List[Episode] = eps
         self.ismovie: int = ismovie
         self.filesize: int = filesize
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -1082,8 +1085,8 @@ class Serie:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
 
     class Encoder(JSONEncoder):
@@ -1151,35 +1154,35 @@ class Serie:
 
 class Group:
     def __init__(self,
-                series: list = [],
-                type: str = '',
-                id: int = 0,
-                name: str = '',
-                titles: list = [],
-                summary: str = '',
-                url: str = '',
-                added: str = '',
-                edited: str = '',
-                year: str = '',
-                air: str = '',
-                size: int = 0,
-                localsize: int = 0,
-                total_sizes: object = {},
-                local_sizes: object = {},
-                watched_sizes: object = {},
-                viewed: int = 0,
-                rating: str = '',
-                votes: str = '',
-                userrating: str = '',
-                roles: list = [],
-                tags: list = [],
-                art: object = {}
-                ):
-        self.series: list[Serie] = series
+                 series: List[Serie] = [],
+                 type: str = '',
+                 id: int = 0,
+                 name: str = '',
+                 titles: List[AnimeTitle] = [],
+                 summary: str = '',
+                 url: str = '',
+                 added: str = '',
+                 edited: str = '',
+                 year: str = '',
+                 air: str = '',
+                 size: int = 0,
+                 localsize: int = 0,
+                 total_sizes: Sizes = {},
+                 local_sizes: Sizes = {},
+                 watched_sizes: Sizes = {},
+                 viewed: int = 0,
+                 rating: str = '',
+                 votes: str = '',
+                 userrating: str = '',
+                 roles: List[Role] = [],
+                 tags: List[str] = [],
+                 art: ArtCollection = {}
+                 ):
+        self.series: List[Serie] = series
         self.type: str = type
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -1195,8 +1198,8 @@ class Group:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
     
     class Encoder(JSONEncoder):
@@ -1257,37 +1260,38 @@ class Group:
         
         return group
 
+
 class Filters:
     def __init__(self,
-                type: str = '',
-                filters = [],
-                id: int = 0,
-                name: str = '',
-                titles: AnimeTitle = [],
-                summary: str = '',
-                url: str = '',
-                added: str = '',
-                edited: str = '',
-                year: str = '',
-                air: str = '',
-                size: int = 0,
-                localsize: int = 0,
-                total_sizes: Sizes = [],
-                local_sizes: Sizes = [],
-                watched_sizes: Sizes = [],
-                viewed: int = 0,
-                rating: str = '',
-                votes: str = '',
-                userrating: str = '',
-                roles: Role = [],
-                tags: str = [],
-                art: ArtCollection = {}
-                ):
+                 type: str = '',
+                 filters = [],
+                 id: int = 0,
+                 name: str = '',
+                 titles: List[AnimeTitle] = [],
+                 summary: str = '',
+                 url: str = '',
+                 added: str = '',
+                 edited: str = '',
+                 year: str = '',
+                 air: str = '',
+                 size: int = 0,
+                 localsize: int = 0,
+                 total_sizes: Sizes = [],
+                 local_sizes: Sizes = [],
+                 watched_sizes: Sizes = [],
+                 viewed: int = 0,
+                 rating: str = '',
+                 votes: str = '',
+                 userrating: str = '',
+                 roles: List[Role] = [],
+                 tags: List[str] = [],
+                 art: ArtCollection = {}
+                 ):
         self.type: str = type
         self.filters: list = filters
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -1303,8 +1307,8 @@ class Filters:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
 
     class Encoder(JSONEncoder):
@@ -1367,37 +1371,37 @@ class Filters:
 
 class Filter:
     def __init__(self,
-                type: str = '',
-                groups: list = [],
-                filters: list = [],
-                id: int = 0,
-                name: str = '',
-                titles: list = [],
-                summary: str = '',
-                url: str = '',
-                added: str = '',
-                edited: str = '',
-                year: str = '',
-                air: str = '',
-                size: int = 0,
-                localsize: int = 0,
-                total_sizes: list = [],
-                local_sizes: list = [],
-                watched_sizes: list = [],
-                viewed: int = 0,
-                rating: str = '',
-                votes: str = '',
-                userrating: str = '',
-                roles: list = [],
-                tags: list = [],
-                art: object = {}
-                ):
+                 type: str = '',
+                 groups: List[Group] = [],
+                 filters: List[Filters] = [],
+                 id: int = 0,
+                 name: str = '',
+                 titles: List[AnimeTitle] = [],
+                 summary: str = '',
+                 url: str = '',
+                 added: str = '',
+                 edited: str = '',
+                 year: str = '',
+                 air: str = '',
+                 size: int = 0,
+                 localsize: int = 0,
+                 total_sizes: Sizes = [],
+                 local_sizes: Sizes = [],
+                 watched_sizes: Sizes = [],
+                 viewed: int = 0,
+                 rating: str = '',
+                 votes: str = '',
+                 userrating: str = '',
+                 roles: List[Role] = [],
+                 tags: List[str] = [],
+                 art: ArtCollection = {}
+                 ):
         self.type: str = type
-        self.groups: list[Group] = groups
-        self.filters: list[Filters] = filters
+        self.groups: List[Group] = groups
+        self.filters: List[Filters] = filters
         self.id: int = id
         self.name: str = name
-        self.titles: list[AnimeTitle] = titles
+        self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
         self.url: str = url
         self.added: str = added
@@ -1413,11 +1417,10 @@ class Filter:
         self.rating: str = rating
         self.votes: str = votes
         self.userrating: str = userrating
-        self.roles: list[Role] = roles
-        self.tags: list[str] = tags
+        self.roles: List[Role] = roles
+        self.tags: List[str] = tags
         self.art: ArtCollection = art
 
-  
     class Encoder(JSONEncoder):
         def default(self, o):
             return o.__dict__
@@ -1433,24 +1436,21 @@ class Filter:
             except:
                 print("Exception: at Filter.Decoder --- json is not dictionary")
                 return Filter()
-        filter: Filter = Filter()
 
-        filter.type = json.get('type')
-        filter.groups = []
-        tmp = json.get("groups", [])
-        for group in tmp:
+        filter: Filter = Filter(id=json.get("id"), name=json.get("name"), type=json.get('type'))
+        filter.groups = []  # <--- ain't this default value ?
+        filter.titles = []  # <--- ain't this default value ?
+
+        for group in json.get("groups", []):
             group = Group.Decoder(group)
             filter.groups.append(group)
         filter.filters = []
-        tmp = json.get("filters", [])
-        for filter in tmp:
+
+        for filter in json.get("filters", []):
             filter = Filter.Decoder(filter)
             filter.filters.append(filter)
-        filter.id = json.get("id")
-        filter.name = json.get("name")
-        filter.titles = []
-        tmp = json.get("titles", [])
-        for title in tmp:
+
+        for title in json.get("titles", []):
             title = AnimeTitle.Decoder(title)
             filter.titles.append(title)
         filter.summary = json.get("summary")
@@ -1469,13 +1469,13 @@ class Filter:
         filter.votes = json.get("votes")
         filter.userrating = json.get("userrating")
         filter.roles = []
-        tmp = json.get("roles", [])
-        for role in tmp:
+
+        for role in json.get("roles", []):
             role = Role.Decoder(role)
             filter.roles.append(role)        
         filter.tags = []
-        tmp = json.get("tags", [])
-        for tag in tmp:
+
+        for tag in json.get("tags", []):
             filter.tags.append(tag)        
             filter.art = ArtCollection.Decoder(json.get("art"))
 
@@ -1484,15 +1484,15 @@ class Filter:
 
 class ImportFolder:
     def __init__(self,
-                ImportFolderID: int = 0,
-                ImportFolderType: int = 0,
-                ImportFolderName: str = '',
-                ImportFolderLocation: str = '',
-                CloudID: int = 0,
-                IsWatched: int = 0,
-                IsDropSource: int = 0,
-                IsDropDestination: int = 0
-                ):
+                 ImportFolderID: int = 0,
+                 ImportFolderType: int = 0,
+                 ImportFolderName: str = '',
+                 ImportFolderLocation: str = '',
+                 CloudID: int = 0,
+                 IsWatched: int = 0,
+                 IsDropSource: int = 0,
+                 IsDropDestination: int = 0
+                 ):
         self.ImportFolderID: int = ImportFolderID
         self.ImportFolderType: int = ImportFolderType
         self.ImportFolderName: str = ImportFolderName
@@ -1529,6 +1529,7 @@ class ImportFolder:
         importfolder.IsDropDestination = json.get("IsDropDestination")
 
         return importfolder
+
 
 class Counter:
     def __init__(self, 
@@ -1600,11 +1601,11 @@ class WebNews:
 
 class QueueInfo:
     def __init__(self,
-                count: int = 0,
-                state: str = '',
-                isrunning: str = '',
-                ispause: str = ''
-                ):
+                 count: int = 0,
+                 state: str = '',
+                 isrunning: str = '',
+                 ispause: str = ''
+                 ):
         self.count: int = count
         self.state: str = state
         self.isrunning: str = isrunning
@@ -1636,17 +1637,17 @@ class QueueInfo:
 
 class SeriesInFolderInfo:
     def __init__(self,
-                name: str = '',
-                id: int = 0,
-                filesize: int = 0,
-                size: int = 0, 
-                paths: list = []
-                ):
+                 name: str = '',
+                 id: int = 0,
+                 filesize: int = 0,
+                 size: int = 0,
+                 paths: List[str] = []
+                 ):
         self.name: str = name
         self.id: int = id
         self.filesize: int = filesize
         self.size: int = size
-        self.paths: list[str] = paths
+        self.paths: List[str] = paths
 
     class Encoder(JSONEncoder):
         def default(self, o):
@@ -1676,17 +1677,18 @@ class SeriesInFolderInfo:
 
         return seriesinfolderinfo
 
+
 class FolderInfo:
     def __init__(self,
                id: int = 0,
                filesize: int = 0,
                size: int = 0,
-               series: SeriesInFolderInfo = {}
+               series: List[SeriesInFolderInfo] = {}
                 ):
         self.id: int = id
         self.filesize: int = filesize
         self.size: int = size
-        self.series: list[SeriesInFolderInfo] = series
+        self.series: List[SeriesInFolderInfo] = series
 
     class Encoder(JSONEncoder):
         def default(self, o):
@@ -1715,5 +1717,3 @@ class FolderInfo:
             folderinfo.series.append(serie)
 
         return folderinfo
-
-
