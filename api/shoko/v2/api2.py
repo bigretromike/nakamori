@@ -760,7 +760,7 @@ def series_from_anidb(opts: QueryOptions = QueryOptions()) -> Serie:
 # Core
 #
 def config_port_set(port: int):
-    # not sure if it's working anymore
+    # not sure if it's working anymore, 500: Internal Server Error
     """Set JMMServer Port"""
     query = {
         'port': port
@@ -774,8 +774,27 @@ def config_port_get() -> dict:
     response = api_client.call(url='/api/config/port/get', call_type=APIType.GET)
     return json.loads(response)
 
-apikey = login_user(AuthUser(user="default", password=""))
-api_client.apikey = apikey['apikey']
-print(api_client.apikey)
+def config_image_path_set(image_path: ImagePath):
+    # 500: Internal Server Error
+    """Set Imagepath as default or custom"""
+    return api_client.call(url='/api/config/imagepath/set', call_type=APIType.POST, data=image_path.__dict__)
 
-print((config_port_get())['port'])
+def config_image_path_get() -> ImagePath:
+    """Return ImagePath object"""
+    response = api_client.call(url='/api/config/imagepath/get', call_type=APIType.GET)
+    _json = json.loads(response)
+    return ImagePath.Decoder(_json)
+
+def config_export() -> ServerSettingsExport:
+    """Return body of current working settings.json - this could act as backup"""
+    response = api_client.call(url='/api/config/export', call_type=APIType.GET)
+    _json = json.loads(response)
+    return ServerSettingsExport.Decoder(_json)
+
+def config_import(settings: ServerSettingsImport):
+    """Import config file that was sent to in API body - this act as import from backup"""
+    return api_client.call(url='/api/config/import', call_type=APIType.POST, date=settings.__dict__)
+
+# print((config_port_get())['port'])
+# print(config_image_path_get())
+print(config_export())
