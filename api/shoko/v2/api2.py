@@ -65,12 +65,6 @@ def change_user_password(password: str):
 #
 # Common
 #
-# TODO check under Shoko.Server hood to get return types and some comment on endpoints
-
-# def _common_api_(command='', call_type=APIType.GET, query={}, data={}):
-#     url = f'/api/{command}'
-#     return api_client.call(url=url, call_type=call_type, query=query, data=data, auth=True)
-
 def cloud_list():
     # 501: Not Implemented
     return api_client.call(url='/api/cloud/list', call_type=APIType.GET)
@@ -703,13 +697,65 @@ def serie_unwatch(id: int):
     }
     return api_client.call(url='/api/serie/unwatch', call_type=APIType.GET, query=query)
 
+def serie_vote(id: int, score: int):
+    """Vote on serie"""
+    query = {
+        'id': id,
+        'score': score
+    }
+    return api_client.call(url='/api/serie/vote', call_type=APIType.GET, query=query)
+
+def series_search(opts: QueryOptions = QueryOptions()):
+    """Return list of series"""
+    response = api_client.call(url='/api/serie/search', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for serie in _json:
+        output.append(Serie.Decoder(serie))
+    return output
+
+def series_search_tag(opts: QueryOptions = QueryOptions()):
+    """Return list of series"""
+    response = api_client.call(url='/api/serie/tag', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Serie] = []
+    for serie in _json:
+        output.append(Serie.Decoder(serie))
+    return output
+
+def series_from_ep(opts: QueryOptions = QueryOptions()) -> Serie:
+    """Used to get the series related to the episode id.
+
+    `id` of `QueryParams` must be specified
+    
+    Return list of series"""
+    response = api_client.call(url='/api/serie/fromep', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Serie.Decoder(_json)
+
+def series_groups(opts: QueryOptions = QueryOptions()):
+    """Get all related AnimeGroups for a series ID
+
+    `id` of `QueryParams` must be specified
+    
+    Return list of series"""
+    response = api_client.call(url='/api/serie/groups', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    output: list[Group] = []
+    for group in _json:
+        output.append(Group.Decoder(group))
+    return output
+
+def series_from_anidb(opts: QueryOptions = QueryOptions()) -> Serie:
+    """Used to get the series related to the episode id.
+    
+    `id` of `QueryParams` must be specified
+    
+    Return list of series"""
+    response = api_client.call(url='/api/serie/fromaid', call_type=APIType.GET, query=opts.__dict__)
+    _json = json.loads(response)
+    return Serie.Decoder(_json)
+
 apikey = login_user(AuthUser(user="default", password=""))
 api_client.apikey = apikey['apikey']
 print(api_client.apikey)
-
-for serie in series_get_recent():
-    if serie.id == 12:
-        print(serie.viewed)
-    
-
-print(serie_watch(12))
