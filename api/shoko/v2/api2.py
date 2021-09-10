@@ -7,12 +7,13 @@ from api2models import *
 import json
 
 # read test config from file that is not sync with gh
-config = json.load(open("config.json"))
-address = config['address']
-port = config['port']
-version = config['version']
-apikey = config['apikey']
-timeout = config['timeout']
+with open("config.json") as file:
+    config = json.load(file)
+    address = config['address']
+    port = config['port']
+    version = config['version']
+    apikey = config['apikey']
+    timeout = config['timeout']
 
 api_client = APIClient(api_address=address, api_port=port, api_version=version, api_key=apikey, timeout=timeout)
 
@@ -755,6 +756,26 @@ def series_from_anidb(opts: QueryOptions = QueryOptions()) -> Serie:
     _json = json.loads(response)
     return Serie.Decoder(_json)
 
+#
+# Core
+#
+def config_port_set(port: int):
+    # not sure if it's working anymore
+    """Set JMMServer Port"""
+    query = {
+        'port': port
+    }
+    return api_client.call(url='/api/config/port/set', call_type=APIType.POST, query=query)
+
+def config_port_get() -> dict:
+    """Get JMMServer Port
+    
+    Returns dict like response['port']"""
+    response = api_client.call(url='/api/config/port/get', call_type=APIType.GET)
+    return json.loads(response)
+
 apikey = login_user(AuthUser(user="default", password=""))
 api_client.apikey = apikey['apikey']
 print(api_client.apikey)
+
+print((config_port_get())['port'])

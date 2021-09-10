@@ -9,12 +9,13 @@ from api.shoko.v3.api3models import *
 import json
 
 # read test config from file that is not sync with gh
-config = json.load(open("config.json"))
-address = config['address']
-port = config['port']
-version = config['version']
-apikey = config['apikey']
-timeout = config['timeout']
+with open("config.json") as file:
+    config = json.load(file)
+    address = config['address']
+    port = config['port']
+    version = config['version']
+    apikey = config['apikey']
+    timeout = config['timeout']
 
 api_client = APIClient(api_address=address, api_port=port, api_version=version, api_key=apikey, timeout=timeout)
 
