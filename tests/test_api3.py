@@ -13,6 +13,8 @@ from api.shoko.v3.api3models import AuthUser
 
 @pytest.fixture()
 def fake_auth_info():
+    # this one fake api response body
+    # with Mock.patch() inject you hijack respond from that one function
     with open("tests/resources/auth.json") as f:
         return json.load(f)
 
