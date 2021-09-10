@@ -2,12 +2,15 @@
 
 # BASED OF :8111/swagger/index.html?urls.primaryName=2.0
 
-from api.common import *
+try:
+    from api.common import APIClient, APIType
+except:
+    from ...common import APIClient, APIType
 from api2models import *
 
 
 address = "http://192.168.1.2"
-port = "8111"
+port = 8111
 version = 2
 # api related
 apikey = ''

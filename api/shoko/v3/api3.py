@@ -3,12 +3,15 @@
 # BASED OF :8111/swagger/index.html?urls.primaryName=3.0
 # Asahara
 
+try:
+    from api.common import APIClient, APIType
+except:
+    from ...common import APIClient, APIType
 from api3models import *
-from ...common import *
 
 
 address = "http://10.1.1.100"
-port = "8111"
+port = 8111
 version = 3
 # api related
 apikey = ''
