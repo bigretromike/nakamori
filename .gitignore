@@ -2,3 +2,4 @@
 /.idea
 *.pyc
 .vscode/launch.json
+config.json
