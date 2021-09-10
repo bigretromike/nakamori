@@ -5,7 +5,7 @@ from json import JSONEncoder
 
 
 class AuthUser:
-    def __init__(self, apikey: []):
+    def __init__(self, apikey: dict):
         self.apikey = apikey['apikey']
 
     def __repr__(self):
@@ -39,7 +39,7 @@ class Version:
             return o.__dict__
 
     @staticmethod
-    def decoder(obj: dict()):
+    def decoder(obj: dict):
         return Version(obj['Name'], obj['Version'])
 
     def __eq__(self, other: object):
@@ -49,7 +49,7 @@ class Version:
 
 
 class Status:
-    def __init__(self, state, uptime, databaseblocked):
+    def __init__(self, state: str, uptime: str, databaseblocked: str):
         # b'{"State":2,"Uptime":"13:53:59","DatabaseBlocked":{}}'
         self.state, self.uptime, self.databaseblocked = state, uptime, databaseblocked
 
@@ -74,8 +74,8 @@ class InUse:
             return o.__dict__
 
     @staticmethod
-    def decoder(obj: str):
-        return InUse(obj)
+    def decoder(obj: dict):
+        return InUse(obj.__repr__())
 
 
 class DefaultUser:
@@ -556,8 +556,13 @@ class File:
 
 
 class FileMediaInfo:
+    # TODO FileMediaInfo
     def __init__(self):
         pass
+
+    @staticmethod
+    def decoder(obj):
+        return obj
 
 
 class ReleaseGroup:

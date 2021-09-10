@@ -69,7 +69,7 @@ class APIClient:
         self.apikey = api_key
         self.timeout = timeout
 
-    def call(self, proto: str = 'http', url: str = '/', call_type: APIType = APIType.GET, query: dict = {}, data: dict = {}, auth: bool = True):
+    def call(self, url: str = '/', call_type: APIType = APIType.GET, query: dict = None, data: dict = None, auth: bool = True):
         """
         call api based on given url, call_type, query, data and auth parameter while using base class attributes
 

@@ -6,18 +6,18 @@
 try:
     from api.common import APIClient, APIType
 except:
+    print('ups')
     from ...common import APIClient, APIType
 from api3models import *
+import json
 
-
-address = "http://10.1.1.100"
-port = 8111
-version = 3
-# api related
-apikey = ''
-# timeout waiting for response (in seconds)
-timeout = 600
-
+# read test config from file that is not sync with gh
+config = json.loads("config.json")
+address = config['address']
+port = config['port']
+version = config['version']
+apikey = config['apikey']
+timeout = config['timeout']
 
 api_client = APIClient(api_address=address, api_port=port, api_version=version, api_key=apikey, timeout=timeout)
 
@@ -28,9 +28,9 @@ api_client = APIClient(api_address=address, api_port=port, api_version=version, 
 action_api_url = '/api/v{}/Action/{}'
 
 
-def _action_api_(command='', call_type=APIType.GET):
+def _action_api_(command: str = '', call_type: APIType = APIType.GET):
     url = action_api_url.format(api_client.version, command)
-    return api_client.call(url, call_type)
+    return api_client.call(url=url, call_type=call_type)
 
 
 def run_import():
@@ -108,12 +108,12 @@ def update_series_stats():
 auth_api_url = '/api/auth'
 
 
-def _auth_api_(command='', call_type=APIType.GET, data={}):
+def _auth_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = auth_api_url if command == '' else auth_api_url + '/' + command
-    return api_client.call(url, call_type, data=data, auth=False)
+    return api_client.call(url=url, call_type=call_type, data=data, auth=False)
 
 
-def login_user(user='', password='', device=''):
+def login_user(user: str = '', password: str = '', device: str = ''):
 
     data = {"user": user,
             "pass": password,
@@ -123,14 +123,14 @@ def login_user(user='', password='', device=''):
     return json.loads(response, object_hook=AuthUser.decoder)
 
 
-def delete_user_apikey(apikey=''):
+def delete_user_apikey(apikey: str = ''):
     data = apikey
-    return _auth_api_(call_type=APIType.DELETE, data=data)
+    return _auth_api_(call_type =  APIType.DELETE, data=data)
 
 
-def change_user_password(password=''):
+def change_user_password(password: str = ''):
     data = password
-    return _auth_api_(command='ChangePassword', call_type=APIType.POST, data=data)
+    return _auth_api_(command='ChangePassword', call_type =  APIType.POST, data=data)
 
 # endregion
 
@@ -140,7 +140,7 @@ def change_user_password(password=''):
 dashboard_api_url = '/api/v{}/Dashboard/{}'
 
 
-def _dashboard_api_(command='', call_type=APIType.GET, data={}):
+def _dashboard_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = dashboard_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -157,9 +157,9 @@ def get_top_tags():
     return json.loads(response, object_hook=Tags.decoder)
 
 
-def get_top_tags_by_page(page):
+def get_top_tags_by_page(page: int):
     from api3models import Tags
-    response = _dashboard_api_(command='TopTags/{}'.format(int(page)))
+    response = _dashboard_api_(command=f'TopTags/{page}')
     return json.loads(response, object_hook=Tags.decoder)
 
 
@@ -180,31 +180,31 @@ def series_summary():
 episode_api_url = '/api/v{}/Episode/{}'
 
 
-def _episode_api_(command='', call_type=APIType.GET, data={}):
+def _episode_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = episode_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def episode_by_id(id):
+def episode_by_id(id: int):
     from api3models import Episode
-    response = _episode_api_(command='{}'.format(int(id)))
+    response = _episode_api_(command=f'{id}')
     return json.loads(response, object_hook=Episode.decoder)
 
 
-def episode_by_id_anidb_info(id):
+def episode_by_id_anidb_info(id: int):
     from api3models import EpisodeAniDB
-    response = _episode_api_(command='{}/AniDB'.format(int(id)))
+    response = _episode_api_(command=f'{id}/AniDB')
     return json.loads(response, object_hook=EpisodeAniDB.decoder)
 
 
-def episode_by_id_tvdb_info(id):
+def episode_by_id_tvdb_info(id: int):
     from api3models import Episode
-    response = _episode_api_(command='{}/TvDB'.format(int(id)))
+    response = _episode_api_(command=f'{id}/TvDB')
     return json.loads(response, object_hook=Episode.decoder)
 
 
-def episode_by_id_watched_state(id, watched=True):
-    return _episode_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=APIType.POST)
+def episode_by_id_watched_state(id: int, watched: bool = True):
+    return _episode_api_(command=f'{id}/watched/{watched}', call_type=APIType.POST)
 
 # endregion
 
@@ -214,59 +214,59 @@ def episode_by_id_watched_state(id, watched=True):
 file_api_url = '/api/v{}/File/{}'
 
 
-def _file_api_(command='', call_type=APIType.GET, data={}):
+def _file_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = file_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def file_by_id(id):
+def file_by_id(id: int):
     from api3models import File
-    response = _file_api_(command='{}'.format(int(id)))
+    response = _file_api_(command=f'{int}')
     return json.loads(response, object_hook=File.decoder)
 
 
-def remove_file_by_id(id, removeFolder):
-    return _file_api_(command='{}?removeFolder={}'.format(int(id), bool(removeFolder)), call_type=APIType.DELETE)
+def remove_file_by_id(id: int, removefolder: bool):
+    return _file_api_(command=f'{id}?removeFolder={removefolder}', call_type=APIType.DELETE)
 
 
-def file_by_id_anidb_info(id):
+def file_by_id_anidb_info(id: int):
     from api3models import FileAniDB
-    response = _file_api_(command='{}/AniDB'.format(int(id)))
+    response = _file_api_(command=f'{id}/AniDB')
     return json.loads(response, object_hook=FileAniDB.decoder)
 
 
-def file_by_id_MediaInfo(id):
+def file_by_id_MediaInfo(id: int):
     from api3models import FileMediaInfo
-    response = _file_api_(command='{}/MediaInfo'.format(int(id)))
+    response = _file_api_(command=f'{id}/MediaInfo')
     return json.loads(response, object_hook=FileMediaInfo.decoder)
 
 
-def file_api_watched_state(id, watched=True):
-    return _file_api_(command='{}/watched/{}'.format(int(id), bool(watched)), call_type=APIType.POST)
+def file_api_watched_state(id: int, watched: bool = True):
+    return _file_api_(command=f'{id}/watched/{watched}', call_type=APIType.POST)
 
 
-def file_by_id_scrobble(id, watched=True, resumePosition=0):
-    return _file_api_(command='{}/Scrobble?watched={}&resumePosition={}'.format(int(id), bool(watched), int(resumePosition)), call_type=APIType.PATCH)
+def file_by_id_scrobble(id: int, watched: bool = True, resumeposition: int = 0):
+    return _file_api_(command=f'{id}/Scrobble?watched={watched}&resumePosition={resumeposition}', call_type=APIType.PATCH)
 
 
-def file_by_id_avdump(id, FullOutput, Ed2k):
-    data = {'FullOutput': FullOutput, "Ed2k": Ed2k}
-    return _file_api_(command='{}/avdump'.format(int(id)), call_type=APIType.POST, data=data)
+def file_by_id_avdump(id: int, fulloutput: str, ed2k: str):
+    data = {'FullOutput': fulloutput, "Ed2k": ed2k}
+    return _file_api_(command=f'{id}/avdump', call_type=APIType.POST, data=data)
 
 
-def file_ends_with_path(path):
+def file_ends_with_path(path: str):
     from api3models import File
     response = _file_api_(command='PathEndsWith/{}'.format(str(path)))
     return json.loads(response, object_hook=File.decoder)
 
 
-def file_path_regex(path):
+def file_path_regex(path: str):
     from api3models import File
     response = _file_api_(command='PathRegex/{}'.format(str(path)))
     return json.loads(response, object_hook=File.decoder)
 
 
-def recent_file(limit):
+def recent_file(limit: int):
     from api3models import File
     response = _file_api_(command='Recent/{}'.format(int(limit)))
     return json.loads(response, object_hook=File.decoder)
@@ -285,37 +285,37 @@ def unrecognized_file():
 filter_api_url = '/api/v{}/Filter/{}'
 
 
-def _filter_api_(command='', call_type=APIType.GET, data={}):
+def _filter_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = filter_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def filter_by_id(id):
+def filter_by_id(id: int):
     from api3models import Filter
     response = _filter_api_(command='{}'.format(int(id)))
     return json.loads(response, object_hook=Filter.decoder)
 
 
-def remove_filter_by_id(id):
+def remove_filter_by_id(id: int):
     from api3models import Filter
     response = _filter_api_(command='{}'.format(int(id)), call_type=APIType.DELETE)
     return json.loads(response, object_hook=Filter.decoder)
 
 
-def filter_by_id_filter(id):
+def filter_by_id_filter(id: int):
     from api3models import Filter
     # duplicate of filter_by_id ?
     response = _filter_api_(command='{}/Filter'.format(int(id)))
     return json.loads(response, object_hook=Filter.decoder)
 
 
-def filter_by_id_conditions(id):
+def filter_by_id_conditions(id: int):
     from api3models import Conditions
     response = _filter_api_(command='{}/Conditions'.format(id))
     return json.loads(response, object_hook=Conditions.decoder)
 
 
-def filter_by_id_sorting(id):
+def filter_by_id_sorting(id: int):
     from api3models import Filter
     response = _filter_api_(command='{}/Sorting'.format(id))
     return json.loads(response, object_hook=Filter.decoder)
@@ -330,7 +330,7 @@ def filter_preview():
 def filter():
     # duplicate filter_preview?
     from api3models import Filter
-    response = _filter_api_(command='', call_type=APIType.POST)
+    response = _filter_api_(command = '', call_type=APIType.POST)
     return json.loads(response, object_hook=Filter.decoder)
 
 # endregion
@@ -341,32 +341,32 @@ def filter():
 tree_api_url = '/api/v{}/{}'
 
 
-def _tree_api_(command='', call_type=APIType.GET, data={}):
+def _tree_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = tree_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def tree_filter(includeEmpty=False, includeInvisible=False):
+def tree_filter(includeempty : bool = False, includeinvisible : bool = False):
     from api3models import Filter
-    response = _tree_api_(command='Filter?includeEmpty={}&includeInvisible={}'.format(bool(includeEmpty), bool(includeInvisible)))
+    response = _tree_api_(command=f'Filter?includeEmpty={includeempty}&includeInvisible={includeinvisible}')
     return json.loads(response, object_hook=Filter.decoder)  # cls=json.JSONdecoder) #
 
 
-def tree_group_in_filter_by_id(id):
+def tree_group_in_filter_by_id(id: int):
     from api3models import Group
-    response = _tree_api_(command='Filter/{}/Group'.format(int(id)))
+    response = _tree_api_(command=f'Filter/{id}/Group')
     return json.loads(response, object_hook=Group.decoder)
 
 
-def tree_group_by_id_in_filter_by_id(fid, gid):
+def tree_group_by_id_in_filter_by_id(fid: int, gid: int):
     from api3models import Series
-    response = _tree_api_(command='Filter/{}/Group/{}/Series'.format(int(fid), int(gid)))
+    response = _tree_api_(command=f'Filter/{fid}/Group/{gid}/Series')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def tree_episode_in_series_by_id(id, includeMissing=False):
+def tree_episode_in_series_by_id(id: int, includemissing: bool = False):
     from api3models import Episode
-    response = _tree_api_(command='Series/{}/Episode?includeMissing={}'.format(int(id), bool(includeMissing)))
+    response = _tree_api_(command=f'Series/{id}/Episode?includeMissing={includemissing}')
     return json.loads(response, object_hook=Episode.decoder)
 
 
@@ -377,7 +377,7 @@ def tree_episode_in_series_by_id(id, includeMissing=False):
 folder_api_url = '/api/v{}/Folder{}'
 
 
-def _folder_api(command='', call_type=APIType.GET, data={}):
+def _folder_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = folder_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -388,7 +388,7 @@ def folder_drives():
     return json.loads(response, object_hook=FolderDrives.decoder)
 
 
-def folder(path):
+def folder(path: str):
     from api3models import Folder
     response = _folder_api(command='?path={}'.format(str(path)))
     return json.loads(response, object_hook=Folder.decoder)
@@ -401,7 +401,7 @@ def folder(path):
 group_api_url = '/api/v{}/Group{}'
 
 
-def _group_api(command='', call_type=APIType.GET, data={}):
+def _group_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = group_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -412,22 +412,22 @@ def group():
     return json.loads(response, object_hook=Group.decoder)
 
 
-def group_add(data):
+def group_add(data: dict):
     return _group_api(call_type=APIType.POST, data=data)
 
 
-def group_by_id(id):
+def group_by_id(id: int):
     from api3models import Group
-    response = _group_api(command='/{}'.format(int(id)))
+    response = _group_api(command=f'/{id}')
     return json.loads(response, object_hook=Group.decoder)
 
 
-def group_by_id_recalculate(id):
-    return _group_api(command='/{}/Recalculate'.format(int(id)), call_type=APIType.POST)
+def group_by_id_recalculate(id: int):
+    return _group_api(command='/{id)}/Recalculate', call_type  = APIType.POST)
 
 
-def delete_group_by_id(id, deleteSeries=False, deleteFiles=False):
-    return _group_api(command='/{}?deleteSeries={}&deleteFiles={}'.format(int(id), bool(deleteSeries), bool(deleteFiles)))
+def delete_group_by_id(id: int, deleteseries: bool = False, deletefiles: bool = False):
+    return _group_api(command=f'/{id}?deleteSeries={deleteseries}&deleteFiles={deletefiles}')
 
 
 def recreate_all_groups():
@@ -441,13 +441,13 @@ def recreate_all_groups():
 image_api_url = '/api/v{}/Image/{}'
 
 
-def _image_api(command='', call_type=APIType.GET, data={}):
+def _image_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = image_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def image(source, type, value):
-    response = _image_api(command='{}/{}/{}'.format(str(source), str(type), str(value)))
+def image(source: str, type: str, value: str):
+    response = _image_api(command=f'{source}/{type}/{value}')
     # return binary image
     return response
 
@@ -459,7 +459,7 @@ def image(source, type, value):
 import_folder_api_url = '/api/v{}/ImportFolder{}'
 
 
-def _import_folder_api(command='', call_type=APIType.GET, data={}):
+def _import_folder_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = import_folder_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -470,27 +470,27 @@ def import_folder():
     return json.loads(response, object_hook=ImportFolder.decoder)
 
 
-def import_folder_add(data):
+def import_folder_add(data: dict):
     return _import_folder_api(data=data, call_type=APIType.POST)
 
 
-def import_folder_update(data):
-    return _import_folder_api(date=data, call_type=APIType.PUT)
+def import_folder_update(data: dict):
+    return _import_folder_api(data=data, call_type=APIType.PUT)
 
 
-def import_folder_by_id(id):
+def import_folder_by_id(id: int):
     from api3models import ImportFolder
     # TODO PATCH
-    response = _import_folder_api(command='/{}'.format(int(id)), call_type=APIType.PATCH)
+    response = _import_folder_api(command=f'/{id}', call_type=APIType.PATCH)
     return json.loads(response, object_hook=ImportFolder.decoder)
 
 
-def delete_import_folder_by_id(id, removeRecords=True, updateMyList=True):
-    return _import_folder_api(command='/{}?removeRecords={}&updateMyList={}'.format(int(id), bool(removeRecords), bool(updateMyList)), call_type=APIType.DELETE)
+def delete_import_folder_by_id(id: int, removerecords: bool = True, updatemylist: bool = True):
+    return _import_folder_api(command=f'/{id}?removeRecords={removerecords}&updateMyList={updatemylist}', call_type=APIType.DELETE)
 
 
-def scan_import_folder_by_id(id):
-    return _import_folder_api(command='/{}/Scan'.format(int(id)))
+def scan_import_folder_by_id(id:int):
+    return _import_folder_api(command=f'/{id}/Scan')
 
 
 # endregion
@@ -500,7 +500,7 @@ def scan_import_folder_by_id(id):
 init_api_url = '/api/v{}/Init/{}'
 
 
-def _init_api(command='', call_type=APIType.GET, data={}):
+def _init_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = init_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -530,9 +530,10 @@ def default_user():
     return json.loads(response, object_hook=DefaultUser.decoder)
 
 
-def create_default_user(username, password):
-    data = {'Username': str(username), 'Password': str(password)}
+def create_default_user(username: str, password: str):
+    data = {'Username': username, 'Password': password}
     response = _init_api(command='defaultuser', data=data, call_type=APIType.POST)
+    return response
 
 
 def start_server():
@@ -554,17 +555,17 @@ def database_instance():
 integrity_check_api_url = '/api/v{}/IntegrityCheck{}'
 
 
-def _integrity_check_api(command='', call_type=APIType.GET, data={}):
+def _integrity_check_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = integrity_check_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def integrity_check(data):
+def integrity_check(data: dict):
     return _init_api(call_type=APIType.POST, data=data)
 
 
-def integrity_check_by_id(id):
-    return _init_api(command='{}/Start'.format(int(id)))
+def integrity_check_by_id(id: int):
+    return _init_api(command=f'{id}/Start')
 
 # endregion
 
@@ -574,16 +575,16 @@ def integrity_check_by_id(id):
 plex_api_url = '/plex{}'
 
 
-def _plex_api(command='', call_type=APIType.GET, data={}):
+def _plex_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = plex_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def plex_magic_that_only_plex_need(data):
+def plex_magic_that_only_plex_need(data: dict):
     return _plex_api(command='.json', call_type=APIType.POST, data=data)
 
 
-def plex_magic_that_only_plex_need2(data):
+def plex_magic_that_only_plex_need2(data: dict):
     return _plex_api(call_type=APIType.POST, data=data)
 
 
@@ -607,8 +608,8 @@ def plex_sync_all():
     return _plex_api(command='/sync/all')
 
 
-def plex_sync_by_id(id):
-    return _plex_api(command='/sync/{}'.format(int(id)))
+def plex_sync_by_id(id: int):
+    return _plex_api(command=f'/sync/{id}')
 
 
 # endregion
@@ -625,26 +626,26 @@ def plex_sync_by_id(id):
 reverse_tree_api_url = '/api/v{}/{}'
 
 
-def _reverse_tree_api(command='', call_type=APIType.GET, data={}):
+def _reverse_tree_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = reverse_tree_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
 
-def group_from_series_by_id(id):
+def group_from_series_by_id(id: int):
     from api3models import Group
-    response = _reverse_tree_api(command='Series/{}/Group'.format(int(id)))
+    response = _reverse_tree_api(command=f'Series/{id}/Group')
     return json.loads(response, object_hook=Group.decoder)
 
 
-def series_from_episode_by_id(id):
+def series_from_episode_by_id(id: int):
     from api3models import Series
-    response = _reverse_tree_api(command='Episode/{}/Series'.format(int(id)))
+    response = _reverse_tree_api(command=f'Episode/{id}/Series')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def episode_from_file_by_id(id):
+def episode_from_file_by_id(id: int):
     from api3models import Episode
-    response = _reverse_tree_api(command='File/{}/Episode'.format(int(id)))
+    response = _reverse_tree_api(command=f'File/{id}/Episode')
     return json.loads(response, object_hook=Episode.decoder)
 
 # endregion
@@ -655,7 +656,7 @@ def episode_from_file_by_id(id):
 series_api_url = '/api/v{}/Series{}'
 
 
-def _series_api(command='', call_type=APIType.GET, data={}):
+def _series_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = series_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -666,69 +667,69 @@ def series():
     return json.loads(response, object_hook=Series.decoder)
 
 
-def series_by_id(id):
+def series_by_id(id: int):
     from api3models import Series
-    response = _series_api(command='/{}'.format(int(id)))
+    response = _series_api(command=f'/{id}')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def series_path_ending_with(path):
+def series_path_ending_with(path: str):
     from api3models import Series
-    response = _series_api(command='/PathEndsWith/{}'.format(str(path)))
+    response = _series_api(command=f'/PathEndsWith/{path}')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def series_by_id_anidb_info(id):
+def series_by_id_anidb_info(id: int):
     from api3models import Series
-    response = _series_api(command='/{}/AniDB'.format(int(id)))
+    response = _series_api(command=f'/{id}/AniDB')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def series_by_id_tvdb_info(id):
+def series_by_id_tvdb_info(id: int):
     from api3models import Series
-    response =_series_api(command='/{}/TvDB'.format(int(id)))
+    response =_series_api(command=f'/{id}/TvDB')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def images_from_series_by_id(id, includeDisabled=True):
+def images_from_series_by_id(id: int, includedisabled: bool = True):
     from api3models import Images
-    response =_series_api(command='/{}/Images/{}'.format(int(id), bool(includeDisabled )))
+    response =_series_api(command=f'/{id}/Images/{includedisabled}')
     return json.loads(response, object_hook=Images.decoder)
 
 
-def tag_from_series_by_id_and_filter(id, filter):
+def tag_from_series_by_id_and_filter(id: int, filter: int):
     from api3models import Tags
-    response = _series_api(command='/{}/Tags/{}'.format(int(id), int(filter)))
+    response = _series_api(command=f'/{id}/Tags/{filter}')
     return json.loads(response, object_hook=Tags.decoder)
 
 
-def cast_from_series_by_id(id):
+def cast_from_series_by_id(id: int):
     from api3models import FullCast
-    response = _series_api(command='/{}/Cast'.format(int(id)))
+    response = _series_api(command=f'/{id}/Cast')
     return json.loads(response, object_hook=FullCast.decoder)
 
 
-def move_series_to_group(sid, gid):
+def move_series_to_group(sid: int, gid: int):
     from api3models import Series
-    response = _series_api(command='/{}/Move/{}'.format(int(sid), int(gid)), call_type=APIType.PATCH)
+    response = _series_api(command=f'/{sid}/Move/{gid}', call_type=APIType.PATCH)
     return json.loads(response, object_hook=Series.decoder)
 
 
-def delete_series_by_id(id):
+def delete_series_by_id(id: int):
     from api3models import Series
-    response = _series_api(command='/{}'.format(int(id)), call_type=APIType.DELETE)
+    response = _series_api(command=f'/{id}', call_type=APIType.DELETE)
     return json.loads(response, object_hook=Series.decoder)
 
 
-def search_series(query):
+def search_series(query: str):
     from api3models import Series
-    response = _series_api(command='/Search/{}'.format(str(query)))
+    response = _series_api(command=f'/Search/{query}')
     return json.loads(response, object_hook=Series.decoder)
 
 
-def series_starts_with(query):
+def series_starts_with(query: str):
     from api3models import Series
-    response = _series_api(command='/StartsWith/{}'.format(str(query)))
+    response = _series_api(command=f'/StartsWith/{query}')
     return json.loads(response, object_hook=Series.decoder)
 
 
@@ -740,7 +741,7 @@ def series_starts_with(query):
 settings_api_url = '/api/v{}/Settings{}'
 
 
-def _settings_api(command='', call_type=APIType.GET, data={}):
+def _settings_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = settings_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -751,13 +752,13 @@ def settings_get():
     return json.loads(response, object_hook=Settings.decoder)
 
 
-def settings_set(data):
+def settings_set(data: dict = None):
     from api3models import Settings
     response = _settings_api(call_type=APIType.PATCH, data=data)
     return json.loads(response, object_hook=Settings.decoder)
 
 
-def settings_anidb_test(username, password):
+def settings_anidb_test(username: str, password: str):
     data = {'Username': username, 'Password': password}
     return _settings_api(call_type=APIType.POST, data=data)
 
@@ -770,7 +771,7 @@ def settings_anidb_test(username, password):
 user_api_url = '/api/v{}/User{}'
 
 
-def _user_api(command='', call_type=APIType.GET, data={}):
+def _user_api(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
     url = user_api_url.format(api_client.version, command)
     return api_client.call(url=url, call_type=call_type, data=data)
 
@@ -781,28 +782,28 @@ def user_get():
     return json.loads(response, object_hook=User.decoder)
 
 
-def user_add(data=''):
+def user_add(data: dict = None):
     from api3models import User
     response = _user_api(call_type=APIType.POST, data=data)
     return json.loads(response, object_hook=User.decoder)
 
 
-def user_update(data=''):
+def user_update(data: dict = None):
     from api3models import User
     response = _user_api(call_type=APIType.PUT, data=data)
     return json.loads(response, object_hook=User.decoder)
 
 
-def user_patch(id, data=''):
+def user_patch(id: int, data: dict = None):
     from api3models import User
     # TODO MAP THIS
-    data = [{"path": "string", "op": "string", "from": "string" }]
-    response = _user_api(command='/{}'.format(int(id)), call_type=APIType.PATCH, data=data)
+    data = [{"path": "string", "op": "string", "from": "string"}]
+    response = _user_api(command=f'/{id}', call_type=APIType.PATCH, data=data)
     return json.loads(response, object_hook=User.decoder)
 
 
-def user_delete(id):
-    return _user_api(command='/{}'.format(int(id)), call_type=APIType.DELETE)
+def user_delete(id: int):
+    return _user_api(command='/{}'.format(id), call_type=APIType.DELETE)
 
 
 # endregion
@@ -855,7 +856,7 @@ def user_delete(id):
 # print(x)
 #
 # # TODO not doing this right now
-# # x = move_series_to_group(sid, gid)
+# # x = move_series_to_group(sid: int. gid)
 #
 # # TODO not doing this right now
 # # x = delete_series_by_id(id)
@@ -908,7 +909,7 @@ def user_delete(id):
 # # print(x)
 #
 # # TODO not doing this now
-# #x = delete_group_by_id(id, deleteSeries=False, deleteFiles=False)
+# #x = delete_group_by_id(id: int. deleteSeries=False, deleteFiles=False)
 # #print(x)
 #
 # # TODO not doing this now
@@ -989,11 +990,11 @@ def user_delete(id):
 # # print(x)
 #
 # # TODO not important right now
-# # x = file_by_id_scrobble(id, watched=True, resumePosition=0)
+# # x = file_by_id_scrobble(id: int. watched=True, resumePosition=0)
 # # print(x)
 #
 # # TODO not doing this right now
-# #x = file_by_id_avdump(id, FullOutput, Ed2k)
+# #x = file_by_id_avdump(id: int. FullOutput, Ed2k)
 # #print(x)
 #
 # # TODO APIv3 broken, throw 500
@@ -1192,7 +1193,7 @@ def user_delete(id):
 # # print(x)
 #
 # # TODO MAYBE LATER
-# # x = user_patch(id, data='')
+# # x = user_patch(id: int. data='')
 # # print(x)
 #
 # # TODO NOT DOING THIS RIGHT NOW

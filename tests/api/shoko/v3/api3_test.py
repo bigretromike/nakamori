@@ -1,6 +1,6 @@
 import unittest
-from api.shoko.v3.api3 import login_user
-from api.shoko.v3.api3models import AuthUser
+from .....api.shoko.v3.api3 import login_user
+from .....api.shoko.v3.api3models import AuthUser
 from unittest.mock import patch
 
 

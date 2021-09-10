@@ -7,16 +7,15 @@ try:
 except:
     from ...common import APIClient, APIType
 from api2models import *
+import json
 
-
-address = "http://192.168.1.2"
-port = 8111
-version = 2
-# api related
-apikey = ''
-# timeout waiting for response (in seconds)
-timeout = 120
-
+# read test config from file that is not sync with gh
+config = json.loads("config.json")
+address = config['address']
+port = config['port']
+version = config['version']
+apikey = config['apikey']
+timeout = config['timeout']
 
 api_client = APIClient(api_address=address, api_port=port, api_version=version, api_key=apikey, timeout=timeout)
 
