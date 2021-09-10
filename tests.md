@@ -1,1 +1,2 @@
-python -m nose
+# in root directory
+pytest 

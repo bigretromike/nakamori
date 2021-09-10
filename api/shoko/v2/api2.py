@@ -2,15 +2,12 @@
 
 # BASED OF :8111/swagger/index.html?urls.primaryName=2.0
 
-try:
-    from api.common import APIClient, APIType
-except:
-    from ...common import APIClient, APIType
+from api.common import APIClient, APIType
 from api2models import *
 import json
 
 # read test config from file that is not sync with gh
-config = json.loads("config.json")
+config = json.load(open("config.json"))
 address = config['address']
 port = config['port']
 version = config['version']

@@ -3,16 +3,13 @@
 # BASED OF :8111/swagger/index.html?urls.primaryName=3.0
 # Asahara
 
-try:
-    from api.common import APIClient, APIType
-except:
-    print('ups')
-    from ...common import APIClient, APIType
-from api3models import *
+from __future__ import absolute_import
+from api.common import APIClient, APIType
+from api.shoko.v3.api3models import *
 import json
 
 # read test config from file that is not sync with gh
-config = json.loads("config.json")
+config = json.load(open("config.json"))
 address = config['address']
 port = config['port']
 version = config['version']
@@ -26,6 +23,10 @@ api_client = APIClient(api_address=address, api_port=port, api_version=version, 
 
 
 action_api_url = '/api/v{}/Action/{}'
+
+
+def replace_apikey_while_runtime(apikey: str = ''):
+    api_client.replace_apikey(apikey=apikey)
 
 
 def _action_api_(command: str = '', call_type: APIType = APIType.GET):
@@ -108,9 +109,9 @@ def update_series_stats():
 auth_api_url = '/api/auth'
 
 
-def _auth_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None):
+def _auth_api_(command: str = '', call_type: APIType = APIType.GET, data: dict = None, auth: bool = True):
     url = auth_api_url if command == '' else auth_api_url + '/' + command
-    return api_client.call(url=url, call_type=call_type, data=data, auth=False)
+    return api_client.call(url=url, call_type=call_type, data=data, auth=auth)
 
 
 def login_user(user: str = '', password: str = '', device: str = ''):
@@ -119,18 +120,20 @@ def login_user(user: str = '', password: str = '', device: str = ''):
             "pass": password,
             "device": device
             }
-    response = _auth_api_(call_type=APIType.POST, data=data)
-    return json.loads(response, object_hook=AuthUser.decoder)
+    response = _auth_api_(call_type=APIType.POST, data=data, auth=False)
+    return AuthUser.from_dict(response)
+    # return json.loads(response, object_hook=AuthUser.decoder)
 
 
 def delete_user_apikey(apikey: str = ''):
-    data = apikey
-    return _auth_api_(call_type =  APIType.DELETE, data=data)
+    data = {'apikey': apikey}
+    return _auth_api_(call_type=APIType.DELETE, data=data, auth=True)
 
 
 def change_user_password(password: str = ''):
+    # string only, no json, no brackets
     data = password
-    return _auth_api_(command='ChangePassword', call_type =  APIType.POST, data=data)
+    return _auth_api_(command='ChangePassword', call_type=APIType.POST, data=data)
 
 # endregion
 

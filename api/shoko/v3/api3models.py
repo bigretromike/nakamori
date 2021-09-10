@@ -24,6 +24,10 @@ class AuthUser:
             return self.apikey == other.apikey
         return False
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "AuthUser":
+        return cls(apikey=data)
+
 # endregion
 
 

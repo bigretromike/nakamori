@@ -69,7 +69,13 @@ class APIClient:
         self.apikey = api_key
         self.timeout = timeout
 
-    def call(self, url: str = '/', call_type: APIType = APIType.GET, query: dict = None, data: dict = None, auth: bool = True):
+    def call(self,
+             url: str = '/',
+             call_type:
+             APIType = APIType.GET,
+             query: dict = None,
+             data: dict = None,
+             auth: bool = True):
         """
         call api based on given url, call_type, query, data and auth parameter while using base class attributes
 
@@ -92,7 +98,7 @@ class APIClient:
             query = urlencode(query)
             url = f"{self.proto}://{self.address}:{self.port}{url}?{query}&api-version={self.version}"
         else:
-            url = f"{self.proto}://{self.address}:{self.port}{url}?api-version={self.version}"
+            url = f"{self.proto}://{self.address}:{self.port}{url}" # ?api-version={self.version}"
         print(f"{url}")
 
         headers = {
@@ -103,13 +109,14 @@ class APIClient:
 
         if auth:
             headers['apikey'] = self.apikey
-
+        # if we are doing localhost lets disable gzip for "extra" speed
         if '127.0.0.1' not in url and 'localhost' not in url:
             headers['Accept-Encoding'] = 'gzip'
+        # force version 1.0 for Stream because its the way it is
         if '/Stream/' in url:
             headers['api-version'] = '1.0'
 
-    # Api Calls
+        # Api Calls
         req = None
         if call_type == APIType.GET:
             print(f"Api.GET === {url} -- -H {headers} -D {data}")
@@ -117,7 +124,11 @@ class APIClient:
 
         elif call_type == APIType.POST:
             print(f"Api.POST === {url} -- -H {headers} -D {data}")
-            data = json.dumps(data).encode("utf-8")
+            if type(data) is dict:
+                data = json.dumps(data).encode("utf-8")
+            else:
+                byte_data = ('"' + str(data) + '"').encode("utf-8")
+                data = byte_data
             req = Request(url, data=data, headers=headers, method="POST")
 
         elif call_type == APIType.DELETE:
@@ -134,7 +145,6 @@ class APIClient:
             print(f"Api.PUT == {url} -- -H {headers} -D {data}")
             data = json.dumps(data).encode("utf-8")
             req = Request(url, data=data, headers=headers, method="PUT")
-
         else:
             print(f"Unknown === {url}")
 
@@ -151,5 +161,20 @@ class APIClient:
             else:
                 data = response.read()
             response.close()
-            return data
+            try:
+                return json.loads(data)
+            except:
+                print(f'json fallback to string')
+                return data
         return None
+
+    def replace_apikey(self, apikey: str = ''):
+        """
+        Replace apikey while in-runtime
+
+        Parameters
+        ----------
+            apikey: str
+                apikey that will be pass and save into api client
+        """
+        self.apikey = apikey
