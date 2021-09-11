@@ -98,7 +98,11 @@ class APIClient:
             query = urlencode(query)
             url = f"{self.proto}://{self.address}:{self.port}{url}?{query}&api-version={self.version}"
         else:
-            url = f"{self.proto}://{self.address}:{self.port}{url}" # ?api-version={self.version}"
+            if self.version == 2:
+                # unfortunately 'api-version' parameter is must-have in api v2
+                url = f"{self.proto}://{self.address}:{self.port}{url}?api-version={self.version}"
+            else:
+                url = f"{self.proto}://{self.address}:{self.port}{url}" # ?api-version={self.version}"
         print(f"{url}")
 
         headers = {
