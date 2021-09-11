@@ -970,5 +970,13 @@ def modules() -> dict:
     """Return Dictionary<str, obj> with nesesery items for Dashboard inside Webui"""
     return api_client.call(url='/api/modules', call_type=APIType.GET)
 
+#
+# Dev
+#
+def dev_media_by_id(id: int) -> Media:
+    """Get media by id"""
+    response = api_client.call(url=f'/api/dev/Media/{id}', call_type=APIType.GET)
+    return Media.Decoder(response)
+
 # print((config_port_get())['port'])
-print(modules())
+print(dev_media_by_id(737))

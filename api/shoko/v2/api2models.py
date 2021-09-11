@@ -1672,7 +1672,7 @@ class SeriesInFolderInfo:
         seriesinfolderinfo.filesize = json.get("filesize")
         seriesinfolderinfo.size = json.get("size")
         seriesinfolderinfo.paths = []
-        tmp = json.get("paths")
+        tmp = json.get("paths", [])
         for path in tmp:
             seriesinfolderinfo.paths.append(path)
 
@@ -2247,7 +2247,7 @@ class PluginSettings:
 
         pluginsettings.EnabledPlugins = json.get("EnabledPlugins")
         pluginsettings.Priority = []
-        tmp = json.get("Priority")
+        tmp = json.get("Priority", [])
         for prio in tmp:
             pluginsettings.Priority.append(prio)
         pluginsettings.EnabledRenamers = json.get("EnabledRenamers")
@@ -2553,7 +2553,7 @@ class ServerSettingsExport:
         serversettingsexport.FileQualityFilterEnabled = json.get("FileQualityFilterEnabled")
         serversettingsexport.FileQualityPreferences = json.get("FileQualityPreferences")
         serversettingsexport.LanguagePreference = []
-        tmp = json.get("LanguagePreference")
+        tmp = json.get("LanguagePreference", [])
         for LanguagePreference in tmp:
             serversettingsexport.LanguagePreference.append(LanguagePreference)
         serversettingsexport.EpisodeLanguagePreference = json.get("EpisodeLanguagePreference")
@@ -3012,3 +3012,144 @@ class Logs:
         logs.days = json.get("days")
 
         return logs
+
+
+class Part:
+    def __init__(self,
+                Accessible: int = 0,
+                Exists: int = 0,
+                Streams: List[Stream] = [],
+                Size: int = 0,
+                Duration: int = 0,
+                Key: str = '',
+                LocalKey: str = '',
+                Container: str = '',
+                Id: int = 0,
+                File: str = '',
+                OptimizedForStreaming: int = 0,
+                Has64bitOffsets: int = 0
+                ):
+        self.Accessible: int = Accessible
+        self.Exists: int = Exists
+        self.Streams: List[Stream] = Streams
+        self.Size: int = Size
+        self.Duration: int = Duration
+        self.Key: str = Key
+        self.LocalKey: str = LocalKey
+        self.Container: str = Container
+        self.Id: int = Id
+        self.File: str = File
+        self.OptimizedForStreaming: int = OptimizedForStreaming
+        self.Has64bitOffsets: int = Has64bitOffsets
+
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return Part()
+        part: Part = Part()
+
+        part.Accessible = json.get("Accessible")
+        part.Exists = json.get("Exists")
+        part.Streams = []
+        tmp = json.get("Streams", [])
+        for stream in tmp:
+            stream = Stream.Decoder(stream)
+            part.Streams.append(stream)
+        part.Size = json.get("Size")
+        part.Duration = json.get("Duration")
+        part.Key = json.get("Key")
+        part.LocalKey = json.get("LocalKey")
+        part.Container = json.get("Container")
+        part.Id = json.get("Id")
+        part.File = json.get("File")
+        part.OptimizedForStreaming = json.get("OptimizedForStreaming")
+        part.Has64bitOffsets = json.get("Has64bitOffsets")
+
+        return part
+
+
+class Media:
+    def __init__(self,
+                Parts: List[Part] = [],
+                Duration: int = 0,
+                VideoFrameRate: str = '',
+                Container: str = '',
+                VideoCodec: str = '',
+                AudioCodec: str = '',
+                AudioChannels: int = 0,
+                AspectRatio: int = 0,
+                Height: int = 0,
+                Width: int = 0,
+                Bitrate: int = 0,
+                Id: int = 0,
+                VideoResolution: str = '',
+                OptimizedForStreaming: int = 0,
+                Chaptered: bool = True
+                ):
+        self.Parts: List[Part] = Parts
+        self.Duration: int = Duration
+        self.VideoFrameRate: str = VideoFrameRate
+        self.Container: str = Container
+        self.VideoCodec: str = VideoCodec
+        self.AudioCodec: str = AudioCodec
+        self.AudioChannels: int = AudioChannels
+        self.AspectRatio: int = AspectRatio
+        self.Height: int = Height
+        self.Width: int = Width
+        self.Bitrate: int = Bitrate
+        self.Id: int = Id
+        self.VideoResolution: str = VideoResolution
+        self.OptimizedForStreaming: int = OptimizedForStreaming
+        self.Chaptered: bool = Chaptered
+
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return Media()
+        media: Media = Media()
+
+        media.Parts = []
+        tmp = json.get("Parts", [])
+        for part in tmp:
+            part = Part.Decoder(part)
+            media.Parts.append(part)
+        media.Duration = json.get("Duration")
+        media.VideoFrameRate = json.get("VideoFrameRate")
+        media.Container = json.get("Container")
+        media.VideoCodec = json.get("VideoCodec")
+        media.AudioCodec = json.get("AudioCodec")
+        media.AudioChannels = json.get("AudioChannels")
+        media.AspectRatio = json.get("AspectRatio")
+        media.Height = json.get("Height")
+        media.Width = json.get("Width")
+        media.Bitrate = json.get("Bitrate")
+        media.Id = json.get("Id")
+        media.VideoResolution = json.get("VideoResolution")
+        media.OptimizedForStreaming = json.get("OptimizedForStreaming")
+        media.Chaptered = json.get("Chaptered")
+
+        return media
