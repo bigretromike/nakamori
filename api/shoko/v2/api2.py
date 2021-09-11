@@ -1135,4 +1135,15 @@ def plex_sync_by_id(id: int):
     """Sync by id"""
     return api_client.call(url=f'/plex/sync/{id}', call_type=APIType.GET)
 
-print(plex_sync_by_id(0))
+#
+# Version
+#
+def version_get():
+    """Return current version of ShokoServer and several modules"""
+    response = api_client.call(url='/api/version', call_type=APIType.GET)
+    output: List[ComponentVersion] = []
+    for component in response:
+        output.append(ComponentVersion.Decoder(component))
+    return output
+
+print(version_get())
