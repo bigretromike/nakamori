@@ -2837,3 +2837,50 @@ class ServerSettingsImport:
         serversettingsimport.Import_RenameOnImport = json.get("Import_RenameOnImport")
 
         return serversettingsimport
+
+
+class Credentials:
+    def __init__(self,
+                login: str = '',
+                password: str = '',
+                port: int = 0,
+                token: str = '',
+                refresh_token: str = '',
+                apikey: str = '',
+                apiport: int = 0
+                ):
+        self.login: str = login
+        self.password: str = password
+        self.port: int = port
+        self.token: str = token
+        self.refresh_token: str = refresh_token
+        self.apikey: str = apikey
+        self.apiport: int = apiport
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return Credentials()
+        credentials: Credentials = Credentials()
+
+        credentials.login = json.get("login")
+        credentials.password = json.get("password")
+        credentials.port = json.get("port")
+        credentials.token = json.get("token")
+        credentials.refresh_token = json.get("refresh_token")
+        credentials.apikey = json.get("apikey")
+        credentials.apiport = json.get("apiport")
+
+        return credentials
+ 
