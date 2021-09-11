@@ -978,5 +978,40 @@ def dev_media_by_id(id: int) -> Media:
     response = api_client.call(url=f'/api/dev/Media/{id}', call_type=APIType.GET)
     return Media.Decoder(response)
 
-# print((config_port_get())['port'])
-print(dev_media_by_id(737))
+#
+# Image
+#
+def image_validate_all():
+    # 500: Internal Server Error
+    """Validate all images"""
+    return api_client.call(url=f'/api/v2/image/validateall', call_type=APIType.GET)
+
+def image_get_image_by_id_and_type(id: int, type: int):
+    """Return image with given id, type
+    
+    Note: It prints out actual file content, not any python object"""
+    return api_client.call(url=f'/api/v2/image/{type}/{id}', call_type=APIType.GET)
+
+def image_get_image_thumb_by_id_and_type(id: int, type: int, ratio: str = '0'):
+    """Return thumb with given id, type
+    
+    Note: It prints out actual file content, not any python object"""
+    return api_client.call(url=f'/api/v2/image/thumb/{type}/{id}/{ratio}', call_type=APIType.GET)
+
+def image_get_support_image_by_name(image_name: str):
+    # 500: Internal Server Error
+    """Return SupportImage (build-in server)
+    """
+    return api_client.call(url=f'/api/v2/image/support/{image_name}', call_type=APIType.GET)
+
+def image_get_support_image_by_name(image_name: str, ratio: str):
+    # 500: Internal Server Error
+    """Return SupportImage (build-in server)
+    """
+    return api_client.call(url=f'/api/v2/image/support/{image_name}/{ratio}', call_type=APIType.GET)
+
+def image_random_by_type(type: int):
+    """Return random image with given type and not from restricted content"""
+    return api_client.call(url=f'/api/v2/image/{type}/random', call_type=APIType.GET)
+
+print(image_random_by_type(1))
