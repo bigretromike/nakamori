@@ -963,5 +963,12 @@ def images_update():
     """Update images"""
     return api_client.call(url='/api/images/update', call_type=APIType.GET)
 
+#
+# DashboardModules
+#
+def modules() -> dict:
+    """Return Dictionary<str, obj> with nesesery items for Dashboard inside Webui"""
+    return api_client.call(url='/api/modules', call_type=APIType.GET)
+
 # print((config_port_get())['port'])
-print(images_update())
+print(modules())
