@@ -1094,4 +1094,45 @@ def init_config_export() -> ServerSettingsExport:
     # _json = json.loads(response)
     return ServerSettingsExport.Decoder(response)
 
-print(init_database_sql_server_instance_get())
+#
+# PlexWebhook
+#
+def plex_json(json: object):
+    # Not tested
+    """Send json"""
+    return api_client.call(url='/plex.json', call_type=APIType.POST, data=json)
+
+def plex(payload: object):
+    # Not tested
+    """Send payload"""
+    return api_client.call(url='/plex', call_type=APIType.POST, data=payload)
+
+def plex_login_url_get() -> str:
+    """Get login url"""
+    response = api_client.call(url='/plex/loginurl', call_type=APIType.GET)
+    return response.decode("utf-8")
+
+def plex_is_pin_authenticated() -> bool:
+    """Determine if authenticated with pin"""
+    return api_client.call(url='/plex/pin/authenticated', call_type=APIType.GET)
+
+def plex_token_invalidate() -> bool:
+    """Invalidates plex token, if error not ocurred, returns True"""
+    return api_client.call(url='/plex/token/invalidate', call_type=APIType.GET)
+
+def plex_sync():
+    # 500: Internal Server Error
+    """Sync"""
+    return api_client.call(url='/plex/sync', call_type=APIType.GET)
+
+def plex_sync_all():
+    # 500: Internal Server Error
+    """Sync all"""
+    return api_client.call(url='/plex/sync/all', call_type=APIType.GET)
+
+def plex_sync_by_id(id: int):
+    # 500: Internal Server Error
+    """Sync by id"""
+    return api_client.call(url=f'/plex/sync/{id}', call_type=APIType.GET)
+
+print(plex_sync_by_id(0))
