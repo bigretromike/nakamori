@@ -2884,3 +2884,131 @@ class Credentials:
 
         return credentials
  
+
+class JMMUser:
+    def __init__(self,
+                JMMUserID: int,
+                Username: str,
+                Password: str,
+                IsAdmin: int,
+                IsAniDBUser: int,
+                IsTraktUser: int,
+                HideCategories: str,
+                CanEditServerSettings: int,
+                PlexUsers: str,
+                PlexToken: str
+                ):
+        self.JMMUserID: int = JMMUserID
+        self.Username: str = Username
+        self.Password: str = Password
+        self.IsAdmin: int = IsAdmin
+        self.IsAniDBUser: int = IsAniDBUser
+        self.IsTraktUser: int = IsTraktUser
+        self.HideCategories: str = HideCategories
+        self.CanEditServerSettings: int = CanEditServerSettings
+        self.PlexUsers: str = PlexUsers
+        self.PlexToken: str = PlexToken
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return JMMUser()
+        jmmuser: JMMUser = JMMUser()
+
+        jmmuser.JMMUserID = json.get("JMMUserID")
+        jmmuser.Username = json.get("Username")
+        jmmuser.Password = json.get("Password")
+        jmmuser.IsAdmin = json.get("IsAdmin")
+        jmmuser.IsAniDBUser = json.get("IsAniDBUser")
+        jmmuser.IsTraktUser = json.get("IsTraktUser")
+        jmmuser.HideCategories = json.get("HideCategories")
+        jmmuser.CanEditServerSettings = json.get("CanEditServerSettings")
+        jmmuser.PlexUsers = json.get("PlexUsers")
+        jmmuser.PlexToken = json.get("PlexToken")
+
+        return jmmuser
+
+
+class OSFolder:
+    def __init__(self,
+                dir: str = '',
+                full_path: str = '',
+                subdir: List[object] = []
+                ):
+        self.dir: str = dir
+        self.full_path: str = full_path
+        self.subdir: List[object] = subdir
+
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return OSFolder()
+        osfolder: OSFolder = OSFolder()
+
+        osfolder.dir = json.get("dir")
+        osfolder.full_path = json.get("full_path")
+        osfolder.subdir = []
+        for dir in json.get("subdir"):
+            osfolder.subdir.append(dir)
+
+        return osfolder
+
+
+class Logs:
+    def __init__(self,
+                rotate: bool = True,
+                zip: bool = True,
+                delete: bool = True,
+                days: int = 0
+                ):
+        self.rotate: bool = rotate
+        self.zip: bool = zip
+        self.delete: bool = delete
+        self.days: int = days
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return Logs()
+        logs: Logs = Logs()
+
+        logs.rotate = json.get("rotate")
+        logs.zip = json.get("zip")
+        logs.delete = json.get("delete")
+        logs.days = json.get("days")
+
+        return logs

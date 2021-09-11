@@ -819,6 +819,149 @@ def anidb_get() -> Credentials:
     # _json = json.loads(response)
     return Credentials.Decoder(response)
 
+def anidb_votes_sync():
+    # 500: Internal Server Error
+    """Sync votes bettween Local and AniDB and only upload to MAL"""
+    return api_client.call(url='/api/anidb/votes/sync', call_type=APIType.GET)
+
+def anidb_list_sync():
+    # 500: Internal Server Error
+    """Sync AniDB List"""
+    return api_client.call(url='/api/anidb/list/sync', call_type=APIType.GET)
+
+def anidb_update():
+    # 500: Internal Server Error
+    """Update all series infromation from AniDB"""
+    return api_client.call(url='/api/anidb/update', call_type=APIType.GET)
+
+def anidb_update_missing_cache():
+    # 500: Internal Server Error
+    """Update aniDB missing cache"""
+    return api_client.call(url='/api/anidb/updatemissingcache', call_type=APIType.GET)
+
+def trakt_get_code() -> dict:
+    """Get Trakt code and url
+    
+    Returns `dict` with `usercode` and `url`"""
+    return api_client.call(url='/api/trakt/code', call_type=APIType.GET)
+
+def trakt_get() -> Credentials:
+    """Return trakt authtoken"""
+    response = api_client.call(url='/api/trakt/get', call_type=APIType.GET)
+    return Credentials.Decoder(response)
+
+def trakt_sync():
+    """Sync Trakt Collection"""
+    return api_client.call(url='/api/trakt/sync', call_type=APIType.GET)
+
+def trakt_scan():
+    # 500: Internal Server Error
+    """Scan Trakt"""
+    return api_client.call(url='/api/trakt/scan', call_type=APIType.GET)
+
+def trakt_set():
+    """Not Implemented"""
+    pass
+
+def trakt_create():
+    """Not Implemented"""
+    pass
+
+def tvdb_update():
+    # 500: Internal Server Error
+    """Scan TvDB"""
+    return api_client.call(url='/api/tvdb/update', call_type=APIType.GET)
+
+def tvdb_regenrate_links():
+    # 500: Internal Server Error
+    """Regenerate All Episode Links"""
+    return api_client.call(url='/api/tvdb/regenlinks', call_type=APIType.GET)
+
+def tvdb_check_links():
+    """Check links"""
+    return api_client.call(url='/api/tvdb/checklinks', call_type=APIType.GET)
+
+def moviedb_update():
+    # 500: Internal Server Error
+    """Scan MovieDB"""
+    return api_client.call(url='/api/moviedb/update', call_type=APIType.GET)
+
+def user_list() -> dict:
+    """Get all users
+    
+    Returns `dict<int, str>`
+
+    `int` = id, `string` = username"""
+    return api_client.call(url='/api/user/list', call_type=APIType.GET)
+
+def user_create(user: JMMUser):
+    # 500: Internal Server Error
+    """Create user from Contract_JMMUser"""
+    return api_client.call(url='/api/user/create', call_type=APIType.POST, data=user.__dict__)
+
+def user_change_password(user: JMMUser):
+    # 500: Internal Server Error
+    """change current user password"""
+    return api_client.call(url='/api/user/password', call_type=APIType.POST, data=user.__dict__)
+
+def user_change_password_by_uid(uid: int, user: JMMUser):
+    # 500: Internal Server Error
+    """change current user password by uid"""
+    return api_client.call(url=f'/api/user/password/{uid}', call_type=APIType.POST, data=user.__dict__)
+
+def user_delete(user: JMMUser):
+    # 500: Internal Server Error
+    """Delete user from his ID"""
+    return api_client.call(url='/api/user/delete', call_type=APIType.POST, data=user.__dict__)
+
+def os_folder_base() -> OSFolder:
+    """Return OSFolder object that is a folder from which jmmserver is running"""
+    response = api_client.call(url='/api/os/folder/base', call_type=APIType.GET)
+    return OSFolder.Decoder(response)
+
+def os_folder_get(folder: OSFolder) -> OSFolder:
+    """Return OSFolder object of directory that was given via folder
+
+    Create OSFolder with at least `full_path` to receive OSFolder, trade that's fair enough :)"""
+    response = api_client.call(url='/os/folder', call_type=APIType.POST, data=folder.__dict__)
+    return OSFolder.Decoder(response)
+
+def os_drives() -> OSFolder:
+    """Return OSFolder with subdirs as every driver on local system"""
+    response = api_client.call(url='/api/os/drives', call_type=APIType.GET)
+    return OSFolder.Decoder(response)
+
+def log_run():
+    # 500: Internal Server Error
+    """Run LogRotator with current settings"""
+    return api_client.call(url='/api/log/get', call_type=APIType.GET)
+
+def log_set_rotate(logs: Logs):
+    # 500: Internal Server Error
+    """Set settings for LogRotator"""
+    return api_client.call(url='/api/log/rotate', call_type=APIType.POST, data=logs.__dict__)
+
+def log_get_rotate() -> Logs:
+    """Get settings for LogRotator"""
+    response = api_client.call(url='/api/log/rotate', call_type=APIType.GET)
+    return Logs.Decoder(response)
+
+def log_get(lines: int = 10, position: int = 0) -> dict:
+    """
+    Return int position - current position
+
+    Return string[] lines - lines from current log file
+    Parameters
+    ---
+       - `lines` - max lines to return
+       - `position` - position to seek
+    """
+    return api_client.call(url=f'/api/log/get/{lines}/{position}', call_type=APIType.GET)
+
+def images_update():
+    # 500: Internal Server Error
+    """Update images"""
+    return api_client.call(url='/api/images/update', call_type=APIType.GET)
 
 # print((config_port_get())['port'])
-print(series_groups(QueryOptions(id=1)))
+print(images_update())
