@@ -752,8 +752,8 @@ def series_from_anidb(opts: QueryOptions = QueryOptions()) -> Serie:
     
     Return list of series"""
     response = api_client.call(url='/api/serie/fromaid', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    # return Serie.Decoder(response)
+    # _json = json.loads(response)
+    return Serie.Decoder(response)
 
 #
 # Core
@@ -1146,4 +1146,41 @@ def version_get():
         output.append(ComponentVersion.Decoder(component))
     return output
 
-print(version_get())
+#
+# Webui
+#
+def webui_settings_get() -> WebUI_Settings:
+    """Read json file that is converted into string from .config file of jmmserver"""
+    response = api_client.call(url='/api/webui/config', call_type=APIType.GET)
+    return WebUI_Settings.Decoder(response)
+
+def webui_settings_set(settings: WebUI_Settings = WebUI_Settings()):
+    # 500: Internal Server Error
+    """Save webui settings as json converted into string inside .config file of jmmserver"""
+    return api_client.call(url='/api/webui/config', call_type=APIType.POST, data=settings.__dict__)
+    
+def webui_latest_stable() -> ComponentVersion:
+    """Check for newest stable version and return object 
+
+    {
+
+        version: string, 
+
+        url: string
+
+    }"""
+    response = api_client.call(url='/api/webui/latest/stable', call_type=APIType.GET)
+    return ComponentVersion.Decoder(response)
+
+def webui_latest_unstable() -> ComponentVersion:
+    """Check for newest unstable version and return object
+    
+    {
+
+        version: string, 
+
+        url: string
+
+    }"""
+    response = api_client.call(url='/api/webui/latest/unstable', call_type=APIType.GET)
+    return ComponentVersion.Decoder(response)

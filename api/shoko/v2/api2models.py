@@ -3227,3 +3227,46 @@ class ServerStatus:
         serverstatus.startup_failed_error_message = json.get("startup_failed_error_message")
 
         return serverstatus
+
+
+class WebUI_Settings:
+    def __init__(self,
+                actions: List[str] = [],
+                uiTheme: str = '',
+                uiNotifications: bool = True,
+                otherUpdateChannel: str = '',
+                logDelta: int = 0
+                ):
+        self.actions: List[str] = actions
+        self.uiTheme: str = uiTheme
+        self.uiNotifications: bool = uiNotifications
+        self.otherUpdateChannel: str = otherUpdateChannel
+        self.logDelta: int = logDelta
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return WebUI_Settings()
+        webui_settings: WebUI_Settings = WebUI_Settings()
+
+        webui_settings.actions = []
+        tmp = json.get("actions", [])
+        for action in tmp:
+            webui_settings.actions.append(action)
+        webui_settings.uiTheme = json.get("uiTheme")
+        webui_settings.uiNotifications = json.get("uiNotifications")
+        webui_settings.otherUpdateChannel = json.get("otherUpdateChannel")
+        webui_settings.logDelta = json.get("logDelta")
+
+        return webui_settings
