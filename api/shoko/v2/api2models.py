@@ -3153,3 +3153,77 @@ class Media:
         media.Chaptered = json.get("Chaptered")
 
         return media
+
+
+class ComponentVersion:
+    def __init__(self,
+                name: str = '',
+                version: str = '',
+                ):
+        self.name: str = name
+        self.version: str = version
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return ComponentVersion()
+        componentversion: ComponentVersion = ComponentVersion()
+
+        componentversion.name = json.get("name")
+        componentversion.version = json.get("version")
+
+        return componentversion
+
+
+class ServerStatus:
+    def __init__(self,
+                startup_state: str = '',
+                server_started: bool = True,
+                server_uptime: str = '',
+                first_run: bool = True,
+                startup_failed: bool = True,
+                startup_failed_error_message: str = ''
+                ):
+        self.startup_state: str = startup_state
+        self.server_started: bool = server_started
+        self.server_uptime: str = server_uptime
+        self.first_run: bool = first_run
+        self.startup_failed: bool = startup_failed
+        self.startup_failed_error_message: str = startup_failed_error_message
+
+    class Encoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+    def __repr__(self) -> str:
+        return f"<{self.__class__.__qualname__} {self.__dict__}>"
+
+    @staticmethod
+    def Decoder(json: dict):
+        if not isinstance(json, dict):
+            try:
+                json = json.__dict__
+            except:
+                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
+                return ServerStatus()
+        serverstatus: ServerStatus = ServerStatus()
+
+        serverstatus.startup_state = json.get("startup_state")
+        serverstatus.server_started = json.get("server_started")
+        serverstatus.server_uptime = json.get("server_uptime")
+        serverstatus.first_run = json.get("first_run")
+        serverstatus.startup_failed = json.get("startup_failed")
+        serverstatus.startup_failed_error_message = json.get("startup_failed_error_message")
+
+        return serverstatus

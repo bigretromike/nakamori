@@ -1014,4 +1014,84 @@ def image_random_by_type(type: int):
     """Return random image with given type and not from restricted content"""
     return api_client.call(url=f'/api/v2/image/{type}/random', call_type=APIType.GET)
 
-print(image_random_by_type(1))
+#
+# Init
+#
+def init_version_get():
+    """Return current version of ShokoServer and several modules
+    
+    This will work after init"""
+    response = api_client.call(url='/api/init/version', call_type=APIType.GET)
+    output: List[ComponentVersion] = []
+    for component in response:
+        output.append(ComponentVersion.Decoder(component))
+    return output
+
+def init_status_get() -> ServerStatus:
+    """Gets various information about the startup status of the server"""
+    response = api_client.call(url='/api/init/status', call_type=APIType.GET)
+    return ServerStatus.Decoder(response)
+
+def init_is_in_use() -> bool:
+    """Gets whether anything is actively using the API"""
+    return api_client.call(url='/api/init/inuse', call_type=APIType.GET)
+
+def init_default_user_get() -> Credentials:
+    # 403: Forbidden
+    """Gets the Default user's credentials. Will only return on first run"""
+    response = api_client.call(url='/api/init/defaultuser', call_type=APIType.GET)
+    return Credentials.Decoder(response)
+
+def init_default_user_set(creds: Credentials):
+    # 403: Forbidden
+    """Sets the default user's credentials"""
+    return api_client.call(url='/api/init/defaultuser', call_type=APIType.POST, data=creds.__dict__)
+
+def init_start_server():
+    # 500: Internal Server Error
+    """Starts the server, or does nothing"""
+    return api_client.call(url='/api/init/startserver', call_type=APIType.GET)
+
+def init_anidb_set(creds: Credentials):
+    """Set AniDB account credentials with a Credentials object"""
+    return api_client.call(url='/api/init/anidb', call_type=APIType.POST, data=creds.__dict__)
+
+def init_anidb_get() -> Credentials:
+    # 403: Forbidden
+    """Return existing login and ports for AniDB"""
+    response = api_client.call(url='/api/init/anidb', call_type=APIType.GET)
+    return Credentials.Decoder(response)
+
+def init_anidb_test():
+    # 403: Forbidden
+    """Test AniDB Creditentials"""
+    return api_client.call(url='/api/init/anidb/test', call_type=APIType.GET)
+
+def init_database_get() -> DatabaseSettings:
+    # 403: Forbidden
+    """Get Database Settings"""
+    response = api_client.call(url='/api/init/database', call_type=APIType.GET)
+    return DatabaseSettings.Decoder(response)
+
+def init_database_set(settings: DatabaseSettings):
+    # 403: Forbidden
+    """Set Database Settings"""
+    return api_client.call(url='/api/init/database', call_type=APIType.POST, data=settings.__dict__)
+
+def init_database_test():
+    # 403: Forbidden
+    """Test Database Connection with Current Settings"""
+    return api_client.call(url='/api/init/database/test', call_type=APIType.GET)
+
+def init_database_sql_server_instance_get() -> List[str]:
+    # 403: Forbidden
+    """Get SQL Server Instances Running on this Machine"""
+    return api_client.call(url='/api/init/database/sqlserverinstance', call_type=APIType.GET)
+
+def init_config_export() -> ServerSettingsExport:
+    """Return body of current working settings.json - this could act as backup"""
+    response = api_client.call(url='/api/init/config', call_type=APIType.GET)
+    # _json = json.loads(response)
+    return ServerSettingsExport.Decoder(response)
+
+print(init_database_sql_server_instance_get())
