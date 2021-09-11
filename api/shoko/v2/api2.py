@@ -35,8 +35,7 @@ def login_user(auth: AuthUser) -> str:
         "pass": auth.password,
         "device": auth.device
     }
-    response = api_client.call(url='/api/auth', call_type=APIType.POST, data=data, auth=False)
-    return json.loads(response)
+    return api_client.call(url='/api/auth', call_type=APIType.POST, data=data, auth=False)
 
 def delete_user_apikey(apikey: str):
     """
@@ -87,14 +86,14 @@ def cloud_import():
 
 def filter(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Filter.Decoder(_json)
+    # _json = json.loads(response)
+    return Filter.Decoder(response)
 
 def group(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/group', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Group] = []
-    for group in _json:
+    for group in response:
         output.append(Group.Decoder(group))
     return output
 
@@ -106,9 +105,9 @@ def group_watch(id: int):
 
 def group_search(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/group/search', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Group] = []
-    for group in _json:
+    for group in response:
         output.append(Group.Decoder(group))
     return output
 
@@ -117,16 +116,16 @@ def cast_by_series(id: int):
         'id': id
     }
     response = api_client.call(url='/api/cast/byseries', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Role] = []
-    for role in _json:
+    for role in response:
         output.append(Role.Decoder(role))
     return output
 
 def cast_search(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/cast/search', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Filter.Decoder(_json)
+    # _json = json.loads(response)
+    return Filter.Decoder(response)
 
 def links_serie(id: int):
     query = {
@@ -139,9 +138,9 @@ def folder_list():
     List all saved Import Folders
     """
     response = api_client.call(url='/api/folder/list', call_type=APIType.GET)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[ImportFolder] = []
-    for folder in _json:
+    for folder in response:
         output.append(ImportFolder.Decoder(folder))
     return output
 
@@ -150,24 +149,24 @@ def folder_count() -> Counter:
     Get import folders count
     """
     response = api_client.call(url='/api/folder/count', call_type=APIType.GET)
-    _json = json.loads(response)
-    return Counter.Decoder(_json)
+    # _json = json.loads(response)
+    return Counter.Decoder(response)
 
 def folder_add(folder: ImportFolder) -> ImportFolder:
     """
     Add Folder to Import Folders Repository
     """
     response = api_client.call(url='/api/folder/add', call_type=APIType.POST, data=folder.__dict__)
-    _json = json.loads(response)
-    return ImportFolder.Decoder(_json)
+    # _json = json.loads(response)
+    return ImportFolder.Decoder(response)
 
 def folder_edit(folder: ImportFolder) -> ImportFolder:
     """
     Edit folder giving fulll ImportFolder object with ID
     """
     response = api_client.call(url='/api/folder/edit', call_type=APIType.POST, data=folder.__dict__)
-    _json = json.loads(response)
-    return ImportFolder.Decoder(_json)
+    # _json = json.loads(response)
+    return ImportFolder.Decoder(response)
 
 def folder_delete(id: int):
     """
@@ -278,21 +277,21 @@ def news_get(max: int):
         'max': max
     }
     response = api_client.call(url='/api/news/get', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[WebNews] = []
-    for new in _json:
+    for new in response:
         output.append(WebNews.Decoder(new))
     return output
 
 def search(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/search', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Filter.Decoder(_json)
+    # _json = json.loads(response)
+    return Filter.Decoder(response)
 
 def serie_startswith(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/serie/startswith', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Filter.Decoder(_json)
+    # _json = json.loads(response)
+    return Filter.Decoder(response)
 
 def ping() -> dict:
     """
@@ -311,10 +310,10 @@ def queue_get():
         images : `QueueInfo`
     }"""
     response = api_client.call(url='/api/queue/get', call_type=APIType.GET)
-    _json: dict = json.loads(response)
+    # _json: dict = json.loads(response)
     output: dict[str, QueueInfo] = {}
-    for row in _json.keys():
-         queueinfo = QueueInfo.Decoder(_json.get(row))
+    for row in response.keys():
+         queueinfo = QueueInfo.Decoder(response.get(row))
          output[row] = queueinfo
     return output
 
@@ -329,8 +328,8 @@ def queue_start():
 def queue_hasher_get() -> QueueInfo:
     """Return information about Hasher queue"""
     response = api_client.call(url='/api/queue/hasher/get', call_type=APIType.GET)
-    _json = json.loads(response)
-    return QueueInfo.Decoder(_json)
+    # _json = json.loads(response)
+    return QueueInfo.Decoder(response)
 
 def queue_hasher_pause():
     """Pause hasher queue"""
@@ -347,8 +346,8 @@ def queue_hasher_clear():
 def queue_general_get() -> QueueInfo:
     """Return information about general queue"""
     response = api_client.call(url='/api/queue/general/get', call_type=APIType.GET)
-    _json = json.loads(response)
-    return QueueInfo.Decoder(_json)
+    # _json = json.loads(response)
+    return QueueInfo.Decoder(response)
 
 def queue_general_pause():
     """Pause general queue"""
@@ -365,8 +364,8 @@ def queue_general_clear():
 def queue_images_get() -> QueueInfo:
     """Return information about images queue"""
     response = api_client.call(url='/api/queue/images/get', call_type=APIType.GET)
-    _json = json.loads(response)
-    return QueueInfo.Decoder(_json)
+    # _json = json.loads(response)
+    return QueueInfo.Decoder(response)
 
 def queue_images_pause():
     """Pause images queue"""
@@ -389,9 +388,9 @@ def file(id: int = 0, limit: int = 0, level: int = 0):
         'level': level
     }
     response = api_client.call(url='/api/file', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[RawFile] = []
-    for file in _json:
+    for file in response:
         output.append(RawFile.Decoder(file))
     return output
 
@@ -403,9 +402,9 @@ def file_needs_av_dumped(level: int):
         'level': level
     }
     response = api_client.call(url='/api/file/needsavdumped', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[RawFile] = []
-    for file in _json:
+    for file in response:
         output.append(RawFile.Decoder(file))
     return output
 
@@ -421,25 +420,25 @@ def file_deprecated(level: int):
         'level': level
     }
     response = api_client.call(url='/api/file/deprecated', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[RawFile] = []
-    for file in _json:
+    for file in response:
         output.append(RawFile.Decoder(file))
     return output
 
 def file_multiple(opts: QueryOptions = QueryOptions()):
     response = api_client.call(url='/api/file/multiple', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for file in _json:
+    for file in response:
         output.append(Serie.Decoder(file))
     return output
     # return api_client.call(url='/api/file/multiple', call_type=APIType.GET, query=opts.__dict__)
 
 def file_count() -> Counter:
     response = api_client.call(url='/api/file/count', call_type=APIType.GET)
-    _json = json.loads(response)
-    return Counter.Decoder(_json)
+    # _json = json.loads(response)
+    return Counter.Decoder(response)
 
 def file_recent(limit: int = 0, level: int = 0):
     """Get recent files"""
@@ -448,9 +447,9 @@ def file_recent(limit: int = 0, level: int = 0):
         'level': level
     }
     response = api_client.call(url='/api/file/recent', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[RecentFile] = []
-    for file in _json:
+    for file in response:
         output.append(RecentFile.Decoder(file))
     return output
 
@@ -462,9 +461,9 @@ def file_unsort(offset: int = 0, level: int = 0, limit: int = 0):
         'level': level
     }
     response = api_client.call(url='/api/file/unsort', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[RawFile] = []
-    for file in _json:
+    for file in response:
         output.append(RawFile.Decoder(file))
     return output
 
@@ -484,9 +483,9 @@ def file_watch(id: int):
 def episodes_get(opts: QueryOptions = QueryOptions()):
     """Get episodes"""
     response = api_client.call(url='/api/ep', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Episode] = []
-    for episode in _json:
+    for episode in response:
         output.append(Episode.Decoder(episode))
     return output
 
@@ -497,8 +496,8 @@ def episode_get_by_filename(filename: str, pic: int = 1):
         'pic': pic
     }
     response = api_client.call(url='/api/ep/getbyfilename', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
-    return Episode.Decoder(_json)
+    # _json = json.loads(response)
+    return Episode.Decoder(response)
 
 def episodes_get_by_hash(hash: str, pic: int = 1):
     """Get episodes by hash"""
@@ -507,9 +506,9 @@ def episodes_get_by_hash(hash: str, pic: int = 1):
         'pic': pic
     }
     response = api_client.call(url='/api/ep/getbyhash', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Episode] = []
-    for episode in _json:
+    for episode in response:
         output.append(Episode.Decoder(episode))
     return output
 
@@ -517,9 +516,9 @@ def episodes_get_recent(opts: QueryOptions = QueryOptions()):
     """Get recent episodes
     """
     response = api_client.call(url='/api/ep/recent', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Episode] = []
-    for episode in _json:
+    for episode in response:
         output.append(Episode.Decoder(episode))
     return output
 
@@ -531,9 +530,9 @@ def episodes_serie_get_missing(all: bool, pic: int, tagfilter: int):
         'tagfilter': tagfilter
     }
     response = api_client.call(url='/api/ep/missing', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for serie in _json:
+    for serie in response:
         output.append(Serie.Decoder(serie))
     return output
 
@@ -587,26 +586,26 @@ def episode_last_watched(query: str, pic: int, level: int, limit: int, offset: i
         'offset': offset
     }
     response = api_client.call(url='/api/ep/last_watched', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Episode] = []
-    for ep in _json:
+    for ep in response:
         output.append(Episode.Decoder(ep))
     return output
 
 def series_get(opts: QueryOptions = QueryOptions):
     """Get list of `Series`"""
     response = api_client.call(url='/api/serie', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for serie in _json:
+    for serie in response:
         output.append(Serie.Decoder(serie))
     return output
 
 def series_count() -> Counter:
     """Get count of `Series`"""
     response = api_client.call(url='/api/serie/count', call_type=APIType.GET)
-    _json = json.loads(response)
-    return Counter.Decoder(_json)
+    # _json = json.loads(response)
+    return Counter.Decoder(response)
 
 def series_today(opts: QueryOptions = QueryOptions) -> Group:
     """Get list of "today" `Series`
@@ -617,14 +616,14 @@ def series_today(opts: QueryOptions = QueryOptions) -> Group:
 
     // 3. calculate which series have most of the files released today"""
     response = api_client.call(url='/api/serie/today', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Group.Decoder(_json)
+    # _json = json.loads(response)
+    return Group.Decoder(response)
 
 def series_bookmark(opts: QueryOptions = QueryOptions) -> Group:
     """Return bookmarked series"""
     response = api_client.call(url='/api/serie/bookmark', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Group.Decoder(_json)
+    # _json = json.loads(response)
+    return Group.Decoder(response)
 
 def series_bookmark_add(id: int):
     """Add serie (by anidb `id`) to bookmark"""
@@ -647,21 +646,21 @@ def series_calendar_refresh():
 def series_soon(opts: QueryOptions = QueryOptions) -> Group:
     """Return group of series airing soon"""
     response = api_client.call(url='/api/serie/soon', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Group.Decoder(_json)
+    # _json = json.loads(response)
+    return Group.Decoder(response)
 
 def series_calendar(opts: QueryOptions = QueryOptions) -> Group:
     """Return group of series airing soon"""
     response = api_client.call(url='/api/serie/calendar', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Group.Decoder(_json)
+    # _json = json.loads(response)
+    return Group.Decoder(response)
 
 def series_get_by_folder(opts: QueryOptions = QueryOptions):
     """Return list of series by folder"""
     response = api_client.call(url='/api/serie/byfolder', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for serie in _json:
+    for serie in response:
         output.append(Serie.Decoder(serie))
     return output
 
@@ -671,15 +670,15 @@ def series_get_info_by_folder(id: int) -> FolderInfo:
         'id': id
     }
     response = api_client.call(url='/api/serie/infobyfolder', call_type=APIType.GET, query=query)
-    _json = json.loads(response)
-    return FolderInfo.Decoder(_json)
+    # _json = json.loads(response)
+    return FolderInfo.Decoder(response)
 
 def series_get_recent(opts: QueryOptions = QueryOptions):
     """Return list of recent series"""
     response = api_client.call(url='/api/serie/recent', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for serie in _json:
+    for serie in response:
         output.append(Serie.Decoder(serie))
     return output
 
@@ -708,18 +707,18 @@ def serie_vote(id: int, score: int):
 def series_search(opts: QueryOptions = QueryOptions()):
     """Return list of series"""
     response = api_client.call(url='/api/serie/search', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for serie in _json:
+    for serie in response:
         output.append(Serie.Decoder(serie))
     return output
 
 def series_search_tag(opts: QueryOptions = QueryOptions()):
     """Return list of series"""
     response = api_client.call(url='/api/serie/tag', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Serie] = []
-    for serie in _json:
+    for serie in response:
         output.append(Serie.Decoder(serie))
     return output
 
@@ -730,8 +729,8 @@ def series_from_ep(opts: QueryOptions = QueryOptions()) -> Serie:
     
     Return list of series"""
     response = api_client.call(url='/api/serie/fromep', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
-    return Serie.Decoder(_json)
+    # _json = json.loads(response)
+    return Serie.Decoder(response)
 
 def series_groups(opts: QueryOptions = QueryOptions()):
     """Get all related AnimeGroups for a series ID
@@ -740,9 +739,9 @@ def series_groups(opts: QueryOptions = QueryOptions()):
     
     Return list of series"""
     response = api_client.call(url='/api/serie/groups', call_type=APIType.GET, query=opts.__dict__)
-    _json = json.loads(response)
+    # _json = json.loads(response)
     output: list[Group] = []
-    for group in _json:
+    for group in response:
         output.append(Group.Decoder(group))
     return output
 
@@ -754,7 +753,7 @@ def series_from_anidb(opts: QueryOptions = QueryOptions()) -> Serie:
     Return list of series"""
     response = api_client.call(url='/api/serie/fromaid', call_type=APIType.GET, query=opts.__dict__)
     _json = json.loads(response)
-    return Serie.Decoder(_json)
+    # return Serie.Decoder(response)
 
 #
 # Core
@@ -771,8 +770,7 @@ def config_port_get() -> dict:
     """Get JMMServer Port
     
     Returns dict like response['port']"""
-    response = api_client.call(url='/api/config/port/get', call_type=APIType.GET)
-    return json.loads(response)
+    return api_client.call(url='/api/config/port/get', call_type=APIType.GET)
 
 def config_image_path_set(image_path: ImagePath):
     # 500: Internal Server Error
@@ -782,19 +780,45 @@ def config_image_path_set(image_path: ImagePath):
 def config_image_path_get() -> ImagePath:
     """Return ImagePath object"""
     response = api_client.call(url='/api/config/imagepath/get', call_type=APIType.GET)
-    _json = json.loads(response)
-    return ImagePath.Decoder(_json)
+    # _json = json.loads(response)
+    return ImagePath.Decoder(response)
 
 def config_export() -> ServerSettingsExport:
     """Return body of current working settings.json - this could act as backup"""
     response = api_client.call(url='/api/config/export', call_type=APIType.GET)
-    _json = json.loads(response)
-    return ServerSettingsExport.Decoder(_json)
+    # _json = json.loads(response)
+    return ServerSettingsExport.Decoder(response)
 
 def config_import(settings: ServerSettingsImport):
     """Import config file that was sent to in API body - this act as import from backup"""
-    return api_client.call(url='/api/config/import', call_type=APIType.POST, date=settings.__dict__)
+    return api_client.call(url='/api/config/import', call_type=APIType.POST, data=settings.__dict__)
+
+def config_get():
+    return "Use APIv3's implementation"
+
+def config_set():
+    return "Use APIv3's JsonPatch implementation"
+
+def config_set_multiple():
+    return "Use APIv3's JsonPatch implementation"
+
+def anidb_set(creds: Credentials):
+    # 500: Internal Server Error
+    """Set AniDB account with login, password and client port"""
+    return api_client.call(url='/api/anidb/set', call_type=APIType.POST, data=creds.__dict__)
+
+def anidb_test_creds():
+    # 500: Internal Server Error
+    """Test AniDB Creditentials"""
+    return api_client.call(url='/api/anidb/test', call_type=APIType.GET)
+
+def anidb_get() -> Credentials:
+    """Return login/password/port of used AniDB"""
+    response = api_client.call(url='/api/anidb/get', call_type=APIType.GET)
+    # print(response)
+    # _json = json.loads(response)
+    return Credentials.Decoder(response)
+
 
 # print((config_port_get())['port'])
-# print(config_image_path_get())
-print(config_export())
+print(series_groups(QueryOptions(id=1)))
