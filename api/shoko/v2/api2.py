@@ -93,12 +93,10 @@ class Client:
         # 501: Not Implemented
         return self.api_client.call(url='/api/cloud/import', call_type=APIType.POST)
     
-    def filter(self, opts: QueryOptions = QueryOptions()) -> List[Filter]:
+    def filter(self, opts: QueryOptions = QueryOptions()) -> Filters:
+        import xbmc
         response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
-        list_of_filters = []
-        for f in response:
-            list_of_filters.append(Filter.Decoder(f))
-        return list_of_filters
+        return Filters.Decoder(response)
     
     def group(self, opts: QueryOptions = QueryOptions()):
         response = self.api_client.call(url='/api/group', call_type=APIType.GET, query=opts.__dict__)

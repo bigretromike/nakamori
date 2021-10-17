@@ -40,6 +40,8 @@ def ListAllFilters() -> List[ListItem]:
     xbmc.log('---------->', xbmc.LOGINFO)
     xbmc.log(f'----------> {x}', xbmc.LOGINFO)
 
-    for f in x:
-        list_of_listitems.append(get_listitem(f))
+    for f in x.filters:
+        d = api2models.Filter.Decoder(f)
+        list_of_listitems.append(get_listitem(d))
+
     return list_of_listitems
