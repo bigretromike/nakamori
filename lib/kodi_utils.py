@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+
+import os
+from uuid import uuid4
+
+import xbmcaddon
+import xbmcvfs
+import xbmcgui
+import xbmc
+
+plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
+
+
+def create_id():
+    """
+    Return random device id
+    :return: str
+    """
+    return int(uuid4())
+
+
+def get_device_id(reset: bool = False):
+    """
+    Return current DeviceID or create and save new one
+    :param reset: Reset current DeviceID
+    :return: DeviceID: str
+    """
+    device_id = xbmcgui.Window(10000).getProperty('nakamori_deviceId')
+    if device_id:
+        return device_id
+    directory = xbmcvfs.translatePath(plugin_addon.getAddonInfo('profile'))
+    nakamori_guid = os.path.join(directory, "nakamori_guid")
+    file_guid = xbmcvfs.File(nakamori_guid)
+    device_id = file_guid.read()
+
+    if not device_id or reset:
+        device_id = str("%016X" % create_id())
+        file_guid = xbmcvfs.File(nakamori_guid, "w")
+        file_guid.write(device_id)
+
+    file_guid.close()
+
+    xbmcgui.Window(10000).setProperty('nakamori_deviceId', device_id)
+    return device_id
+
+
+def message_box(title, text):
+    xbmcgui.Dialog().ok(title, text)
+
+
+def bold(value):
+    return ''.join(['[B]', value, '[/B]'])
+
+
+def color(text_to_color, color_name, enable_color=True):
+    if enable_color:
+        return ''.join(['[COLOR %s]' % color_name, text_to_color, '[/COLOR]'])
+    return text_to_color

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="9999">
+	<defaultcontrol always="true">9001</defaultcontrol>
+	<coordinates>
+		<posx>560</posx>
+		<posy>340</posy>
+	</coordinates>
+	<animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+	<controls>
+        <!-- cover-everything -->
+		<control type="image">
+			<description>Fade</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>2200</width>
+			<height>2200</height>
+			<texture>background-fade.png</texture>
+		</control>
+        <!-- top-of-box -->
+		<control type="group">
+            <!-- box shape -->
+			<control type="image">
+				<description>background-panel-image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>800</width>
+				<height>400</height>
+				<texture>background-panel-image.png</texture>
+			</control>
+            <!-- box-title -->
+			<control type="label">
+				<description>header label</description>
+				<posx>0</posx>
+				<posy>15</posy>
+				<width>736</width>
+				<height>50</height>
+                <label>$ADDON[script.module.nakamori 30041]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font30</font>
+				<textcolor>FFFFFFFF</textcolor>
+			</control>
+            <!-- box-close-x (if enablemouse)-->
+			<control type="button">
+				<description>close-wizard</description>
+				<posx>736</posx>
+				<posy>-32</posy>
+				<width>64</width>
+				<height>32</height>
+				<label>-</label>
+				<font>-</font>
+				<onclick>Back</onclick>
+				<texturefocus>close-fo.png</texturefocus>
+				<texturenofocus>close-nofo.png</texturenofocus>
+				<visible>system.getbool(input.enablemouse)</visible>
+			</control>
+		</control>
+        <!-- labels -->
+        <control type="grouplist" id="9003">
+			<posx>20</posx>
+			<posy>120</posy>
+			<width>170</width>
+			<height>280</height>
+			<align>center</align>
+			<itemgap>5</itemgap>
+			<orientation>vertical</orientation>
+            <!-- ip_address -->
+			<control type="label" id="303">
+				<description>ip_address</description>
+				<width>170</width>
+				<height>60</height>
+				<font>font12</font>
+				<label>$ADDON[script.module.nakamori 30002]</label>
+				<textcolor>AAFFFFFF</textcolor>
+			</control>
+            <!-- port -->
+			<control type="label" id="304">
+				<description>port</description>
+				<width>170</width>
+				<height>60</height>
+				<font>font12</font>
+				<label>$ADDON[script.module.nakamori 30003]</label>
+				<textcolor>AAFFFFFF</textcolor>
+			</control>
+		</control>
+        <!-- inputs -->
+		<control type="grouplist" id="9002">
+			<posx>190</posx>
+			<posy>100</posy>
+			<width>600</width>
+			<height>280</height>
+			<align>center</align>
+			<itemgap>5</itemgap>
+			<orientation>vertical</orientation>
+            <!-- ip_address -->
+			<control type="edit" id="203">
+                <top>0</top>
+				<description>ip_address</description>
+				<width>360</width>
+				<height>70</height>
+				<font>font12</font>
+				<label></label>
+				<textcolor>AAFFFFFF</textcolor>
+                <textoffsety>15</textoffsety>
+                <textoffsetx>30</textoffsetx>
+			</control>
+            <!-- port -->
+			<control type="edit" id="204">
+                <top>0</top>
+				<description>port</description>
+				<width>360</width>
+				<height>70</height>
+				<font>font12</font>
+				<label></label>
+				<textcolor>AAFFFFFF</textcolor>
+                <textoffsety>15</textoffsety>
+                <textoffsetx>30</textoffsetx>
+			</control>
+		</control>
+        <!-- bottom_button -->
+		<control type="grouplist" id="9001">
+			<posx>615</posx>
+			<posy>305</posy>
+			<width>200</width>
+			<height>110</height>
+			<align>center</align>
+			<itemgap>20</itemgap>
+			<orientation>vertical</orientation>
+            <!-- test_button -->
+			<control type="button" id="201">
+				<description>Test</description>
+				<width>170</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$ADDON[script.module.nakamori 30006]</label>
+				<font>font12_title</font>
+				<textcolor>AAFFFFFF</textcolor>
+				<texturenofocus>button-nofo.png</texturenofocus>
+				<texturefocus>button-fo.png</texturefocus>
+				<textoffsetx>10</textoffsetx>
+			</control>
+		</control>
+	</controls>
+</window>

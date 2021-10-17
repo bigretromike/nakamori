@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<!-- shoko settings -->
+    <category label="30001"> <!-- Shoko Settings -->
+        <setting label="30006" type="lsep"/> <!-- Shoko Server -->
+        <!--<setting label="30082" type="action" id="action4" action="RunScript(script.module.nakamori,/dialog/wizard/connection)" option="close"/>-->
+        <!--<setting label="30099" type="action" id="action5" action="RunScript(script.module.nakamori,/dialog/wizard/login)" option="close"/>-->
+		<setting label="30100" type="bool" id="more_30001" default="false"/>
+		<!-- advanced -->
+        <setting label="30044" type="lsep" visible="eq(-1,true)"/> <!-- Advanced -->
+		<setting label="30017" type="text" id="device" default="nakamori" visible="eq(-2,true)"/>
+		<!-- hidden -->
+        <setting type="text" id="apikey" visible="false"/>
+        <setting type="text" id="ipaddress" default="127.0.0.1" visible="false"/>
+        <setting type="number" id="port" default="8111" visible="false"/>
+        <setting type="text" id="login" default="Default" visible="false"/>
+        <setting type="text" id="password" options="hidden" visible="false"/>
+        <setting type="text" id="version" visible="false" default="3.0.9"/>
+		<!-- wizard -->
+        <!-- TODO REPLACE ME WITH LOG OUT ETC -->
+		<!--<setting label="30082" type="action" id="action4" action="RunScript(script.module.nakamori,/logout)" option="close"/>-->
+    </category>
+	<!-- Main Menu Items -->
+    <category label="30098">
+        <setting label="30230" type="bool" id="customize_main_menu" default="false"/>
+        <!-- menu / color / bold -->
+        <setting label="30221" type="bool" id="show_search" default="true"/>
+        <setting label="30229" type="select" id="color_search" subsetting="true" enable="eq(-2,true)" visible="eq(-2,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_search" subsetting="true" enable="eq(-3,true)" visible="eq(-3,true)" default="false"/>
+        <setting label="30107" type="bool" id="show_settings" default="true"/>
+        <setting label="30229" type="select" id="color_settings" subsetting="true" enable="eq(-5,true)" visible="eq(-5,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_settings" subsetting="true" enable="eq(-6,true)" visible="eq(-6,true)" default="false"/>
+        <setting label="30222" type="bool" id="show_calendar" default="true"/>
+        <setting label="30229" type="select" id="color_calendar" subsetting="true" enable="eq(-8,true)" visible="eq(-8,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_calendar" subsetting="true" enable="eq(-9,true)" visible="eq(-9,true)" default="false"/>
+        <setting label="30106" type="bool" id="show_unsort" default="true"/>
+        <setting label="30229" type="select" id="color_unsort" subsetting="true" enable="eq(-11,true)" visible="eq(-11,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_unsort" subsetting="true" enable="eq(-12,true)" visible="eq(-12,true)" default="false"/>
+        <setting label="30115" type="bool" id="show_shoko" default="false"/>
+        <setting label="30229" type="select" id="color_shoko" subsetting="true" enable="eq(-14,true)" visible="eq(-14,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_shoko" subsetting="true" enable="eq(-15,true)" visible="eq(-15,true)" default="false"/>
+        <setting label="30211" type="bool" id="show_favorites" default="true"/>
+        <setting label="30229" type="select" id="color_favorites" subsetting="true" enable="eq(-17,true)" visible="eq(-17,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_favorites" subsetting="true" enable="eq(-18,true)" visible="eq(-18,true)" default="false"/>
+        <setting label="30215" type="bool" id="show_bookmark" default="true"/>
+        <setting label="30229" type="select" id="color_bookmark" subsetting="true" enable="eq(-20,true)" visible="eq(-20,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_bookmark" subsetting="true" enable="eq(-21,true)" visible="eq(-21,true)" default="false"/>
+        <setting label="30170" type="bool" id="show_recent2" default="true"/>
+        <setting label="30229" type="select" id="color_recent2" subsetting="true" enable="eq(-23,true)" visible="eq(-23,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30232" type="bool" id="bold_recent2" subsetting="true" enable="eq(-24,true)" visible="eq(-24,true)" default="false"/>
+        <!-- skip / bold_filters -->
+        <setting label="30150" type="bool" id="skip_information" default="false"/>
+        <setting label="30231" type="bool" id="bold_filters" default="true" enable="eq(-26,true)" visible="eq(-26,true)"/>
+	</category>
+	<!-- browsing -->
+    <category label="30054">
+		<!-- title settings -->
+        <setting label="30056" type="lsep"/>
+        <setting label="30052" type="bool" id="use_server_title" default="false"/>
+        <setting label="30009" type="select" id="displaylang" default="x-jat" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)" visible="eq(-1,false)"/>
+        <setting label="30010" type="labelenum" id="title_type" default="Main" values="Official|Main|Synonym|Short" enable="eq(-2,false)" visible="eq(-2,false)"/>
+        <!-- title colorization -->
+        <setting label="30019" type="lsep"/>
+        <setting label="30073" type="bool" id="color_title" default="true"/>
+        <setting label="30031" type="select" id="title_color_finish" enable="eq(-1,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30043" type="select" id="title_color_finish_missing" enable="eq(-2,true)" default="red" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30060" type="select" id="title_color_finish_special" enable="eq(-3,true)" default="aqua" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30041" type="select" id="title_color_airing" enable="eq(-4,true)" default="yellow" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30059" type="select" id="title_color_airing_missing" enable="eq(-5,true)" default="lightgoldenrodyellow" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <setting label="30071" type="select" id="title_color_airing_special" enable="eq(-6,true)" default="blueviolet" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
+        <!-- sorting -->
+        <setting label="30144" type="lsep"/>
+        <setting label="30142" type="select" id="default_sort_series" default="Server" values="Server|Title|Date|Rating|Year"/>
+        <setting label="30143" type="select" id="default_sort_episodes" default="Episode" values="Server|Episode|Date|Title|Rating|Year"/>
+        <!-- spoiler control -->
+        <setting label="30074" type="lsep"/>
+        <setting label="30075" type="labelenum" id="hide_title" default="Never" values="Episodes|Specials|Both|Never"/>
+        <setting label="30113" type="labelenum" id="hide_rating" default="Never" values="Never|Unwatched|All Unwatched|Always"/>
+        <!-- Kodi has errors in comparing text in visibility and enabled status. This should be fixed in Leia -->
+        <setting label="30111" type="labelenum" id="hide_rating_type" default="Both" values="Episodes|Series|Both" enable="!eq(-1,Never)" visible="!eq(-1,Never)"/>
+        <setting label="30077" type="bool" id="hide_images" default="false"/>
+        <setting label="30078" type="bool" id="hide_plot" default="false"/>
+        <!-- tweaks -->
+		<setting label="30064" type="lsep"/>
+        <setting label="30039" type="bool" id="show_continue" default="false"/>
+        <setting label="30072" type="bool" id="replace_continue" enable="eq(-1,true)" default="false"/>
+		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
+        <setting label="30040" type="bool" id="local_total" default="true"/>
+        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
+        <!-- Context Menu Settings -->
+		<setting label="30057" type="lsep"/>
+        <setting type="bool" id="eigakan_handshake" default="false" visible="false"/>
+        <setting label="30065" type="bool" id="context_show_play" default="true" />
+		<setting type="bool" id="trakt_scrobble" default="false" visible="false"/>
+        <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" enable="eq(-1,true)"/>
+        <setting label="30174" type="bool" id="context_show_force_transcode" default="false" enable="eq(-4,true)"/>
+        <setting label="30175" type="bool" id="context_show_directplay" default="true" enable="eq(-5,true)"/>
+        <setting label="30177" type="bool" id="context_show_probe" default="true" enable="eq(-6,true)"/>
+        <setting label="30133" type="bool" id="context_pick_file" default="true"/>
+        <setting label="30130" type="bool" id="context_playlist" default="true"/>
+        <setting label="30062" type="bool" id="context_krypton_watched" default="true"/>
+        <setting label="30125" type="bool" id="context_show_vote_Episode" default="true"/>
+        <setting label="30124" type="bool" id="context_show_vote_Series" default="true"/>
+        <setting label="30123" type="bool" id="context_show_info" default="true"/>
+        <setting label="30134" type="bool" id="context_view_cast" default="true"/>
+        <setting label="30131" type="bool" id="context_refresh" default="true"/>
+        <!-- maintenance -->
+		<setting label="30097" type="lsep"/>
+       <!-- <setting label="30080" type="action" id="action1" action="RunScript(script.module.nakamori,/kodi/clear_listitem_cache)" option="close"/> -->
+       <!--<setting label="30139" type="action" id="action2" action="RunScript(script.module.nakamori,/kodi/clear_image_cache)" option="close"/> -->
+    </category>
+    <category label="30046">
+        <!-- tag blacklist -->
+		<setting label="30046" type="lsep"/>
+        <setting label="30227" type="labelenum" id="InvertTags" default="Hide" values="Show|Hide"/>
+        <setting label="30028" type="bool" id="short_tag_list" default="true"/>
+        <setting label="30045" type="bool" id="MiscTags" default="false"/>
+        <setting label="30047" type="bool" id="ArtTags" default="false"/>
+        <setting label="30048" type="bool" id="SourceTags" default="false"/>
+        <setting label="30049" type="bool" id="UsefulMiscTags" default="false"/>
+        <setting label="30050" type="bool" id="SpoilerTags" default="false"/>
+        <setting label="30070" type="bool" id="SettingTags" default="false"/>
+        <setting label="30013" type="bool" id="ProgrammingTags" default="false"/>
+        <setting label="30226" type="bool" id="GenreTags" default="false"/>
+    </category>
+    <category label="30221">
+        <!-- searching -->
+        <setting label="30021" type="lsep"/> <!-- Searching -->
+        <setting label="30022" type="number" id="maxlimit" default="20"/>
+        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
+        <!-- maintenance -->
+		<setting label="30097" type="lsep"/>
+        <!-- <setting label="30110" type="action" id="action3" action="RunScript(script.module.nakamori,/search/clear)" enable="System.HasAddon(script.module.nakamori)" option="close"/>-->
+    </category>
+	<!-- video settings -->
+    <category label="30023">
+        <!-- watched status settings -->
+        <setting label="30007" type="lsep"/>
+        <setting label="30005" type="bool" id="syncwatched" default="true"/>
+        <setting label="30025" type="bool" id="watchedbox" default="true"/>
+        <setting label="30024" type="number" id="watched_mark" default="75"/>
+		<setting label="30032" type="bool" id="vote_always" default="false"/>
+        <setting label="30034" type="bool" id="vote_on_series" default="false"/>
+        <setting label="30184" type="bool" id="suggest_series_vote" default="true" subsetting="true"/>
+        <setting label="30185" type="bool" id="suggest_series_vote_all_eps" default="true" enable="eq(-1,true)" subsetting="true"/>
+        <setting label="30168" type="bool" id="sync_to_library" default="false"/>
+        <!-- trakt support -->
+        <setting label="30038" type="lsep"/>
+        <setting label="30035" type="bool" id="trakt" default="false"/>
+        <setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
+        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true" visible="eq(-1,true)"/>
+        <!-- kodi player settings -->
+        <setting label="30026" type="lsep"/>
+        <setting label="30020" type="bool" id="file_resume" default="true"/>
+        <setting label="30014" type="bool" id="pick_file" default="true"/>
+        <setting label="30027" type="number" id="player_sleep" default="5000"/>
+        <setting label="30004" type="number" id="timeout" default="60"/>
+        <setting type="bool" id="kodi18" default="false" visible="false"/>
+        <setting label="30149" type="bool" id="external_player" default="false" visible="eq(-1,false)"/>
+    </category>
+	<!-- Advanced -->
+    <category label="30044">
+        <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false"/>
+        <setting label="30066" type="bool" id="request_nocast" default="false"/>
+		<setting label="30169" type="bool" id="fix_seiyuu_pic" default="false"/>
+		<setting label="30169" type="bool" id="seiyuu_gif" default="false"/>
+        <!-- debug -->
+        <setting label="30173" type="lsep"/>
+        <setting label="30042" type="bool" id="spamLog" default="false"/>
+        <setting label="30063" type="bool" id="remote_debug" default="false" enable="System.HasAddon(script.module.web-pdb)|System.HasAddon(script.module.pydevd-pycharm)"/>
+        <setting label="30086" type="text" id="remote_ip" default="localhost" subsetting="true" visible="System.HasAddon(script.module.pydevd-pycharm)" enable="eq(-1,true)"/>
+        <!-- calendar -->
+		<setting label="30012" type="lsep"/>
+        <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
+        <setting label="30061" type="bool" id="calendar_basic" default="false"/>
+        <!-- experimental/misc -->
+        <setting label="30146" type="lsep"/>
+        <setting label="30145" type="bool" id="experimental" default="false"/>
+		<!-- cache -->
+        <setting label="30029" type="lsep" visible="eq(-1,true)"/>
+        <setting label="30030" type="bool" id="enableCache" default="false" visible="eq(-2,true)"/>
+        <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true" visible="eq(-3,true)"/>
+		<!-- eigakan -->
+        <setting type="text" id="eigakan_manual_mode" default="false" visible="false"/>
+        <setting type="text" id="eigakan_h_resolution" default="1280x720" visible="false"/>
+        <setting type="text" id="eigakan_h_bitrate" default="1000k" visible="false"/>
+        <setting type="text" id="eigakan_l_resolution" default="400x300" visible="false"/>
+        <setting type="text" id="eigakan_l_bitrate" default="256k" visible="false"/>
+        <setting type="text" id="eigakan_x264_preset" default="veryfast" visible="false"/>
+        <setting label="30084" type="lsep" visible="eq(-10,true)"/>
+        <setting label="30085" type="bool" id="enableEigakan" default="false" enable="System.HasAddon(inputstream.adaptive)" visible="eq(-11,true)"/>
+        <setting label="30086" type="text" id="ipEigakan" default="127.0.0.1" subsetting="true" visible="eq(-12,true)+eq(-1,true)"/>
+        <setting label="30087" type="number" id="portEigakan" default="8118" subsetting="true" visible="eq(-13,true)+eq(-2,true)"/>
+        <setting label="30095" type="text" id="audiolangEigakan" default="english,eng,en" subsetting="true" visible="eq(-14,true)+eq(-3,true)"/>
+        <setting label="30096" type="text" id="subEigakan" default="english,eng,en" subsetting="true" visible="eq(-15,true)+eq(-4,true)"/>
+        <setting label="30171" type="bool" id="burnEigakan" default="false" subsetting="true" visible="eq(-16,true)+eq(-5,true)"/>
+        <!--<setting label="30172" type="action" id="action6" action="RunScript(script.module.nakamori,/eigakan/clear)" subsetting="true" enable="System.HasAddon(script.module.nakamori)" visible="eq(-17,true)+eq(-6,true)" option="close"/>-->
+        <!--<setting label="30208" type="action" id="action7" action="RunScript(script.module.nakamori,/eigakan/requirement)" subsetting="false" enable="!System.HasAddon(inputstream.adaptive)" visible="!System.HasAddon(inputstream.adaptive)" option="close"/>-->
+
+        <!-- noname/don't delete -->
+		<setting label="30108" type="bool" id="feedback" default="true" visible="false"/>
+        <setting type="number" id="last_call" default="1543210000" visible="false"/>
+        <setting type="bool" id="onepunchmen" default="false" visible="false"/>
+    </category>
+</settings>
