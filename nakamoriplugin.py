@@ -62,6 +62,7 @@ def list_groups_by_filter_id(filter_id: int):
     """
     xbmc.log(f'/f/{filter_id}/group', xbmc.LOGINFO)
     for obj_id, obj_type, li in kodi_models.list_all_groups_by_filter_id(filter_id):
+        xbmc.log(f'{obj_id} --- {obj_type} ---- {li}')
         if obj_type == ThisType.group:
             li.setLabel("g" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(open_group_by_group_id_and_filter_id, filter_id, obj_id), li, True)

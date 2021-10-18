@@ -108,6 +108,7 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
     q = api2.QueryOptions()
     # get images
     q.allpics = 1
+    q.level = 0
     x = api.filter(q)
 
     for f in x.filters:
@@ -121,7 +122,7 @@ def list_all_filter_by_filters_id(id: int) -> List[Tuple[int, ThisType, ListItem
     list_of_li = []
     q = api2.QueryOptions()
     q.id = id
-    q.level = 2
+    q.level = 1
     x = api.filter(q)
 
     for f in x.filters:
@@ -134,7 +135,7 @@ def list_all_groups_by_filter_id(id: int) -> List[Tuple[int, ThisType, ListItem]
     list_of_listitems = []
     q = api2.QueryOptions()
     q.id = id
-    q.level = 3
+    q.level = 2  # 1 - empty series
     x = api.filter(q)
 
     for g in x.groups:
@@ -152,7 +153,7 @@ def list_all_series_by_filter_id(id: int) -> List[Tuple[int, ListItem]]:
     list_of_listitems = []
     q = api2.QueryOptions()
     q.id = id
-    q.level = 3
+    q.level = 1
     x = api.filter(q)
 
     for g in x.groups:

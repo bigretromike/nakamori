@@ -58,6 +58,9 @@ def scrobble_trakt(ep_id, status, current_time, total_time, movie):
 
 
 def finished_episode(ep_id, file_id, current_time, total_time):
+    xbmc.log('----------------------- FINISHIND EPISODE ----------------', xbmc.LOGINFO)
+    xbmc.log(f'{ep_id} / {file_id} / {current_time} / {total_time}', xbmc.LOGINFO)
+
     _finished = False
     # spam('finished_episode > ep_id = %s, file_id = %s, current_time = %s, total_time = %s' % (ep_id, file_id, current_time, total_time))
     mark = float(plugin_addon.getSetting('watched_mark'))
@@ -80,6 +83,7 @@ def finished_episode(ep_id, file_id, current_time, total_time):
     # else:
     #   log('Using an external player, but the settings are set to not mark as watched. Check advancedsettings.xml')
     # _finished = False
+
     if _finished:
         if int(ep_id) != 0 and plugin_addon.getSetting('vote_always') == 'true':
             #spam('vote_always, voting on episode')
