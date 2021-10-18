@@ -6,6 +6,8 @@ msgstr ""
 "Project-Id-Version: Nakamori\n"
 "Language: en\n"
 
+## I WOULD LIKE TO CLEAN THIS BEFORE GIVING ABILITY TO TRANSLATE
+
 #: settings.xml #
 msgctxt "#30000"
 msgid "DUMMY"

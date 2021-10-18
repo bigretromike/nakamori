@@ -171,6 +171,14 @@ def list_episodes_for_series_by_series_id(id: int) -> List[Tuple[int, ThisType, 
     x = api.series_get_by_id(q)
 
     for ep in x.eps:
-        list_of_li.append((ep.eid, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep)))
+        list_of_li.append((ep.id, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep)))
 
     return list_of_li
+
+
+def get_file_id_from_ep_id(ep_id: int) -> List[api2models.RawFile]:
+    q = api2.QueryOptions()
+    q.id = ep_id
+    q.level = 1
+    x = api.episode_get(q)
+    return x.files

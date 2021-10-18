@@ -2,6 +2,7 @@
 
 from lib import kodi_utils
 from lib import shoko_utils
+from lib import naka_player
 from lib.naka_utils import ThisType
 from models import kodi_models
 
@@ -21,7 +22,7 @@ do_we_want_to_make_eptype_setting = True
 
 
 @plugin.route('/')
-@plugin.route('/filters')
+@plugin.route('/f')
 def list_all_filters():
     """
     List all Filters for current User
@@ -38,9 +39,9 @@ def list_all_filters():
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/filters/<filters_id>/filter')
+@plugin.route('/f/<filters_id>/filter')
 def list_filter_by_filters_id(filters_id: int):
-    xbmc.log(f'/filter/{filters_id}/filter', xbmc.LOGINFO)
+    xbmc.log(f'/f/{filters_id}/filter', xbmc.LOGINFO)
     for obj_id, obj_type, li in kodi_models.list_all_filter_by_filters_id(filters_id):
         if obj_type == ThisType.filter:
             li.setLabel("f" + li.getLabel())  # temporary
@@ -52,14 +53,14 @@ def list_filter_by_filters_id(filters_id: int):
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/filter/<filter_id>/group')
+@plugin.route('/f/<filter_id>/group')
 def list_groups_by_filter_id(filter_id: int):
     """
     List all Groups for current User in Filter
     :param filter_id: ID of Filter that we want list content of
     :return: Draw ListItem's Collection of Group
     """
-    xbmc.log(f'/filter/{filter_id}/group', xbmc.LOGINFO)
+    xbmc.log(f'/f/{filter_id}/group', xbmc.LOGINFO)
     for obj_id, obj_type, li in kodi_models.list_all_groups_by_filter_id(filter_id):
         if obj_type == ThisType.group:
             li.setLabel("g" + li.getLabel())  # temporary
@@ -71,15 +72,15 @@ def list_groups_by_filter_id(filter_id: int):
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/filter/<filter_id>/group/<group_id>')
+@plugin.route('/f/<filter_id>/g/<group_id>')
 def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
-    xbmc.log(f'/filter/{filter_id}/group/{group_id}', xbmc.LOGINFO)
+    xbmc.log(f'/f/{filter_id}/g/{group_id}', xbmc.LOGINFO)
     pass
 
 
-@plugin.route('/filter/<filter_id>/series/<series_id>/ep')
+@plugin.route('/f/<filter_id>/s/<series_id>/ep')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
-    xbmc.log(f'/filter/{filter_id}/series/{series_id}/ep', xbmc.LOGINFO)
+    xbmc.log(f'/f/{filter_id}/s/{series_id}/ep', xbmc.LOGINFO)
 
     list_of_ep_types = []
     list_of_eps = []
@@ -108,9 +109,9 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/filter/<filter_id>/series/<series_id>/ep/<eptype_id>')
+@plugin.route('/f/<filter_id>/s/<series_id>/et/<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
-    xbmc.log(f'/filter/{filter_id}/series/{series_id}/ep/{eptype_id}', xbmc.LOGINFO)
+    xbmc.log(f'/f/{filter_id}/s/{series_id}/et/{eptype_id}', xbmc.LOGINFO)
     for ep_id, ep_type, li in kodi_models.list_episodes_for_series_by_series_id(series_id):
         if int(ep_type) == int(eptype_id):
             li.setLabel("e" + li.getLabel())  # temporary
@@ -118,10 +119,15 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/filter/<filter_id>/series/<series_id>/ep/<ep_id>')
+@plugin.route('/f/<filter_id>/s/<series_id>/e/<ep_id>/play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
-    xbmc.log('/', xbmc.LOGINFO)
-    pass
+    xbmc.log(f'/f/<{filter_id}>/s/<{series_id}>/e/<{ep_id}>/play', xbmc.LOGINFO)
+    raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
+    file_id = 0
+    if len(raw_files_list) == 1:
+        file_id = raw_files_list[0].id
+    if file_id != 0:
+        play = naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True)
 
 
 @plugin.route('/dialog/wizard/login')

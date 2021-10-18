@@ -400,9 +400,7 @@ class Client:
         }
         response = self.api_client.call(url='/api/file', call_type=APIType.GET, query=query)
         # _json = json.loads(response)
-        output: list[RawFile] = []
-        for file in response:
-            output.append(RawFile.Decoder(file))
+        output: RawFile = RawFile.Decoder(response)
         return output
     
     def file_needs_av_dumped(self, level: int):
@@ -498,6 +496,13 @@ class Client:
         output: list[Episode] = []
         for episode in response:
             output.append(Episode.Decoder(episode))
+        return output
+
+    def episode_get(self, opts: QueryOptions = QueryOptions()):
+        """Get episodes"""
+        response = self.api_client.call(url='/api/ep', call_type=APIType.GET, query=opts.__dict__)
+        # _json = json.loads(response)
+        output: Episode = Episode.Decoder(response)
         return output
     
     def episode_get_by_filename(self, filename: str, pic: int = 1):

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import xbmcaddon
-import xbmcvfs
-import xbmcgui
 import xbmc
 
 from urllib.parse import urlparse, quote, unquote_plus, quote_plus, urlencode
@@ -74,7 +72,7 @@ def get_data(url: str, referer, timeout: int, apikey: str):
         xbmc.log(' === get_data error === %s -> %s' % (url, ex), xbmc.LOGINFO)
 
 
-def get_json(url_in: str, direct: bool = False, force_cache: bool = False, cache_time: int = 0, new_apikey:str = None):
+def get_json(url_in: str, direct: bool = False, force_cache: bool = False, cache_time: int = 0, new_apikey: str = None):
     try:
         timeout = plugin_addon.getSettingInt(id='timeout')
         if new_apikey is not None:
