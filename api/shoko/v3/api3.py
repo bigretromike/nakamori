@@ -299,17 +299,12 @@ class Client:
     # region tree
 
     def _tree_api_(self, command: str = '', call_type: APIType = APIType.GET, data: dict = None):
-        import xbmc
         url = self.tree_api_url.format(self.api_client.version, command)
-        xbmc.log(f'--------------- _tree_api_ url: {url}', xbmc.LOGINFO)
-        xbmc.log(f'--------------- _tree_api_ DATA: {data}', xbmc.LOGINFO)
         return self.api_client.call(url=url, call_type=call_type, data=data)
 
     def tree_filter(self, includeempty : bool = False, includeinvisible : bool = False)-> List[Filter]:
-        import xbmc
         from api.shoko.v3.api3models import Filter
         response = self._tree_api_(command=f'Filter?includeEmpty={includeempty}&includeInvisible={includeinvisible}')
-        xbmc.log(f'--------------- tree_filter response: {response}', xbmc.LOGINFO)
         filter_list = []
         for f in response:
             filter_list.append(json.loads(json.dumps(f), object_hook=Filter.decoder))

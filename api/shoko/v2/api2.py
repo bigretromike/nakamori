@@ -93,14 +93,16 @@ class Client:
         # 501: Not Implemented
         return self.api_client.call(url='/api/cloud/import', call_type=APIType.POST)
     
-    def filter(self, opts: QueryOptions = QueryOptions()) -> Filters:
-        import xbmc
+    def filter(self, opts: QueryOptions = QueryOptions()) -> Filter:
+        response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
+        return Filter.Decoder(response)
+
+    def filters(self, opts: QueryOptions = QueryOptions()) -> Filters:
         response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
         return Filters.Decoder(response)
     
     def group(self, opts: QueryOptions = QueryOptions()):
         response = self.api_client.call(url='/api/group', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         output: list[Group] = []
         for group in response:
             output.append(Group.Decoder(group))
@@ -608,6 +610,12 @@ class Client:
         output: list[Serie] = []
         for serie in response:
             output.append(Serie.Decoder(serie))
+        return output
+
+    def series_get_by_id(self, opts: QueryOptions = QueryOptions):
+        """Get list of `Series`"""
+        response = self.api_client.call(url='/api/serie', call_type=APIType.GET, query=opts.__dict__)
+        output: Serie = Serie.Decoder(response)
         return output
     
     def series_count(self) -> Counter:

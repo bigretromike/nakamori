@@ -37,30 +37,31 @@ class AuthUser:
 
         return authuser
 
+
 class QueryOptions:
     def __init__(self,
-                query: str = '',
-                limit: int = 0,
-                limit_tag: int = 0,
-                filter: int = 0,
-                tags: int = 0,
-                tagfilter: int = 0,
-                fuzzy: int = 0,
-                nocast: int = 0,
-                notag: int = 0,
-                id: int = 0,
-                score: int = 0,
-                offset: int = 0,
-                level: int = 0,
-                all: int = 0,
-                progress: int = 0,
-                status: int = 0,
-                ismovie: int = 0,
-                filename: str = '',
-                hash: str = '',
-                allpics: int = 0,
-                pic: int = 0,
-                skip: int = 0
+                query: str = None,
+                limit: int = None,
+                limit_tag: int = None,
+                filter: int = None,
+                tags: int = None,
+                tagfilter: int = None,
+                fuzzy: int = None,
+                nocast: int = None,
+                notag: int = None,
+                id: int = None,
+                score: int = None,
+                offset: int = None,
+                level: int = None,
+                all: int = None,
+                progress: int = None,
+                status: int = None,
+                ismovie: int = None,
+                filename: str = None,
+                hash: str = None,
+                allpics: int = None,
+                pic: int = None,
+                skip: int = None
                 ):
         self.query: str = query
         self.limit: int = limit
@@ -302,6 +303,7 @@ class ArtCollection:
             except:
                 print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
                 return ArtCollection()
+
         artcollection: ArtCollection = ArtCollection()
 
         artcollection.banner = []
@@ -1442,17 +1444,17 @@ class Filter:
         filter.groups = []  # <--- ain't this default value ?
         filter.titles = []  # <--- ain't this default value ?
 
-        for group in json.get("groups", []):
-            group = Group.Decoder(group)
+        for _group in json.get("groups", []):
+            group = Group.Decoder(_group)
             filter.groups.append(group)
         filter.filters = []
 
-        for filter in json.get("filters", []):
-            filter = Filter.Decoder(filter)
+        for _filter in json.get("filters", []):
+            filter = Filter.Decoder(_filter)
             filter.filters.append(filter)
 
-        for title in json.get("titles", []):
-            title = AnimeTitle.Decoder(title)
+        for _title in json.get("titles", []):
+            title = AnimeTitle.Decoder(_title)
             filter.titles.append(title)
         filter.summary = json.get("summary")
         filter.url = json.get("url")
@@ -1478,7 +1480,8 @@ class Filter:
 
         for tag in json.get("tags", []):
             filter.tags.append(tag)        
-            filter.art = ArtCollection.Decoder(json.get("art"))
+
+        filter.art = ArtCollection.Decoder(json.get("art"))
 
         return filter
 
@@ -1635,6 +1638,7 @@ class QueueInfo:
         queueinfo.ispause = json.get("ispause")
 
         return queueinfo
+
 
 class SeriesInFolderInfo:
     def __init__(self,
@@ -1938,7 +1942,6 @@ class AniDBSettings:
         anidbsettings.MaxRelationDepth = json.get("MaxRelationDepth")
 
         return anidbsettings
-
 
 
 class WebCacheSettings:

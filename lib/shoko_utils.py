@@ -26,14 +26,10 @@ def can_connect(ip: str = None, port: int = None):
     if ip is None:
         ip = plugin_addon.getSetting('ipaddress')
 
-    xbmc.log('-------------> can_connect: --->' + str(ip) + ":" + str(port), xbmc.LOGINFO)
-
     try:
         json_file = nakamori_utils.get_json('http://%s:%i/api/version' % (ip, port), direct=True)
-        xbmc.log('-------------> CAN_CONNECT ---:' + str(json_file), xbmc.LOGINFO)
         if json_file is None:
             return False
-        xbmc.log('-------------> CAN_CONNECT ---> TRUE', xbmc.LOGINFO)
         return True
     except Exception as ex:
         xbmc.log(f'We had error here: {ex}', xbmc.LOGINFO)
@@ -147,11 +143,9 @@ def auth():
     # new flow for auth
     # we store the apikey, and its existence is what determines whether to try to connect
     # we will have a log out button, and that wipes the apikey, then we go through the log in steps
-    xbmc.log('-------------> AUTH', xbmc.LOGINFO)
     # we have an apikey. try to connect
     if plugin_addon.getSetting('apikey') != '' and can_user_connect():
         return True
-    xbmc.log(f"-------------> AUTH DATA: {plugin_addon.getSetting('login')}/{plugin_addon.getSetting('password')}/{plugin_addon.getSetting('apikey')}", xbmc.LOGINFO)
     # just in case there's a situation where the wizard isn't working, we can fill it in the settings
     if plugin_addon.getSetting('login') != '':
         login = plugin_addon.getSetting('login')
@@ -168,11 +162,8 @@ def auth():
 
 def get_apikey(login, password):
     try:
-        xbmc.log('-------------> GET_APIKEY', xbmc.LOGINFO)
         body = '{"user":"%s","pass":"%s","device":"%s"}' % (login, password, plugin_addon.getSetting("device"))
-        xbmc.log(f'-------------> GET_APIKEY INPUT: {body}', xbmc.LOGINFO)
         post_body = nakamori_utils.post_data(f"http://{plugin_addon.getSetting('ipaddress')}:{plugin_addon.getSetting('port')}/api/auth", body)
-        xbmc.log(f'-------------> GET_APIKEY DATA: {post_body}', xbmc.LOGINFO)
         auth_body = json.loads(post_body)
         if 'apikey' in auth_body:
             apikey_found_in_auth = str(auth_body['apikey'])

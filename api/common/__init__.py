@@ -95,6 +95,11 @@ class APIClient:
                 should api call use Authentication (with api_key)
         """
         if query:
+            # clear QUERY from all NONE items
+            filtered = {k: v for k, v in query.items() if v is not None}
+            query.clear()
+            query.update(filtered)
+
             query = urlencode(query)
             url = f"{self.proto}://{self.address}:{self.port}{url}?{query}&api-version={self.version}"
         else:
