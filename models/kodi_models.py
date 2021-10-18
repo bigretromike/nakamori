@@ -5,7 +5,7 @@ import xbmcaddon
 from xbmcgui import ListItem
 from lib.kodi_utils import bold
 from typing import List, Tuple
-from lib.naka_utils import ThisType, map_episodetype_to_thistype
+from lib.naka_utils import ThisType, map_episodetype_to_thistype, map_filter_group_to_thistype
 
 plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
 
@@ -99,7 +99,7 @@ def get_listitem_from_episode(x: api2models.Episode) -> ListItem:
     return li
 
 
-def list_all_filters() -> List[Tuple[int, ListItem]]:
+def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
     """
     Get All Filters for current User
     :return: List[(int, ListItem)]
@@ -108,13 +108,26 @@ def list_all_filters() -> List[Tuple[int, ListItem]]:
     q = api2.QueryOptions()
     # get images
     q.allpics = 1
-    x = api.filters(q)
+    x = api.filter(q)
 
     for f in x.filters:
         d = api2models.Filter.Decoder(f)
-        list_of_listitems.append((d.id, get_listitem_from_filter(d)))
+        list_of_listitems.append((d.id, map_filter_group_to_thistype(d.type), get_listitem_from_filter(d)))
 
     return list_of_listitems
+
+
+def list_all_filter_by_filters_id(id: int) -> List[Tuple[int, ThisType, ListItem]]:
+    list_of_li = []
+    q = api2.QueryOptions()
+    q.id = id
+    q.level = 2
+    x = api.filter(q)
+
+    for f in x.filters:
+        list_of_li.append((f.id, map_filter_group_to_thistype(f.type), get_listitem_from_filter(f)))
+
+    return list_of_li
 
 
 def list_all_groups_by_filter_id(id: int) -> List[Tuple[int, ThisType, ListItem]]:

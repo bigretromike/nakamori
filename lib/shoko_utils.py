@@ -120,11 +120,11 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
         return False
 
 
-def can_user_connect():
+def can_user_connect(apikey: str = None):
     # TRY to use new method which is faster
     try:
         url = f"http://{plugin_addon.getSetting('ipaddress')}:{plugin_addon.getSetting('port')}/api/ping"
-        ping = nakamori_utils.get_json(url, True)
+        ping = nakamori_utils.get_json(url_in=url, direct=True, new_apikey=apikey)
         if ping is not None and b'pong' in ping:
             return True
         else:  # should never happen
@@ -135,24 +135,24 @@ def can_user_connect():
     return False
 
 
-def auth():
+def auth(new_apikey: str = None):
     """
     Checks the apikey, if any, attempts to log in, and saves if we have auth
     :return: bool True if all completes successfully
     """
-    # new flow for auth
-    # we store the apikey, and its existence is what determines whether to try to connect
-    # we will have a log out button, and that wipes the apikey, then we go through the log in steps
-    # we have an apikey. try to connect
-    if plugin_addon.getSetting('apikey') != '' and can_user_connect():
-        return True
+    if new_apikey is not None:
+        if can_user_connect(apikey=new_apikey):
+            return True
+    else:
+        if plugin_addon.getSetting('apikey') != '' and can_user_connect():
+            return True
     # just in case there's a situation where the wizard isn't working, we can fill it in the settings
     if plugin_addon.getSetting('login') != '':
         login = plugin_addon.getSetting('login')
         password = plugin_addon.getSetting('password')
         apikey = get_apikey(login, password)
         if apikey is not None:
-            plugin_addon.setSetting('apikey', apikey)
+            plugin_addon.setSetting(id='apikey', value=apikey)
             plugin_addon.setSetting(id='login', value='')
             plugin_addon.setSetting(id='password', value='')
             return can_user_connect()

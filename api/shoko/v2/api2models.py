@@ -1264,119 +1264,11 @@ class Group:
         return group
 
 
-class Filters:
-    def __init__(self,
-                 type: str = '',
-                 filters = [],
-                 id: int = 0,
-                 name: str = '',
-                 titles: List[AnimeTitle] = [],
-                 summary: str = '',
-                 url: str = '',
-                 added: str = '',
-                 edited: str = '',
-                 year: str = '',
-                 air: str = '',
-                 size: int = 0,
-                 localsize: int = 0,
-                 total_sizes: Sizes = [],
-                 local_sizes: Sizes = [],
-                 watched_sizes: Sizes = [],
-                 viewed: int = 0,
-                 rating: str = '',
-                 votes: str = '',
-                 userrating: str = '',
-                 roles: List[Role] = [],
-                 tags: List[str] = [],
-                 art: ArtCollection = {}
-                 ):
-        self.type: str = type
-        self.filters: list = filters
-        self.id: int = id
-        self.name: str = name
-        self.titles: List[AnimeTitle] = titles
-        self.summary: str = summary
-        self.url: str = url
-        self.added: str = added
-        self.edited: str = edited
-        self.year: str = year
-        self.air: str = air
-        self.size: int = size
-        self.localsize: int = localsize
-        self.total_sizes: Sizes = total_sizes
-        self.local_sizes: Sizes = local_sizes
-        self.watched_sizes: Sizes = watched_sizes
-        self.viewed: int = viewed
-        self.rating: str = rating
-        self.votes: str = votes
-        self.userrating: str = userrating
-        self.roles: List[Role] = roles
-        self.tags: List[str] = tags
-        self.art: ArtCollection = art
-
-    class Encoder(JSONEncoder):
-        def default(self, o):
-            return o.__dict__
-
-    def __repr__(self) -> str:
-        return f"<{self.__class__.__qualname__} {self.__dict__}>"
-
-    @staticmethod
-    def Decoder(json: dict):
-        if not isinstance(json, dict):
-            try:
-                json = json.__dict__
-            except:
-                print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
-                return Filters()
-        filters: Filters = Filters()
-
-        filters.type = json.get("type")
-        filters.filters = []
-        tmp = json.get("filters", [])
-        for filter in tmp:
-            filters.filters.append(filter)
-        filters.id = json.get("id")
-        filters.name = json.get("name")
-        filters.titles = []
-        tmp = json.get("titles", [])
-        for title in tmp:
-            title = AnimeTitle.Decoder(title)
-            filters.titles.append(title)
-        filters.summary = json.get("summary")
-        filters.url = json.get("url")
-        filters.added = json.get("added")
-        filters.edited = json.get("edited")
-        filters.year = json.get("year")
-        filters.air = json.get("air")
-        filters.size = json.get("size")
-        filters.localsize = json.get("localsize")
-        filters.total_sizes = Sizes.Decoder(json.get('total_sizes'))
-        filters.local_sizes = Sizes.Decoder(json.get('local_sizes'))
-        filters.watched_sizes = Sizes.Decoder(json.get('watched_sizes'))
-        filters.viewed = json.get("viewed")
-        filters.rating = json.get("rating")
-        filters.votes = json.get("votes")
-        filters.userrating = json.get("userrating")
-        filters.roles = []
-        tmp = json.get("roles", [])
-        for role in tmp:
-            role = Role.Decoder(role)
-            filters.roles.append(role)        
-            filters.tags = []
-        tmp = json.get("tags", [])
-        for tag in tmp:
-            filters.tags.append(tag)        
-        filters.art = ArtCollection.Decoder(json.get("art"))
-
-        return filters
-
-
 class Filter:
     def __init__(self,
                  type: str = '',
                  groups: List[Group] = [],
-                 filters: List[Filters] = [],
+                 filters: list = [],
                  id: int = 0,
                  name: str = '',
                  titles: List[AnimeTitle] = [],
@@ -1401,7 +1293,7 @@ class Filter:
                  ):
         self.type: str = type
         self.groups: List[Group] = groups
-        self.filters: List[Filters] = filters
+        self.filters: List[Filter] = filters
         self.id: int = id
         self.name: str = name
         self.titles: List[AnimeTitle] = titles
@@ -1440,7 +1332,7 @@ class Filter:
                 print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
                 return Filter()
 
-        filter: Filter = Filter(id=json.get("id"), name=json.get("name"), type=json.get('type'))
+        filter = Filter(id=json.get("id"), name=json.get("name"), type=json.get('type'))
         filter.groups = []  # <--- ain't this default value ?
         filter.titles = []  # <--- ain't this default value ?
 
@@ -1450,8 +1342,8 @@ class Filter:
         filter.filters = []
 
         for _filter in json.get("filters", []):
-            filter = Filter.Decoder(_filter)
-            filter.filters.append(filter)
+            __filter = Filter.Decoder(_filter)
+            filter.filters.append(__filter)
 
         for _title in json.get("titles", []):
             title = AnimeTitle.Decoder(_title)

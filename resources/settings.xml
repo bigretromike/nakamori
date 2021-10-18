@@ -1,205 +1,3240 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-	<!-- shoko settings -->
-    <category label="30001"> <!-- Shoko Settings -->
-        <setting label="30006" type="lsep"/> <!-- Shoko Server -->
-        <!--<setting label="30082" type="action" id="action4" action="RunScript(script.module.nakamori,/dialog/wizard/connection)" option="close"/>-->
-        <!--<setting label="30099" type="action" id="action5" action="RunScript(script.module.nakamori,/dialog/wizard/login)" option="close"/>-->
-		<setting label="30100" type="bool" id="more_30001" default="false"/>
-		<!-- advanced -->
-        <setting label="30044" type="lsep" visible="eq(-1,true)"/> <!-- Advanced -->
-		<setting label="30017" type="text" id="device" default="nakamori" visible="eq(-2,true)"/>
-		<!-- hidden -->
-        <setting type="text" id="apikey" visible="false"/>
-        <setting type="text" id="ipaddress" default="127.0.0.1" visible="false"/>
-        <setting type="number" id="port" default="8111" visible="false"/>
-        <setting type="text" id="login" default="Default" visible="false"/>
-        <setting type="text" id="password" options="hidden" visible="false"/>
-        <setting type="text" id="version" visible="false" default="3.0.9"/>
-		<!-- wizard -->
-        <!-- TODO REPLACE ME WITH LOG OUT ETC -->
-		<!--<setting label="30082" type="action" id="action4" action="RunScript(script.module.nakamori,/logout)" option="close"/>-->
-    </category>
-	<!-- Main Menu Items -->
-    <category label="30098">
-        <setting label="30230" type="bool" id="customize_main_menu" default="false"/>
-        <!-- menu / color / bold -->
-        <setting label="30221" type="bool" id="show_search" default="true"/>
-        <setting label="30229" type="select" id="color_search" subsetting="true" enable="eq(-2,true)" visible="eq(-2,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_search" subsetting="true" enable="eq(-3,true)" visible="eq(-3,true)" default="false"/>
-        <setting label="30107" type="bool" id="show_settings" default="true"/>
-        <setting label="30229" type="select" id="color_settings" subsetting="true" enable="eq(-5,true)" visible="eq(-5,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_settings" subsetting="true" enable="eq(-6,true)" visible="eq(-6,true)" default="false"/>
-        <setting label="30222" type="bool" id="show_calendar" default="true"/>
-        <setting label="30229" type="select" id="color_calendar" subsetting="true" enable="eq(-8,true)" visible="eq(-8,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_calendar" subsetting="true" enable="eq(-9,true)" visible="eq(-9,true)" default="false"/>
-        <setting label="30106" type="bool" id="show_unsort" default="true"/>
-        <setting label="30229" type="select" id="color_unsort" subsetting="true" enable="eq(-11,true)" visible="eq(-11,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_unsort" subsetting="true" enable="eq(-12,true)" visible="eq(-12,true)" default="false"/>
-        <setting label="30115" type="bool" id="show_shoko" default="false"/>
-        <setting label="30229" type="select" id="color_shoko" subsetting="true" enable="eq(-14,true)" visible="eq(-14,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_shoko" subsetting="true" enable="eq(-15,true)" visible="eq(-15,true)" default="false"/>
-        <setting label="30211" type="bool" id="show_favorites" default="true"/>
-        <setting label="30229" type="select" id="color_favorites" subsetting="true" enable="eq(-17,true)" visible="eq(-17,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_favorites" subsetting="true" enable="eq(-18,true)" visible="eq(-18,true)" default="false"/>
-        <setting label="30215" type="bool" id="show_bookmark" default="true"/>
-        <setting label="30229" type="select" id="color_bookmark" subsetting="true" enable="eq(-20,true)" visible="eq(-20,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_bookmark" subsetting="true" enable="eq(-21,true)" visible="eq(-21,true)" default="false"/>
-        <setting label="30170" type="bool" id="show_recent2" default="true"/>
-        <setting label="30229" type="select" id="color_recent2" subsetting="true" enable="eq(-23,true)" visible="eq(-23,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30232" type="bool" id="bold_recent2" subsetting="true" enable="eq(-24,true)" visible="eq(-24,true)" default="false"/>
-        <!-- skip / bold_filters -->
-        <setting label="30150" type="bool" id="skip_information" default="false"/>
-        <setting label="30231" type="bool" id="bold_filters" default="true" enable="eq(-26,true)" visible="eq(-26,true)"/>
-	</category>
-	<!-- browsing -->
-    <category label="30054">
-		<!-- title settings -->
-        <setting label="30056" type="lsep"/>
-        <setting label="30052" type="bool" id="use_server_title" default="false"/>
-        <setting label="30009" type="select" id="displaylang" default="x-jat" values="en|x-jat|ja|ar|bd|bg|ca|cs|cz|da|dk|de|el|es|et|fi|fr|gl|gr|he|hu|il|it|ko|lt|mn|ms|my|nl|no|pl|pt|pt-br|ro|ru|sk|sl|sr|sv|se|th|tr|uk|ua|vi|zh|zh-hans|zh-hant" enable="eq(-1,false)" visible="eq(-1,false)"/>
-        <setting label="30010" type="labelenum" id="title_type" default="Main" values="Official|Main|Synonym|Short" enable="eq(-2,false)" visible="eq(-2,false)"/>
-        <!-- title colorization -->
-        <setting label="30019" type="lsep"/>
-        <setting label="30073" type="bool" id="color_title" default="true"/>
-        <setting label="30031" type="select" id="title_color_finish" enable="eq(-1,true)" default="white" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30043" type="select" id="title_color_finish_missing" enable="eq(-2,true)" default="red" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30060" type="select" id="title_color_finish_special" enable="eq(-3,true)" default="aqua" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30041" type="select" id="title_color_airing" enable="eq(-4,true)" default="yellow" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30059" type="select" id="title_color_airing_missing" enable="eq(-5,true)" default="lightgoldenrodyellow" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <setting label="30071" type="select" id="title_color_airing_special" enable="eq(-6,true)" default="blueviolet" values="aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|none|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|transparent|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen"/>
-        <!-- sorting -->
-        <setting label="30144" type="lsep"/>
-        <setting label="30142" type="select" id="default_sort_series" default="Server" values="Server|Title|Date|Rating|Year"/>
-        <setting label="30143" type="select" id="default_sort_episodes" default="Episode" values="Server|Episode|Date|Title|Rating|Year"/>
-        <!-- spoiler control -->
-        <setting label="30074" type="lsep"/>
-        <setting label="30075" type="labelenum" id="hide_title" default="Never" values="Episodes|Specials|Both|Never"/>
-        <setting label="30113" type="labelenum" id="hide_rating" default="Never" values="Never|Unwatched|All Unwatched|Always"/>
-        <!-- Kodi has errors in comparing text in visibility and enabled status. This should be fixed in Leia -->
-        <setting label="30111" type="labelenum" id="hide_rating_type" default="Both" values="Episodes|Series|Both" enable="!eq(-1,Never)" visible="!eq(-1,Never)"/>
-        <setting label="30077" type="bool" id="hide_images" default="false"/>
-        <setting label="30078" type="bool" id="hide_plot" default="false"/>
-        <!-- tweaks -->
-		<setting label="30064" type="lsep"/>
-        <setting label="30039" type="bool" id="show_continue" default="false"/>
-        <setting label="30072" type="bool" id="replace_continue" enable="eq(-1,true)" default="false"/>
-		<setting label="30083" type="bool" id="select_unwatched" default="true"/>
-        <setting label="30040" type="bool" id="local_total" default="true"/>
-        <setting label="30068" type="bool" id="ignore_specials_watched" default="false"/>
-        <!-- Context Menu Settings -->
-		<setting label="30057" type="lsep"/>
-        <setting type="bool" id="eigakan_handshake" default="false" visible="false"/>
-        <setting label="30065" type="bool" id="context_show_play" default="true" />
-		<setting type="bool" id="trakt_scrobble" default="false" visible="false"/>
-        <setting label="30132" type="bool" id="context_show_play_no_watch" default="false" enable="eq(-1,true)"/>
-        <setting label="30174" type="bool" id="context_show_force_transcode" default="false" enable="eq(-4,true)"/>
-        <setting label="30175" type="bool" id="context_show_directplay" default="true" enable="eq(-5,true)"/>
-        <setting label="30177" type="bool" id="context_show_probe" default="true" enable="eq(-6,true)"/>
-        <setting label="30133" type="bool" id="context_pick_file" default="true"/>
-        <setting label="30130" type="bool" id="context_playlist" default="true"/>
-        <setting label="30062" type="bool" id="context_krypton_watched" default="true"/>
-        <setting label="30125" type="bool" id="context_show_vote_Episode" default="true"/>
-        <setting label="30124" type="bool" id="context_show_vote_Series" default="true"/>
-        <setting label="30123" type="bool" id="context_show_info" default="true"/>
-        <setting label="30134" type="bool" id="context_view_cast" default="true"/>
-        <setting label="30131" type="bool" id="context_refresh" default="true"/>
-        <!-- maintenance -->
-		<setting label="30097" type="lsep"/>
-       <!-- <setting label="30080" type="action" id="action1" action="RunScript(script.module.nakamori,/kodi/clear_listitem_cache)" option="close"/> -->
-       <!--<setting label="30139" type="action" id="action2" action="RunScript(script.module.nakamori,/kodi/clear_image_cache)" option="close"/> -->
-    </category>
-    <category label="30046">
-        <!-- tag blacklist -->
-		<setting label="30046" type="lsep"/>
-        <setting label="30227" type="labelenum" id="InvertTags" default="Hide" values="Show|Hide"/>
-        <setting label="30028" type="bool" id="short_tag_list" default="true"/>
-        <setting label="30045" type="bool" id="MiscTags" default="false"/>
-        <setting label="30047" type="bool" id="ArtTags" default="false"/>
-        <setting label="30048" type="bool" id="SourceTags" default="false"/>
-        <setting label="30049" type="bool" id="UsefulMiscTags" default="false"/>
-        <setting label="30050" type="bool" id="SpoilerTags" default="false"/>
-        <setting label="30070" type="bool" id="SettingTags" default="false"/>
-        <setting label="30013" type="bool" id="ProgrammingTags" default="false"/>
-        <setting label="30226" type="bool" id="GenreTags" default="false"/>
-    </category>
-    <category label="30221">
-        <!-- searching -->
-        <setting label="30021" type="lsep"/> <!-- Searching -->
-        <setting label="30022" type="number" id="maxlimit" default="20"/>
-        <setting label="30033" type="number" id="maxlimit_tag" default="100"/>
-        <!-- maintenance -->
-		<setting label="30097" type="lsep"/>
-        <!-- <setting label="30110" type="action" id="action3" action="RunScript(script.module.nakamori,/search/clear)" enable="System.HasAddon(script.module.nakamori)" option="close"/>-->
-    </category>
-	<!-- video settings -->
-    <category label="30023">
-        <!-- watched status settings -->
-        <setting label="30007" type="lsep"/>
-        <setting label="30005" type="bool" id="syncwatched" default="true"/>
-        <setting label="30025" type="bool" id="watchedbox" default="true"/>
-        <setting label="30024" type="number" id="watched_mark" default="75"/>
-		<setting label="30032" type="bool" id="vote_always" default="false"/>
-        <setting label="30034" type="bool" id="vote_on_series" default="false"/>
-        <setting label="30184" type="bool" id="suggest_series_vote" default="true" subsetting="true"/>
-        <setting label="30185" type="bool" id="suggest_series_vote_all_eps" default="true" enable="eq(-1,true)" subsetting="true"/>
-        <setting label="30168" type="bool" id="sync_to_library" default="false"/>
-        <!-- trakt support -->
-        <setting label="30038" type="lsep"/>
-        <setting label="30035" type="bool" id="trakt" default="false"/>
-        <setting label="30036" type="bool" id="trakt_scrobble" default="false"/>
-        <setting label="30037" type="bool" id="trakt_scrobble_notification" default="false" enable="eq(-1,true)" subsetting="true" visible="eq(-1,true)"/>
-        <!-- kodi player settings -->
-        <setting label="30026" type="lsep"/>
-        <setting label="30020" type="bool" id="file_resume" default="true"/>
-        <setting label="30014" type="bool" id="pick_file" default="true"/>
-        <setting label="30027" type="number" id="player_sleep" default="5000"/>
-        <setting label="30004" type="number" id="timeout" default="60"/>
-        <setting type="bool" id="kodi18" default="false" visible="false"/>
-        <setting label="30149" type="bool" id="external_player" default="false" visible="eq(-1,false)"/>
-    </category>
-	<!-- Advanced -->
-    <category label="30044">
-        <setting label="30109" type="addon" id="icon_pack" default="resource.images.nakamori" addontype="kodi.resource.images"  multiselect="false"/>
-        <setting label="30066" type="bool" id="request_nocast" default="false"/>
-		<setting label="30169" type="bool" id="fix_seiyuu_pic" default="false"/>
-		<setting label="30169" type="bool" id="seiyuu_gif" default="false"/>
-        <!-- debug -->
-        <setting label="30173" type="lsep"/>
-        <setting label="30042" type="bool" id="spamLog" default="false"/>
-        <setting label="30063" type="bool" id="remote_debug" default="false" enable="System.HasAddon(script.module.web-pdb)|System.HasAddon(script.module.pydevd-pycharm)"/>
-        <setting label="30086" type="text" id="remote_ip" default="localhost" subsetting="true" visible="System.HasAddon(script.module.pydevd-pycharm)" enable="eq(-1,true)"/>
-        <!-- calendar -->
-		<setting label="30012" type="lsep"/>
-        <setting label="30058" type="select" id="calendar_format" default="%d/%m" values="%d-%m|%d-%m-%y|%d/%m|%d/%m/%y|%m-%d|%m-%d-%y|%m/%d|%m/%d/%y|"/>
-        <setting label="30061" type="bool" id="calendar_basic" default="false"/>
-        <!-- experimental/misc -->
-        <setting label="30146" type="lsep"/>
-        <setting label="30145" type="bool" id="experimental" default="false"/>
-		<!-- cache -->
-        <setting label="30029" type="lsep" visible="eq(-1,true)"/>
-        <setting label="30030" type="bool" id="enableCache" default="false" visible="eq(-2,true)"/>
-        <setting label="30069" type="number" id="expireCache" default="300" enable="eq(-1,true)" subsetting="true" visible="eq(-3,true)"/>
-		<!-- eigakan -->
-        <setting type="text" id="eigakan_manual_mode" default="false" visible="false"/>
-        <setting type="text" id="eigakan_h_resolution" default="1280x720" visible="false"/>
-        <setting type="text" id="eigakan_h_bitrate" default="1000k" visible="false"/>
-        <setting type="text" id="eigakan_l_resolution" default="400x300" visible="false"/>
-        <setting type="text" id="eigakan_l_bitrate" default="256k" visible="false"/>
-        <setting type="text" id="eigakan_x264_preset" default="veryfast" visible="false"/>
-        <setting label="30084" type="lsep" visible="eq(-10,true)"/>
-        <setting label="30085" type="bool" id="enableEigakan" default="false" enable="System.HasAddon(inputstream.adaptive)" visible="eq(-11,true)"/>
-        <setting label="30086" type="text" id="ipEigakan" default="127.0.0.1" subsetting="true" visible="eq(-12,true)+eq(-1,true)"/>
-        <setting label="30087" type="number" id="portEigakan" default="8118" subsetting="true" visible="eq(-13,true)+eq(-2,true)"/>
-        <setting label="30095" type="text" id="audiolangEigakan" default="english,eng,en" subsetting="true" visible="eq(-14,true)+eq(-3,true)"/>
-        <setting label="30096" type="text" id="subEigakan" default="english,eng,en" subsetting="true" visible="eq(-15,true)+eq(-4,true)"/>
-        <setting label="30171" type="bool" id="burnEigakan" default="false" subsetting="true" visible="eq(-16,true)+eq(-5,true)"/>
-        <!--<setting label="30172" type="action" id="action6" action="RunScript(script.module.nakamori,/eigakan/clear)" subsetting="true" enable="System.HasAddon(script.module.nakamori)" visible="eq(-17,true)+eq(-6,true)" option="close"/>-->
-        <!--<setting label="30208" type="action" id="action7" action="RunScript(script.module.nakamori,/eigakan/requirement)" subsetting="false" enable="!System.HasAddon(inputstream.adaptive)" visible="!System.HasAddon(inputstream.adaptive)" option="close"/>-->
+<?xml version="1.0" ?>
+<settings version="1">
+    <section id="plugin.video.nakamori">
+	    <!-- shoko settings -->
+        <category id="shokosettings" label="30001" help="">
+            <!-- Shoko Server -->
+            <group id="1" label="30006">
+                <setting label="30082" type="action" id="action4" help="">
+                    <level>0</level>
+                    <data>RunScript(plugin.video.nakamori,/dialog/wizard/connection)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+                <setting label="30099" type="action" id="action5" help="">
+                    <level>0</level>
+                    <data>RunScript(plugin.video.nakamori,/dialog/wizard/login)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+		        <setting label="30100" type="boolean" id="more_30001"> <!-- nie robi juz nic -->
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
 
-        <!-- noname/don't delete -->
-		<setting label="30108" type="bool" id="feedback" default="true" visible="false"/>
-        <setting type="number" id="last_call" default="1543210000" visible="false"/>
-        <setting type="bool" id="onepunchmen" default="false" visible="false"/>
-    </category>
+		    <!-- advanced -->
+            <group id="2" label="30044"> <!-- Advanced -->
+                <dependencies>  <!-- nie dziala -->
+	            <dependency type="visible" setting="">eq(-1,true)</dependency>
+                </dependencies>
+
+                <setting label="30017" type="string" id="device">
+                    <level>0</level>
+	                <default>nakamori</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>32001</heading>
+	                </control>
+                </setting>
+                <!-- was hidden -->
+                <setting label="30000" type="string" id="apikey">
+                    <level>0</level>
+                    <control type="edit" format="string">
+                        <heading>30000</heading>
+                    </control>
+                    <visible>true</visible>
+                </setting>
+                <setting label="30000" type="string" id="ipaddress">
+                    <level>0</level>
+                    <visible>true</visible>
+                    <default>127.0.0.1</default>
+                    <control type="edit" format="string">
+                        <heading>30000</heading>
+                    </control>
+                </setting>
+                <setting label="30000" type="integer" id="port">
+                    <level>0</level>
+                <visible>true</visible>
+                    <default>8111</default>
+                    <control type="edit" format="string">
+                        <heading>30000</heading>
+                    </control>
+                </setting>
+                <setting label="30000" type="string" id="login">
+                    <level>0</level>
+                    <visible>true</visible>
+                    <default>Default</default>
+                    <control type="edit" format="string">
+                        <heading>30000</heading>
+                    </control>
+                </setting>
+                <setting label="30000" type="string" id="password">
+                    <level>0</level>
+                    <visible>true</visible>
+                    <control type="edit" format="string">
+                        <heading>30000</heading>
+                    <hidden>true</hidden>
+                    </control>
+                </setting>
+                <setting label="30000" type="string" id="version">
+                    <level>0</level>
+                    <visible>true</visible>
+                    <default>3.0.9</default>
+                    <control type="edit" format="string">
+                        <heading>30000</heading>
+                    </control>
+                </setting>
+            </group>
+
+            <!-- advanced -->
+            <group id="3" label="30044">
+                <setting label="30233" type="action" id="action4">
+                        <level>0</level>
+                    <data>RunScript(plugin.video.nakamori,/dialog/wizard/login)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                </setting>
+            </group>
+        </category>
+
+	    <!-- Main Menu Items -->
+        <category id="mainmenu" label="30098" help="">
+            <!-- menu / color / bold -->
+            <group id="4" label="30000">
+                <setting label="30230" type="boolean" id="customize_main_menu">
+            <level>0</level>
+            <default>false</default>
+            <control type="toggle"/>
+        </setting>
+                <setting label="30221" type="boolean" id="show_search">
+        <level>0</level>
+        <default>true</default>
+        <control type="toggle"/>
+    </setting>
+                <setting label="30229" type="string" id="color_search" parent="show_search">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_search" parent="show_search" enable="eq(-3,true)" visible="eq(-3,true)">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30107" type="boolean" id="show_settings">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_settings" parent="show_settings">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_settings" parent="show_settings" enable="eq(-6,true)" visible="eq(-6,true)" default="false">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30222" type="boolean" id="show_calendar">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_calendar" parent="show_calendar">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_calendar" parent="show_calendar" enable="eq(-9,true)" visible="eq(-9,true)">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30106" type="boolean" id="show_unsort">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_unsor" parent="show_unsort">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_unsort" parent="show_unsort" enable="eq(-12,true)" visible="eq(-12,true)">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30115" type="boolean" id="show_shoko">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_shoko" parent="show_shoko">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_shoko" parent="show_shoko" enable="eq(-15,true)" visible="eq(-15,true)">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30211" type="boolean" id="show_favorites" default="true"><level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_favorites" parent="show_favorites">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_favorites" parent="show_favorites" enable="eq(-18,true)" visible="eq(-18,true)">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30215" type="boolean" id="show_bookmark">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_bookmark" parent="show_bookmark">
+                    <level>0</level>
+                    <default>white</default>
+                    <constraints>
+                        <options>
+                <option>aliceblue</option>
+                <option>antiquewhite</option>
+                <option>aqua</option>
+                <option>aquamarine</option>
+                <option>azure</option>
+                <option>beige</option>
+                <option>bisque</option>
+                <option>black</option>
+                <option>blanchedalmond</option>
+                <option>blue</option>
+                <option>blueviolet</option>
+                <option>brown</option>
+                <option>burlywood</option>
+                <option>cadetblue</option>
+                <option>chartreuse</option>
+                <option>chocolate</option>
+                <option>coral</option>
+                <option>cornflowerblue</option>
+                <option>cornsilk</option>
+                <option>crimson</option>
+                <option>cyan</option>
+                <option>darkblue</option>
+                <option>darkcyan</option>
+                <option>darkgoldenrod</option>
+                <option>darkgray</option>
+                <option>darkgreen</option>
+                <option>darkgrey</option>
+                <option>darkkhaki</option>
+                <option>darkmagenta</option>
+                <option>darkolivegreen</option>
+                <option>darkorange</option>
+                <option>darkorchid</option>
+                <option>darkred</option>
+                <option>darksalmon</option>
+                <option>darkseagreen</option>
+                <option>darkslateblue</option>
+                <option>darkslategray</option>
+                <option>darkslategrey</option>
+                <option>darkturquoise</option>
+                <option>darkviolet</option>
+                <option>deeppink</option>
+                <option>deepskyblue</option>
+                <option>dimgray</option>
+                <option>dimgrey</option>
+                <option>dodgerblue</option>
+                <option>firebrick</option>
+                <option>floralwhite</option>
+                <option>forestgreen</option>
+                <option>fuchsia</option>
+                <option>gainsboro</option>
+                <option>ghostwhite</option>
+                <option>gold</option>
+                <option>goldenrod</option>
+                <option>gray</option>
+                <option>green</option>
+                <option>greenyellow</option>
+                <option>grey</option>
+                <option>honeydew</option>
+                <option>hotpink</option>
+                <option>indianred</option>
+                <option>indigo</option>
+                <option>ivory</option>
+                <option>khaki</option>
+                <option>lavender</option>
+                <option>lavenderblush</option>
+                <option>lawngreen</option>
+                <option>lemonchiffon</option>
+                <option>lightblue</option>
+                <option>lightcoral</option>
+                <option>lightcyan</option>
+                <option>lightgoldenrodyellow</option>
+                <option>lightgray</option>
+                <option>lightgreen</option>
+                <option>lightgrey</option>
+                <option>lightpink</option>
+                <option>lightsalmon</option>
+                <option>lightseagreen</option>
+                <option>lightskyblue</option>
+                <option>lightslategray</option>
+                <option>lightslategrey</option>
+                <option>lightsteelblue</option>
+                <option>lightyellow</option>
+                <option>lime</option>
+                <option>limegreen</option>
+                <option>linen</option>
+                <option>magenta</option>
+                <option>maroon</option>
+                <option>mediumaquamarine</option>
+                <option>mediumblue</option>
+                <option>mediumorchid</option>
+                <option>mediumpurple</option>
+                <option>mediumseagreen</option>
+                <option>mediumslateblue</option>
+                <option>mediumspringgreen</option>
+                <option>mediumturquoise</option>
+                <option>mediumvioletred</option>
+                <option>midnightblue</option>
+                <option>mintcream</option>
+                <option>mistyrose</option>
+                <option>moccasin</option>
+                <option>navajowhite</option>
+                <option>navy</option>
+                <option>none</option>
+                <option>oldlace</option>
+                <option>olive</option>
+                <option>olivedrab</option>
+                <option>orange</option>
+                <option>orangered</option>
+                <option>orchid</option>
+                <option>palegoldenrod</option>
+                <option>palegreen</option>
+                <option>paleturquoise</option>
+                <option>palevioletred</option>
+                <option>papayawhip</option>
+                <option>peachpuff</option>
+                <option>peru</option>
+                <option>pink</option>
+                <option>plum</option>
+                <option>powderblue</option>
+                <option>purple</option>
+                <option>red</option>
+                <option>rosybrown</option>
+                <option>royalblue</option>
+                <option>saddlebrown</option>
+                <option>salmon</option>
+                <option>sandybrown</option>
+                <option>seagreen</option>
+                <option>seashell</option>
+                <option>sienna</option>
+                <option>silver</option>
+                <option>skyblue</option>
+                <option>slateblue</option>
+                <option>slategray</option>
+                <option>slategrey</option>
+                <option>snow</option>
+                <option>springgreen</option>
+                <option>steelblue</option>
+                <option>tan</option>
+                <option>teal</option>
+                <option>thistle</option>
+                <option>tomato</option>
+                <option>transparent</option>
+                <option>turquoise</option>
+                <option>violet</option>
+                <option>wheat</option>
+                <option>white</option>
+                <option>whitesmoke</option>
+                <option>yellow</option>
+                <option>yellowgreen</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_bookmark" parent="show_bookmark" enable="eq(-21,true)" visible="eq(-21,true)">
+                    <level>0</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30170" type="boolean" id="show_recent2">
+                    <level>0</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="color_recent2" parent="show_recent2">
+                    <level>0</level>
+                    <default>white</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="list" format="string">
+		                <heading>30229</heading>
+	                </control>
+                </setting>
+                <setting label="30232" type="boolean" id="bold_recent2" parent="show_recent2" enable="eq(-24,true)" visible="eq(-24,true)">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+
+            <!-- skip / bold_filters -->
+            <group id="5" label="30000">
+                <setting label="30150" type="boolean" id="skip_information">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30231" type="boolean" id="bold_filters" enable="eq(-26,true)" visible="eq(-26,true)">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+	    </category>
+
+	    <!-- browsing -->
+        <category id="browsing" label="30054" help="">
+		    <!-- title settings -->
+            <group id="6" label="30056">
+                <setting label="30052" type="boolean" id="use_server_title">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30009" type="string" id="displaylang" parent="show_search">
+                    <level>0</level>
+                    <default>x-jat</default>
+                    <constraints>
+                        <options>
+<option>en</option>
+<option>x-jat</option>
+<option>ja</option>
+<option>ar</option>
+<option>bd</option>
+<option>bg</option>
+<option>ca</option>
+<option>cs</option>
+<option>cz</option>
+<option>da</option>
+<option>dk</option>
+<option>de</option>
+<option>el</option>
+<option>es</option>
+<option>et</option>
+<option>fi</option>
+<option>fr</option>
+<option>gl</option>
+<option>gr</option>
+<option>he</option>
+<option>hu</option>
+<option>il</option>
+<option>it</option>
+<option>ko</option>
+<option>lt</option>
+<option>mn</option>
+<option>ms</option>
+<option>my</option>
+<option>nl</option>
+<option>no</option>
+<option>pl</option>
+<option>pt</option>
+<option>pt-br</option>
+<option>ro</option>
+<option>ru</option>
+<option>sk</option>
+<option>sl</option>
+<option>sr</option>
+<option>sv</option>
+<option>se</option>
+<option>th</option>
+<option>tr</option>
+<option>uk</option>
+<option>ua</option>
+<option>vi</option>
+<option>zh</option>
+<option>zh-hans</option>
+<option>zh-hant</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30010" type="string" id="title_type">
+                    <level>0</level>
+                    <default>Main</default>
+                    <constraints>
+                        <options>
+<option>Official</option>
+<option>Main</option>
+<option>Synonym</option>
+<option>Short</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+            </group>
+            <!-- title colorization -->
+            <group id="7" label="30019">
+                <setting label="30073" type="boolean" id="color_title">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30229" type="string" id="title_color_finish">
+                    <level>0</level>
+                    <default>white</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="list" format="string">
+		                <heading>30229</heading>
+	                </control>
+                </setting>
+                <setting label="30043" type="string" id="title_color_finish_missing" parent="show_search">
+                    <level>0</level>
+                    <default>red</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="list" format="string">
+		                <heading>30043</heading>
+	                </control>
+                </setting>
+                <setting label="30060" type="string" id="title_color_finish_special">
+                    <level>0</level>
+                    <default>aqua</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="list" format="string">
+		                <heading>30060</heading>
+                    </control>
+                </setting>
+                <setting label="30041" type="string" id="title_color_airing">
+                    <level>0</level>
+                    <default>yellow</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="list" format="string">
+		                <heading>30041</heading>
+	                </control>
+                </setting>
+                <setting label="30059" type="string" id="title_color_airing_missing">
+                    <level>0</level>
+                    <default>lightgoldenrodyellow</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="list" format="string">
+		                <heading>30059</heading>
+	                </control>
+                </setting>
+                <setting label="30071" type="string" id="title_color_airing_special">
+                    <level>0</level>
+                    <default>blueviolet</default>
+	                <constraints>
+                        <options>
+                    <option>aliceblue</option>
+                    <option>antiquewhite</option>
+                    <option>aqua</option>
+                    <option>aquamarine</option>
+                    <option>azure</option>
+                    <option>beige</option>
+                    <option>bisque</option>
+                    <option>black</option>
+                    <option>blanchedalmond</option>
+                    <option>blue</option>
+                    <option>blueviolet</option>
+                    <option>brown</option>
+                    <option>burlywood</option>
+                    <option>cadetblue</option>
+                    <option>chartreuse</option>
+                    <option>chocolate</option>
+                    <option>coral</option>
+                    <option>cornflowerblue</option>
+                    <option>cornsilk</option>
+                    <option>crimson</option>
+                    <option>cyan</option>
+                    <option>darkblue</option>
+                    <option>darkcyan</option>
+                    <option>darkgoldenrod</option>
+                    <option>darkgray</option>
+                    <option>darkgreen</option>
+                    <option>darkgrey</option>
+                    <option>darkkhaki</option>
+                    <option>darkmagenta</option>
+                    <option>darkolivegreen</option>
+                    <option>darkorange</option>
+                    <option>darkorchid</option>
+                    <option>darkred</option>
+                    <option>darksalmon</option>
+                    <option>darkseagreen</option>
+                    <option>darkslateblue</option>
+                    <option>darkslategray</option>
+                    <option>darkslategrey</option>
+                    <option>darkturquoise</option>
+                    <option>darkviolet</option>
+                    <option>deeppink</option>
+                    <option>deepskyblue</option>
+                    <option>dimgray</option>
+                    <option>dimgrey</option>
+                    <option>dodgerblue</option>
+                    <option>firebrick</option>
+                    <option>floralwhite</option>
+                    <option>forestgreen</option>
+                    <option>fuchsia</option>
+                    <option>gainsboro</option>
+                    <option>ghostwhite</option>
+                    <option>gold</option>
+                    <option>goldenrod</option>
+                    <option>gray</option>
+                    <option>green</option>
+                    <option>greenyellow</option>
+                    <option>grey</option>
+                    <option>honeydew</option>
+                    <option>hotpink</option>
+                    <option>indianred</option>
+                    <option>indigo</option>
+                    <option>ivory</option>
+                    <option>khaki</option>
+                    <option>lavender</option>
+                    <option>lavenderblush</option>
+                    <option>lawngreen</option>
+                    <option>lemonchiffon</option>
+                    <option>lightblue</option>
+                    <option>lightcoral</option>
+                    <option>lightcyan</option>
+                    <option>lightgoldenrodyellow</option>
+                    <option>lightgray</option>
+                    <option>lightgreen</option>
+                    <option>lightgrey</option>
+                    <option>lightpink</option>
+                    <option>lightsalmon</option>
+                    <option>lightseagreen</option>
+                    <option>lightskyblue</option>
+                    <option>lightslategray</option>
+                    <option>lightslategrey</option>
+                    <option>lightsteelblue</option>
+                    <option>lightyellow</option>
+                    <option>lime</option>
+                    <option>limegreen</option>
+                    <option>linen</option>
+                    <option>magenta</option>
+                    <option>maroon</option>
+                    <option>mediumaquamarine</option>
+                    <option>mediumblue</option>
+                    <option>mediumorchid</option>
+                    <option>mediumpurple</option>
+                    <option>mediumseagreen</option>
+                    <option>mediumslateblue</option>
+                    <option>mediumspringgreen</option>
+                    <option>mediumturquoise</option>
+                    <option>mediumvioletred</option>
+                    <option>midnightblue</option>
+                    <option>mintcream</option>
+                    <option>mistyrose</option>
+                    <option>moccasin</option>
+                    <option>navajowhite</option>
+                    <option>navy</option>
+                    <option>none</option>
+                    <option>oldlace</option>
+                    <option>olive</option>
+                    <option>olivedrab</option>
+                    <option>orange</option>
+                    <option>orangered</option>
+                    <option>orchid</option>
+                    <option>palegoldenrod</option>
+                    <option>palegreen</option>
+                    <option>paleturquoise</option>
+                    <option>palevioletred</option>
+                    <option>papayawhip</option>
+                    <option>peachpuff</option>
+                    <option>peru</option>
+                    <option>pink</option>
+                    <option>plum</option>
+                    <option>powderblue</option>
+                    <option>purple</option>
+                    <option>red</option>
+                    <option>rosybrown</option>
+                    <option>royalblue</option>
+                    <option>saddlebrown</option>
+                    <option>salmon</option>
+                    <option>sandybrown</option>
+                    <option>seagreen</option>
+                    <option>seashell</option>
+                    <option>sienna</option>
+                    <option>silver</option>
+                    <option>skyblue</option>
+                    <option>slateblue</option>
+                    <option>slategray</option>
+                    <option>slategrey</option>
+                    <option>snow</option>
+                    <option>springgreen</option>
+                    <option>steelblue</option>
+                    <option>tan</option>
+                    <option>teal</option>
+                    <option>thistle</option>
+                    <option>tomato</option>
+                    <option>transparent</option>
+                    <option>turquoise</option>
+                    <option>violet</option>
+                    <option>wheat</option>
+                    <option>white</option>
+                    <option>whitesmoke</option>
+                    <option>yellow</option>
+                    <option>yellowgreen</option>
+		        </options>
+		                <allowempty>true</allowempty>
+        	        </constraints>
+	                <control type="list" format="string">
+        		        <heading>30071</heading>
+        	        </control>
+                </setting>
+            </group>
+            <!-- sorting -->
+            <group id="8" label="30144">
+                <setting label="30142" type="string" id="default_sort_series">
+                    <level>0</level>
+                    <default>Server</default>
+                    <constraints>
+                        <options>
+                <option>Server</option>
+                <option>Title</option>
+                <option>Date</option>
+                <option>Rating</option>
+                <option>Year</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30143" type="string" id="default_sort_episodes">
+                    <level>0</level>
+                    <default>Episode</default>
+                    <constraints>
+                        <options>
+                <option>Server</option>
+                <option>Episode</option>
+                <option>Date</option>
+                <option>Title</option>
+                <option>Rating</option>
+                <option>Year</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+            </group>
+            <!-- spoiler control -->
+            <group id="9" label="30074">
+                <setting label="30075" type="string" id="hide_title">
+                    <level>0</level>
+                    <default>Never</default>
+                    <constraints>
+                        <options>
+                <option>Episodes</option>
+                <option>Specials</option>
+                <option>Both</option>
+                <option>Never</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30113" type="string" id="hide_rating">
+                    <level>0</level>
+                    <default>Never</default>
+                    <constraints>
+                        <options>
+                <option>Never</option>
+                <option>Unwatched</option>
+                <option>All Unwatched</option>
+                <option>Always</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <!-- Kodi has errors in comparing text in visibility and enabled status. This should be fixed in Leia -->
+                <setting label="30111" type="string" id="hide_rating_type">
+                    <level>0</level>
+                    <default>Both</default>
+                    <constraints>
+                        <options>
+                <option>Episodes</option>
+                <option>Series</option>
+                <option>Both</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30077" type="boolean" id="hide_images">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30078" type="boolean" id="hide_plot">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+            <!-- tweaks -->
+            <group id="10" label="30064">
+                <setting label="30039" type="boolean" id="show_continue">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30072" type="boolean" id="replace_continue">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30083" type="boolean" id="skip_information">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30040" type="boolean" id="local_total">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30068" type="boolean" id="ignore_specials_watched">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+            <!-- Context Menu Settings -->
+		    <group id="11" label="30057">
+                <setting label="30000" type="boolean" id="eigakan_handshake">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30065" type="boolean" id="context_show_play">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30000" type="boolean" id="trakt_scrobble">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30132" type="boolean" id="context_show_play_no_watch">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30174" type="boolean" id="context_show_force_transcode">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30175" type="boolean" id="context_show_directplay">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30177" type="boolean" id="context_show_probe">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30133" type="boolean" id="context_pick_file">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30130" type="boolean" id="context_playlist">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30062" type="boolean" id="context_krypton_watched">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30125" type="boolean" id="context_show_vote_Episode">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30124" type="boolean" id="context_show_vote_Series">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30123" type="boolean" id="context_show_info">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30134" type="boolean" id="context_view_cast">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30131" type="boolean" id="context_refresh">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+            <!-- maintenance -->
+		    <group id="12" label="30097">
+                <setting label="30080" type="action" id="action1">
+                <level>0</level>
+                    <data>RunScript(script.module.nakamori,/kodi/clear_listitem_cache)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+        </setting>
+                <setting label="30139" type="action" id="action2">
+                <level>0</level>
+                    <data>RunScript(script.module.nakamori,/kodi/clear_image_cache)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+        </setting>
+            </group>
+        </category>
+
+        <category id="tagblackist" label="30046" help="">
+            <!-- tag blacklist -->
+		    <group id="13" label="30046">
+                <setting label="30227" type="string" id="InvertTags">
+                    <level>0</level>
+                    <default>Hide</default>
+                    <constraints>
+                        <options>
+                <option>Hide</option>
+                <option>Show</option>
+            </options>
+                        <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30028" type="boolean" id="short_tag_list">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30045" type="boolean" id="MiscTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30047" type="boolean" id="ArtTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30048" type="boolean" id="SourceTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30049" type="boolean" id="UsefulMiscTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30050" type="boolean" id="SpoilerTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30070" type="boolean" id="SettingTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30013" type="boolean" id="ProgrammingTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30226" type="boolean" id="GenreTags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+
+        <category id="searching" label="30221" help="">
+            <!-- searching -->
+            <group id="14" label="30021"> <!-- Searching -->
+                <setting label="30022" type="integer" id="maxlimit" help="">
+	                <level>0</level>
+	                <default>20</default>
+	                <control type="edit" format="integer">
+		                <heading>30022</heading>
+	                </control>
+                </setting>
+                <setting label="30033" type="integer" id="maxlimit_tag" help="">
+	                <level>0</level>
+	                <default>100</default>
+	                <control type="edit" format="integer">
+		                <heading>30033</heading>
+	                </control>
+                </setting>
+            </group>
+            <!-- maintenance -->
+            <group id="15" label="30097">
+                <setting label="30110" type="action" id="action3">
+                    <level>0</level>
+                    <data>RunScript(script.module.nakamori,/search/clear)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                    <enable>System.HasAddon(script.module.nakamori)</enable>
+                </setting>
+            </group>
+        </category>
+
+        <!-- video settings -->
+        <category id="videosettings" label="30023" help="">
+            <!-- watched status settings -->
+            <group id="16" label="30007">
+                <setting label="30005" type="boolean" id="syncwatched">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30025" type="boolean" id="watchedbox">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30024" type="integer" id="watched_mark" help="">
+	                <level>0</level>
+	                <default>75</default>
+	                <control type="edit" format="integer">
+		                <heading>30024</heading>
+	                </control>
+                </setting>
+                <setting label="30032" type="boolean" id="vote_always">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30034" type="boolean" id="vote_on_series">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30184" type="boolean" id="suggest_series_vote" parent="vote_on_series">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30185" type="boolean" id="suggest_series_vote_all_eps" parent="suggest_series_vote">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30168" type="boolean" id="sync_to_library">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+            <!-- trakt support -->
+            <group id="17" label="30038">
+                <setting label="30035" type="boolean" id="trakt">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30036" type="boolean" id="trakt_scrobble">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30037" type="boolean" id="trakt_scrobble_notification" parent="trakt_scrobble">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+            <!-- kodi player settings -->
+            <group id="18" label="30026">
+                <setting label="30020" type="boolean" id="file_resume">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30014" type="boolean" id="pick_file">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30027" type="integer" id="player_sleep" help="">
+	                <level>0</level>
+	                <default>5000</default>
+	                <control type="edit" format="integer">
+		                <heading>30027</heading>
+	                </control>
+                </setting>
+                <setting label="30004" type="integer" id="timeout" help="">
+	                <level>0</level>
+	                <default>60</default>
+	                <control type="edit" format="integer">
+		                <heading>30004</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="boolean" id="kodi18">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30149" type="boolean" id="external_player">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+
+	    <!-- Advanced -->
+        <category id="additional" label="30044" help="">
+            <group id="19" label="30000">
+                <setting label="30109" type="addon" id="icon_pack" help="">
+	                <level>0</level>
+                    <default>resource.images.nakamori</default>
+	                <constraints>
+		                <addontype>kodi.resource.images</addontype>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="button" format="addon">
+		                <heading>30109</heading>
+		                <show more="true" details="true">installed</show>
+	                </control>
+                </setting>
+                <setting label="30066" type="boolean" id="request_nocast">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30169" type="boolean" id="fix_seiyuu_pic">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30169" type="boolean" id="seiyuu_gif">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+                <!-- debug -->
+            <group id="20" label="30173">
+                <setting label="30042" type="boolean" id="spamLog">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30063" type="boolean" id="remote_debug">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30086" type="string" id="remote_ip" parent="remote_debug" help="">
+	                <level>0</level>
+                    <default>localhost</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30086</heading>
+	                </control>
+                </setting>
+            </group>
+                <!-- calendar -->
+            <group id="21" label="30012">
+                <setting label="30058" type="string" id="calendar_format">
+                    <level>0</level>
+                    <default>%d/%m</default>
+                    <constraints>
+                        <options>
+                <option>%d-%m</option>
+                <option>%d-%m-%y</option>
+                    <option>%d/%m</option>
+                    <option>%d/%m/%y</option>
+                    <option>%m-%d</option>
+                    <option>%m-%d-%y</option>
+                    <option>%m/%d</option>
+                    <option>%m/%d/%y</option>
+                </options>
+                <allowempty>true</allowempty>
+                    </constraints>
+                    <control type="list" format="string">
+                        <heading>30229</heading>
+                    </control>
+                </setting>
+                <setting label="30061" type="boolean" id="calendar_basic">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+                <!-- experimental/misc -->
+            <group id="22" label="30146">
+                <setting label="30145" type="boolean" id="experimental">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+                <!-- cache -->
+            <group id="23" label="30029">
+                <setting label="30030" type="boolean" id="enableCache">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30069" type="integer" id="expireCache" parent="enableCache" help="">
+	                <level>0</level>
+	                <default>300</default>
+	                <control type="edit" format="integer">
+		                <heading>30069</heading>
+	                </control>
+                </setting>
+                <!-- eigakan -->
+                <setting label="30000" type="string" id="eigakan_manual_mode"  help="">
+	                <level>0</level>
+                    <default>false</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="string" id="eigakan_h_resolution"  help="">
+	                <level>0</level>
+                    <default>1280x720</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="string" id="eigakan_h_bitrate"  help="">
+	                <level>0</level>
+                    <default>1000k</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="string" id="eigakan_l_resolution"  help="">
+	                <level>0</level>
+                    <default>400x300</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="string" id="eigakan_l_bitrate"  help="">
+	                <level>0</level>
+                    <default>256k</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="string" id="eigakan_x264_preset"  help="">
+	                <level>0</level>
+                    <default>veryfast</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+            </group>
+            <group id="24" label="30084">
+                <setting label="30085" type="boolean" id="enableEigakan">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30086" type="string" id="ipEigakan" parent="enableEigakan" help="">
+	                <level>0</level>
+                    <default>127.0.0.1</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30086</heading>
+	                </control>
+                </setting>
+                <setting label="30087" type="integer" id="portEigakan" parent="enableEigakan" help="">
+	                <level>0</level>
+	                <default>8118</default>
+	                <control type="edit" format="integer">
+		                <heading>30087</heading>
+	                </control>
+                </setting>
+                <setting label="30095" type="string" id="audiolangEigakan" parent="enableEigakan" help="">
+	                <level>0</level>
+                    <default>english,eng,en</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30095</heading>
+	                </control>
+                </setting>
+                <setting label="30096" type="string" id="subEigakan" parent="enableEigakan" help="">
+	                <level>0</level>
+                    <default>english,eng,en</default>
+	                <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>30096</heading>
+	                </control>
+                </setting>
+                <setting label="30171" type="boolean" id="burnEigakan" parent="subEigakan">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30172" type="action" id="action6" action="" subsetting="true" enable="" visible="eq(-17,true)+eq(-6,true)" option="close">
+                    <level>0</level>
+                    <data>RRunScript(script.module.nakamori,/eigakan/clear)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                    <enable>System.HasAddon(script.module.nakamori)</enable>
+                </setting>
+                <setting label="30208" type="action" id="action7" subsetting="false" option="close">
+                    <level>0</level>
+                    <data>RunScript(script.module.nakamori,/eigakan/requirement)</data>
+                    <control type="button" format="action">
+                        <close>true</close>
+                    </control>
+                    <dependencies>
+                        <dependency type="enable" setting="">!System.HasAddon(inputstream.adaptive)</dependency>
+                        <dependency type="visible" setting="">!System.HasAddon(inputstream.adaptive)</dependency>
+                    </dependencies>
+                </setting>
+            </group>
+            <group id="25" label="30000">
+                <!-- noname/don't delete -->
+                <setting label="30108" type="boolean" id="feedback">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <setting label="30000" type="integer" id="last_call" parent="enableEigakan" help="">
+	                <level>0</level>
+	                <default>1543210000</default>
+	                <control type="edit" format="integer">
+		                <heading>30000</heading>
+	                </control>
+                </setting>
+                <setting label="30000" type="boolean" id="onepunchmen">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+            </group>
+        </category>
+    </section>
 </settings>

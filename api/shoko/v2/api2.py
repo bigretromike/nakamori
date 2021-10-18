@@ -97,9 +97,9 @@ class Client:
         response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
         return Filter.Decoder(response)
 
-    def filters(self, opts: QueryOptions = QueryOptions()) -> Filters:
-        response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
-        return Filters.Decoder(response)
+    #def filters(self, opts: QueryOptions = QueryOptions()) -> Filters:
+    #    response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
+    #    return Filters.Decoder(response)
     
     def group(self, opts: QueryOptions = QueryOptions()):
         response = self.api_client.call(url='/api/group', call_type=APIType.GET, query=opts.__dict__)

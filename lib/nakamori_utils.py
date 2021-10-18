@@ -18,7 +18,6 @@ plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
 
 def get_data(url: str, referer, timeout: int, apikey: str):
     try:
-        xbmc.log('-------------> GET_DATA ---', xbmc.LOGINFO)
         headers = {
             'Accept': 'application/json',
             'apikey': apikey,
@@ -70,25 +69,18 @@ def get_data(url: str, referer, timeout: int, apikey: str):
 
                     code = int(code)
                     raise HTTPError(req.get_full_url(), code, error_msg, req.headers, None)
-        xbmc.log('-------------> GET_DATA DATA: --->' + str(data), xbmc.LOGINFO)
         return data
     except Exception as ex:
         xbmc.log(' === get_data error === %s -> %s' % (url, ex), xbmc.LOGINFO)
 
 
-def get_json(url_in, direct=False, force_cache=False, cache_time=0):
-    """
-    Return json from URL
-    :param url_in: URL to query
-    :param direct: Direct connection
-    :param force_cache: Force using cache (this is stronger than direct)
-    :param cache_time:
-    :return:
-    """
+def get_json(url_in: str, direct: bool = False, force_cache: bool = False, cache_time: int = 0, new_apikey:str = None):
     try:
-        xbmc.log('-------------> GET_JSON', xbmc.LOGINFO)
-        timeout = plugin_addon.getSettingInt('timeout')
-        apikey = plugin_addon.getSetting('apikey')
+        timeout = plugin_addon.getSettingInt(id='timeout')
+        if new_apikey is not None:
+            plugin_addon.setSettingString(id='apikey', value=new_apikey)
+
+        apikey = plugin_addon.getSetting(id='apikey')
 
         # if cache is disabled, force direct connection
         if not plugin_addon.getSettingBool('enableCache'):
@@ -116,7 +108,6 @@ def get_json(url_in, direct=False, force_cache=False, cache_time=0):
     except Exception as ex:
         xbmc.log(' ========= ERROR JSON ============  %s' % ex, xbmc.LOGINFO)
         body = None
-    xbmc.log('-------------> GET_JSON ---> ' + str(body), xbmc.LOGINFO)
     return body
 
 

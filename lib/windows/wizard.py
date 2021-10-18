@@ -4,13 +4,12 @@ import xbmcaddon
 
 from lib import shoko_utils, kodi_utils
 
-plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
-ADDON = xbmcaddon.Addon(id='plugin.video.nakamori')
-CWD = ADDON.getAddonInfo('path')
+plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
+CWD = plugin_addon.getAddonInfo('path')
 
-MSG_HEADER = ADDON.getLocalizedString(30034)
-MSG_CONNECT = ADDON.getLocalizedString(30035)
-MSG_NOAUTH = ADDON.getLocalizedString(30036)
+MSG_HEADER = plugin_addon.getLocalizedString(30334)
+MSG_CONNECT = plugin_addon.getLocalizedString(30335)
+MSG_NOAUTH = plugin_addon.getLocalizedString(30336)
 
 OK_BUTTON = 201
 ACTION_PREVIOUS_MENU = 10
@@ -30,7 +29,7 @@ CENTER_Y = 6
 CENTER_X = 2
 
 # resources
-RSC_OK = ADDON.getLocalizedString(30027)
+RSC_OK = plugin_addon.getLocalizedString(30327)
 COLOR_WHITE = '0xAAFFFFFF'
 
 
@@ -38,11 +37,10 @@ COLOR_WHITE = '0xAAFFFFFF'
 class LoginWizard(xbmcgui.WindowXML):
     def __init__(self, xml_file, resource_path, skin, skin_res):
         xbmcgui.WindowXML.__init__(self, xml_file, resource_path, skin, skin_res, False)
-        # xbmcgui.WindowXML.__init__(self)
         self.window_type = 'window'
         self.login = ''
         self.password = ''
-        self.apikey = ''
+        self.apikey = None
         self.cancelled = True
         # additional variables
         self._button_ok = None
@@ -52,7 +50,7 @@ class LoginWizard(xbmcgui.WindowXML):
         self._label_password = None
 
     def onInit(self):
-        self.setProperty('script.module.nakamori.running', 'true')
+        # self.setProperty('script.module.nakamori.running', 'true')
         # static bind
         self._button_ok = self.getControl(OK_BUTTON)
         self._label_login = self.getControl(LABEL_LOGIN)
@@ -83,13 +81,7 @@ class LoginWizard(xbmcgui.WindowXML):
         # populate controls
         self._box_login.setText(self.login)
         self._box_password.setText(self.password)
-        try:
-            # Supposedly Kodi 18 only
-            # It would be good to proxy this, but I don't care enough to, since there is no way in Kodi 17 from code
-            self._box_password.setType(xbmcgui.INPUT_TYPE_PASSWORD, 'Enter password')
-        except:
-            pass
-
+        self._box_password.setType(xbmcgui.INPUT_TYPE_PASSWORD, plugin_addon.getLocalizedString(30300))
         self._button_ok.setLabel(label=RSC_OK, textColor=COLOR_WHITE, focusedColor=COLOR_WHITE)
 
         # set focus
@@ -97,7 +89,7 @@ class LoginWizard(xbmcgui.WindowXML):
 
     def onAction(self, action):
         if action == ACTION_PREVIOUS_MENU:
-            self.setProperty('script.module.nakamori.running', 'false')
+            # self.setProperty('script.module.nakamori.running', 'false')
             self.close()
         if action == ACTION_NAV_BACK:
             self.close()
@@ -111,20 +103,22 @@ class LoginWizard(xbmcgui.WindowXML):
     def onClick(self, control):
         if control == OK_BUTTON:
             # populate info from edits
-            login = str(self._box_login.getText()).strip()
-            password = str(self._box_password.getText()).strip()
+            self.login = str(self._box_login.getText()).strip()
+            self.password = str(self._box_password.getText()).strip()
             # check auth
-            apikey = None
+            self.apikey = None
             try:
-                apikey = shoko_utils.get_apikey(login, password)
+                self.apikey = shoko_utils.get_apikey(self.login, self.password)
             except:
                 print('error')
-            if apikey is not None:
-                plugin_addon.setSetting('apikey', apikey)
+
+            if self.apikey is not None:
+                # this action is not saved to settings (at first run)
+                plugin_addon.setSetting(id='apikey', value=str(self.apikey))
                 plugin_addon.setSetting(id='login', value='')
                 plugin_addon.setSetting(id='password', value='')
-                if shoko_utils.can_user_connect():
-                    self.setProperty('script.module.nakamori.running', 'false')
+                if shoko_utils.can_user_connect(self.apikey):
+                    # self.setProperty('script.module.nakamori.running', 'false')
                     self.cancelled = False
                     self.close()
                     return
@@ -136,7 +130,6 @@ class LoginWizard(xbmcgui.WindowXML):
 class ConnectionWizard(xbmcgui.WindowXML):
     def __init__(self, xml_file, resource_path, skin, skin_res):
         xbmcgui.WindowXML.__init__(self, xml_file, resource_path, skin, skin_res, False)
-        # xbmcgui.WindowXML.__init__(self)
         self.window_type = 'window'
         self.ip = None
         self.port = None
@@ -185,7 +178,7 @@ class ConnectionWizard(xbmcgui.WindowXML):
 
     def onAction(self, action):
         if action == ACTION_PREVIOUS_MENU:
-            self.setProperty('script.module.nakamori.running', 'false')
+            # self.setProperty('script.module.nakamori.running', 'false')
             self.close()
         if action == ACTION_NAV_BACK:
             self.close()
@@ -212,14 +205,15 @@ class ConnectionWizard(xbmcgui.WindowXML):
 def open_connection_wizard():
     ui = ConnectionWizard('connection_wizard.xml', CWD, 'default', '1080i')
     ui.doModal()
-    x = ui.cancelled
+    x = not ui.cancelled
     del ui
-    return not x
+    return x
 
 
 def open_login_wizard():
     ui = LoginWizard('login_wizard.xml', CWD, 'default', '1080i')
     ui.doModal()
-    x = ui.cancelled
+    x = not ui.cancelled
+    a = ui.apikey
     del ui
-    return not x
+    return x, a
