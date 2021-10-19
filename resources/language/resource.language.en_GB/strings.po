@@ -1162,6 +1162,11 @@ msgctxt "#30233"
 msgid "Logout"
 msgstr "Logout"
 
+#: settings.xml #
+msgctxt "#30234"
+msgid "Add Episode Number to Title"
+msgstr "Add Episode Number to Title"
+
 ##################################
 
 #: wizard.xml #

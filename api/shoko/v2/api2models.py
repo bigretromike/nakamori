@@ -530,17 +530,17 @@ class Stream:
 
 class MediaInfo:
     def __init__(self,
-                general: General = {},
-                audios: Stream = {},
-                videos: Stream = {},
-                subtitles: Stream = {},
-                menus = {}
-                ):
+                 general: General = {},
+                 audios: List[Stream] = [],
+                 videos: List[Stream] = [],
+                 subtitles: List[Stream] = [],
+                 menus: List[Stream] = []
+                 ):
         self.general: General = general
-        self.audios: Stream = audios
-        self.videos: Stream = videos
-        self.subtitles: Stream = subtitles
-        self.menus = menus
+        self.audios: List[Stream] = audios
+        self.videos: List[Stream] = videos
+        self.subtitles: List[Stream] = subtitles
+        self.menus: List[Stream] = menus
 
     class Encoder(JSONEncoder):
         def default(self, o):
@@ -560,10 +560,14 @@ class MediaInfo:
         mediainfo: MediaInfo = MediaInfo()
 
         mediainfo.general = General.Decoder(json.get("general"))
-        mediainfo.audios = Stream.Decoder(json.get("audios"))
-        mediainfo.videos = Stream.Decoder(json.get("videos"))
-        mediainfo.subtitles = Stream.Decoder(json.get("subtitles"))
-        mediainfo.menus = json.get("menus")
+        for a in json.get("audios"):
+            mediainfo.audios.append(Stream.Decoder(a))
+        for a in json.get("videos"):
+            mediainfo.videos.append(Stream.Decoder(a))
+        for a in json.get("subtitles"):
+            mediainfo.subtitles.append(Stream.Decoder(a))
+        for a in json.get("menus", []):
+            mediainfo.menus.append(Stream.Decoder(a))
 
         return mediainfo
 

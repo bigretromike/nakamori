@@ -1582,6 +1582,11 @@
                         <heading>30229</heading>
                     </control>
                 </setting>
+                <setting label="30234" type="boolean" id="addepnumber">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
             </group>
             <!-- title colorization -->
             <group id="7" label="30019">
@@ -2781,8 +2786,8 @@
             </group>
         </category>
 
+        <!-- tag blacklist -->
         <category id="tagblackist" label="30046" help="">
-            <!-- tag blacklist -->
 		    <group id="13" label="30046">
                 <setting label="30227" type="string" id="InvertTags">
                     <level>0</level>
@@ -3001,12 +3006,7 @@
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30169" type="boolean" id="fix_seiyuu_pic">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
-                <setting label="30169" type="boolean" id="seiyuu_gif">
+                <setting label="30169" type="boolean" id="use_seiyuu_pic">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>

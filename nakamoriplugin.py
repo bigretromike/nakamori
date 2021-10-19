@@ -29,26 +29,32 @@ def list_all_filters():
     :return: Draw ListItem's Collection of Filters
     """
     xbmc.log('/', xbmc.LOGINFO)
-    for filter_id, f_type, li in kodi_models.list_all_filters():
+    kodi_models.set_sorting_method(ThisType.filter)
+    y = kodi_models.list_all_filters()
+    y_count = len(y)
+    for filter_id, f_type, li in y:
         if f_type == ThisType.filter:
             li.setLabel("f" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, filter_id), li, True)
+            addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, filter_id), li, True, totalItems=y_count)
         elif f_type == ThisType.filters:
             li.setLabel("fs" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, filter_id), li, True)
+            addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, filter_id), li, True, totalItems=y_count)
     endOfDirectory(plugin.handle)
 
 
 @plugin.route('/f/<filters_id>/filter')
 def list_filter_by_filters_id(filters_id: int):
     xbmc.log(f'/f/{filters_id}/filter', xbmc.LOGINFO)
-    for obj_id, obj_type, li in kodi_models.list_all_filter_by_filters_id(filters_id):
+    kodi_models.set_sorting_method(ThisType.filter)
+    y = kodi_models.list_all_filter_by_filters_id(filters_id)
+    y_count = len(y)
+    for obj_id, obj_type, li in y:
         if obj_type == ThisType.filter:
             li.setLabel("f" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, obj_id), li, True)
+            addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, obj_id), li, True, totalItems=y_count)
         if obj_type == ThisType.filters:
             li.setLabel("fs" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, obj_id), li, True)
+            addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, obj_id), li, True, totalItems=y_count)
 
     endOfDirectory(plugin.handle)
 
@@ -61,14 +67,17 @@ def list_groups_by_filter_id(filter_id: int):
     :return: Draw ListItem's Collection of Group
     """
     xbmc.log(f'/f/{filter_id}/group', xbmc.LOGINFO)
-    for obj_id, obj_type, li in kodi_models.list_all_groups_by_filter_id(filter_id):
+    kodi_models.set_sorting_method(ThisType.series)
+    y = kodi_models.list_all_groups_by_filter_id(filter_id)
+    y_count = len(y)
+    for obj_id, obj_type, li in y:
         xbmc.log(f'{obj_id} --- {obj_type} ---- {li}')
         if obj_type == ThisType.group:
             li.setLabel("g" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(open_group_by_group_id_and_filter_id, filter_id, obj_id), li, True)
+            addDirectoryItem(plugin.handle, plugin.url_for(open_group_by_group_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
         if obj_type == ThisType.series:
             li.setLabel("s" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, filter_id, obj_id), li, True)
+            addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
 
     endOfDirectory(plugin.handle)
 
@@ -76,13 +85,14 @@ def list_groups_by_filter_id(filter_id: int):
 @plugin.route('/f/<filter_id>/g/<group_id>')
 def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
     xbmc.log(f'/f/{filter_id}/g/{group_id}', xbmc.LOGINFO)
+    kodi_models.set_sorting_method(ThisType.series)
     pass
 
 
 @plugin.route('/f/<filter_id>/s/<series_id>/ep')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     xbmc.log(f'/f/{filter_id}/s/{series_id}/ep', xbmc.LOGINFO)
-
+    kodi_models.set_sorting_method(ThisType.episode)
     list_of_ep_types = []
     list_of_eps = []
 
@@ -95,28 +105,31 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
                 list_of_ep_types.append(ep_type)
         else:
             li.setLabel("e" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False)
+            addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
 
     if do_we_want_to_make_eptype_setting:
         if len(list_of_ep_types) > 1:
             for ep_type in list_of_ep_types:
                 li = xbmcgui.ListItem(str(ep_type))
                 li.setLabel("et" + li.getLabel())  # temporary
-                addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True)
+                addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
         else:
             for ep_id, ep_type, li in list_of_eps:
                 li.setLabel("e" + li.getLabel())  # temporary
-                addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False)
+                addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
     endOfDirectory(plugin.handle)
 
 
 @plugin.route('/f/<filter_id>/s/<series_id>/et/<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
     xbmc.log(f'/f/{filter_id}/s/{series_id}/et/{eptype_id}', xbmc.LOGINFO)
-    for ep_id, ep_type, li in kodi_models.list_episodes_for_series_by_series_id(series_id):
+    kodi_models.set_sorting_method(ThisType.group)
+    y = kodi_models.list_episodes_for_series_by_series_id(series_id)
+    y_count = len(y)
+    for ep_id, ep_type, li in y:
         if int(ep_type) == int(eptype_id):
             li.setLabel("e" + li.getLabel())  # temporary
-            addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False)
+            addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=y_count)
     endOfDirectory(plugin.handle)
 
 

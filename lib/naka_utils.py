@@ -20,6 +20,12 @@ class ThisType(IntEnum):
     raw = 11
 
 
+class WatchedStatus(IntEnum):
+    UNWATCHED = 0
+    PARTIAL = 1
+    WATCHED = 2
+
+
 def map_episodetype_to_thistype(input_type: str) -> ThisType:
     this = input_type.lower()
     if this == "episode":
