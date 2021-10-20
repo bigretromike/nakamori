@@ -35,11 +35,13 @@ def list_all_filters():
     y_count = len(y)
     for filter_id, f_type, li in y:
         if f_type == ThisType.filter:
-            li.setLabel("f" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, filter_id), li, True, totalItems=y_count)
         elif f_type == ThisType.filters:
-            li.setLabel("fs" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, filter_id), li, True, totalItems=y_count)
+
+    for extra in kodi_models.main_menu_items():
+        addDirectoryItem(plugin.handle, extra.getPath(), extra, True)
+
     endOfDirectory(plugin.handle)
 
 
@@ -51,10 +53,8 @@ def list_filter_by_filters_id(filters_id: int):
     y_count = len(y)
     for obj_id, obj_type, li in y:
         if obj_type == ThisType.filter:
-            li.setLabel("f" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, obj_id), li, True, totalItems=y_count)
         if obj_type == ThisType.filters:
-            li.setLabel("fs" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, obj_id), li, True, totalItems=y_count)
 
     endOfDirectory(plugin.handle)
@@ -72,12 +72,9 @@ def list_groups_by_filter_id(filter_id: int):
     y = kodi_models.list_all_groups_by_filter_id(filter_id)
     y_count = len(y)
     for obj_id, obj_type, li in y:
-        xbmc.log(f'{obj_id} --- {obj_type} ---- {li}')
         if obj_type == ThisType.group:
-            li.setLabel("g" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(open_group_by_group_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
         if obj_type == ThisType.series:
-            li.setLabel("s" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
 
     endOfDirectory(plugin.handle)
@@ -105,18 +102,15 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
             if ep_type not in list_of_ep_types:
                 list_of_ep_types.append(ep_type)
         else:
-            li.setLabel("e" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
 
     if do_we_want_to_make_eptype_setting:
         if len(list_of_ep_types) > 1:
             for ep_type in list_of_ep_types:
                 li = xbmcgui.ListItem(str(ep_type))
-                li.setLabel("et" + li.getLabel())  # temporary
                 addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
         else:
             for ep_id, ep_type, li in list_of_eps:
-                li.setLabel("e" + li.getLabel())  # temporary
                 addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
     endOfDirectory(plugin.handle)
 

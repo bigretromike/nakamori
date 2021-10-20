@@ -6,6 +6,7 @@ from xbmcgui import ListItem
 import xbmcplugin
 import sys
 import re
+import routing
 
 from lib.kodi_utils import bold
 from lib.shoko_utils import get_tag_setting_flag
@@ -13,6 +14,7 @@ from typing import List, Tuple
 from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype
 import os
 
+plugin = routing.Plugin()
 plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
 #plugin_img_path = os.path.join(xbmcaddon.Addon(id=plugin_addon.getSetting('icon_pack')).getAddonInfo('path'), 'resources', 'media')
 plugin_img_path = os.path.join(xbmcaddon.Addon(id='plugin.video.nakamori').getAddonInfo('path'), 'resources', 'media')
@@ -146,6 +148,10 @@ def get_tags(s: List[str]):
     return temp_genres
 
 
+def color(text_to_color: str, color_name: str):
+    return ''.join(['[COLOR %s]' % color_name, text_to_color, '[/COLOR]'])
+
+
 def title_coloring(title, episode_count, total_count, special_count, total_special_count, airing=False, is_movie=False):
     color_title = title
     if not plugin_addon.getSettingBool('color_title') or is_movie:  # skip movies (they like to have parts)
@@ -153,11 +159,11 @@ def title_coloring(title, episode_count, total_count, special_count, total_speci
 
     color_format = '[COLOR %s]%s[/COLOR]'
     if airing:
-        color = plugin_addon.getSetting('title_color_airing')
+        color_name = plugin_addon.getSetting('title_color_airing')
         color_special = plugin_addon.getSetting('title_color_airing_special')
         color_missing = plugin_addon.getSetting('title_color_airing_missing')
     else:
-        color = plugin_addon.getSetting('title_color_finish')
+        color_name = plugin_addon.getSetting('title_color_finish')
         color_special = plugin_addon.getSetting('title_color_finish_special')
         color_missing = plugin_addon.getSetting('title_color_finish_missing')
 
@@ -172,11 +178,11 @@ def title_coloring(title, episode_count, total_count, special_count, total_speci
 
     if episode_count == total_count:
         if total_special_count == 0:
-            return color_format % (color, title)
+            return color_format % (color_name, title)
         if special_count >= total_special_count:
             return color_format % (color_special, title)
         if special_count < total_special_count:
-            return color_format % (color, title)
+            return color_format % (color_name, title)
     elif episode_count < total_count:
         return color_format % (color_missing, title)
 
@@ -409,7 +415,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
              'title': title,
              'originaltitle': title,
              'sorttitle': title,
-             'tvshotwitle': title,
+             'tvshowtitle': title,
              'mediatype': 'tvshow',
              #'season': '1',
              #'sortseason': '1',
@@ -450,7 +456,7 @@ def set_info_for_filter(li: ListItem, x: api2models.Filter):
     video = {'title': title,
              'originaltitle': title,
              'sorttitle': title,
-             'tvshotwitle': title,
+             'tvshowtitle': title,
              'mediatype': 'tvshow'}
 
     li.setInfo('video', video)
@@ -489,6 +495,119 @@ def set_property(li: ListItem, name, value):
 def set_path(li: ListItem, path: str):
     li.setPath(path=path)
 
+@plugin.route('/favorites')
+def show_favorites_menu():
+    pass
+
+@plugin.route('/bookmark')
+def show_bookmark_menu():
+    pass
+
+@plugin.route('/recent')
+def show_added_recently_menu():
+    pass
+
+@plugin.route('/calendar')
+def show_calendar_menu():
+    pass
+
+@plugin.route('/calendar2')
+def url_calendar():
+    pass
+
+@plugin.route('/settings')
+def show_setting_menu():
+    pass
+
+@plugin.route('/shoko')
+def show_shoko_menu():
+    pass
+
+
+def main_menu_items() -> List[ListItem]:
+    # { 'Favorites', 'Added Recently v2': 0, 'Airing Today': 1, 'Calendar': 1, 'Seasons': 2, 'Years': 3, 'Tags': 4,
+    # 'Unsort': 5, 'Settings' (both): 7, 'Shoko Menu': 8, 'Search': 9, Experiment: 99}
+
+    items: List[ListItem] = []
+    img = plugin_img_path + '/%s/%s'
+
+    if plugin_addon.getSettingBool('show_favorites'):
+        name = color(plugin_addon.getLocalizedString(30211), plugin_addon.getSetting('color_favorites'))
+        if plugin_addon.getSettingBool('bold_favorites'):
+            name = bold(name)
+        item = ListItem(name, path=plugin.url_for(show_favorites_menu))
+        img_name = 'airing.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    if plugin_addon.getSettingBool('show_bookmark'):
+        name = color(plugin_addon.getLocalizedString(30215), plugin_addon.getSetting('color_bookmark'))
+        if plugin_addon.getSettingBool('bold_bookmark'):
+            name = bold(name)
+        item = ListItem(name, path=plugin.url_for(show_bookmark_menu))
+        img_name = '/airing.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    if plugin_addon.getSettingBool('show_recent2'):
+        name = color(plugin_addon.getLocalizedString(30170), plugin_addon.getSetting('color_recent2'))
+        if plugin_addon.getSettingBool('bold_recent2'):
+            name = bold(name)
+        item = ListItem(name, path=plugin.url_for(show_added_recently_menu))
+        img_name = '/airing.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    # TODO airing today
+    # if plugin_addon.getSetting('show_airing_today') == 'true':
+    #    name = kodi_utils.color(plugin_localize(30211), plugin_addon.getSetting('color_favorites'), color)
+    #    item = CustomItem(plugin_localize(30223), 'airing.png', url_for(show_airing_today_menu))
+    #    item.sort_index = 1
+    #    items.append(item)
+
+    if plugin_addon.getSettingBool('show_calendar'):
+        name = color(plugin_addon.getLocalizedString(30222), plugin_addon.getSetting('color_calendar'))
+
+        if plugin_addon.getSettingBool('bold_calendar'):
+            name = bold(name)
+        if plugin_addon.getSettingBool('calendar_basic') == 'true':
+            item = ListItem(name, path=plugin.url_for(show_calendar_menu))
+            # isfolter
+        else:
+            item = ListItem(name, path=plugin.url_for(url_calendar))
+        img_name = 'calendar.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    if plugin_addon.getSettingBool('show_settings'):
+        name = color(plugin_addon.getLocalizedString(30107), plugin_addon.getSetting('color_settings'))
+        if plugin_addon.getSettingBool('bold_settings'):
+            name = bold(name)
+        item = ListItem(name, path=plugin.url_for(show_setting_menu))
+        img_name = 'settings.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    if plugin_addon.getSettingBool('show_shoko'):
+        name = color(plugin_addon.getLocalizedString(30115), plugin_addon.getSetting('color_shoko'))
+        if plugin_addon.getSettingBool('bold_shoko'):
+            name = bold(name)
+        item = ListItem(name, path=plugin.url_for(show_shoko_menu))
+        img_name = 'settings.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    if plugin_addon.getSettingBool('show_search'):
+        name = color(plugin_addon.getLocalizedString(30221), plugin_addon.getSetting('color_search'))
+        if plugin_addon.getSettingBool('bold_search'):
+            name = bold(name)
+        item = ListItem(name, path=plugin.url_for(show_favorites_menu))
+        img_name = 'search.png'
+        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        items.append(item)
+
+    return items
+
 
 def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
     """
@@ -502,8 +621,14 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
     q.level = 0
     q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
+    set_category('')
+    set_content('tvshows')
+
+    show_unsort = plugin_addon.getSettingBool('show_unsort')
 
     for d in x.filters:
+        if d.name == "Unsorted" and not show_unsort:
+            continue
         list_of_listitems.append((d.id, map_filter_group_to_thistype(d.type), get_listitem_from_filter(d)))
 
     return list_of_listitems
@@ -516,6 +641,8 @@ def list_all_filter_by_filters_id(id: int) -> List[Tuple[int, ThisType, ListItem
     q.level = 1
     q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
+    set_category(x.name)
+    set_content('tvshows')
 
     for f in x.filters:
         list_of_li.append((f.id, map_filter_group_to_thistype(f.type), get_listitem_from_filter(f)))
