@@ -5,8 +5,10 @@ import xbmcaddon
 from xbmcgui import ListItem
 import xbmcplugin
 import sys
+import re
 
 from lib.kodi_utils import bold
+from lib.shoko_utils import get_tag_setting_flag
 from typing import List, Tuple
 from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype
 import os
@@ -58,6 +60,15 @@ def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     set_cast(li, get_cast(x.roles))
     add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', False)
+    watched = 0
+    if x.watched_sizes.Episodes is not None:
+        watched = x.watched_sizes.Episodes
+    total = 0
+    if x.total_sizes.Episodes is not None:
+        total = x.total_sizes.Episodes
+    set_property(li, 'TotalEpisodes', str(total))
+    set_property(li, 'WatchedEpisodes', str(watched))
+    set_property(li, 'UnWatchedEpisodes', str(total - watched))
     set_path(li, url)  # TODO
 
     return li
@@ -135,22 +146,66 @@ def get_tags(s: List[str]):
     return temp_genres
 
 
-def get_proper_title(t: List[api2models.AnimeTitle]) -> str:
+def title_coloring(title, episode_count, total_count, special_count, total_special_count, airing=False, is_movie=False):
+    color_title = title
+    if not plugin_addon.getSettingBool('color_title') or is_movie:  # skip movies (they like to have parts)
+        return color_title
+
+    color_format = '[COLOR %s]%s[/COLOR]'
+    if airing:
+        color = plugin_addon.getSetting('title_color_airing')
+        color_special = plugin_addon.getSetting('title_color_airing_special')
+        color_missing = plugin_addon.getSetting('title_color_airing_missing')
+    else:
+        color = plugin_addon.getSetting('title_color_finish')
+        color_special = plugin_addon.getSetting('title_color_finish_special')
+        color_missing = plugin_addon.getSetting('title_color_finish_missing')
+
+    if episode_count is None:
+        episode_count = 0
+    if total_count is None:
+        total_count = 0
+    if special_count is None:
+        special_count = 0
+    if total_special_count is None:
+        total_special_count = 0
+
+    if episode_count == total_count:
+        if total_special_count == 0:
+            return color_format % (color, title)
+        if special_count >= total_special_count:
+            return color_format % (color_special, title)
+        if special_count < total_special_count:
+            return color_format % (color, title)
+    elif episode_count < total_count:
+        return color_format % (color_missing, title)
+
+    return color_title
+
+
+def get_proper_title(s: api2models.Serie) -> str:
+    use_server_title = plugin_addon.getSettingBool("use_server_title")
     this_type = plugin_addon.getSetting("title_type").lower()
     this_lang = plugin_addon.getSetting("displaylang").lower()
+    t = ''
 
     list_of_good_titles = []
-    for tt in t:
-        if tt.Language.lower() == this_lang:
-            list_of_good_titles.append(tt)
-        if tt.Type.lower() == this_type:
-            if tt not in list_of_good_titles:
+    if not use_server_title:
+        for tt in s.titles:
+            if tt.Language.lower() == this_lang:
                 list_of_good_titles.append(tt)
-            else:
-                # if we added good langauge already and its in good type then we have a winner
-                break
-    # no matter what pick first on the list
-    return list_of_good_titles[0].Title
+            if tt.Type.lower() == this_type:
+                if tt not in list_of_good_titles:
+                    list_of_good_titles.append(tt)
+                else:
+                    # if we added good langauge already and its in good type then we have a winner
+                    break
+        # no matter what pick first on the list
+        t = list_of_good_titles[0].Title
+    else:
+        t = s.name
+    # We need to assume not airing, as there is no end date provided in API
+    return title_coloring(t, s.local_sizes.Episodes, s.total_sizes.Episodes, s.local_sizes.Specials, s.total_sizes.Specials, False, is_movie=True if s.ismovie == 1 else False)
 
 
 def set_category(category: str):
@@ -306,7 +361,7 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
     # episodeguide (str), showlink (str), plot, plotoutline (short-plot), title, originaltitle, sorttitle, studio, tagline (short descipt)
     # rating (float), userrating (int), playcount, overlay 0-7, duration (sec)
     # cast (list[str] list[tuple(str,str)])
-    # writer, tvshotwitle, premiered (yyyy-mm-dd), status (Continuing), set (name of collection ? group ? ), setoverview
+    # writer, tvshowtitle, premiered (yyyy-mm-dd), status (Continuing), set (name of collection ? group ? ), setoverview
     # tag (str, list[str]), dateadded (yyyy-mm-dd hh:mm:ss), lastplayed (yyyy-mm-dd hh:mm:ss)
     # imdbnumber (str), code, aired (yyyy-mm-dd), credits (str, list[str]), votes (12345 votes)
     # path (file/path.avi), trailer (file/path.traile.avi), dbid (int --- dont add this )
@@ -322,7 +377,7 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
              'title': title,
              'originaltitle': title,
              'sorttitle': f'{x.epnumber:04d} {x.name}',
-             'tvshotwitle': series_title,
+             'tvshowtitle': series_title,
              'mediatype': 'episode',
              'season': 1,
              'sortseason': 1,
@@ -345,10 +400,12 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
 
 
 def set_info_for_group(li: ListItem, x: api2models.Group):
-    title = get_proper_title(x.titles)
+    title = get_proper_title(x)
+    summary = make_text_nice(x.summary)
     video = {'aired': x.air,
              'year': x.year,
-             'plot': x.summary,
+             'plot': summary,
+             'plotoutline': " ".join(summary.split(".", 3)[:2]),
              'title': title,
              'originaltitle': title,
              'sorttitle': title,
@@ -366,14 +423,16 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
 
 
 def set_info_for_series(li: ListItem, x: api2models.Serie):
-    title = get_proper_title(x.titles)
+    title = get_proper_title(x)
+    summary = make_text_nice(x.summary)
     video = {'aired': x.air,
              'year': x.year,
-             'plot': x.summary,
+             'plot': summary,
+             'plotoutline': " ".join(summary.split(".", 3)[:2]),
              'title': title,
              'originaltitle': title,
              'sorttitle': title,
-             'tvshotwitle': title,
+             'tvshowtitle': title,
              'mediatype': 'tvshow',
              'rating': float(x.rating),
              'premiered': x.air,
@@ -441,6 +500,7 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
     # get images
     q.allpics = 1
     q.level = 0
+    q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
 
     for d in x.filters:
@@ -454,6 +514,7 @@ def list_all_filter_by_filters_id(id: int) -> List[Tuple[int, ThisType, ListItem
     q = api2.QueryOptions()
     q.id = id
     q.level = 1
+    q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
 
     for f in x.filters:
@@ -467,6 +528,7 @@ def list_all_groups_by_filter_id(id: int) -> List[Tuple[int, ThisType, ListItem]
     q = api2.QueryOptions()
     q.id = id
     q.level = 2  # 1 - empty series
+    q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
 
     set_category(x.name)
@@ -488,6 +550,7 @@ def list_all_series_by_filter_id(id: int) -> List[Tuple[int, ListItem]]:
     q = api2.QueryOptions()
     q.id = id
     q.level = 1
+    q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
 
     for s in x.groups:
@@ -496,15 +559,16 @@ def list_all_series_by_filter_id(id: int) -> List[Tuple[int, ListItem]]:
     return list_of_listitems
 
 
-def list_episodes_for_series_by_series_id(id: int) -> List[Tuple[int, ThisType, ListItem]]:
+def list_episodes_for_series_by_series_id(s_id: int) -> List[Tuple[int, ThisType, ListItem]]:
     list_of_li = []
     q = api2.QueryOptions()
     q.allpics = 1
-    q.id = id
+    q.id = s_id
     q.level = 1
+    q.tagfilter = get_tag_setting_flag()
     x = api.series_get_by_id(q)
 
-    series_title = get_proper_title(x.titles)
+    series_title = get_proper_title(x)
 
     for ep in x.eps:
         list_of_li.append((ep.id, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep, series_title, x.roles)))
@@ -516,21 +580,111 @@ def get_file_id_from_ep_id(ep_id: int) -> List[api2models.RawFile]:
     q = api2.QueryOptions()
     q.id = ep_id
     q.level = 1
+    q.tagfilter = get_tag_setting_flag()
     x = api.episode_get(q)
     return x.files
 
 
 def set_sorting_method(x: ThisType):
     if x == ThisType.episode:
-        if not plugin_addon.getSettingBool('addepnumber'):
-            xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_EPISODE)
+        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_TITLE)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_RATING)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_DATE)
+
+        sort_episodes = plugin_addon.getSetting('default_sort_episodes')
+        sort = 0
+        if sort_episodes == 'Server':
+            sort = int(xbmcplugin.SORT_METHOD_UNSORTED)
+        if sort_episodes == 'Title':
+            sort = int(xbmcplugin.SORT_METHOD_TITLE)
+        if sort_episodes == 'Date':
+            sort = int(xbmcplugin.SORT_METHOD_DATE)
+        if sort_episodes == 'Rating':
+            sort = int(xbmcplugin.SORT_METHOD_VIDEO_RATING)
+        if sort_episodes == 'Year':
+            sort = int(xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        if sort_episodes == 'Episode':
+            sort = int(xbmcplugin.SORT_METHOD_EPISODE)
+        xbmc.executebuiltin(f'Container.SetSortMethod({sort})')
+
     elif x == ThisType.series or x == ThisType.filter or x == ThisType.group:
+        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_RATING)
+        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_DATE)
+
+        sort_series = plugin_addon.getSetting('default_sort_series')
+        sort = 0
+        if sort_series == 'Server':
+            sort = int(xbmcplugin.SORT_METHOD_UNSORTED)
+        if sort_series == 'Title':
+            sort = int(xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
+        if sort_series == 'Date':
+            sort = int(xbmcplugin.SORT_METHOD_DATE)
+        if sort_series == 'Rating':
+            sort = int(xbmcplugin.SORT_METHOD_VIDEO_RATING)
+        if sort_series == 'Year':
+            sort = int(xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmc.executebuiltin(f'Container.SetSortMethod({sort})')
     else:
         xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_NONE)
+
+
+def make_text_nice(data: str = ''):
+    """
+    Make any anidb text look nice, clean and sleek by removing links, annotations, comments, empty lines
+    :param data: text that is too ugly to be shown
+    :return: text that is a bit nicer
+    """
+    data = remove_anidb_links(data)
+    # the only one I could care to make settings if someone ask for
+    data = remove_anidb_annotations(data)
+    data = remove_anidb_comments(data)
+    data = remove_multi_empty_lines(data)
+    return data
+
+
+def remove_anidb_links(data=''):
+    """
+    Remove anidb links from descriptions
+    Args:
+        data: the strong to remove links from
+    Returns: new string without links
+    """
+    p = re.compile(r'(https?://anidb\.net/[0-9A-z/\-_.?=&]+[ ]*\[)([\S ]+?)(\])')
+    return p.sub(r'\2', data)
+
+
+def remove_anidb_comments(data=''):
+    """
+    Remove comments that topically start with *, --, ~ from description
+    :param data: text to clean
+    :return: text after clean
+    """
+    data = re.sub(r'^(\*|--|~) .*', "", data, flags=re.MULTILINE)
+    return data.strip(" \n")
+
+
+def remove_anidb_annotations(data=''):
+    """
+    Remove annotations containing Source, Note, Summary from description
+    :param data: text to clean
+    :return: text after clean
+    """
+    data = re.sub(r'\n(Source|Note|Summary):.*', "", data, flags=re.DOTALL)
+    return data.strip(" \n")
+
+
+def remove_multi_empty_lines(data=''):
+    """
+    Remove multiply empty lines to save some space
+    :param data: text to clean
+    :return: text after clean
+    """
+    data = re.sub(r'\n\n+', r'\n\n', data)
+    return data.strip(" \n")

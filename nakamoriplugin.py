@@ -12,6 +12,7 @@ import xbmc
 import xbmcgui
 import xbmcaddon
 from xbmcplugin import addDirectoryItem, endOfDirectory
+import sys
 
 plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 plugin = routing.Plugin()
@@ -123,7 +124,7 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
 @plugin.route('/f/<filter_id>/s/<series_id>/et/<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
     xbmc.log(f'/f/{filter_id}/s/{series_id}/et/{eptype_id}', xbmc.LOGINFO)
-    kodi_models.set_sorting_method(ThisType.group)
+    kodi_models.set_sorting_method(ThisType.episode)
     y = kodi_models.list_episodes_for_series_by_series_id(series_id)
     y_count = len(y)
     for ep_id, ep_type, li in y:
@@ -156,12 +157,18 @@ def main():
 
     # stage 1 - check connection
     if not shoko_utils.can_connect():
-        kodi_utils.message_box(plugin_addon.getLocalizedString(30197), plugin_addon.getLocalizedString(30197))
-        xbmc.executebuiltin("Dialog.Close(all, true)")
-        if wizard.open_connection_wizard():
+        if xbmcgui.Dialog().yesno(plugin_addon.getLocalizedString(30197), plugin_addon.getLocalizedString(30000)):
+            # go back to avoid loops
+            xbmc.executebuiltin("Action(Back,%s)" % xbmcgui.getCurrentWindowId())
+            xbmc.executebuiltin("Dialog.Close(all, true)")
+
+            if wizard.open_connection_wizard():
+                return False
+        else:
             pass
         if not shoko_utils.can_connect():
-            raise RuntimeError("try again with other settings")
+            kodi_utils.message_box("exit", "exit")
+            return False
 
     # stage 2 - Check server startup status
     if not shoko_utils.get_server_status():
@@ -171,6 +178,7 @@ def main():
     auth = shoko_utils.auth()
     if not auth:
         kodi_utils.message_box(plugin_addon.getLocalizedString(30194), plugin_addon.getLocalizedString(30157))
+        xbmc.executebuiltin("Action(Back,%s)" % xbmcgui.getCurrentWindowId())
         xbmc.executebuiltin("Dialog.Close(all, true)")
         status, apikey = wizard.open_login_wizard()
         auth = shoko_utils.auth(new_apikey=apikey)
@@ -181,5 +189,8 @@ def main():
 
 
 if __name__ == '__main__':
+    xbmc.log('===========================', xbmc.LOGINFO)
+    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGINFO)
+    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGINFO)
     if main():
         plugin.run()

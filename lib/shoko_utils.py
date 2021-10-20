@@ -51,23 +51,18 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
     url = 'http://%s:%i/api/init/status' % (ip, port)
     try:
         response = nakamori_utils.get_json(url, True)
-
-        # we should have a json response now
-        # example:
         # {"startup_state":"Complete!","server_started":false,"server_uptime":"04:00:45","first_run":false,"startup_failed":false,"startup_failed_error_message":""}
+        # {"startup_state":"Initializing...","server_started":false,"server_uptime":null,"first_run":false,"startup_failed":false,"startup_failed_error_message":""}
         json_tree = json.loads(response)
 
         server_started = json_tree.get('server_started', False)
         startup_failed = json_tree.get('startup_failed', False)
         startup_state = json_tree.get('startup_state', '')
 
-        # server started successfully
         if server_started:
             return True
 
-        # not started successfully
         if startup_failed:
-            # server finished trying to start, but failed
             kodi_utils.message_box('server was starting ', 'but it failed')
             return False
 
@@ -77,14 +72,18 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
         busy.update(1)
         # poll every second until the server gives us a response that we want
         while True:
+            xbmc.log(f'------------------- before sleep', xbmc.LOGINFO)
             xbmc.sleep(1000)
             response = nakamori_utils.get_json(url, True)
-
-            # this should not happen
-            if response is None or int(response) > 200:
-                busy.close()
-                kodi_utils.message_box("not happening", "strange error")
-                return False
+            xbmc.log(f'------------------- {response}', xbmc.LOGINFO)
+            try:
+                if response is None:
+                    xbmc.log(f'------------------- strage error', xbmc.LOGINFO)
+                    busy.close()
+                    kodi_utils.message_box("not happening", "strange error")
+                    return False
+            except:
+                pass
 
             json_tree = json.loads(response)
             server_started = json_tree.get('server_started', False)
@@ -92,13 +91,10 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
                 busy.close()
                 return True
 
-            startup_failed = json_tree.get('startup_failed', False)
-
-            if json_tree.get('startup_state', '') == startup_state:
-                continue
             startup_state = json_tree.get('startup_state', '')
-
             busy.update(1, f"current status :{startup_state}")
+
+            startup_failed = json_tree.get('startup_failed', False)
             if startup_failed:
                 break
 
@@ -173,3 +169,17 @@ def get_apikey(login, password):
     except Exception as ex:
         xbmc.log(' === get_apikey error === %s ' % ex, xbmc.LOGINFO)
         return None
+
+
+def get_tag_setting_flag():
+    tag_setting_flags = 0
+    tag_setting_flags |= 1 << 0 if plugin_addon.getSettingBool('MiscTags') else 0
+    tag_setting_flags |= 1 << 1 if plugin_addon.getSettingBool('ArtTags') else 0
+    tag_setting_flags |= 1 << 2 if plugin_addon.getSettingBool('SourceTags') else 0
+    tag_setting_flags |= 1 << 3 if plugin_addon.getSettingBool('UsefulMiscTags') else 0
+    tag_setting_flags |= 1 << 4 if plugin_addon.getSettingBool('SpoilerTags') else 0
+    tag_setting_flags |= 1 << 5 if plugin_addon.getSettingBool('SettingTags') else 0
+    tag_setting_flags |= 1 << 6 if plugin_addon.getSettingBool('ProgrammingTags') else 0
+    tag_setting_flags |= 1 << 7 if plugin_addon.getSettingBool('GenreTags') else 0
+    tag_setting_flags |= 1 << 31 if plugin_addon.getSetting('InvertTags') == "Show" else 0
+    return tag_setting_flags

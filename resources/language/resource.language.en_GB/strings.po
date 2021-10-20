@@ -8,22 +8,22 @@ msgstr ""
 
 ## I WOULD LIKE TO CLEAN THIS BEFORE GIVING ABILITY TO TRANSLATE
 
-#: settings.xml #
+#: settings.xml # REMOVE WHEN DONE
 msgctxt "#30000"
 msgid "DUMMY"
 msgstr "DUMMY"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30001"
-msgid "Shoko Settings"
-msgstr "Shoko Settings"
+msgid "Shoko Server"
+msgstr "Shoko Server"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30002"
 msgid "IP Address or Hostname"
 msgstr "IP Address or Hostname"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30003"
 msgid "Port"
 msgstr "Port"
@@ -38,7 +38,7 @@ msgctxt "#30005"
 msgid "Sync 'Watched status' to Shoko"
 msgstr "Sync 'Watched status' to Shoko"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30006"
 msgid "Shoko Server"
 msgstr "Shoko Server"
@@ -53,12 +53,12 @@ msgctxt "#30008"
 msgid "Language Display Priority"
 msgstr "Language Display Priority"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30009"
 msgid "Language"
 msgstr "Language"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30010"
 msgid "Title Type"
 msgstr "Title Type"
@@ -73,7 +73,7 @@ msgctxt "#30012"
 msgid "Calendar"
 msgstr "Calendar"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30013"
 msgid "Programming Tags (how/where it aired, awards, etc)"
 msgstr "Programming Tags (how/where it aired, awards, etc)"
@@ -83,27 +83,27 @@ msgctxt "#30014"
 msgid "Enable \'Pick file\' on multi files episodes"
 msgstr "Enable \'Pick file\' on multi files episodes"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30015"
 msgid "Login"
 msgstr "Login"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30016"
 msgid "Password"
 msgstr "Password"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30017"
 msgid "Device name"
 msgstr "Device name"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30018"
 msgid "API Key"
 msgstr "API Key"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30019"
 msgid "Title color conditions"
 msgstr "Title color conditions "
@@ -148,7 +148,7 @@ msgctxt "#30027"
 msgid "Max time to wait for buffer (in ms)"
 msgstr "Max time to wait for buffer (in ms)"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30028"
 msgid "Shorten Tag List"
 msgstr "Shorten Tag List"
@@ -233,32 +233,32 @@ msgctxt "#30044"
 msgid "Advanced"
 msgstr "Advanced"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30045"
 msgid "AniDB Helper or Otherwise Useless Tags"
 msgstr "AniDB Helper or Otherwise Useless Tags"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30046"
 msgid "Tag Filter"
 msgstr "Tag Filter"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30047"
 msgid "Art Style Tags"
 msgstr "Art Style Tags"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30048"
 msgid "Source Tags (Manga, original, etc)"
 msgstr "Source Tags (Manga, original, etc)"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30049"
 msgid "Useful Helper Tags (mostly related to OP/ED style)"
 msgstr "Useful Helper Tags (mostly related to OP/ED style)"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30050"
 msgid "Spoiler Tags (so and so dies/wins/etc)"
 msgstr "Spoiler Tags (so and so dies/wins/etc)"
@@ -268,7 +268,7 @@ msgctxt "#30051"
 msgid "Treat Subgroups as 'Seasons'"
 msgstr "Treat Subgroups as 'Seasons'"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30052"
 msgid "Use Server Title"
 msgstr "Use Server Title"
@@ -278,7 +278,7 @@ msgctxt "#30053"
 msgid "*Go to First Unwatched Episode*"
 msgstr "*Go to First Unwatched Episode*"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30054"
 msgid "Browsing"
 msgstr "Browsing"
@@ -288,7 +288,7 @@ msgctxt "#30055"
 msgid "Time to wait for refresh to move selection (adjust for sync)"
 msgstr "Time to wait for refresh to move selection (adjust for sync)"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30056"
 msgid "Title Settings"
 msgstr "Title Settings"
@@ -328,7 +328,7 @@ msgctxt "#30063"
 msgid "Enable remote debugging (web-pdb)"
 msgstr "Enable remote debugging (web-pdb)"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30064"
 msgid "Tweaks"
 msgstr "Tweaks"
@@ -358,7 +358,7 @@ msgctxt "#30069"
 msgid "Cached data expiration time (s)"
 msgstr "Cached data expiration time (s)"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30070"
 msgid "Setting tags (time/place/etc)"
 msgstr "Setting tags (time/place/etc)"
@@ -379,7 +379,7 @@ msgctxt "#30073"
 msgid "Enable Title colorization"
 msgstr "Enable Title colorization"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30074"
 msgid "Spoiler control"
 msgstr "Spoiler control"
@@ -419,7 +419,7 @@ msgctxt "#30081"
 msgid "This function will execute a DELETE command against your Kodi Database file. This shouldn't affect you in any negative way, but you have been warned."
 msgstr "This function will execute a DELETE command against your Kodi Database file. This shouldn't affect you in any negative way, but you have been warned."
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30082"
 msgid "Connection Wizard"
 msgstr "Connection Wizard"
@@ -494,17 +494,17 @@ msgctxt "#30096"
 msgid "Subtitles language setting"
 msgstr "Subtitles language setting"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30097"
 msgid "Maintenance"
 msgstr "Maintenance"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30098"
 msgid "Main Menu Items"
 msgstr "Main Menu Items"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30099"
 msgid "Login Wizard"
 msgstr "Login Wizard"
@@ -539,12 +539,12 @@ msgctxt "#30105"
 msgid "Show Unsorted"
 msgstr "Show Unsorted"
 
-#: guibuilder.py
+#: settings.xml #
 msgctxt "#30106"
 msgid "Unsorted"
 msgstr "Unsorted"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30107"
 msgid "Settings"
 msgstr "Settings"
@@ -584,7 +584,7 @@ msgctxt "#30114"
 msgid "Show 'Shoko'"
 msgstr "Show 'Shoko'"
 
-#: guibuilder.py
+#: settings.xml #
 msgctxt "#30115"
 msgid "Shoko"
 msgstr "Shoko"
@@ -719,17 +719,17 @@ msgctxt "#30141"
 msgid "Resume"
 msgstr "Resume"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30142"
 msgid "Default sorting method for Series"
 msgstr "Default sorting method for Series"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30143"
 msgid "Default sorting method for Episodes"
 msgstr "Default sorting method for Episodes"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30144"
 msgid "Sorting"
 msgstr "Sorting"
@@ -759,7 +759,7 @@ msgctxt "#30149"
 msgid "External player watch fix"
 msgstr "External player watch fix"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30150"
 msgid "Hide What's New"
 msgstr "Hide What's New"
@@ -859,7 +859,7 @@ msgctxt "#30169"
 msgid "Use seiyuu picture for cast data"
 msgstr "Use seiyuu picture for cast data"
 
-#: nakamoriplugin.py
+#: settings.xml
 msgctxt "#30170"
 msgid "Recently Added Series/Episodes"
 msgstr "Recently Added Series/Episodes"
@@ -1048,7 +1048,7 @@ msgctxt "#30210"
 msgid "Would you like to install addon"
 msgstr "Would you like to install addon?"
 
-#: settings.xml, nakamoriplugin.py
+#: settings.xml #
 msgctxt "#30211"
 msgid "Favorites"
 msgstr "Favorites"
@@ -1068,7 +1068,7 @@ msgctxt "#30214"
 msgid "Show"
 msgstr "Show"
 
-#: settings.xml, nakamoriplugin.py
+#: settings.xml #
 msgctxt "#30215"
 msgid "Bookmark"
 msgstr "Bookmark"
@@ -1098,12 +1098,12 @@ msgctxt "#30220"
 msgid "Pause"
 msgstr "Pause"
 
-#: settings.xml, guibuilder.py
+#: settings.xml #
 msgctxt "#30221"
 msgid "Search"
 msgstr "Search"
 
-#: guibuilder.py
+#: settings.xml #
 msgctxt "#30222"
 msgid "Calendar"
 msgstr "Calendar"
@@ -1122,12 +1122,12 @@ msgctxt "#30225"
 msgid "Quick Search"
 msgstr "Quick Search"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30226"
 msgid "Genre Tags"
 msgstr "Genre Tags"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30227"
 msgid "Filter Tags to "
 msgstr "Filter Tags to "
@@ -1137,12 +1137,12 @@ msgctxt "#30228"
 msgid "Clear"
 msgstr "Clear"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30229"
 msgid "Color"
 msgstr "Color"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30230"
 msgid "Customize"
 msgstr "Customize"
@@ -1152,7 +1152,7 @@ msgctxt "#30231"
 msgid "Make Filters bold"
 msgstr "Make Filters bold"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30232"
 msgid "Bold"
 msgstr "Bold"

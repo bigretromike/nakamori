@@ -1,100 +1,28 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <settings version="1">
     <section id="plugin.video.nakamori">
 	    <!-- shoko settings -->
         <category id="shokosettings" label="30001" help="">
-            <!-- Shoko Server -->
+            <!-- Shoko Server: 0-->
             <group id="1" label="30006">
-                <setting label="30082" type="action" id="action4" help="">
+                <!-- connection wizard: 0 -->
+                <setting label="30082" type="action" id="action1" help="">
                     <level>0</level>
                     <data>RunScript(plugin.video.nakamori,/dialog/wizard/connection)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
                 </setting>
-                <setting label="30099" type="action" id="action5" help="">
+                <!-- login wizard: 0 -->
+                <setting label="30099" type="action" id="action2" help="">
                     <level>0</level>
                     <data>RunScript(plugin.video.nakamori,/dialog/wizard/login)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
                 </setting>
-		        <setting label="30100" type="boolean" id="more_30001"> <!-- nie robi juz nic -->
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
-            </group>
-
-		    <!-- advanced -->
-            <group id="2" label="30044"> <!-- Advanced -->
-                <dependencies>  <!-- nie dziala -->
-	            <dependency type="visible" setting="">eq(-1,true)</dependency>
-                </dependencies>
-
-                <setting label="30017" type="string" id="device">
-                    <level>0</level>
-	                <default>nakamori</default>
-	                <constraints>
-		                <allowempty>true</allowempty>
-	                </constraints>
-	                <control type="edit" format="string">
-		                <heading>32001</heading>
-	                </control>
-                </setting>
-                <!-- was hidden -->
-                <setting label="30000" type="string" id="apikey">
-                    <level>0</level>
-                    <control type="edit" format="string">
-                        <heading>30000</heading>
-                    </control>
-                    <visible>true</visible>
-                </setting>
-                <setting label="30000" type="string" id="ipaddress">
-                    <level>0</level>
-                    <visible>true</visible>
-                    <default>127.0.0.1</default>
-                    <control type="edit" format="string">
-                        <heading>30000</heading>
-                    </control>
-                </setting>
-                <setting label="30000" type="integer" id="port">
-                    <level>0</level>
-                <visible>true</visible>
-                    <default>8111</default>
-                    <control type="edit" format="string">
-                        <heading>30000</heading>
-                    </control>
-                </setting>
-                <setting label="30000" type="string" id="login">
-                    <level>0</level>
-                    <visible>true</visible>
-                    <default>Default</default>
-                    <control type="edit" format="string">
-                        <heading>30000</heading>
-                    </control>
-                </setting>
-                <setting label="30000" type="string" id="password">
-                    <level>0</level>
-                    <visible>true</visible>
-                    <control type="edit" format="string">
-                        <heading>30000</heading>
-                    <hidden>true</hidden>
-                    </control>
-                </setting>
-                <setting label="30000" type="string" id="version">
-                    <level>0</level>
-                    <visible>true</visible>
-                    <default>3.0.9</default>
-                    <control type="edit" format="string">
-                        <heading>30000</heading>
-                    </control>
-                </setting>
-            </group>
-
-            <!-- advanced -->
-            <group id="3" label="30044">
-                <setting label="30233" type="action" id="action4">
+                <!-- logout: 0 -->
+                <setting label="30233" type="action" id="action3">
                         <level>0</level>
                     <data>RunScript(plugin.video.nakamori,/dialog/wizard/login)</data>
                     <control type="button" format="action">
@@ -102,24 +30,80 @@
                     </control>
                 </setting>
             </group>
+		    <!-- advanced: 1-3 -->
+            <group id="2" label="30044">
+                <!-- device: 1-->
+                <setting label="30017" type="string" id="device">
+                    <level>1</level>
+	                <default>nakamori</default>
+	                <constraints>
+		                <allowempty>false</allowempty>
+	                </constraints>
+	                <control type="edit" format="string">
+		                <heading>32001</heading>
+	                </control>
+                </setting>
+                <!-- apikey: 2 -->
+                <setting label="30018" type="string" id="apikey">
+                    <level>2</level>
+                    <default/>
+                    <control type="edit" format="string">
+                        <heading>30018</heading>
+                    </control>
+                    <visible>true</visible>
+                </setting>
+                <!-- ipaddress: 2 -->
+                <setting label="30002" type="string" id="ipaddress">
+                    <level>2</level>
+                    <visible>true</visible>
+                    <default>127.0.0.1</default>
+                    <control type="edit" format="string">
+                        <heading>30002</heading>
+                    </control>
+                </setting>
+                <!-- port: 2 -->
+                <setting label="30003" type="integer" id="port">
+                    <level>2</level>
+                    <visible>true</visible>
+                    <default>8111</default>
+                    <control type="edit" format="string">
+                        <heading>30303</heading>
+                    </control>
+                </setting>
+                <!-- login: 3 -->
+                <setting label="30015" type="string" id="login">
+                    <level>3</level>
+                    <visible>true</visible>
+                    <default>Default</default>
+                    <control type="edit" format="string">
+                        <heading>30015</heading>
+                    </control>
+                </setting>
+                <!-- password: 3 (this one is not showing? why?) -->
+                <setting label="30016" type="string" id="password">
+                    <level>3</level>
+                    <visible>true</visible>
+                    <default/>
+                    <control type="edit" format="string">
+                        <heading>30016</heading>
+                    </control>
+                </setting>
+            </group>
         </category>
 
 	    <!-- Main Menu Items -->
         <category id="mainmenu" label="30098" help="">
-            <!-- menu / color / bold -->
-            <group id="4" label="30000">
-                <setting label="30230" type="boolean" id="customize_main_menu">
-            <level>0</level>
-            <default>false</default>
-            <control type="toggle"/>
-        </setting>
+            <!-- menu: 1 / color: 1 / bold: 2 -->
+            <group id="4" label="30230">
+                <!-- search: 1 -->
                 <setting label="30221" type="boolean" id="show_search">
-        <level>0</level>
-        <default>true</default>
-        <control type="toggle"/>
-    </setting>
+                    <level>1</level>
+                    <default>true</default>
+                    <control type="toggle"/>
+                </setting>
+                <!-- search color: 1 -->
                 <setting label="30229" type="string" id="color_search" parent="show_search">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -273,24 +257,33 @@
                 <option>yellow</option>
                 <option>yellowgreen</option>
             </options>
-                        <allowempty>true</allowempty>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_search">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_search" parent="show_search" enable="eq(-3,true)" visible="eq(-3,true)">
-                    <level>0</level>
+                <!-- search bold: 2 -->
+                <setting label="30232" type="boolean" id="bold_search" parent="show_search">
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+                        <dependency type="enable" operator="is" setting="show_search">true</dependency>
+                    </dependencies>
                 </setting>
+                <!-- settings : 1 -->
                 <setting label="30107" type="boolean" id="show_settings">
-                    <level>0</level>
+                    <level>1</level>
                     <default>true</default>
                     <control type="toggle"/>
                 </setting>
+                <!-- settings color: 1 -->
                 <setting label="30229" type="string" id="color_settings" parent="show_settings">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -449,19 +442,28 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_settings">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_settings" parent="show_settings" enable="eq(-6,true)" visible="eq(-6,true)" default="false">
-                    <level>0</level>
+                <!-- settings bold: 2 -->
+                <setting label="30232" type="boolean" id="bold_settings" parent="show_settings">
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_settings">true</dependency>
+                    </dependencies>
                 </setting>
+                <!-- calendar: 1 -->
                 <setting label="30222" type="boolean" id="show_calendar">
-                    <level>0</level>
+                    <level>1</level>
                     <default>true</default>
                     <control type="toggle"/>
                 </setting>
+                <!-- calendar color: 1 -->
                 <setting label="30229" type="string" id="color_calendar" parent="show_calendar">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -620,19 +622,28 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_calendar">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_calendar" parent="show_calendar" enable="eq(-9,true)" visible="eq(-9,true)">
-                    <level>0</level>
+                <!-- calendar bold: 2 -->
+                <setting label="30232" type="boolean" id="bold_calendar" parent="show_calendar">
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_calendar">true</dependency>
+                    </dependencies>
                 </setting>
+                <!-- unsort: 1 -->
                 <setting label="30106" type="boolean" id="show_unsort">
-                    <level>0</level>
+                    <level>1</level>
                     <default>true</default>
                     <control type="toggle"/>
                 </setting>
+                <!-- unsort color: 1 -->
                 <setting label="30229" type="string" id="color_unsor" parent="show_unsort">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -791,19 +802,28 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_unsort">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_unsort" parent="show_unsort" enable="eq(-12,true)" visible="eq(-12,true)">
-                    <level>0</level>
+                <!-- unsort bold: 1 -->
+                <setting label="30232" type="boolean" id="bold_unsort" parent="show_unsort">
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_unsort">true</dependency>
+                    </dependencies>
                 </setting>
+                <!-- shoko: 1 -->
                 <setting label="30115" type="boolean" id="show_shoko">
-                    <level>0</level>
+                    <level>1</level>
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
+                <!-- shoko color: 1 -->
                 <setting label="30229" type="string" id="color_shoko" parent="show_shoko">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -962,18 +982,28 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_shoko">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_shoko" parent="show_shoko" enable="eq(-15,true)" visible="eq(-15,true)">
-                    <level>0</level>
+                <!-- shoko bold: 1 -->
+                <setting label="30232" type="boolean" id="bold_shoko" parent="show_shoko">
+                    <level>2</level>
+                    <default>false</default>
+                    <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_shoko">true</dependency>
+                    </dependencies>
+                </setting>
+                <!-- favorites: 1 -->
+                <setting label="30211" type="boolean" id="show_favorites">
+                    <level>1</level>
                     <default>false</default>
                     <control type="toggle"/>
                 </setting>
-                <setting label="30211" type="boolean" id="show_favorites" default="true"><level>0</level>
-                    <default>false</default>
-                    <control type="toggle"/>
-                </setting>
+                <!-- favorites color: 1 -->
                 <setting label="30229" type="string" id="color_favorites" parent="show_favorites">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -1132,19 +1162,28 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_favorites">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_favorites" parent="show_favorites" enable="eq(-18,true)" visible="eq(-18,true)">
-                    <level>0</level>
+                <!-- favorites bold: 2 -->
+                <setting label="30232" type="boolean" id="bold_favorites" parent="show_favorites">
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_favorites">true</dependency>
+                    </dependencies>
                 </setting>
+                <!-- bookmark: 1 -->
                 <setting label="30215" type="boolean" id="show_bookmark">
-                    <level>0</level>
+                    <level>1</level>
                     <default>true</default>
                     <control type="toggle"/>
                 </setting>
+                <!-- bookmark color: 1 -->
                 <setting label="30229" type="string" id="color_bookmark" parent="show_bookmark">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
                     <constraints>
                         <options>
@@ -1303,19 +1342,28 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_bookmark">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_bookmark" parent="show_bookmark" enable="eq(-21,true)" visible="eq(-21,true)">
-                    <level>0</level>
+                <!-- bookmark bold: 2 -->
+                <setting label="30232" type="boolean" id="bold_bookmark" parent="show_bookmark">
+                    <level>2</level>
                     <default>false</default>
                     <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_bookmark">true</dependency>
+                    </dependencies>
                 </setting>
+                <!-- recent2: 1 -->
                 <setting label="30170" type="boolean" id="show_recent2">
-                    <level>0</level>
+                    <level>1</level>
                     <default>true</default>
                     <control type="toggle"/>
                 </setting>
+                <!-- recent2 color: 1 -->
                 <setting label="30229" type="string" id="color_recent2" parent="show_recent2">
-                    <level>0</level>
+                    <level>1</level>
                     <default>white</default>
 	                <constraints>
                         <options>
@@ -1474,22 +1522,31 @@
 	                <control type="list" format="string">
 		                <heading>30229</heading>
 	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_recent2">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30232" type="boolean" id="bold_recent2" parent="show_recent2" enable="eq(-24,true)" visible="eq(-24,true)">
-                    <level>0</level>
+                <!-- recent2 bold: 2 -->
+                <setting label="30232" type="boolean" id="bold_recent2" parent="show_recent2">
+                    <level>2</level>
 	                <default>false</default>
 	                <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_recent2">true</dependency>
+                    </dependencies>
                 </setting>
             </group>
 
-            <!-- skip / bold_filters -->
-            <group id="5" label="30000">
+            <!-- skip_info: 2 / bold_filters: 0 -->
+            <group id="5">
+                <!-- skip information about whats new: 2 -->
                 <setting label="30150" type="boolean" id="skip_information">
-                    <level>0</level>
+                    <level>2</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30231" type="boolean" id="bold_filters" enable="eq(-26,true)" visible="eq(-26,true)">
+                <!-- bold filters: 0 -->
+                <setting label="30231" type="boolean" id="bold_filters">
                     <level>0</level>
 	                <default>true</default>
 	                <control type="toggle"/>
@@ -1499,14 +1556,16 @@
 
 	    <!-- browsing -->
         <category id="browsing" label="30054" help="">
-		    <!-- title settings -->
+		    <!-- title settings: 0 -->
             <group id="6" label="30056">
+                <!-- use server title: 0 -->
                 <setting label="30052" type="boolean" id="use_server_title">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30009" type="string" id="displaylang" parent="show_search">
+                <!-- title language: 0 -->
+                <setting label="30009" type="string" id="displaylang" parent="use_server_title">
                     <level>0</level>
                     <default>x-jat</default>
                     <constraints>
@@ -1560,13 +1619,17 @@
 <option>zh-hans</option>
 <option>zh-hant</option>
             </options>
-                        <allowempty>true</allowempty>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="use_server_title">false</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30010" type="string" id="title_type">
+                <!-- title type: 0 -->
+                <setting label="30010" type="string" id="title_type" parent="use_server_title">
                     <level>0</level>
                     <default>Main</default>
                     <constraints>
@@ -1581,7 +1644,11 @@
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="use_server_title">false</dependency>
+                    </dependencies>
                 </setting>
+                <!-- add episode numer to title: 0 -->
                 <setting label="30234" type="boolean" id="addepnumber">
                     <level>0</level>
 	                <default>true</default>
@@ -1590,13 +1657,15 @@
             </group>
             <!-- title colorization -->
             <group id="7" label="30019">
+                <!-- title color: 1 -->
                 <setting label="30073" type="boolean" id="color_title">
-                    <level>0</level>
+                    <level>1</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30229" type="string" id="title_color_finish">
-                    <level>0</level>
+                <!-- title color finished: 1 -->
+                <setting label="30031" type="string" id="title_color_finish" parent="color_title">
+                    <level>1</level>
                     <default>white</default>
 	                <constraints>
                         <options>
@@ -1755,9 +1824,13 @@
 	                <control type="list" format="string">
 		                <heading>30229</heading>
 	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="color_title">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30043" type="string" id="title_color_finish_missing" parent="show_search">
-                    <level>0</level>
+                <!-- title color finished missing: 1 -->
+                <setting label="30043" type="string" id="title_color_finish_missing" parent="color_title">
+                    <level>1</level>
                     <default>red</default>
 	                <constraints>
                         <options>
@@ -1916,9 +1989,13 @@
 	                <control type="list" format="string">
 		                <heading>30043</heading>
 	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="color_title">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30060" type="string" id="title_color_finish_special">
-                    <level>0</level>
+                <!-- title color finished including specials: 1 -->
+                <setting label="30060" type="string" id="title_color_finish_special" parent="color_title">
+                    <level>1</level>
                     <default>aqua</default>
 	                <constraints>
                         <options>
@@ -2077,9 +2154,13 @@
 	                <control type="list" format="string">
 		                <heading>30060</heading>
                     </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="color_title">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30041" type="string" id="title_color_airing">
-                    <level>0</level>
+                <!-- title color airing with all normal episodes: 1 -->
+                <setting label="30041" type="string" id="title_color_airing" parent="color_title">
+                    <level>1</level>
                     <default>yellow</default>
 	                <constraints>
                         <options>
@@ -2238,9 +2319,13 @@
 	                <control type="list" format="string">
 		                <heading>30041</heading>
 	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="color_title">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30059" type="string" id="title_color_airing_missing">
-                    <level>0</level>
+                <!-- title color airing with missing normal episodes: 1 -->
+                <setting label="30059" type="string" id="title_color_airing_missing" parent="color_title">
+                    <level>1</level>
                     <default>lightgoldenrodyellow</default>
 	                <constraints>
                         <options>
@@ -2399,9 +2484,13 @@
 	                <control type="list" format="string">
 		                <heading>30059</heading>
 	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="color_title">true</dependency>
+                    </dependencies>
                 </setting>
-                <setting label="30071" type="string" id="title_color_airing_special">
-                    <level>0</level>
+                <!-- title color airing with all episodes including specials: 1 -->
+                <setting label="30071" type="string" id="title_color_airing_special" parent="color_title">
+                    <level>1</level>
                     <default>blueviolet</default>
 	                <constraints>
                         <options>
@@ -2560,43 +2649,49 @@
 	                <control type="list" format="string">
         		        <heading>30071</heading>
         	        </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="color_title">true</dependency>
+                    </dependencies>
                 </setting>
             </group>
             <!-- sorting -->
             <group id="8" label="30144">
+                <!-- series sort: 0 -->
                 <setting label="30142" type="string" id="default_sort_series">
                     <level>0</level>
                     <default>Server</default>
                     <constraints>
                         <options>
-                <option>Server</option>
-                <option>Title</option>
-                <option>Date</option>
-                <option>Rating</option>
-                <option>Year</option>
-            </options>
-                        <allowempty>true</allowempty>
+                            <option>Server</option>
+                            <option>Title</option>
+                            <option>Date</option>
+                            <option>Rating</option>
+                            <option>Year</option>
+                        </options>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
                 </setting>
+                <!-- episode sort: 0 -->
                 <setting label="30143" type="string" id="default_sort_episodes">
                     <level>0</level>
                     <default>Episode</default>
                     <constraints>
                         <options>
-                <option>Server</option>
-                <option>Episode</option>
-                <option>Date</option>
-                <option>Title</option>
-                <option>Rating</option>
-                <option>Year</option>
-            </options>
-                        <allowempty>true</allowempty>
+                            <option>Server</option>
+                            <option>Episode</option>
+                            <option>Name</option>
+                            <option>Date</option>
+                            <option>Title</option>
+                            <option>Rating</option>
+                            <option>Year</option>
+                        </options>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
-                        <heading>30229</heading>
+                        <heading>30143</heading>
                     </control>
                 </setting>
             </group>
@@ -2769,14 +2864,14 @@
             </group>
             <!-- maintenance -->
 		    <group id="12" label="30097">
-                <setting label="30080" type="action" id="action1">
+                <setting label="30080" type="action" id="action4">
                 <level>0</level>
                     <data>RunScript(script.module.nakamori,/kodi/clear_listitem_cache)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
         </setting>
-                <setting label="30139" type="action" id="action2">
+                <setting label="30139" type="action" id="action5">
                 <level>0</level>
                     <data>RunScript(script.module.nakamori,/kodi/clear_image_cache)</data>
                     <control type="button" format="action">
@@ -2789,62 +2884,72 @@
         <!-- tag blacklist -->
         <category id="tagblackist" label="30046" help="">
 		    <group id="13" label="30046">
+                <!-- shorten tag: 0 -->
+                <setting label="30028" type="boolean" id="short_tag_list">
+                    <level>1</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <!-- filter tags-invert select to: 1 -->
                 <setting label="30227" type="string" id="InvertTags">
-                    <level>0</level>
+                    <level>1</level>
                     <default>Hide</default>
                     <constraints>
-                        <options>
-                <option>Hide</option>
-                <option>Show</option>
-            </options>
-                        <allowempty>true</allowempty>
+                    <options>
+                        <option>Hide</option>
+                        <option>Show</option>
+                    </options>
+                    <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
                         <heading>30229</heading>
                     </control>
                 </setting>
-                <setting label="30028" type="boolean" id="short_tag_list">
-                    <level>0</level>
-	                <default>true</default>
-	                <control type="toggle"/>
-                </setting>
-                <setting label="30045" type="boolean" id="MiscTags">
-                    <level>0</level>
+                <!-- misc tag: 1 -->
+                <setting label="30045" type="boolean" id="MiscTags" parent="InvertTags" >
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30047" type="boolean" id="ArtTags">
-                    <level>0</level>
+                <!-- art tag: 1 -->
+                <setting label="30047" type="boolean" id="ArtTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30048" type="boolean" id="SourceTags">
-                    <level>0</level>
+                <!-- source tag: 1 -->
+                <setting label="30048" type="boolean" id="SourceTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30049" type="boolean" id="UsefulMiscTags">
-                    <level>0</level>
+                <!-- useful tag: 1 -->
+                <setting label="30049" type="boolean" id="UsefulMiscTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30050" type="boolean" id="SpoilerTags">
-                    <level>0</level>
+                <!-- spoiler tag: 1 -->
+                <setting label="30050" type="boolean" id="SpoilerTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30070" type="boolean" id="SettingTags">
-                    <level>0</level>
+                <!-- settings tag: 1 -->
+                <setting label="30070" type="boolean" id="SettingTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30013" type="boolean" id="ProgrammingTags">
-                    <level>0</level>
+                <!-- programming tag: 1 -->
+                <setting label="30013" type="boolean" id="ProgrammingTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30226" type="boolean" id="GenreTags">
-                    <level>0</level>
+                <!-- genre tag: 1 -->
+                <setting label="30226" type="boolean" id="GenreTags" parent="InvertTags">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
@@ -2871,7 +2976,7 @@
             </group>
             <!-- maintenance -->
             <group id="15" label="30097">
-                <setting label="30110" type="action" id="action3">
+                <setting label="30110" type="action" id="action6">
                     <level>0</level>
                     <data>RunScript(script.module.nakamori,/search/clear)</data>
                     <control type="button" format="action">
@@ -3195,7 +3300,7 @@
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30172" type="action" id="action6" action="" subsetting="true" enable="" visible="eq(-17,true)+eq(-6,true)" option="close">
+                <setting label="30172" type="action" id="action7" action="" subsetting="true" enable="" visible="eq(-17,true)+eq(-6,true)" option="close">
                     <level>0</level>
                     <data>RRunScript(script.module.nakamori,/eigakan/clear)</data>
                     <control type="button" format="action">
@@ -3203,7 +3308,7 @@
                     </control>
                     <enable>System.HasAddon(script.module.nakamori)</enable>
                 </setting>
-                <setting label="30208" type="action" id="action7" subsetting="false" option="close">
+                <setting label="30208" type="action" id="action8" subsetting="false" option="close">
                     <level>0</level>
                     <data>RunScript(script.module.nakamori,/eigakan/requirement)</data>
                     <control type="button" format="action">

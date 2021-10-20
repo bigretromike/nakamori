@@ -191,7 +191,6 @@ class ConnectionWizard(xbmcgui.WindowXML):
 
     def onClick(self, control):
         if control == OK_BUTTON:
-            print(f'testing connection with: {self._box_ip.getText()} and {self._box_port.getText()}')
             if shoko_utils.can_connect(ip=str(self._box_ip.getText()), port=int(self._box_port.getText())):
                 plugin_addon.setSetting(id='ipaddress', value=str(self._box_ip.getText()))
                 plugin_addon.setSetting(id='port', value=str(self._box_port.getText()))
@@ -205,7 +204,7 @@ class ConnectionWizard(xbmcgui.WindowXML):
 def open_connection_wizard():
     ui = ConnectionWizard('connection_wizard.xml', CWD, 'default', '1080i')
     ui.doModal()
-    x = not ui.cancelled
+    x = ui.cancelled
     del ui
     return x
 
@@ -213,7 +212,7 @@ def open_connection_wizard():
 def open_login_wizard():
     ui = LoginWizard('login_wizard.xml', CWD, 'default', '1080i')
     ui.doModal()
-    x = not ui.cancelled
+    x = ui.cancelled
     a = ui.apikey
     del ui
     return x, a
