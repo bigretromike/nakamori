@@ -13,6 +13,7 @@ from lib.shoko_utils import get_tag_setting_flag
 from typing import List, Tuple
 from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype
 import os
+import lib.favorite as favorite
 
 plugin = routing.Plugin()
 plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
@@ -39,7 +40,7 @@ def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
 
     set_info_for_filter(li, x)
 
-    add_context_menu(li, {})  # TODO
+    #add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', False)
     set_path(li, url)  # TODO
 
@@ -49,18 +50,23 @@ def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
 def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     url = f'/serie/{x.id}'
     name = x.name
-    name = bold(name)
-    li = ListItem(name, path=url)
+    # name = bold(name)
+    li = ListItem(label=name, offscreen=True)
 
     if x.art is not None:
         set_art(li, x.art)
     set_folder(li, True)
     set_unieque_ids(li, x.aid)
-    set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(x.votes), default=True)
+    votes = int(x.votes) if x.votes is not None else 0
+    set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(votes), default=True)
     # add_season(li, season_name='__season__', season_number=1)
     set_info_for_series(li, x)
     set_cast(li, get_cast(x.roles))
-    add_context_menu(li, {})  # TODO
+    if not favorite.check_in_database(x.id):
+        add_fav = (plugin_addon.getLocalizedString(30212), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/add)')
+    else:
+        add_fav = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/remove)')
+    add_context_menu(li, [add_fav])
     set_property(li, 'IsPlayable', False)
     watched = 0
     if x.watched_sizes.Episodes is not None:
@@ -90,7 +96,7 @@ def get_listitem_from_group(x: api2models.Group) -> ListItem:
     # add_season(li, season_name='__season__', season_number=1)
     set_info_for_group(li, x)
     set_cast(li, get_cast(x.roles))
-    add_context_menu(li, {})  # TODO
+    # add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', False)
     set_path(li, url)  # TODO
 
@@ -112,7 +118,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     #add_season(li, season_name='__season__', season_number=1)
     set_info_for_episode(li, x, series_title)
     set_cast(li, get_cast(cast))
-    add_context_menu(li, {})  # TODO
+    # add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', True)
     set_path(li, url)  # TODO
 
@@ -304,22 +310,34 @@ def get_infolabels(x: api2models.Filter):
 def set_art(li: ListItem, art: api2models.ArtCollection, overwrite_image: str = None):
     # thumb, poster, banner, fanart, clearart, clearlogo, landscape, icon
     http = "http://" + plugin_addon.getSetting('ipaddress') + ":" + str(plugin_addon.getSettingInt('port')) + "{}"
-    if overwrite_image is not None:
-        if len(art.fanart) == 0:
-            art.fanart.append(api2models.Art(url=os.path.join(plugin_img_path, 'backgrounds', overwrite_image)))
-        if len(art.thumb) == 0:
-            art.thumb.append(api2models.Art(url=os.path.join(plugin_img_path, 'icons', overwrite_image)))
-        if len(art.banner) == 0:
-            art.banner.append(api2models.Art(url=os.path.join(plugin_img_path, 'banners', overwrite_image)))
+    if art is None:
+        art = api2models.ArtCollection()
 
-    if len(art.fanart) > 0:
-        li.setArt({'fanart': http.format(art.fanart[0].url), 'clearart': http.format(art.fanart[0].url)})
-    if len(art.thumb) > 0:
-        li.setArt({'thumb': http.format(art.thumb[0].url)})
-        li.setArt({'poster': http.format(art.thumb[0].url)})
-        li.setArt({'icon': http.format(art.thumb[0].url)})
-    if len(art.banner) > 0:
-        li.setArt({'banner': http.format(art.banner[0].url)})
+    if overwrite_image is not None:
+        if os.path.exists(os.path.join(plugin_img_path, 'thumb', overwrite_image)):
+            li.setArt({'thumb': os.path.join(plugin_img_path, 'thumb', overwrite_image)})
+        if os.path.exists(os.path.join(plugin_img_path, 'poster', overwrite_image)):
+            li.setArt({'banner': os.path.join(plugin_img_path, 'poster', overwrite_image)})
+        if os.path.exists(os.path.join(plugin_img_path, 'banners', overwrite_image)):
+            li.setArt({'banner': os.path.join(plugin_img_path, 'banners', overwrite_image)})
+        if os.path.exists(os.path.join(plugin_img_path, 'backgrounds', overwrite_image)):
+            li.setArt({'fanart': os.path.join(plugin_img_path, 'backgrounds', overwrite_image)})
+        if os.path.exists(os.path.join(plugin_img_path, 'clearart', overwrite_image)):
+            li.setArt({'icon': os.path.join(plugin_img_path, 'clearart', overwrite_image)})
+        if os.path.exists(os.path.join(plugin_img_path, 'clearlogo', overwrite_image)):
+            li.setArt({'icon': os.path.join(plugin_img_path, 'clearlogo', overwrite_image)})
+        if os.path.exists(os.path.join(plugin_img_path, 'icons', overwrite_image)):
+            li.setArt({'icon': os.path.join(plugin_img_path, 'icons', overwrite_image)})
+
+    else:
+        if len(art.fanart) > 0:
+            li.setArt({'fanart': http.format(art.fanart[0].url), 'clearart': http.format(art.fanart[0].url)})
+        if len(art.thumb) > 0:
+            li.setArt({'thumb': http.format(art.thumb[0].url)})
+            li.setArt({'icon': http.format(art.thumb[0].url)})
+            li.setArt({'poster': http.format(art.thumb[0].url)})
+        if len(art.banner) > 0:
+            li.setArt({'banner': http.format(art.banner[0].url)})
 
     # TODO need to play with this a little more
     # if kodi_utils.get_cond_visibility('System.HasAddon(resource.images.studios.white)') == 1:
@@ -429,6 +447,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
 
 
 def set_info_for_series(li: ListItem, x: api2models.Serie):
+    # Kodi 20 improvment: https://github.com/xbmc/xbmc/pull/19459
     title = get_proper_title(x)
     summary = make_text_nice(x.summary)
     video = {'aired': x.air,
@@ -446,9 +465,11 @@ def set_info_for_series(li: ListItem, x: api2models.Serie):
              'votes': str(x.votes)}
     if x.userrating is not None:
         video['userrating'] = int(x.userrating)
+    video['mediatype'] = 'tvshow'
     if x.ismovie == 1:
         video['mediatype'] = 'movie'
-    li.setInfo('video', video)
+
+    li.setInfo('video', infoLabels=video)
 
 
 def set_info_for_filter(li: ListItem, x: api2models.Filter):
@@ -479,8 +500,8 @@ def set_stream_info(li: ListItem, r: api2models.RawFile):
         li.addStreamInfo('subtitle', subtitle)
 
 
-def add_context_menu(li: ListItem, menu):
-    li.addContextMenuItems([('Theater Showtimes', 'RunScript(script.myaddon,title=Iron Man)')])
+def add_context_menu(li: ListItem, menu: List[Tuple[str, str]]):
+    li.addContextMenuItems(menu)
 
 
 def set_property(li: ListItem, name, value):
@@ -495,13 +516,34 @@ def set_property(li: ListItem, name, value):
 def set_path(li: ListItem, path: str):
     li.setPath(path=path)
 
-@plugin.route('/favorites')
-def show_favorites_menu():
-    pass
 
-@plugin.route('/bookmark')
-def show_bookmark_menu():
-    pass
+def search_box():
+    """
+    Shows a keyboard, and returns the text entered
+    :return: the text that was entered
+    """
+    keyb = xbmc.Keyboard('', plugin_addon.getLocalizedString(30026))
+    keyb.doModal()
+    search_text = ''
+
+    if keyb.isConfirmed():
+        search_text = keyb.getText()
+    return search_text
+
+
+def show_search_result_menu(query: str) -> List[api2models.Serie]:
+    list_of_series = []
+    q = api2models.QueryOptions()
+    q.query = query
+    q.level = 0  # no need for eps
+    q.allpics = 1
+    f = api.search(q)
+
+    for g in f.groups:
+        for s in g.series:
+            list_of_series.append(s)
+    return list_of_series
+
 
 @plugin.route('/recent')
 def show_added_recently_menu():
@@ -535,17 +577,8 @@ def main_menu_items() -> List[ListItem]:
         name = color(plugin_addon.getLocalizedString(30211), plugin_addon.getSetting('color_favorites'))
         if plugin_addon.getSettingBool('bold_favorites'):
             name = bold(name)
-        item = ListItem(name, path=plugin.url_for(show_favorites_menu))
+        item = ListItem(name, path='plugin://plugin.video.nakamori/favorites')
         img_name = 'airing.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
-        items.append(item)
-
-    if plugin_addon.getSettingBool('show_bookmark'):
-        name = color(plugin_addon.getLocalizedString(30215), plugin_addon.getSetting('color_bookmark'))
-        if plugin_addon.getSettingBool('bold_bookmark'):
-            name = bold(name)
-        item = ListItem(name, path=plugin.url_for(show_bookmark_menu))
-        img_name = '/airing.png'
         item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
         items.append(item)
 
@@ -553,7 +586,7 @@ def main_menu_items() -> List[ListItem]:
         name = color(plugin_addon.getLocalizedString(30170), plugin_addon.getSetting('color_recent2'))
         if plugin_addon.getSettingBool('bold_recent2'):
             name = bold(name)
-        item = ListItem(name, path=plugin.url_for(show_added_recently_menu))
+        item = ListItem(name, path='plugin://plugin.video.nakamori/recent')
         img_name = '/airing.png'
         item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
         items.append(item)
@@ -571,10 +604,10 @@ def main_menu_items() -> List[ListItem]:
         if plugin_addon.getSettingBool('bold_calendar'):
             name = bold(name)
         if plugin_addon.getSettingBool('calendar_basic') == 'true':
-            item = ListItem(name, path=plugin.url_for(show_calendar_menu))
+            item = ListItem(name, path='plugin://plugin.video.nakamori/calendar_classic')
             # isfolter
         else:
-            item = ListItem(name, path=plugin.url_for(url_calendar))
+            item = ListItem(name, path='plugin://plugin.video.nakamori/calendar')
         img_name = 'calendar.png'
         item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
         items.append(item)
@@ -583,7 +616,7 @@ def main_menu_items() -> List[ListItem]:
         name = color(plugin_addon.getLocalizedString(30107), plugin_addon.getSetting('color_settings'))
         if plugin_addon.getSettingBool('bold_settings'):
             name = bold(name)
-        item = ListItem(name, path=plugin.url_for(show_setting_menu))
+        item = ListItem(name, path='plugin://plugin.video.nakamori/settings')
         img_name = 'settings.png'
         item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
         items.append(item)
@@ -592,7 +625,7 @@ def main_menu_items() -> List[ListItem]:
         name = color(plugin_addon.getLocalizedString(30115), plugin_addon.getSetting('color_shoko'))
         if plugin_addon.getSettingBool('bold_shoko'):
             name = bold(name)
-        item = ListItem(name, path=plugin.url_for(show_shoko_menu))
+        item = ListItem(name, path='plugin://plugin.video.nakamori/shoko')
         img_name = 'settings.png'
         item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
         items.append(item)
@@ -601,12 +634,28 @@ def main_menu_items() -> List[ListItem]:
         name = color(plugin_addon.getLocalizedString(30221), plugin_addon.getSetting('color_search'))
         if plugin_addon.getSettingBool('bold_search'):
             name = bold(name)
-        item = ListItem(name, path=plugin.url_for(show_favorites_menu))
+        item = ListItem(name, path='plugin://plugin.video.nakamori/search')
         img_name = 'search.png'
         item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
         items.append(item)
 
     return items
+
+
+def list_all_favorites() -> List[Tuple[int, ListItem]]:
+    list_of_li = []
+    favorite_history = favorite.get_all_favorites()
+    q = api2models.QueryOptions()
+    q.level = 1
+    q.allpics = 1
+    for ss in favorite_history:
+        q.id = ss[0]
+        s = api.series_get_by_id(q)
+        li = get_listitem_from_serie(s)
+        remove_item = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorite/{q.id}/remove)')
+        li.addContextMenuItems([remove_item])
+        list_of_li.append((q.id, li))
+    return list_of_li
 
 
 def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
@@ -628,6 +677,10 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
 
     for d in x.filters:
         if d.name == "Unsorted" and not show_unsort:
+            continue
+        elif d.name == "Continue Watching (SYSTEM)":
+            d.name = "Continue Watching"
+        elif d.name == "TvDB/MovieDB Link Missing":
             continue
         list_of_listitems.append((d.id, map_filter_group_to_thistype(d.type), get_listitem_from_filter(d)))
 

@@ -10,9 +10,12 @@ import routing
 from lib.windows import wizard
 import xbmc
 import xbmcgui
+from xbmcgui import ListItem
 import xbmcaddon
 from xbmcplugin import addDirectoryItem, endOfDirectory
 import sys
+import lib.search as search
+import lib.favorite as favorite
 
 plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 plugin = routing.Plugin()
@@ -145,6 +148,161 @@ def open_login_screen():
     wizard.open_login_wizard()
 
 
+@plugin.route('/dialog/wizard/connection')
+def open_login_screen():
+    xbmc.executebuiltin("Dialog.Close(all, true)")
+    wizard.open_connection_wizard()
+
+
+@plugin.route('/search')
+def show_search_menu():
+    kodi_models.set_content('tvshows')
+    kodi_models.set_category(plugin_addon.getLocalizedString(30221))
+
+    # Search
+    li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224)), offscreen=True)
+    kodi_models.set_art(li, None, 'new-search.png')
+    addDirectoryItem(plugin.handle, plugin.url_for(new_search, True), li, True)
+
+    # quick search
+    li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30225)), offscreen=True)
+    kodi_models.set_art(li, None, 'new-search.png')
+    addDirectoryItem(plugin.handle, plugin.url_for(new_search, False), li, True)
+
+    # a-z search (no keyboard)
+    # li = ListItem(label=kodi_models.bold('A-Z'), offscreen=True)
+    # kodi_models.set_art(li, None, 'search.png')
+    # addDirectoryItem(plugin.handle, plugin.url_for(az_search), li, True)
+
+    search_history = search.get_search_history()
+    search_count = len(search_history)
+    for ss in search_history:
+        query = ss[0]
+        if len(query) == 0:
+            continue
+        item = ListItem(label=query, offscreen=True)
+        kodi_models.set_art(item, None, 'search.png')
+        remove_item = (
+        plugin_addon.getLocalizedString(30204), f'RunScript(plugin.video.nakamori, /dialog/search/{query}/remove)')
+        item.addContextMenuItems([remove_item])
+
+        addDirectoryItem(plugin.handle, plugin.url_for(search_for, query), item, True, totalItems=search_count)
+
+
+    # add clear all for more than 10 items, no one wants to clear them one by one
+    if len(search_history) > 10:
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224)), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(url_clear_search_terms), li, False)
+
+    endOfDirectory(plugin.handle)
+
+
+@plugin.route('/search/<save>')
+def new_search(save: bool):
+    x = str(xbmc.getInfoLabel('Container.FolderPath')).lower()  # just in case, future proof
+    y = ''
+    query = ''
+    if x == 'plugin://plugin.video.nakamori/search':
+        y = 'search'
+    #elif 'nakamori/menu-search/' in x:
+    #    import re
+    #    try:
+    #        y = re.search("(^plugin://plugin.video.nakamori/menu-search/)(.+)(/)", x).group(2)
+    #        query = y
+    #    except:
+    #        y = 'search'
+    #elif 'nakamori/menu/series/' in x:  # returning, but cache should bypass this direction
+    #    y = 'series'
+    xbmc.log(f'------- SEARCH 2--------------------------- {y}', xbmc.LOGINFO)
+    if len(y) != 0:
+        if query == '':
+            query = kodi_models.search_box()
+        if query != '':
+            if str(save).lower() == "true":
+                import lib.search as search
+                if search.check_in_database(query):
+                    search.remove_search_history(query)
+                search.add_search_history(query)
+            search_for(query)
+        else:
+            show_search_menu()
+    else:
+        xbmc.log('new_search len(y)=0, path: %s' % x, xbmc.LOGINFO)  # log this because it should be possible
+
+
+@plugin.route('/menu-search/<path:query>/')
+def search_for(query: str):
+    if len(query) > 0:
+        list_of_s = kodi_models.show_search_result_menu(query)
+        list_count = len(list_of_s)
+        for s in list_of_s:
+            addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s.id),
+                             kodi_models.get_listitem_from_serie(s), True, totalItems=list_count)
+
+        endOfDirectory(plugin.handle)
+
+
+@plugin.route('/search/az')
+def az_search():
+    pass
+
+
+@plugin.route('/dialog/search/clear')
+def url_clear_search_terms():
+    search.clear_search_history()
+    xbmc.executebuiltin('Container.Refresh')
+
+
+@plugin.route('/dialog/search/<query>/remove')
+def url_remove_search_term(query):
+    search.remove_search_history(query)
+    xbmc.executebuiltin('Container.Refresh')
+
+
+@plugin.route('/favorites')
+def show_favorites():
+    kodi_models.set_content('tvshows')
+    kodi_models.set_category(plugin_addon.getLocalizedString(30211))
+
+    list_of_li = kodi_models.list_all_favorites()
+    count_li = len(list_of_li)
+    for s_id, li in list_of_li:
+        remove_item = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorites/{s_id}/remove)')
+        li.addContextMenuItems([remove_item])
+        addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s_id), li, True, totalItems=count_li)
+    endOfDirectory(plugin.handle)
+
+
+@plugin.route('/dialog/favorites/<sid>/remove')
+def remove_favorite(sid):
+    favorite.remove_favorite(sid)
+    xbmc.executebuiltin('Container.Refresh')
+
+
+@plugin.route('/dialog/favorites/<sid>/add')
+def add_favorite(sid):
+    favorite.add_favorite(sid)
+    kodi_utils.message_box(plugin_addon.getLocalizedString(30211), plugin_addon.getLocalizedString(30212))
+
+
+@plugin.route('/shoko')
+def show_shoko():
+    pass
+
+
+@plugin.route('/settings')
+def show_settings():
+    xbmc.executebuiltin('Addon.OpenSettings(plugin.video.nakamori)')
+
+
+@plugin.route('/recent')
+@plugin.route('/calendar')
+@plugin.route('/calendar_classic')
+def show_calendar():
+    pass
+
+
 def main():
     # stage 0 - everything before connecting
     kodi_utils.get_device_id()
@@ -187,4 +345,8 @@ if __name__ == '__main__':
     xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGINFO)
     xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGINFO)
     if main():
-        plugin.run()
+        # let's support scripts without hacking like we used to
+        if sys.argv[1].startswith('/dialog/'):
+            plugin.run(argv=[sys.argv[1]])
+        else:
+            plugin.run()

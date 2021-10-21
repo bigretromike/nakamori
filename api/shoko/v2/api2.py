@@ -288,7 +288,6 @@ class Client:
             'max': max
         }
         response = self.api_client.call(url='/api/news/get', call_type=APIType.GET, query=query)
-        # _json = json.loads(response)
         output: list[WebNews] = []
         for new in response:
             output.append(WebNews.Decoder(new))
@@ -296,12 +295,10 @@ class Client:
     
     def search(self, opts: QueryOptions = QueryOptions()):
         response = self.api_client.call(url='/api/search', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         return Filter.Decoder(response)
     
     def serie_startswith(self, opts: QueryOptions = QueryOptions()):
         response = self.api_client.call(url='/api/serie/startswith', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         return Filter.Decoder(response)
     
     def ping(self) -> dict:

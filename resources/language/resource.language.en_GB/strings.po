@@ -1048,17 +1048,17 @@ msgctxt "#30210"
 msgid "Would you like to install addon"
 msgstr "Would you like to install addon?"
 
-#: settings.xml #
+#: settings.xml, nakamoriplugin.py #
 msgctxt "#30211"
 msgid "Favorites"
 msgstr "Favorites"
 
-#: v2.py, nakamoriscript.py
+#: kodi_models.py #
 msgctxt "#30212"
 msgid "Add to Favorites"
 msgstr "Add to Favorites"
 
-#: v2.py
+#: nakamoriplugin.py kodi_models.py #
 msgctxt "#30213"
 msgid "Remove from Favorites"
 msgstr "Remove from Favorites"
@@ -1073,7 +1073,7 @@ msgctxt "#30215"
 msgid "Bookmark"
 msgstr "Bookmark"
 
-#: v2.py, nakamoriscript.py
+#: kodi_models.py #
 msgctxt "#30216"
 msgid "Add Bookmark"
 msgstr "Add Bookmark"

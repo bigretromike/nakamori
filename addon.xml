@@ -17,6 +17,9 @@
 		<!-- <medialibraryscanpath content="tvshows">tvshows/</medialibraryscanpath> -->
 		<!-- <medialibraryscanpath content="movies">movies/</medialibraryscanpath> -->
 	</extension>
+	<extension point="xbmc.python.script" library="nakamoriplugin.py">
+		<provides>executable</provides>
+	</extension>
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en_GB">Nakamori - allows to interact with your Anime collection (ShokoServer)</summary>
 		<description lang="en_GB">Nakamori gives you the ability to interact with your Anime collection (inside ShokoServer) for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
