@@ -16,6 +16,7 @@ from xbmcplugin import addDirectoryItem, endOfDirectory
 import sys
 import lib.search as search
 import lib.favorite as favorite
+from operator import itemgetter
 
 plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 plugin = routing.Plugin()
@@ -34,15 +35,20 @@ def list_all_filters():
     xbmc.log('/', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filters()
+    x = kodi_models.main_menu_items()
+    for extra in x:
+        y.append((0, ThisType.menu, extra, kodi_models.remove_markdown(extra.getLabel())))
     y_count = len(y)
-    for filter_id, f_type, li in y:
+    # sort them by name
+    y.sort(key=itemgetter(3))
+
+    for filter_id, f_type, li, label in y:
         if f_type == ThisType.filter:
             addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, filter_id), li, True, totalItems=y_count)
         elif f_type == ThisType.filters:
             addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, filter_id), li, True, totalItems=y_count)
-
-    for extra in kodi_models.main_menu_items():
-        addDirectoryItem(plugin.handle, extra.getPath(), extra, True)
+        elif f_type == ThisType.menu:
+            addDirectoryItem(plugin.handle, li.getPath(), li, True, totalItems=y_count)
 
     endOfDirectory(plugin.handle)
 
@@ -296,9 +302,17 @@ def show_settings():
 
 
 @plugin.route('/recent')
+def show_recent():
+    pass
+
+
 @plugin.route('/calendar')
-@plugin.route('/calendar_classic')
 def show_calendar():
+    pass
+
+
+@plugin.route('/calendar_classic')
+def show_calendar_classic():
     pass
 
 

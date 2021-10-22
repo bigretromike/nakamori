@@ -221,12 +221,12 @@ def get_proper_title(s: api2models.Serie) -> str:
 
 
 def set_category(category: str):
-    xbmcplugin.setPluginCategory(int(sys.argv[1]), category)
+    xbmcplugin.setPluginCategory(plugin.handle, category)
 
 
 def set_content(content_type: str = ''):
     # files, movies, videos, tvshows, episodes, artists ...
-    xbmcplugin.setContent(int(sys.argv[1]), content_type)
+    xbmcplugin.setContent(plugin.handle, content_type)
 
 
 def set_watched_flags(li: ListItem, infolabels, flag: WatchedStatus, resume_time=0):
@@ -545,27 +545,6 @@ def show_search_result_menu(query: str) -> List[api2models.Serie]:
     return list_of_series
 
 
-@plugin.route('/recent')
-def show_added_recently_menu():
-    pass
-
-@plugin.route('/calendar')
-def show_calendar_menu():
-    pass
-
-@plugin.route('/calendar2')
-def url_calendar():
-    pass
-
-@plugin.route('/settings')
-def show_setting_menu():
-    pass
-
-@plugin.route('/shoko')
-def show_shoko_menu():
-    pass
-
-
 def main_menu_items() -> List[ListItem]:
     # { 'Favorites', 'Added Recently v2': 0, 'Airing Today': 1, 'Calendar': 1, 'Seasons': 2, 'Years': 3, 'Tags': 4,
     # 'Unsort': 5, 'Settings' (both): 7, 'Shoko Menu': 8, 'Search': 9, Experiment: 99}
@@ -658,7 +637,7 @@ def list_all_favorites() -> List[Tuple[int, ListItem]]:
     return list_of_li
 
 
-def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
+def list_all_filters() -> List[Tuple[int, ThisType, ListItem, str]]:
     """
     Get All Filters for current User
     :return: List[(int, ListItem)]
@@ -682,7 +661,7 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem]]:
             d.name = "Continue Watching"
         elif d.name == "TvDB/MovieDB Link Missing":
             continue
-        list_of_listitems.append((d.id, map_filter_group_to_thistype(d.type), get_listitem_from_filter(d)))
+        list_of_listitems.append((d.id, map_filter_group_to_thistype(d.type), get_listitem_from_filter(d), d.name))
 
     return list_of_listitems
 
@@ -767,52 +746,21 @@ def get_file_id_from_ep_id(ep_id: int) -> List[api2models.RawFile]:
 
 def set_sorting_method(x: ThisType):
     if x == ThisType.episode:
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_UNSORTED)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_EPISODE)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_TITLE)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_RATING)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_LABEL)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_DATE)
-
-        sort_episodes = plugin_addon.getSetting('default_sort_episodes')
-        sort = 0
-        if sort_episodes == 'Server':
-            sort = int(xbmcplugin.SORT_METHOD_UNSORTED)
-        if sort_episodes == 'Title':
-            sort = int(xbmcplugin.SORT_METHOD_TITLE)
-        if sort_episodes == 'Date':
-            sort = int(xbmcplugin.SORT_METHOD_DATE)
-        if sort_episodes == 'Rating':
-            sort = int(xbmcplugin.SORT_METHOD_VIDEO_RATING)
-        if sort_episodes == 'Year':
-            sort = int(xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        if sort_episodes == 'Episode':
-            sort = int(xbmcplugin.SORT_METHOD_EPISODE)
-        xbmc.executebuiltin(f'Container.SetSortMethod({sort})')
-
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_EPISODE)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_TITLE)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_LABEL)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_DATE)
     elif x == ThisType.series or x == ThisType.filter or x == ThisType.group:
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_UNSORTED)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_VIDEO_RATING)
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_DATE)
-
-        sort_series = plugin_addon.getSetting('default_sort_series')
-        sort = 0
-        if sort_series == 'Server':
-            sort = int(xbmcplugin.SORT_METHOD_UNSORTED)
-        if sort_series == 'Title':
-            sort = int(xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
-        if sort_series == 'Date':
-            sort = int(xbmcplugin.SORT_METHOD_DATE)
-        if sort_series == 'Rating':
-            sort = int(xbmcplugin.SORT_METHOD_VIDEO_RATING)
-        if sort_series == 'Year':
-            sort = int(xbmcplugin.SORT_METHOD_VIDEO_YEAR)
-        xbmc.executebuiltin(f'Container.SetSortMethod({sort})')
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_SORT_TITLE_IGNORE_THE)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_DATE)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
     else:
-        xbmcplugin.addSortMethod(int(sys.argv[1]), xbmcplugin.SORT_METHOD_NONE)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_NONE)
 
 
 def make_text_nice(data: str = ''):
@@ -868,3 +816,8 @@ def remove_multi_empty_lines(data=''):
     """
     data = re.sub(r'\n\n+', r'\n\n', data)
     return data.strip(" \n")
+
+
+def remove_markdown(data=''):
+    p = re.compile(r'\[.*?\]')
+    return p.sub('', data)

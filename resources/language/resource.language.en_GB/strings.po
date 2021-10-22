@@ -719,17 +719,17 @@ msgctxt "#30141"
 msgid "Resume"
 msgstr "Resume"
 
-#: settings.xml #
+#: settings.xml <<
 msgctxt "#30142"
 msgid "Default sorting method for Series"
 msgstr "Default sorting method for Series"
 
-#: settings.xml #
+#: settings.xml <<
 msgctxt "#30143"
 msgid "Default sorting method for Episodes"
 msgstr "Default sorting method for Episodes"
 
-#: settings.xml #
+#: settings.xml <<
 msgctxt "#30144"
 msgid "Sorting"
 msgstr "Sorting"

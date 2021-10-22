@@ -2474,47 +2474,6 @@
                     </dependencies>
                 </setting>
             </group>
-            <!-- sorting -->
-            <group id="8" label="30144">
-                <!-- series sort: 0 -->
-                <setting label="30142" type="string" id="default_sort_series">
-                    <level>0</level>
-                    <default>Server</default>
-                    <constraints>
-                        <options>
-                            <option>Server</option>
-                            <option>Title</option>
-                            <option>Date</option>
-                            <option>Rating</option>
-                            <option>Year</option>
-                        </options>
-                        <allowempty>false</allowempty>
-                    </constraints>
-                    <control type="list" format="string">
-                        <heading>30229</heading>
-                    </control>
-                </setting>
-                <!-- episode sort: 0 -->
-                <setting label="30143" type="string" id="default_sort_episodes">
-                    <level>0</level>
-                    <default>Episode</default>
-                    <constraints>
-                        <options>
-                            <option>Server</option>
-                            <option>Episode</option>
-                            <option>Name</option>
-                            <option>Date</option>
-                            <option>Title</option>
-                            <option>Rating</option>
-                            <option>Year</option>
-                        </options>
-                        <allowempty>false</allowempty>
-                    </constraints>
-                    <control type="list" format="string">
-                        <heading>30143</heading>
-                    </control>
-                </setting>
-            </group>
             <!-- spoiler control -->
             <group id="9" label="30074">
                 <setting label="30075" type="string" id="hide_title">

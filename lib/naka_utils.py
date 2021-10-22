@@ -18,6 +18,9 @@ class ThisType(IntEnum):
     # end of eps type
     file = 10
     raw = 11
+    # naka types
+    menu = 98
+    none = 99
 
 
 class WatchedStatus(IntEnum):
