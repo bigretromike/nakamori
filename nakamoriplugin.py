@@ -26,7 +26,6 @@ do_we_want_to_make_eptype_setting = True
 
 
 @plugin.route('/')
-@plugin.route('/f')
 def list_all_filters():
     """
     List all Filters for current User
@@ -48,7 +47,7 @@ def list_all_filters():
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/f/<filters_id>/filter')
+@plugin.route('/fs-<filters_id>')
 def list_filter_by_filters_id(filters_id: int):
     xbmc.log(f'/f/{filters_id}/filter', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.filter)
@@ -63,14 +62,14 @@ def list_filter_by_filters_id(filters_id: int):
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/f/<filter_id>/group')
+@plugin.route('/f-<filter_id>')
 def list_groups_by_filter_id(filter_id: int):
     """
     List all Groups for current User in Filter
     :param filter_id: ID of Filter that we want list content of
     :return: Draw ListItem's Collection of Group
     """
-    xbmc.log(f'/f/{filter_id}/group', xbmc.LOGINFO)
+    xbmc.log(f'/f/{filter_id}/g', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.series)
     y = kodi_models.list_all_groups_by_filter_id(filter_id)
     y_count = len(y)
@@ -83,14 +82,14 @@ def list_groups_by_filter_id(filter_id: int):
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/f/<filter_id>/g/<group_id>')
+@plugin.route('/f-<filter_id>/g-<group_id>')
 def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
     xbmc.log(f'/f/{filter_id}/g/{group_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.series)
     pass
 
 
-@plugin.route('/f/<filter_id>/s/<series_id>/ep')
+@plugin.route('/f-<filter_id>/s-<series_id>')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     xbmc.log(f'/f/{filter_id}/s/{series_id}/ep', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.episode)
@@ -118,7 +117,7 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/f/<filter_id>/s/<series_id>/et/<eptype_id>')
+@plugin.route('/f-<filter_id>/s-<series_id>/et-<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
     xbmc.log(f'/f/{filter_id}/s/{series_id}/et/{eptype_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.episode)
@@ -131,7 +130,7 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/f/<filter_id>/s/<series_id>/e/<ep_id>/play')
+@plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>/play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
     xbmc.log(f'/f/<{filter_id}>/s/<{series_id}>/e/<{ep_id}>/play', xbmc.LOGINFO)
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
