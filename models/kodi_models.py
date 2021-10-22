@@ -10,7 +10,7 @@ import routing
 from lib.kodi_utils import bold
 from lib.shoko_utils import get_tag_setting_flag
 from typing import List, Tuple
-from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype
+from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype, map_thitype_to_eptype
 import os
 import lib.favorite as favorite
 
@@ -105,7 +105,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     li = ListItem(name, offscreen=True)
 
     set_category(series_title)
-    set_content('episodes')
+
     if x.art is not None:
         set_art(li, x.art)
     set_folder(li, False)
@@ -113,7 +113,8 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(x.votes), default=True)
     #add_season(li, season_name='__season__', season_number=1)
     set_info_for_episode(li, x, series_title)
-    set_cast(li, get_cast(cast))
+    if cast is not None:
+        set_cast(li, get_cast(cast))
     # add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', True)
     #set_path(li, url)  # TODO
@@ -127,13 +128,21 @@ def get_listitem_from_rawfile(x: api2models.RawFile) -> ListItem:
     if len(name_split) > 1:
         name = name_split[len(name_split)-1]
     li = ListItem(name, path=x.url, offscreen=True)
-    set_category('Unsort')
-    set_content('video')
+
     set_folder(li, True)
     set_info_for_rawfile(li, x)
     set_stream_info(li, x)
     # add_context_menu(li, [])  #TODO scan etc
     set_property(li, 'IsPlayable', True)
+    return li
+
+
+def get_listitem_from_episodetype(x: ThisType) -> ListItem:
+    name = map_thitype_to_eptype(x)
+    li = ListItem(label=name, offscreen=True)
+    set_art(li, None, f'%s.png' % map_thitype_to_eptype(x))
+    set_folder(li, True)
+    set_property(li, 'IsPlayable', False)
     return li
 
 
@@ -309,7 +318,7 @@ def is_series_watched(s: api2models.Serie) -> WatchedStatus:
     return WatchedStatus.PARTIAL
 
 
-def set_watch_mark(mark_type: ThisType = ThisType.episode, mark_id: int = 0, watched: bool = True):
+def set_watch_mark(mark_type: ThisType = ThisType.episodes, mark_id: int = 0, watched: bool = True):
     if plugin_addon.getSetting('watchedbox') == 'true':
         msg = plugin_addon.getLocalizedString(30201) + ' ' + (plugin_addon.getLocalizedString(30202) if watched else plugin_addon.getLocalizedString(30203))
         xbmc.executebuiltin('XBMC.Notification(' + plugin_addon.getLocalizedString(30200) + ', ' + msg + ', 2000, ' + plugin_addon.getAddonInfo('icon') + ')')
@@ -679,7 +688,6 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem, str]]:
     q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
     set_category('')
-    set_content('tvshows')
 
     show_unsort = plugin_addon.getSettingBool('show_unsort')
 
@@ -708,7 +716,6 @@ def list_all_filter_by_filters_id(id: int) -> List[Tuple[int, ThisType, ListItem
     q.tagfilter = get_tag_setting_flag()
     x = api.filter(q)
     set_category(x.name)
-    set_content('tvshows')
 
     for f in x.filters:
         list_of_li.append((f.id, map_filter_group_to_thistype(f.type), get_listitem_from_filter(f)))
@@ -725,7 +732,6 @@ def list_all_groups_by_filter_id(id: int) -> List[Tuple[int, ThisType, ListItem]
     x = api.filter(q)
 
     set_category(x.name)
-    set_content('tvshows')
 
     for g in x.groups:
         # we dont want to show empty groups, for now ?options?
@@ -769,6 +775,22 @@ def list_episodes_for_series_by_series_id(s_id: int) -> List[Tuple[int, ThisType
     return list_of_li
 
 
+def list_all_recent_series_and_episodes() -> List[Tuple[int, ThisType, ListItem]]:
+    list_of_li = []
+    q = api2models.QueryOptions()
+    q.allpics = 1
+    s = api.series_get_recent(q)
+    for ss in s:
+        list_of_li.append((ss.id, ThisType.series, get_listitem_from_serie(ss)))
+    e = api.episodes_get_recent(q)
+    for ee in e:
+        list_of_li.append((ee.id, ThisType.episodes, get_listitem_from_episode(ee, '')))
+    f = api.file_recent()
+    for ff in f:
+        list_of_li.append((ff.id, ThisType.raw, get_listitem_from_rawfile(ff)))
+    return list_of_li
+
+
 def get_file_id_from_ep_id(ep_id: int) -> List[api2models.RawFile]:
     q = api2.QueryOptions()
     q.id = ep_id
@@ -790,7 +812,7 @@ def list_all_unsorted() -> List[Tuple[int, ListItem]]:
 
 
 def set_sorting_method(x: ThisType):
-    if x == ThisType.episode:
+    if x == ThisType.episodes:
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_UNSORTED)
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_EPISODE)
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_TITLE)

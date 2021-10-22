@@ -1177,6 +1177,11 @@ msgctxt "#30236"
 msgid "Max Unsort file count"
 msgstr "Max Unsort file count"
 
+#: nakamoriplygin.py #
+msgctxt "#30237"
+msgid "Would you like to run wizard to configure connection with Shoko Server?"
+msgstr "Would you like to run wizard to configure connection with Shoko Server?"
+
 ##################################
 
 #: wizard.xml #

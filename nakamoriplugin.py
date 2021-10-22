@@ -33,6 +33,7 @@ def list_all_filters():
     :return: Draw ListItem's Collection of Filters
     """
     xbmc.log('/', xbmc.LOGINFO)
+    kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filters()
     x = kodi_models.main_menu_items()
@@ -56,6 +57,7 @@ def list_all_filters():
 @plugin.route('/fs-<filters_id>')
 def list_filter_by_filters_id(filters_id: int):
     xbmc.log(f'/fs-{filters_id}', xbmc.LOGINFO)
+    kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filter_by_filters_id(filters_id)
     y_count = len(y)
@@ -76,6 +78,8 @@ def list_groups_by_filter_id(filter_id: int):
     :return: Draw ListItem's Collection of Group
     """
     xbmc.log(f'/f-{filter_id}', xbmc.LOGINFO)
+    kodi_models.set_content('tvshows')
+
     if int(filter_id) == 0:
         list_unsorted()
         return
@@ -101,7 +105,8 @@ def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
 @plugin.route('/f-<filter_id>/s-<series_id>')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     xbmc.log(f'/f-{filter_id}/s-{series_id}', xbmc.LOGINFO)
-    kodi_models.set_sorting_method(ThisType.episode)
+    kodi_models.set_content('episodes')
+    kodi_models.set_sorting_method(ThisType.episodes)
     list_of_ep_types = []
     list_of_eps = []
 
@@ -117,8 +122,9 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
 
     if do_we_want_to_make_eptype_setting:
         if len(list_of_ep_types) > 1:
+            kodi_models.set_content('video')
             for ep_type in list_of_ep_types:
-                li = xbmcgui.ListItem(str(ep_type))
+                li = kodi_models.get_listitem_from_episodetype(ep_type)
                 addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
         else:
             for ep_id, ep_type, li in list_of_eps:
@@ -129,7 +135,7 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
 @plugin.route('/f-<filter_id>/s-<series_id>/et-<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
     xbmc.log(f'/f-{filter_id}/s-{series_id}/et-{eptype_id}', xbmc.LOGINFO)
-    kodi_models.set_sorting_method(ThisType.episode)
+    kodi_models.set_sorting_method(ThisType.episodes)
     y = kodi_models.list_episodes_for_series_by_series_id(series_id)
     y_count = len(y)
     for ep_id, ep_type, li in y:
@@ -156,6 +162,8 @@ def open_rawfile(file_id: int):
 
 
 def list_unsorted():
+    kodi_models.set_category('Unsort')
+    kodi_models.set_content('video')
     x = kodi_models.list_all_unsorted()
     x_count = len(x)
     for r_id, r in x:
@@ -272,8 +280,8 @@ def search_for(query: str, fuzzy: bool, tag: bool):
     kodi_models.set_content('tvshows')
     kodi_models.set_category(query)
 
-    fuzziness = 1 if str(fuzzy).lower() == 'true' else 0
-    taginess = 1 if str(tag).lower() == 'true' else 0
+    fuzziness = True if str(fuzzy).lower() == 'true' else False
+    taginess = True if str(tag).lower() == 'true' else False
     if len(query) > 0:
         list_of_s = kodi_models.show_search_result_menu(query, fuzziness, taginess)
         list_count = len(list_of_s)
@@ -339,7 +347,16 @@ def show_settings():
 
 @plugin.route('/recent')
 def show_recent():
-    pass
+    list_of_li = kodi_models.list_all_recent_series_and_episodes()
+    list_count = len(list_of_li)
+    for o_id, o_type, li in list_of_li:
+        if o_type == ThisType.series:
+            addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, o_id), li, True, totalItems=list_count)
+        elif o_type == ThisType.episodes:
+            addDirectoryItem(plugin.handle, plugin.url_for(open_episode, 0, 0, o_id), li, False, totalItems=list_count)
+        elif o_type == ThisType.raw:
+            addDirectoryItem(plugin.handle, plugin.url_for(open_rawfile, o_id), li, False, totalItems=list_count)
+    endOfDirectory(plugin.handle)
 
 
 @plugin.route('/calendar')
@@ -358,18 +375,13 @@ def main():
 
     # stage 1 - check connection
     if not shoko_utils.can_connect():
-        if xbmcgui.Dialog().yesno(plugin_addon.getLocalizedString(30197), plugin_addon.getLocalizedString(30000)):
+        if xbmcgui.Dialog().yesno(plugin_addon.getLocalizedString(30197), plugin_addon.getLocalizedString(30237)):
             # go back to avoid loops
             xbmc.executebuiltin("Action(Back,%s)" % xbmcgui.getCurrentWindowId())
             xbmc.executebuiltin("Dialog.Close(all, true)")
 
             if wizard.open_connection_wizard():
                 return False
-        else:
-            pass
-        if not shoko_utils.can_connect():
-            kodi_utils.message_box("exit", "exit")
-            return False
 
     # stage 2 - Check server startup status
     if not shoko_utils.get_server_status():

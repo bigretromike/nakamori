@@ -454,9 +454,11 @@ class Client:
         }
         response = self.api_client.call(url='/api/file/recent', call_type=APIType.GET, query=query)
         # _json = json.loads(response)
-        output: list[RecentFile] = []
+        #output: list[RecentFile] = []
+        output: list[RawFile] = []
         for file in response:
-            output.append(RecentFile.Decoder(file))
+            #output.append(RecentFile.Decoder(file))
+            output.append(RawFile.Decoder(file))
         return output
     
     def file_unsort(self, offset: int = 0, level: int = 0, limit: int = 0):
