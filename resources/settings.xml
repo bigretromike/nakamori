@@ -3,7 +3,7 @@
     <section id="plugin.video.nakamori">
 	    <!-- shoko settings -->
         <category id="shokosettings" label="30001" help="">
-            <!-- Shoko Server: 0-->
+            <!-- Shoko Server: 0 -->
             <group id="1" label="30006">
                 <!-- connection wizard: 0 -->
                 <setting label="30082" type="action" id="action1" help="">
@@ -24,7 +24,7 @@
                 <!-- logout: 0 -->
                 <setting label="30233" type="action" id="action3">
                         <level>0</level>
-                    <data>RunScript(plugin.video.nakamori,/dialog/wizard/login)</data>
+                    <data>RunScript(plugin.video.nakamori,/dialog/wizard/logout)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
@@ -80,7 +80,7 @@
                         <heading>30015</heading>
                     </control>
                 </setting>
-                <!-- password: 3 (this one is not showing? why?) -->
+                <!-- password: 3 -->
                 <setting label="30016" type="string" id="password">
                     <level>3</level>
                     <default></default>
@@ -94,7 +94,7 @@
             </group>
         </category>
 
-	    <!-- Main Menu Items -->
+	    <!-- main menu items -->
         <category id="mainmenu" label="30098" help="">
             <!-- menu: 1 / color: 1 / bold: 2 -->
             <group id="4" label="30230">
@@ -1385,6 +1385,7 @@
             </group>
 	    </category>
 
+<!-- TODO -->
 	    <!-- browsing -->
         <category id="browsing" label="30054" help="">
 		    <!-- title settings: 0 -->
@@ -1486,7 +1487,7 @@
 	                <control type="toggle"/>
                 </setting>
             </group>
-            <!-- title colorization -->
+            <!-- title colorization: 1 -->
             <group id="7" label="30019">
                 <!-- title color: 1 -->
                 <setting label="30073" type="boolean" id="color_title">
@@ -2485,184 +2486,179 @@
                     </dependencies>
                 </setting>
             </group>
-            <!-- spoiler control -->
+            <!-- spoiler control: 0 -->
             <group id="9" label="30074">
+                <!-- hide episode title for unwatched: 0 -->
                 <setting label="30075" type="string" id="hide_title">
                     <level>0</level>
                     <default>Never</default>
                     <constraints>
                         <options>
-                <option>Episodes</option>
-                <option>Specials</option>
-                <option>Both</option>
-                <option>Never</option>
-            </options>
-                        <allowempty>true</allowempty>
+                            <option>Episodes</option>
+                            <option>Specials</option>
+                            <option>Both</option>
+                            <option>Never</option>
+                        </options>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
-                        <heading>30229</heading>
+                        <heading>30075</heading>
                     </control>
                 </setting>
+                <!-- hide rating for unwatched: episodes/series 0 -->
                 <setting label="30113" type="string" id="hide_rating">
                     <level>0</level>
                     <default>Never</default>
                     <constraints>
                         <options>
-                <option>Never</option>
-                <option>Unwatched</option>
-                <option>All Unwatched</option>
-                <option>Always</option>
-            </options>
-                        <allowempty>true</allowempty>
+                            <option>Never</option>
+                            <option>Episodes</option>
+                            <option>Series</option>
+                            <option>Both</option>
+                        </options>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
-                        <heading>30229</heading>
+                        <heading>30113</heading>
                     </control>
                 </setting>
-                <!-- Kodi has errors in comparing text in visibility and enabled status. This should be fixed in Leia -->
-                <setting label="30111" type="string" id="hide_rating_type">
-                    <level>0</level>
-                    <default>Both</default>
-                    <constraints>
-                        <options>
-                <option>Episodes</option>
-                <option>Series</option>
-                <option>Both</option>
-            </options>
-                        <allowempty>true</allowempty>
-                    </constraints>
-                    <control type="list" format="string">
-                        <heading>30229</heading>
-                    </control>
-                </setting>
+                <!-- hide image for unwatched episodes: 0 -->
                 <setting label="30077" type="boolean" id="hide_images">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- hide episode plot for unwatched: 0 -->
                 <setting label="30078" type="boolean" id="hide_plot">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
-            <!-- tweaks -->
+<!-- TODO -->
+            <!-- tweaks: 5 -->
             <group id="10" label="30064">
+                <!-- show continue: 5 -->
                 <setting label="30039" type="boolean" id="show_continue">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30072" type="boolean" id="replace_continue">
-                    <level>0</level>
+                <!-- replace continue: 5 -->
+                <setting label="30072" type="boolean" id="replace_continue" parent="show_continue">
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- skip to first unwatched: 5 -->
                 <setting label="30083" type="boolean" id="skip_information">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- use local file count for total episodes: 5 -->
                 <setting label="30040" type="boolean" id="local_total">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- ignore special for watched states: 5 -->
                 <setting label="30068" type="boolean" id="ignore_specials_watched">
-                    <level>0</level>
-	                <default>false</default>
+                    <level>5</level>
+	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
-            <!-- Context Menu Settings -->
+<!-- TODO -->
+            <!-- context menu settings: 5 -->
 		    <group id="11" label="30057">
-                <setting label="30000" type="boolean" id="eigakan_handshake">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
+                <!-- play: 5 -->
                 <setting label="30065" type="boolean" id="context_show_play">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30000" type="boolean" id="trakt_scrobble">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
+                <!-- play without mark: 5 -->
                 <setting label="30132" type="boolean" id="context_show_play_no_watch">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- force transcode play: 5 -->
                 <setting label="30174" type="boolean" id="context_show_force_transcode">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- play direct: 5 -->
                 <setting label="30175" type="boolean" id="context_show_directplay">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- probe file: 5 -->
                 <setting label="30177" type="boolean" id="context_show_probe">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- pick file menu: 5 -->
                 <setting label="30133" type="boolean" id="context_pick_file">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- playlist: 5 -->
                 <setting label="30130" type="boolean" id="context_playlist">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30062" type="boolean" id="context_krypton_watched">
-                    <level>0</level>
-	                <default>true</default>
-	                <control type="toggle"/>
-                </setting>
+                <!-- vote episode: 5 -->
                 <setting label="30125" type="boolean" id="context_show_vote_Episode">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- vote series: 5 -->
                 <setting label="30124" type="boolean" id="context_show_vote_Series">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- show info: 5 -->
                 <setting label="30123" type="boolean" id="context_show_info">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- view cast: 5 -->
                 <setting label="30134" type="boolean" id="context_view_cast">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- refresh: 5 -->
                 <setting label="30131" type="boolean" id="context_refresh">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
+<!-- TODO -->
             <!-- maintenance -->
 		    <group id="12" label="30097">
+                <!-- fix desync watched status in kodi database: 5 -->
                 <setting label="30080" type="action" id="action4">
-                <level>0</level>
+                <level>5</level>
                     <data>RunScript(script.module.nakamori,/kodi/clear_listitem_cache)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
         </setting>
+                <!-- fix desynced images in kodi database: 5 -->
                 <setting label="30139" type="action" id="action5">
-                <level>0</level>
+                <level>5</level>
                     <data>RunScript(script.module.nakamori,/kodi/clear_image_cache)</data>
                     <control type="button" format="action">
                         <close>true</close>
@@ -2673,6 +2669,7 @@
 
         <!-- tag blacklist -->
         <category id="tagblackist" label="30046" help="">
+            <!-- tag blacklist: 0-1 -->
 		    <group id="13" label="30046">
                 <!-- shorten tag: 0 -->
                 <setting label="30028" type="boolean" id="short_tag_list">
@@ -2746,7 +2743,7 @@
             </group>
         </category>
 
-        <!-- Search -->
+        <!-- search -->
         <category id="searching" label="30221" help="">
             <!-- searching: 0-1 -->
             <group id="14" label="30021">
@@ -2765,33 +2762,35 @@
 	                <control type="toggle"/>
                 </setting>
             </group>
-            <!-- maintenance -->
+            <!-- maintenance: 0 -->
             <group id="15" label="30097">
                 <setting label="30110" type="action" id="action6">
                     <level>0</level>
-                    <data>RunScript(script.module.nakamori,/search/clear)</data>
+                    <data>RunScript(plugin.video.nakamori,/search/clear)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
-                    <enable>System.HasAddon(script.module.nakamori)</enable>
                 </setting>
             </group>
         </category>
 
         <!-- video settings -->
         <category id="videosettings" label="30023" help="">
-            <!-- watched status settings -->
+            <!-- watched status settings 0-2 -->
             <group id="16" label="30007">
+                <!-- sync 'watched' to shoko: 0 -->
                 <setting label="30005" type="boolean" id="syncwatched">
                     <level>0</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <setting label="30025" type="boolean" id="watchedbox">
+                <!-- notification on mark: 1 -->
+                <setting label="30025" type="boolean" id="watchedbox" parent="syncwatched">
                     <level>0</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- percent for mark as watch: 2 -->
                 <setting label="30024" type="integer" id="watched_mark" help="">
 	                <level>0</level>
 	                <default>75</default>
@@ -2799,69 +2798,88 @@
 		                <heading>30024</heading>
 	                </control>
                 </setting>
+                <!-- trigger vote after each file: 0 -->
                 <setting label="30032" type="boolean" id="vote_always">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- trigger vote for series completion: 0 -->
                 <setting label="30034" type="boolean" id="vote_on_series">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- suggest series scoring: 1 -->
                 <setting label="30184" type="boolean" id="suggest_series_vote" parent="vote_on_series">
-                    <level>0</level>
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- suggest series scoring only when all episodes are watched: 2 -->
                 <setting label="30185" type="boolean" id="suggest_series_vote_all_eps" parent="suggest_series_vote">
-                    <level>0</level>
-	                <default>true</default>
+                    <level>2</level>
+	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+            </group>
+<!-- TODO -->
+            <!-- video library: 5 -->
+            <group id="26" label="30167">
+                <!-- Sync watched with Video Library: 5 -->
                 <setting label="30168" type="boolean" id="sync_to_library">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
-            <!-- trakt support -->
+<!-- TODO -->
+            <!-- trakt support: 5 -->
             <group id="17" label="30038">
+                <!-- trakt voting: 5 -->
                 <setting label="30035" type="boolean" id="trakt">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- trakt scrobble: 5 -->
                 <setting label="30036" type="boolean" id="trakt_scrobble">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- trakt notification: 5 -->
                 <setting label="30037" type="boolean" id="trakt_scrobble_notification" parent="trakt_scrobble">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
-            <!-- kodi player settings -->
+<!-- TODO -->
+            <!-- kodi player settings: 0-5 -->
             <group id="18" label="30026">
+<!-- TODO -->
+                <!-- play resume: 5 -->
                 <setting label="30020" type="boolean" id="file_resume">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- pick file if more than one: 0 -->
                 <setting label="30014" type="boolean" id="pick_file">
                     <level>0</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- max time to buffor: 3 -->
                 <setting label="30027" type="integer" id="player_sleep" help="">
-	                <level>0</level>
+	                <level>3</level>
 	                <default>5000</default>
 	                <control type="edit" format="integer">
 		                <heading>30027</heading>
 	                </control>
                 </setting>
+                <!-- max timeout: 2 -->
                 <setting label="30004" type="integer" id="timeout" help="">
 	                <level>0</level>
 	                <default>60</default>
@@ -2869,11 +2887,7 @@
 		                <heading>30004</heading>
 	                </control>
                 </setting>
-                <setting label="30000" type="boolean" id="kodi18">
-                    <level>0</level>
-	                <default>true</default>
-	                <control type="toggle"/>
-                </setting>
+                <!-- use external player watch fix: 1 -->
                 <setting label="30149" type="boolean" id="external_player">
                     <level>0</level>
 	                <default>false</default>
@@ -2882,12 +2896,15 @@
             </group>
         </category>
 
+<!-- TODO -->
 	    <!-- Advanced -->
         <category id="additional" label="30044" help="">
-            <group id="19" label="30000">
+            <!-- advanced: 0 -->
+            <group id="19" label="30044">
+                <!-- custom imag/iconpack: 0 -->
                 <setting label="30109" type="addon" id="icon_pack" help="">
 	                <level>0</level>
-                    <default>resource.images.nakamori</default>
+                    <default></default>
 	                <constraints>
 		                <addontype>kodi.resource.images</addontype>
 		                <allowempty>true</allowempty>
@@ -2897,93 +2914,88 @@
 		                <show more="true" details="true">installed</show>
 	                </control>
                 </setting>
-                <setting label="30066" type="boolean" id="request_nocast">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
+                <!-- use seiyuu picture: 0 -->
                 <setting label="30169" type="boolean" id="use_seiyuu_pic">
                     <level>0</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
-                <!-- debug -->
+<!-- TODO -->
+            <!-- debug: 3 -->
             <group id="20" label="30173">
-                <setting label="30042" type="boolean" id="spamLog">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
+                <!-- remote debug: 3 -->
                 <setting label="30063" type="boolean" id="remote_debug">
-                    <level>0</level>
+                    <level>3</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- remote address: 3 -->
                 <setting label="30086" type="string" id="remote_ip" parent="remote_debug" help="">
-	                <level>0</level>
+	                <level>3</level>
                     <default>localhost</default>
 	                <constraints>
-		                <allowempty>true</allowempty>
+		                <allowempty>false</allowempty>
 	                </constraints>
 	                <control type="edit" format="string">
 		                <heading>30086</heading>
 	                </control>
                 </setting>
             </group>
-                <!-- calendar -->
+            <!-- calendar: 5 -->
             <group id="21" label="30012">
+                <!-- calendar data format: 5 -->
                 <setting label="30058" type="string" id="calendar_format">
-                    <level>0</level>
+                    <level>5</level>
                     <default>%d/%m</default>
                     <constraints>
                         <options>
-                <option>%d-%m</option>
-                <option>%d-%m-%y</option>
-                    <option>%d/%m</option>
-                    <option>%d/%m/%y</option>
-                    <option>%m-%d</option>
-                    <option>%m-%d-%y</option>
-                    <option>%m/%d</option>
-                    <option>%m/%d/%y</option>
-                </options>
-                <allowempty>true</allowempty>
+                            <option>%d-%m</option>
+                            <option>%d-%m-%y</option>
+                            <option>%d/%m</option>
+                            <option>%d/%m/%y</option>
+                            <option>%m-%d</option>
+                            <option>%m-%d-%y</option>
+                            <option>%m/%d</option>
+                            <option>%m/%d/%y</option>
+                        </options>
+                        <allowempty>false</allowempty>
                     </constraints>
                     <control type="list" format="string">
-                        <heading>30229</heading>
+                    <heading>30058</heading>
                     </control>
                 </setting>
+                <!-- calendar json format: 5 -->
                 <setting label="30061" type="boolean" id="calendar_basic">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
             </group>
-                <!-- experimental/misc -->
-            <group id="22" label="30146">
-                <setting label="30145" type="boolean" id="experimental">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
-                </setting>
-            </group>
-                <!-- cache -->
+<!-- TODO -->
+            <!-- cache -->
             <group id="23" label="30029">
+                <!-- enable cache: 1 -->
                 <setting label="30030" type="boolean" id="enableCache">
-                    <level>0</level>
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- second before cache get expired: 2 -->
                 <setting label="30069" type="integer" id="expireCache" parent="enableCache" help="">
-	                <level>0</level>
+	                <level>2</level>
 	                <default>300</default>
 	                <control type="edit" format="integer">
 		                <heading>30069</heading>
 	                </control>
                 </setting>
-                <!-- eigakan -->
+            </group>
+<!-- TODO -->
+            <!-- eigakan -->
+            <group id="27" label="30084">
+                <!-- eigakan: 5 -->
                 <setting label="30000" type="string" id="eigakan_manual_mode"  help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>false</default>
 	                <constraints>
 		                <allowempty>true</allowempty>
@@ -2993,7 +3005,7 @@
 	                </control>
                 </setting>
                 <setting label="30000" type="string" id="eigakan_h_resolution"  help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>1280x720</default>
 	                <constraints>
 		                <allowempty>true</allowempty>
@@ -3003,7 +3015,7 @@
 	                </control>
                 </setting>
                 <setting label="30000" type="string" id="eigakan_h_bitrate"  help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>1000k</default>
 	                <constraints>
 		                <allowempty>true</allowempty>
@@ -3013,7 +3025,7 @@
 	                </control>
                 </setting>
                 <setting label="30000" type="string" id="eigakan_l_resolution"  help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>400x300</default>
 	                <constraints>
 		                <allowempty>true</allowempty>
@@ -3023,7 +3035,7 @@
 	                </control>
                 </setting>
                 <setting label="30000" type="string" id="eigakan_l_bitrate"  help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>256k</default>
 	                <constraints>
 		                <allowempty>true</allowempty>
@@ -3033,7 +3045,7 @@
 	                </control>
                 </setting>
                 <setting label="30000" type="string" id="eigakan_x264_preset"  help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>veryfast</default>
 	                <constraints>
 		                <allowempty>true</allowempty>
@@ -3043,88 +3055,95 @@
 	                </control>
                 </setting>
             </group>
+<!-- TODO -->
             <group id="24" label="30084">
+                <!-- enable eigaka: 5 -->
                 <setting label="30085" type="boolean" id="enableEigakan">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- ip eigaka: 5 -->
                 <setting label="30086" type="string" id="ipEigakan" parent="enableEigakan" help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>127.0.0.1</default>
 	                <constraints>
-		                <allowempty>true</allowempty>
+		                <allowempty>false</allowempty>
 	                </constraints>
 	                <control type="edit" format="string">
 		                <heading>30086</heading>
 	                </control>
                 </setting>
+                <!-- port] eigaka: 5 -->
                 <setting label="30087" type="integer" id="portEigakan" parent="enableEigakan" help="">
-	                <level>0</level>
+	                <level>5</level>
 	                <default>8118</default>
 	                <control type="edit" format="integer">
 		                <heading>30087</heading>
 	                </control>
                 </setting>
+                <!-- audio eigaka: 5 -->
                 <setting label="30095" type="string" id="audiolangEigakan" parent="enableEigakan" help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>english,eng,en</default>
 	                <constraints>
-		                <allowempty>true</allowempty>
+		                <allowempty>false</allowempty>
 	                </constraints>
 	                <control type="edit" format="string">
 		                <heading>30095</heading>
 	                </control>
                 </setting>
+                <!-- sub eigaka: 5 -->
                 <setting label="30096" type="string" id="subEigakan" parent="enableEigakan" help="">
-	                <level>0</level>
+	                <level>5</level>
                     <default>english,eng,en</default>
 	                <constraints>
-		                <allowempty>true</allowempty>
+		                <allowempty>false</allowempty>
 	                </constraints>
 	                <control type="edit" format="string">
 		                <heading>30096</heading>
 	                </control>
                 </setting>
+                <!-- burn sub into video eigaka: 5 -->
                 <setting label="30171" type="boolean" id="burnEigakan" parent="subEigakan">
-                    <level>0</level>
+                    <level>5</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- resend profile eigaka: 5 -->
                 <setting label="30172" type="action" id="action7" action="" subsetting="true" enable="" visible="eq(-17,true)+eq(-6,true)" option="close">
-                    <level>0</level>
+                    <level>5</level>
                     <data>RRunScript(script.module.nakamori,/eigakan/clear)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
                     <enable>System.HasAddon(script.module.nakamori)</enable>
                 </setting>
+                <!-- reinstall eigaka: 5 -->
                 <setting label="30208" type="action" id="action8" subsetting="false" option="close">
-                    <level>0</level>
+                    <level>5</level>
                     <data>RunScript(script.module.nakamori,/eigakan/requirement)</data>
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
                 </setting>
             </group>
+<!-- TODO -->
+            <!-- extra hidden: 1,5 -->
             <group id="25" label="30000">
-                <!-- noname/don't delete -->
+                <!-- feedback: 1 -->
                 <setting label="30108" type="boolean" id="feedback">
-                    <level>0</level>
+                    <level>1</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
+                <!-- last call eigakan: 5 -->
                 <setting label="30000" type="integer" id="last_call" parent="enableEigakan" help="">
-	                <level>0</level>
+	                <level>5</level>
 	                <default>1543210000</default>
 	                <control type="edit" format="integer">
 		                <heading>30000</heading>
 	                </control>
-                </setting>
-                <setting label="30000" type="boolean" id="onepunchmen">
-                    <level>0</level>
-	                <default>false</default>
-	                <control type="toggle"/>
                 </setting>
             </group>
         </category>

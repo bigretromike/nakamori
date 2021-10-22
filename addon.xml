@@ -3,43 +3,32 @@
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.routing" version="0.2.3"/>
-		<!-- <import addon="script.module.future" version="0.16.0.4"/>-->
-		<!-- <import addon="resource.images.nakamori" version="3.2.0"/>-->
-		<!-- <import addon="script.module.nakamori-lib" version="3.6.0"/>-->
-		<!-- <import addon="script.module.nakamoriplayer" version="3.6.0"/>-->
-		<!-- <import addon="script.module.nakamori" version="3.6.0"/>-->
-		<!-- <import addon="service.nakamori" version="3.6.0"/>-->
-		<!-- <import addon="script.module.web-pdb" optional="true"/>-->
-		<!-- <import addon="script.module.pydevd-pycharm" optional="true"/>-->
 	</requires>
 	<extension point="xbmc.python.pluginsource" library="nakamoriplugin.py">
 		<provides>video</provides>
-		<!-- <medialibraryscanpath content="tvshows">tvshows/</medialibraryscanpath> -->
-		<!-- <medialibraryscanpath content="movies">movies/</medialibraryscanpath> -->
 	</extension>
 	<extension point="xbmc.python.script" library="nakamoriplugin.py">
 		<provides>executable</provides>
 	</extension>
 	<extension point="xbmc.addon.metadata">
-		<summary lang="en_GB">Nakamori - allows to interact with your Anime collection (ShokoServer)</summary>
-		<description lang="en_GB">Nakamori gives you the ability to interact with your Anime collection (inside ShokoServer) for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
+		<summary lang="en_GB">Nakamori - allows to interact with your Anime collection (via ShokoServer)</summary>
+		<description lang="en_GB">Nakamori gives you the ability to interact with your Anime collection (via ShokoServer) for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
 		<disclaimer lang="en_GB">This plugin to work require working ShokoServer instance. https://shokoanime.com</disclaimer>
 		<!-- <news>{NEWS REPLACE ME}</news> -->
 		<platform>all</platform>
 		<!-- <language>ar de en es fr he it nl pl ru sv zh</language> -->
 		<license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
-		<!-- <forum>https://discordapp.com/invite/vpeHDsg</forum> -->
 		<website>https://shokunin.monogatari.pl/nakamori/</website>
 		<source>https://github.com/bigretromike/nakamori/</source>
 		<email></email>
 		<assets>
-			<!-- <icon>resources/icon.png</icon>
+			<icon>resources/icon.png</icon>
 			<fanart>resources/fanart.jpg</fanart>
 			<banner>resources/banner.png</banner>
 			<clearlogo>resources/clearlogo.png</clearlogo>
 			<screenshot>resources/screenshot-01.jpg</screenshot>
 			<screenshot>resources/screenshot-02.jpg</screenshot>
-			<screenshot>resources/screenshot-03.jpg</screenshot> -->
+			<screenshot>resources/screenshot-03.jpg</screenshot>
 		</assets>
 	</extension>
 </addon>

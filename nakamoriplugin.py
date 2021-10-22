@@ -32,7 +32,12 @@ def list_all_filters():
     List all Filters for current User
     :return: Draw ListItem's Collection of Filters
     """
-    xbmc.log('/', xbmc.LOGINFO)
+
+    if not plugin_addon.getSettingBool('skip_information'):
+        # spot for 'what's new window'
+        # also let's flag this information in sqlite version, mark
+        pass
+
     kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filters()
@@ -56,7 +61,6 @@ def list_all_filters():
 
 @plugin.route('/fs-<filters_id>')
 def list_filter_by_filters_id(filters_id: int):
-    xbmc.log(f'/fs-{filters_id}', xbmc.LOGINFO)
     kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filter_by_filters_id(filters_id)
@@ -77,7 +81,6 @@ def list_groups_by_filter_id(filter_id: int):
     :param filter_id: ID of Filter that we want list content of
     :return: Draw ListItem's Collection of Group
     """
-    xbmc.log(f'/f-{filter_id}', xbmc.LOGINFO)
     kodi_models.set_content('tvshows')
 
     if int(filter_id) == 0:
@@ -97,14 +100,12 @@ def list_groups_by_filter_id(filter_id: int):
 
 @plugin.route('/f-<filter_id>/g-<group_id>')
 def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
-    xbmc.log(f'/f-{filter_id}/g-{group_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.series)
     pass
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
-    xbmc.log(f'/f-{filter_id}/s-{series_id}', xbmc.LOGINFO)
     kodi_models.set_content('episodes')
     kodi_models.set_sorting_method(ThisType.episodes)
     list_of_ep_types = []
@@ -122,7 +123,7 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
 
     if do_we_want_to_make_eptype_setting:
         if len(list_of_ep_types) > 1:
-            kodi_models.set_content('video')
+            kodi_models.set_content('tvshows')
             for ep_type in list_of_ep_types:
                 li = kodi_models.get_listitem_from_episodetype(ep_type)
                 addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
@@ -134,24 +135,34 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
 
 @plugin.route('/f-<filter_id>/s-<series_id>/et-<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
-    xbmc.log(f'/f-{filter_id}/s-{series_id}/et-{eptype_id}', xbmc.LOGINFO)
+    kodi_models.set_content('episodes')
+
     kodi_models.set_sorting_method(ThisType.episodes)
     y = kodi_models.list_episodes_for_series_by_series_id(series_id)
     y_count = len(y)
     for ep_id, ep_type, li in y:
         if int(ep_type) == int(eptype_id):
-            li.setLabel("e" + li.getLabel())  # temporary
             addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=y_count)
     endOfDirectory(plugin.handle)
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
-    xbmc.log(f'/f-{filter_id}/s-{series_id}/e-{ep_id}-play', xbmc.LOGINFO)
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
     file_id = 0
     if len(raw_files_list) == 1:
         file_id = raw_files_list[0].id
+    else:
+        if plugin_addon.getSettingBool('pick_file'):
+            items = [kodi_models.get_file_name(x.filename) for x in raw_files_list]
+            my_file = xbmcgui.Dialog().select(plugin_addon.getLocalizedString(30196), items)
+            if my_file > -1:
+                file_id = raw_files_list[my_file].id
+            else:
+                # cancel -1,0
+                file_id = 0
+        else:
+            file_id = raw_files_list[0].id
     if file_id != 0:
         play = naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True)
 
@@ -169,6 +180,13 @@ def list_unsorted():
     for r_id, r in x:
         addDirectoryItem(plugin.handle, plugin.url_for(open_rawfile, r_id), r, False, totalItems=x_count)
     endOfDirectory(plugin.handle)
+
+
+@plugin.route('/dialog/wizard/logout')
+def logout_user_from_nakamori():
+    # go back to plugins
+    # reset apikey
+    pass
 
 
 @plugin.route('/dialog/wizard/login')
@@ -309,6 +327,16 @@ def url_remove_search_term(query, fuzzy, tag):
     xbmc.executebuiltin('Container.Refresh')
 
 
+@plugin.route('/dialog/series/<series_id>/vote')
+def vote_for_series(series_id):
+    kodi_models.vote_for_series(int(series_id))
+
+
+@plugin.route('/dialog/episode/vote/<ep_id>')
+def vote_for_episode(ep_id):
+    kodi_models.vote_for_episode(ep_id)
+
+
 @plugin.route('/favorites')
 def show_favorites():
     kodi_models.set_content('tvshows')
@@ -326,13 +354,19 @@ def show_favorites():
 @plugin.route('/dialog/favorites/<sid>/remove')
 def remove_favorite(sid):
     favorite.remove_favorite(sid)
+    favorite.add_favorite(sid)
+    xbmc.executebuiltin('Notification(%s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30211),
+                                                            plugin_addon.getLocalizedString(30213),
+                                                            plugin_addon.getAddonInfo('icon')))
     xbmc.executebuiltin('Container.Refresh')
 
 
 @plugin.route('/dialog/favorites/<sid>/add')
 def add_favorite(sid):
     favorite.add_favorite(sid)
-    kodi_utils.message_box(plugin_addon.getLocalizedString(30211), plugin_addon.getLocalizedString(30212))
+    xbmc.executebuiltin('Notification(%s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30211),
+                                                            plugin_addon.getLocalizedString(30212),
+                                                            plugin_addon.getAddonInfo('icon')))
 
 
 @plugin.route('/shoko')
@@ -369,6 +403,26 @@ def show_calendar_classic():
     pass
 
 
+@plugin.route('/dialog/series/<series_id>/watched')
+def watched_series(series_id):
+    kodi_models.set_watch_mark(ThisType.series, series_id, True)
+
+
+@plugin.route('/dialog/series/<series_id>/unwatched')
+def unwatched_series(series_id):
+    kodi_models.set_watch_mark(ThisType.series, series_id, False)
+
+
+@plugin.route('/dialog/episode/<ep_id>/watched')
+def watched_episode(ep_id):
+    kodi_models.set_watch_mark(ThisType.episodes, ep_id, True)
+
+
+@plugin.route('/dialog/episode/<ep_id>/unwatched')
+def unwatched_episode(ep_id):
+    kodi_models.set_watch_mark(ThisType.episodes, ep_id, False)
+
+
 def main():
     # stage 0 - everything before connecting
     kodi_utils.get_device_id()
@@ -402,10 +456,10 @@ def main():
 
 
 if __name__ == '__main__':
-    xbmc.log('===========================', xbmc.LOGINFO)
-    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGINFO)
-    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGINFO)
-    xbmc.log('===========================', xbmc.LOGINFO)
+    xbmc.log('===========================', xbmc.LOGDEBUG)
+    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGDEBUG)
+    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
+    xbmc.log('===========================', xbmc.LOGDEBUG)
     if main():
         # let's support scripts without hacking like we used to
         if sys.argv[1].startswith('/dialog/'):

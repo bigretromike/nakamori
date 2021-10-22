@@ -936,7 +936,7 @@ class Episode:
                  viewed: int = 0,
                  rating: str = '',
                  votes: str = '',
-                 userrating: str = '',
+                 userrating: int = 0,
                  roles: List[Role] = [],
                  tags: List[str] = [],
                  art: ArtCollection = {}
@@ -967,7 +967,7 @@ class Episode:
         self.viewed: int = viewed
         self.rating: str = rating
         self.votes: str = votes
-        self.userrating: str = userrating
+        self.userrating: int = userrating
         self.roles: List[Role] = roles
         self.tags: List[str] = tags
         self.art: ArtCollection = art
@@ -1023,7 +1023,7 @@ class Episode:
         episode.viewed = json.get("viewed")
         episode.rating = json.get("rating")
         episode.votes = json.get("votes")
-        episode.userrating = json.get("userrating")
+        episode.userrating = json.get("userrating", 0)
         episode.roles = []
         tmp = json.get("roles", [])
         for role in tmp:
@@ -1063,7 +1063,7 @@ class Serie:
                  viewed: int = 0,
                  rating: str = '',
                  votes: str = '',
-                 userrating: str = '',
+                 userrating: int = 0,
                  roles: List[Role] = [],
                  tags: List[str] = [],
                  art: ArtCollection = {}
@@ -1091,7 +1091,7 @@ class Serie:
         self.viewed: int = viewed
         self.rating: str = rating
         self.votes: str = votes
-        self.userrating: str = userrating
+        self.userrating: int = userrating
         self.roles: List[Role] = roles
         self.tags: List[str] = tags
         self.art: ArtCollection = art
@@ -1144,7 +1144,7 @@ class Serie:
         serie.viewed = json.get("viewed")
         serie.rating = json.get("rating")
         serie.votes = json.get("votes")
-        serie.userrating = json.get("userrating")
+        serie.userrating = json.get("userrating", 0)
         serie.roles = []
         tmp = json.get("roles", [])
         for role in tmp:

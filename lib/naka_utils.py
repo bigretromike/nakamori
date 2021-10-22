@@ -40,6 +40,14 @@ def map_episodetype_to_thistype(input_type: str) -> ThisType:
         return ThisType.episodes
     elif this == "special":
         return ThisType.specials
+    elif this == "credits":
+        return ThisType.credits
+    elif this == "trailer":
+        return ThisType.trailers
+    elif this == "parody":
+        return ThisType.parodies
+    elif this == "other":
+        return ThisType.other
     else:
         return ThisType.other
 

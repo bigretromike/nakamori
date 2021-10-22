@@ -5,17 +5,9 @@ import xbmcplugin
 import xbmcaddon
 
 from lib.kodi_utils import get_device_id
-
-#from nakamori_utils.globalvars import *
-#from nakamori_utils import script_utils, kodi_utils, eigakan_utils
+from models.kodi_models import set_watch_mark, is_series_watched, vote_for_episode, vote_for_series
+from lib.naka_utils import ThisType, WatchedStatus
 from threading import Thread
-
-#from proxy.kodi_version_proxy import kodi_proxy
-#from proxy.python_version_proxy import python_proxy as pyproxy
-#from proxy.python_version_proxy import http_error as http_error
-#import error_handler as eh
-#from error_handler import spam, log, ErrorPriority
-import json
 import sys
 
 from api.shoko.v2 import api2, api2models
@@ -62,18 +54,17 @@ def finished_episode(ep_id, file_id, current_time, total_time):
     xbmc.log(f'{ep_id} / {file_id} / {current_time} / {total_time}', xbmc.LOGINFO)
 
     _finished = False
-    # spam('finished_episode > ep_id = %s, file_id = %s, current_time = %s, total_time = %s' % (ep_id, file_id, current_time, total_time))
-    mark = float(plugin_addon.getSetting('watched_mark'))
-    if plugin_addon.getSetting('external_player').lower() == 'false':
+
+    mark = float(plugin_addon.getSettingInt('watched_mark'))
+    if not plugin_addon.getSettingBool('external_player'):
         pass
     else:
         # mitigate the external player, skipping intro/outro/pv so we cut your setting in half
         mark /= 2
     mark /= 100
-    # spam('mark = %s * total (%s) = %s vs current = %s' % (mark, total_time, (total_time * mark), current_time))
+
     if (total_time * mark) <= current_time:
         _finished = True
-        # log('Video current_time (%s) has passed watch mark (%s). Marking is as watched!' % (current_time, (total_time * mark)))
 
     # TODO this got broken for addons in Leia18, until this is somehow fixed we count time by hand (in loop)
     # else:
@@ -85,34 +76,26 @@ def finished_episode(ep_id, file_id, current_time, total_time):
     # _finished = False
 
     if _finished:
-        if int(ep_id) != 0 and plugin_addon.getSetting('vote_always') == 'true':
-            #spam('vote_always, voting on episode')
-            # TODO rating
-            #API.episode_vote()
-            pass
+        if int(ep_id) != 0 and plugin_addon.getSettingBool('vote_always'):
+            vote_for_episode(ep_id)
 
         if ep_id != 0:
-            API.episode_watch(ep_id)
-            #spam('mark as watched, episode')
+            set_watch_mark(mark_type=ThisType.episodes, mark_id=ep_id, watched=True)
 
             # vote on finished series
             if plugin_addon.getSetting('vote_on_series') == 'true':
                 q = api2models.QueryOptions()
                 q.id = ep_id
                 series: api2models.Serie = API.series_from_ep(q)
-                # voting should be only when you really watch full series
-                # spam('vote_on_series, mark: %s / %s' % (series.watched_sizes.Episodes, series.total_sizes.Episodes))
-                if series.watched_sizes.Episodes - series.total_sizes.Episodes == 0:
-                    #script_utils.vote_for_series(series.id)
-                    # TODO rating
-                    pass
+                if is_series_watched(series) == WatchedStatus.WATCHED:
+                    vote_for_series(series.id)
 
         elif file_id != 0:
             # file watched states
             pass
 
         # refresh only when we really did watch episode, this way we wait until all action after watching are executed
-        #script_utils.arbiter(10, 'Container.Refresh')
+        xbmc.executebuiltin('Container.Refresh')
 
 
 def transcode_play_video(file_id, ep_id=0, mark_as_watched=True, resume=False):
@@ -136,17 +119,11 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
     :return: True if successfully playing
     """
 
-    #eh.spam('Processing play_video %s %s %s %s %s %s' % (file_id, ep_id, mark_as_watched, resume, force_direct_play, force_transcode_play))
-
-    #from shoko_models.v2 import Episode, File, get_series_for_episode
-
     # check if we're already playing something
     player = xbmc.Player()
 
     if player.isPlayingVideo():
         playing_item = player.getPlayingFile()
-        #log('Player is currently playing %s' % playing_item)
-        #log('Player Stopping')
         player.stop()
 
     # wait for it to stop
@@ -166,22 +143,16 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
         q = api2models.QueryOptions()
         q.id = ep_id
         ep: api2models.Episode = API.episodes_get(q)
-        #ep = Episode(ep_id, build_full_object=True)
-        #series = get_series_for_episode(ep_id)
         series: api2models.Serie
         if s_id == 0:
             series = API.series_from_ep(q)
         else:
             q.id = s_id
             series = API.series_get(q)
-        #ep.series_id = series.id
-        #ep.series_name = series.name
-        # item = ep.get_listitem()
-        #f = ep.get_file_with_id(file_id)
+
         f = API.file(id=file_id)
     else:
         f = API.file(id=file_id)
-        # item = f.get_listitem()
 
     #if item is not None:
     #    if resume:
@@ -199,8 +170,7 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
         if not force_direct_play:
             if 'smb://' in file_url:
                 file_url = f.url
-            is_transcoded, m3u8_url, subs_extension, is_finished = process_transcoder(file_id, file_url,
-                                                                                      force_transcode_play)
+            is_transcoded, m3u8_url, subs_extension, is_finished = process_transcoder(file_id, file_url, force_transcode_play)
 
         player = Player()
         player.feed(file_id, ep_id, f.duration, m3u8_url if is_transcoded else file_url, mark_as_watched)

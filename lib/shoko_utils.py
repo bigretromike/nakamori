@@ -72,13 +72,10 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
         busy.update(1)
         # poll every second until the server gives us a response that we want
         while True:
-            xbmc.log(f'------------------- before sleep', xbmc.LOGINFO)
             xbmc.sleep(1000)
             response = nakamori_utils.get_json(url, True)
-            xbmc.log(f'------------------- {response}', xbmc.LOGINFO)
             try:
                 if response is None:
-                    xbmc.log(f'------------------- strage error', xbmc.LOGINFO)
                     busy.close()
                     kodi_utils.message_box("not happening", "strange error")
                     return False

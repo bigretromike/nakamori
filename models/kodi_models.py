@@ -2,6 +2,7 @@
 from api.shoko.v2 import api2, api2models
 import xbmc
 import xbmcaddon
+import xbmcgui
 from xbmcgui import ListItem
 import xbmcplugin
 import re
@@ -16,10 +17,12 @@ import lib.favorite as favorite
 
 plugin = routing.Plugin()
 plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
-#plugin_img_path = os.path.join(xbmcaddon.Addon(id=plugin_addon.getSetting('icon_pack')).getAddonInfo('path'), 'resources', 'media')
-plugin_img_path = os.path.join(xbmcaddon.Addon(id='plugin.video.nakamori').getAddonInfo('path'), 'resources', 'media')
 
-http = f"http://{plugin_addon.getSetting('ipaddress')}:{plugin_addon.getSettingInt('port')}"
+plugin_img_path = os.path.join(xbmcaddon.Addon(id='plugin.video.nakamori').getAddonInfo('path'), 'resources', 'media')
+if xbmc.getCondVisibility(f'System.HasAddon({plugin_addon.getSetting("icon_pack")})'):
+    plugin_img_path = os.path.join(xbmcaddon.Addon(plugin_addon.getSetting('icon_pack')).getAddonInfo('path'), 'resources', 'media')
+
+http = "http://" + plugin_addon.getSetting('ipaddress') + ":" + str(plugin_addon.getSettingInt('port')) + "%s"
 
 api = api2.Client(address=plugin_addon.getSetting('ipaddress'),
                   port=plugin_addon.getSettingInt('port'),
@@ -27,12 +30,43 @@ api = api2.Client(address=plugin_addon.getSetting('ipaddress'),
                   timeout=plugin_addon.getSettingInt('timeout'))
 
 
+def spoiler_control_unwatched_ep_title(title: str, hide: bool, this_type: ThisType) -> str:
+    spoiler = 'spoiler'
+    if hide and not plugin_addon.getSetting('hide_title').lower() == 'never':
+        if plugin_addon.getSetting('hide_title').lower() == 'both':
+            return spoiler
+        elif plugin_addon.getSetting('hide_title').lower() == map_thitype_to_eptype(this_type):
+            return spoiler
+    return title
+
+
+def spoiler_control_ratings(rating, hide: bool, this_type: ThisType):
+    hidden_rating = 0
+    if hide and not plugin_addon.getSetting('hide_rating').lower() == 'never':
+        if plugin_addon.getSetting('hide_rating').lower() == "both":
+            return hidden_rating
+        elif plugin_addon.getSetting('hide_rating').lower() == map_thitype_to_eptype(this_type):
+            return hidden_rating
+    return rating
+
+
+def spoiler_control_images(art: api2models.ArtCollection, hide: bool) -> api2models.ArtCollection:
+    if hide and plugin_addon.getSettingBool('hide_images'):
+        return api2models.ArtCollection(thumb=[api2models.Art(index=0, url=os.path.join(plugin_img_path, 'icons', 'hidden.png'))])
+    return art
+
+
+def spoiler_control_plot(plot: str, hide: bool) -> str:
+    if hide and plugin_addon.getSettingBool('hide_plot'):
+        plot = 'No spoilers...'
+    return plot
+
+
 def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
-    url = f'/filter/{x.id}'
     name = x.name
     if plugin_addon.getSettingBool('bold_filters'):
         name = bold(name)
-    li = ListItem(name, path=url)
+    li = ListItem(name)
 
     if x.art is not None:
         set_art(li, x.art)
@@ -42,7 +76,7 @@ def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
 
     #add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', False)
-    set_path(li, url)  # TODO
+    # set_path(li, url)  # TODO
 
     return li
 
@@ -58,13 +92,26 @@ def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     votes = int(x.votes) if x.votes is not None else 0
     set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(votes), default=True)
     # add_season(li, season_name='__season__', season_number=1)
-    set_info_for_series(li, x)
+    was_watched = is_series_watched(x)
+    set_info_for_series(li, x, was_watched)
     set_cast(li, get_cast(x.roles))
-    if not favorite.check_in_database(x.id):
-        add_fav = (plugin_addon.getLocalizedString(30212), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/add)')
-    else:
+    add_fav = (plugin_addon.getLocalizedString(30212), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/add)')
+    if favorite.check_in_database(x.id):
         add_fav = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/remove)')
-    add_context_menu(li, [add_fav])
+
+    userrate = ''
+    if x.userrating is not None and int(x.userrating) > 0:
+        userrate = f' ({x.userrating})'
+    vote = (plugin_addon.getLocalizedString(30124) + userrate, f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/vote)')
+    viewed = (plugin_addon.getLocalizedString(30126), f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/watched)')
+
+    if was_watched == WatchedStatus.WATCHED:
+        viewed = (plugin_addon.getLocalizedString(30127), f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/unwatched)')
+
+    empty = ('', '')
+
+    add_context_menu(li, [add_fav, vote, viewed, empty, empty, empty, (plugin_addon.getLocalizedString(30147), '')])
+
     set_property(li, 'IsPlayable', False)
     watched = 0
     if x.watched_sizes.Episodes is not None:
@@ -75,7 +122,8 @@ def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     set_property(li, 'TotalEpisodes', str(total))
     set_property(li, 'WatchedEpisodes', str(watched))
     set_property(li, 'UnWatchedEpisodes', str(total - watched))
-    #set_path(li, url)  # TODO
+
+    # set_path(li, url)  # TODO
 
     return li
 
@@ -106,16 +154,31 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
 
     set_category(series_title)
 
+    hide_spoiler = False
+    if x.view is None or x.view == 0:
+        hide_spoiler = True
+
     if x.art is not None:
-        set_art(li, x.art)
+        set_art(li, spoiler_control_images(x.art, hide_spoiler))
     set_folder(li, False)
     set_unieque_ids(li, x.aid)
-    set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(x.votes), default=True)
+    # set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(x.votes), default=True)
     #add_season(li, season_name='__season__', season_number=1)
     set_info_for_episode(li, x, series_title)
     if cast is not None:
         set_cast(li, get_cast(cast))
-    # add_context_menu(li, {})  # TODO
+    userrate = ''
+    if x.userrating is not None and int(x.userrating) > 0:
+        userrate = f' ({x.userrating})'
+    # TODO https://github.com/bigretromike/nakamori/issues/464
+    vote = (plugin_addon.getLocalizedString(30125) + userrate, f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/vote)')
+    viewed = (plugin_addon.getLocalizedString(30128), f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/watched)')
+    if x.view == 1:
+        viewed = (plugin_addon.getLocalizedString(30129), f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/unwatched)')
+
+    empty = ('', '')
+
+    add_context_menu(li, [viewed, empty, empty, empty, (plugin_addon.getLocalizedString(30147), '')])
     set_property(li, 'IsPlayable', True)
     #set_path(li, url)  # TODO
 
@@ -123,10 +186,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
 
 
 def get_listitem_from_rawfile(x: api2models.RawFile) -> ListItem:
-    name = x.filename
-    name_split = x.filename.split('\\')
-    if len(name_split) > 1:
-        name = name_split[len(name_split)-1]
+    name = get_file_name(x.filename)
     li = ListItem(name, path=x.url, offscreen=True)
 
     set_folder(li, True)
@@ -153,8 +213,7 @@ def get_cast(c: List[api2models.Role]) -> List[dict]:
         pic = role.character_image
         if use_seiyuu:
             pic = role.staff_image
-        #roles.append({"name": role.staff, "role": f'{role.character} ({role.role})', "thumbnail": http + pic})
-        roles.append({"name": role.staff, "role": role.character, "thumbnail": http+pic})
+        roles.append({"name": role.staff, "role": role.character, "thumbnail": http.format(pic)})
     return roles
 
 
@@ -269,18 +328,28 @@ def resume(li: ListItem):
 
 
 def is_series_watched(s: api2models.Serie) -> WatchedStatus:
-    local_only = plugin_addon.getSetting('local_total') == 'true'
-    no_specials = plugin_addon.getSetting('ignore_specials_watched') == 'true'
+    local_only = plugin_addon.getSettingBool('local_total')
+    no_specials = plugin_addon.getSettingBool('ignore_specials_watched')
     sizes = s.watched_sizes
     if sizes is None:
         return WatchedStatus.UNWATCHED
+
+    local_episodes = sizes.Episodes if sizes.Episodes is not None else 0
+    local_special = sizes.Specials if sizes.Specials is not None else 0
+
+    all_local_episodes = s.local_sizes.Episodes if s.local_sizes.Episodes is not None else 0
+    all_local_specials = s.local_sizes.Specials if s.local_sizes.Specials is not None else 0
+
+    total_episodes = s.total_sizes.Episodes if s.total_sizes.Episodes is not None else 0
+    total_specials = s.total_sizes.Specials if s.total_sizes.Specials is not None else 0
+
     # count only local episodes
     if local_only and no_specials:
         # 0 is unwatched
         if s.viewed == 0:
             return WatchedStatus.UNWATCHED
         # Should never be greater, but meh
-        if sizes.Episodes >= s.local_sizes.Episodes:
+        if local_episodes >= all_local_episodes:
             return WatchedStatus.WATCHED
         # if it's between 0 and total, then it's partial
         return WatchedStatus.PARTIAL
@@ -288,10 +357,10 @@ def is_series_watched(s: api2models.Serie) -> WatchedStatus:
     # count local episodes and specials
     if local_only:
         # 0 is unwatched
-        if (sizes.Episodes + sizes.Specials) == 0:
+        if (local_episodes + local_special) == 0:
             return WatchedStatus.UNWATCHED
         # Should never be greater, but meh
-        if (sizes.Episodes + sizes.Specials) >= (s.local_sizes.Episodes + s.local_sizes.Specials):
+        if (local_episodes + local_special) >= (all_local_episodes + all_local_specials):
             return WatchedStatus.WATCHED
         # if it's between 0 and total, then it's partial
         return WatchedStatus.PARTIAL
@@ -302,35 +371,58 @@ def is_series_watched(s: api2models.Serie) -> WatchedStatus:
         if sizes.Episodes == 0:
             return WatchedStatus.UNWATCHED
         # Should never be greater, but meh
-        if sizes.Episodes >= s.total_sizes.Episodes:
+        if sizes.Episodes >= total_episodes:
             return WatchedStatus.WATCHED
         # if it's between 0 and total, then it's partial
         return WatchedStatus.PARTIAL
 
     # count episodes and specials, including ones we don't have
     # 0 is unwatched
-    if (sizes.Episodes + sizes.Specials) == 0:
+    if (local_episodes + local_special) == 0:
         return WatchedStatus.UNWATCHED
     # Should never be greater, but meh
-    if (sizes.Episodes + sizes.Specials) >= (s.total_sizes.Episodes + s.total_sizes.Specials):
+    if (local_episodes + local_special) >= (total_episodes + total_specials):
         return WatchedStatus.WATCHED
     # if it's between 0 and total, then it's partial
     return WatchedStatus.PARTIAL
 
 
 def set_watch_mark(mark_type: ThisType = ThisType.episodes, mark_id: int = 0, watched: bool = True):
-    if plugin_addon.getSetting('watchedbox') == 'true':
-        msg = plugin_addon.getLocalizedString(30201) + ' ' + (plugin_addon.getLocalizedString(30202) if watched else plugin_addon.getLocalizedString(30203))
-        xbmc.executebuiltin('XBMC.Notification(' + plugin_addon.getLocalizedString(30200) + ', ' + msg + ', 2000, ' + plugin_addon.getAddonInfo('icon') + ')')
+    if plugin_addon.getSettingBool('syncwatched'):
+        if watched:
+            if mark_type == ThisType.episodes:
+                api.episode_watch(mark_id)
+            elif mark_type == ThisType.series:
+                api.serie_watch(mark_id)
+        else:
+            if mark_type == ThisType.episodes:
+                api.episode_unwatch(mark_id)
+            elif mark_type == ThisType.series:
+                api.serie_unwatch(mark_id)
+
+        if plugin_addon.getSetting('watchedbox') == 'true':
+            msg = plugin_addon.getLocalizedString(30201) + ' ' + (plugin_addon.getLocalizedString(30202) if watched else plugin_addon.getLocalizedString(30203))
+            xbmc.executebuiltin('Notification(' + plugin_addon.getLocalizedString(30200) + ', ' + msg + ', 2000, ' + plugin_addon.getAddonInfo('icon') + ')')
+
+        xbmc.executebuiltin('Container.Refresh')
 
 
 def get_infolabels(x: api2models.Filter):
     return {'Title': x.name, 'Plot': x.name}
 
 
+def set_pic_url(input: str) -> str:
+    if input.__contains__('/'):  # /api/v3/images/...
+        return http % input
+    elif input.__contains__('\\'):  # C:\\image\\kodi\\...
+        return input
+    else:  # hidden.jpg
+        return http.format(input)
+
+
 def set_art(li: ListItem, art: api2models.ArtCollection, overwrite_image: str = None):
     # thumb, poster, banner, fanart, clearart, clearlogo, landscape, icon
-    http = "http://" + plugin_addon.getSetting('ipaddress') + ":" + str(plugin_addon.getSettingInt('port')) + "{}"
+
     if art is None:
         art = api2models.ArtCollection()
 
@@ -352,13 +444,13 @@ def set_art(li: ListItem, art: api2models.ArtCollection, overwrite_image: str = 
 
     else:
         if len(art.fanart) > 0:
-            li.setArt({'fanart': http.format(art.fanart[0].url), 'clearart': http.format(art.fanart[0].url)})
+            li.setArt({'fanart': set_pic_url(art.fanart[0].url), 'clearart': set_pic_url(art.fanart[0].url)})
         if len(art.thumb) > 0:
-            li.setArt({'thumb': http.format(art.thumb[0].url)})
-            li.setArt({'icon': http.format(art.thumb[0].url)})
-            li.setArt({'poster': http.format(art.thumb[0].url)})
+            li.setArt({'thumb': set_pic_url(art.thumb[0].url)})
+            li.setArt({'icon': set_pic_url(art.thumb[0].url)})
+            li.setArt({'poster': set_pic_url(art.thumb[0].url)})
         if len(art.banner) > 0:
-            li.setArt({'banner': http.format(art.banner[0].url)})
+            li.setArt({'banner': set_pic_url(art.banner[0].url)})
 
     # TODO need to play with this a little more
     # if kodi_utils.get_cond_visibility('System.HasAddon(resource.images.studios.white)') == 1:
@@ -424,23 +516,29 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
     # imdbnumber (str), code, aired (yyyy-mm-dd), credits (str, list[str]), votes (12345 votes)
     # path (file/path.avi), trailer (file/path.traile.avi), dbid (int --- dont add this )
     # mediatype ("video", "movie", "tvshow", "season", "episode", "musicvideo")
-    title = x.name
+
+    spoiler_hide_this = False
+    if x.view is None or x.view == 0:
+        spoiler_hide_this = True
+
+    title = spoiler_control_unwatched_ep_title(x.name, spoiler_hide_this, map_episodetype_to_thistype(x.eptype))
+    xbmc.log(f'--------------> TITLE: {title}', xbmc.LOGINFO)
     if plugin_addon.getSettingBool('addepnumber'):
-        title = f'{x.epnumber:02d}. {x.name}'
+        title = f'{x.epnumber:02d}. {title}'
     video = {'aired': x.air,
              'year': x.year,
              'episode': int(x.epnumber),
              'sortepisode': int(x.epnumber),
-             'plot': x.summary,
+             'plot': spoiler_control_plot(x.summary, spoiler_hide_this),
              'title': title,
              'originaltitle': title,
-             'sorttitle': f'{x.epnumber:04d} {x.name}',
+             'sorttitle': f'{x.epnumber:04d} {title}',
              'tvshowtitle': series_title,
              'mediatype': 'episode',
              'season': 1,
              'sortseason': 1,
-             'rating': float(x.rating),
-             'votes': str(x.votes),
+             'rating': float(spoiler_control_ratings(x.rating, spoiler_hide_this, ThisType.episodes)),
+             'votes': str(spoiler_control_ratings(x.votes, spoiler_hide_this, ThisType.episodes)),
              'lastplayed': str(x.view_date) + ' 00:00:00',
              'playcount': 0,
              'overlay': 4
@@ -478,7 +576,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
     li.setInfo('video', video)
 
 
-def set_info_for_series(li: ListItem, x: api2models.Serie):
+def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedStatus):
     # Kodi 20 speed improvment: https://github.com/xbmc/xbmc/pull/19459
     title = get_proper_title(x)
     summary = make_text_nice(x.summary)
@@ -491,16 +589,18 @@ def set_info_for_series(li: ListItem, x: api2models.Serie):
              'sorttitle': title,
              'tvshowtitle': title,
              'mediatype': 'tvshow',
-             'rating': float(x.rating),
+             'rating': float(spoiler_control_ratings(x.rating, x.viewed == 0, ThisType.series)),
              'premiered': x.air,
              'tag': get_tags(x.tags),
-             'votes': str(x.votes)}
+             'votes': str(spoiler_control_ratings(x.votes, x.viewed == 0, ThisType.series))
+             }
     if x.userrating is not None:
         video['userrating'] = int(x.userrating)
     video['mediatype'] = 'tvshow'
     if x.ismovie == 1:
         video['mediatype'] = 'movie'
     li.setLabel(title)
+    set_watched_flags(li=li, infolabels=video, flag=is_watched, resume_time=0)
     li.setInfo('video', infoLabels=video)
 
 
@@ -888,3 +988,71 @@ def remove_multi_empty_lines(data=''):
 def remove_markdown(data=''):
     p = re.compile(r'\[.*?\]')
     return p.sub('', data)
+
+
+def did_you_rate_every_episode(series_id: int) -> Tuple[bool, str]:
+    q = api2models.QueryOptions()
+    q.id = series_id
+    q.notag = 1
+    q.nocast = 1
+    q.level = 1
+    q.allpics = 0
+
+    all_rated: bool = True
+    suggest_rating_based_on_episode_rating = []
+    suggest_rating = 0
+
+    s = api.series_get_by_id(q)
+    for ep in s.eps:
+        if ep.userrating is None or (int(ep.userrating) == 0 and map_episodetype_to_thistype(ep.eptype) == ThisType.episodes):
+            all_rated = False
+            suggest_rating_based_on_episode_rating.append(int(ep.userrating))
+    for uservote in suggest_rating_based_on_episode_rating:
+        suggest_rating += uservote
+    suggest_rating = float(suggest_rating/len(suggest_rating_based_on_episode_rating))
+    return all_rated, '%s' % suggest_rating
+
+
+def vote_for_series(series_id: int):
+    suggest_rating = ''
+    if plugin_addon.getSettingBool('suggest_series_vote'):
+        all_eps_rated, suggested_rating = did_you_rate_every_episode(series_id)
+        if plugin_addon.getSettingBool('suggest_series_vote_all_eps'):
+            if not all_eps_rated:
+                xbmcgui.Dialog().ok(plugin_addon.getLocalizedString(30321), plugin_addon.getLocalizedString(30353))
+                return
+        suggest_rating = ' [ %s ]' % suggested_rating
+
+    vote_list = ['Don\'t Vote' + suggest_rating, '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']
+    my_vote = xbmcgui.Dialog().select(plugin_addon.getLocalizedString(30321), vote_list)
+    if my_vote < 1:
+        return
+    my_vote = int(vote_list[my_vote])
+    if my_vote < 1:
+        return
+    xbmc.executebuiltin('Notification(%s, %s %s, 7500, %s)' % (plugin_addon.getLocalizedString(30321),
+                                                               plugin_addon.getLocalizedString(30322),
+                                                               str(my_vote), plugin_addon.getAddonInfo('icon')))
+    api.serie_vote(id=series_id, score=my_vote)
+
+
+def vote_for_episode(ep_id: int):
+    vote_list = ['Don\'t Vote', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1']
+    my_vote = xbmcgui.Dialog().select(plugin_addon.getLocalizedString(30323), vote_list)
+    if my_vote < 1:
+        return
+    my_vote = int(vote_list[my_vote])
+    if my_vote < 1:
+        return
+    xbmc.executebuiltin('Notification(%s, %s %s, 7500, %s)' % (plugin_addon.getLocalizedString(30323),
+                                                               plugin_addon.getLocalizedString(30322),
+                                                               str(my_vote), plugin_addon.getAddonInfo('icon')))
+    api.episode_vote(id=ep_id, score=my_vote)
+
+
+def get_file_name(filename):
+    name = filename
+    name_split = filename.split('\\')
+    if len(name_split) > 1:
+        name = name_split[len(name_split) - 1]
+    return name
