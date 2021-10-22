@@ -48,7 +48,6 @@ def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
 
 
 def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
-    url = f'/serie/{x.id}'
     name = x.name
     li = ListItem(label=name, offscreen=True)
 
@@ -76,16 +75,15 @@ def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     set_property(li, 'TotalEpisodes', str(total))
     set_property(li, 'WatchedEpisodes', str(watched))
     set_property(li, 'UnWatchedEpisodes', str(total - watched))
-    set_path(li, url)  # TODO
+    #set_path(li, url)  # TODO
 
     return li
 
 
 def get_listitem_from_group(x: api2models.Group) -> ListItem:
-    url = f'/group/{x.id}'
     name = x.name
     name = bold(name)
-    li = ListItem(name, path=url)
+    li = ListItem(name, offscreen=True)
 
     if x.art is not None:
         set_art(li, x.art)
@@ -97,15 +95,14 @@ def get_listitem_from_group(x: api2models.Group) -> ListItem:
     set_cast(li, get_cast(x.roles))
     # add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', False)
-    set_path(li, url)  # TODO
+    #set_path(li, url)  # TODO
 
     return li
 
 
 def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cast: List[api2models.Role] = None) -> ListItem:
-    url = f'/ep/{x.eid}'
     name = x.name
-    li = ListItem(name, path=url)
+    li = ListItem(name, offscreen=True)
 
     set_category(series_title)
     set_content('episodes')
@@ -119,8 +116,24 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     set_cast(li, get_cast(cast))
     # add_context_menu(li, {})  # TODO
     set_property(li, 'IsPlayable', True)
-    set_path(li, url)  # TODO
+    #set_path(li, url)  # TODO
 
+    return li
+
+
+def get_listitem_from_rawfile(x: api2models.RawFile) -> ListItem:
+    name = x.filename
+    name_split = x.filename.split('\\')
+    if len(name_split) > 1:
+        name = name_split[len(name_split)-1]
+    li = ListItem(name, path=x.url, offscreen=True)
+    set_category('Unsort')
+    set_content('video')
+    set_folder(li, True)
+    set_info_for_rawfile(li, x)
+    set_stream_info(li, x)
+    # add_context_menu(li, [])  #TODO scan etc
+    set_property(li, 'IsPlayable', True)
     return li
 
 
@@ -368,6 +381,19 @@ def set_as_selected(li: ListItem):
 
 def is_this_selected(li: ListItem) -> bool:
     return li.isSelected()
+
+
+def set_info_for_rawfile(li: ListItem, x: api2models.RawFile):
+    video = {'aired': x.air,
+             'year': x.year,
+             'plot': x.summary,
+             'title': x.filename,
+             'originaltitle': x.filename,
+             'sorttitle': x.filename,
+             'mediatype': 'file',
+             'playcount': 0
+             }
+    li.setInfo('video', video)
 
 
 def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str):
@@ -658,8 +684,13 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem, str]]:
     show_unsort = plugin_addon.getSettingBool('show_unsort')
 
     for d in x.filters:
-        if d.name == "Unsorted" and not show_unsort:
-            continue
+        if d.name == "Unsort":
+            if not show_unsort:
+                continue
+            else:
+                d.name = color(d.name, plugin_addon.getSetting('color_unsort'))
+                if plugin_addon.getSettingBool('bold_unsort'):
+                    d.name = bold(d.name)
         elif d.name == "Continue Watching (SYSTEM)":
             d.name = "Continue Watching"
         elif d.name == "TvDB/MovieDB Link Missing":
@@ -745,6 +776,17 @@ def get_file_id_from_ep_id(ep_id: int) -> List[api2models.RawFile]:
     q.tagfilter = get_tag_setting_flag()
     x = api.episode_get(q)
     return x.files
+
+
+def list_all_unsorted() -> List[Tuple[int, ListItem]]:
+    list_of_listitems = []
+    unsort_limit = plugin_addon.getSettingInt('unsort_limit')
+    x = api.file_unsort(level=1, limit=unsort_limit)
+
+    for r in x:
+        list_of_listitems.append((r.id, get_listitem_from_rawfile(r)))
+
+    return list_of_listitems
 
 
 def set_sorting_method(x: ThisType):

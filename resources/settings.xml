@@ -645,7 +645,7 @@
                     <control type="toggle"/>
                 </setting>
                 <!-- unsort color: 1 -->
-                <setting label="30229" type="string" id="color_unsor" parent="show_unsort">
+                <setting label="30229" type="string" id="color_unsort" parent="show_unsort">
                     <level>1</level>
                     <default>white</default>
                     <constraints>
@@ -817,6 +817,15 @@
                     <dependencies>
 	                    <dependency type="enable" operator="is" setting="show_unsort">true</dependency>
                     </dependencies>
+                </setting>
+                <!-- unsort limit: 1 -->
+                <setting label="30236" type="integer" id="unsort_limit" parent="show_unsort">
+                    <level>1</level>
+                    <visible>true</visible>
+                    <default>250</default>
+                    <control type="edit" format="string">
+                        <heading>30236</heading>
+                    </control>
                 </setting>
                 <!-- shoko: 1 -->
                 <setting label="30115" type="boolean" id="show_shoko">
@@ -1359,7 +1368,6 @@
                     </dependencies>
                 </setting>
             </group>
-
             <!-- skip_info: 2 / bold_filters: 0 -->
             <group id="5">
                 <!-- skip information about whats new: 2 -->

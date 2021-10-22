@@ -560,11 +560,11 @@ class MediaInfo:
         mediainfo: MediaInfo = MediaInfo()
 
         mediainfo.general = General.Decoder(json.get("general"))
-        for a in json.get("audios"):
+        for a in json.get("audios", []):
             mediainfo.audios.append(Stream.Decoder(a))
-        for a in json.get("videos"):
+        for a in json.get("videos", []):
             mediainfo.videos.append(Stream.Decoder(a))
-        for a in json.get("subtitles"):
+        for a in json.get("subtitles", []):
             mediainfo.subtitles.append(Stream.Decoder(a))
         for a in json.get("menus", []):
             mediainfo.menus.append(Stream.Decoder(a))

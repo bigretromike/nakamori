@@ -76,6 +76,9 @@ def list_groups_by_filter_id(filter_id: int):
     :return: Draw ListItem's Collection of Group
     """
     xbmc.log(f'/f-{filter_id}', xbmc.LOGINFO)
+    if int(filter_id) == 0:
+        list_unsorted()
+        return
     kodi_models.set_sorting_method(ThisType.series)
     y = kodi_models.list_all_groups_by_filter_id(filter_id)
     y_count = len(y)
@@ -145,6 +148,19 @@ def open_episode(filter_id: int, series_id: int, ep_id: int):
         file_id = raw_files_list[0].id
     if file_id != 0:
         play = naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True)
+
+
+@plugin.route('/f-0/r-<file_id>-play')
+def open_rawfile(file_id: int):
+    play = naka_player.play_video(file_id=file_id, ep_id=0, s_id=0, force_direct_play=True)
+
+
+def list_unsorted():
+    x = kodi_models.list_all_unsorted()
+    x_count = len(x)
+    for r_id, r in x:
+        addDirectoryItem(plugin.handle, plugin.url_for(open_rawfile, r_id), r, False, totalItems=x_count)
+    endOfDirectory(plugin.handle)
 
 
 @plugin.route('/dialog/wizard/login')
@@ -377,6 +393,7 @@ if __name__ == '__main__':
     xbmc.log('===========================', xbmc.LOGINFO)
     xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGINFO)
     xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGINFO)
+    xbmc.log('===========================', xbmc.LOGINFO)
     if main():
         # let's support scripts without hacking like we used to
         if sys.argv[1].startswith('/dialog/'):

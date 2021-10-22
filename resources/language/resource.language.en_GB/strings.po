@@ -534,15 +534,15 @@ msgctxt "#30104"
 msgid "Warning"
 msgstr "Warning"
 
-#: settings.xml
+#: settings.xml  <<
 msgctxt "#30105"
-msgid "Show Unsorted"
-msgstr "Show Unsorted"
+msgid "Show Unsort"
+msgstr "Show Unsort"
 
 #: settings.xml #
 msgctxt "#30106"
-msgid "Unsorted"
-msgstr "Unsorted"
+msgid "Unsort"
+msgstr "Unsort"
 
 #: settings.xml #
 msgctxt "#30107"
@@ -1171,6 +1171,11 @@ msgstr "Add Episode Number to Title"
 msgctxt "#30235"
 msgid "Use Fuzzy Search"
 msgstr "Use Fuzzy Search"
+
+#: settings.xml #
+msgctxt "#30236"
+msgid "Max Unsort file count"
+msgstr "Max Unsort file count"
 
 ##################################
 
