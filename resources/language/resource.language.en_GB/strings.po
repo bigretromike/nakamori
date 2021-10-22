@@ -113,7 +113,7 @@ msgctxt "#30020"
 msgid "Enable \'Resume\'"
 msgstr "Enable \'Resume\'"
 
-#: settings.xml
+#: settings.xml #
 msgctxt "#30021"
 msgid "Searching"
 msgstr "Searching"
@@ -173,7 +173,7 @@ msgctxt "#30032"
 msgid "Trigger Voting after each episode"
 msgstr "Trigger Voting after each episode"
 
-#: settings.xml
+#: settings.xml  <<<<
 msgctxt "#30033"
 msgid "Limit TAG results to"
 msgstr "Limit TAG results to"
@@ -1166,6 +1166,11 @@ msgstr "Logout"
 msgctxt "#30234"
 msgid "Add Episode Number to Title"
 msgstr "Add Episode Number to Title"
+
+#: settings.xml #
+msgctxt "#30235"
+msgid "Use Fuzzy Search"
+msgstr "Use Fuzzy Search"
 
 ##################################
 

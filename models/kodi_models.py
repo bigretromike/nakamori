@@ -4,7 +4,6 @@ import xbmc
 import xbmcaddon
 from xbmcgui import ListItem
 import xbmcplugin
-import sys
 import re
 import routing
 
@@ -31,7 +30,8 @@ api = api2.Client(address=plugin_addon.getSetting('ipaddress'),
 def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
     url = f'/filter/{x.id}'
     name = x.name
-    name = bold(name)
+    if plugin_addon.getSettingBool('bold_filters'):
+        name = bold(name)
     li = ListItem(name, path=url)
 
     if x.art is not None:
@@ -50,7 +50,6 @@ def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
 def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     url = f'/serie/{x.id}'
     name = x.name
-    # name = bold(name)
     li = ListItem(label=name, offscreen=True)
 
     if x.art is not None:
@@ -435,8 +434,6 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
              'sorttitle': title,
              'tvshowtitle': title,
              'mediatype': 'tvshow',
-             #'season': '1',
-             #'sortseason': '1',
              'rating': float(x.rating),
              'premiered': x.air,
              'tag': get_tags(x.tags),
@@ -447,7 +444,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
 
 
 def set_info_for_series(li: ListItem, x: api2models.Serie):
-    # Kodi 20 improvment: https://github.com/xbmc/xbmc/pull/19459
+    # Kodi 20 speed improvment: https://github.com/xbmc/xbmc/pull/19459
     title = get_proper_title(x)
     summary = make_text_nice(x.summary)
     video = {'aired': x.air,
@@ -468,7 +465,7 @@ def set_info_for_series(li: ListItem, x: api2models.Serie):
     video['mediatype'] = 'tvshow'
     if x.ismovie == 1:
         video['mediatype'] = 'movie'
-
+    li.setLabel(title)
     li.setInfo('video', infoLabels=video)
 
 
@@ -531,12 +528,18 @@ def search_box():
     return search_text
 
 
-def show_search_result_menu(query: str) -> List[api2models.Serie]:
+def show_search_result_menu(query: str, fuzzy: bool, tag: bool) -> List[api2models.Serie]:
     list_of_series = []
     q = api2models.QueryOptions()
     q.query = query
+    if tag:
+        q.tags = 1
+    q.limit = plugin_addon.getSettingInt('search_maxlimit')
     q.level = 0  # no need for eps
     q.allpics = 1
+    q.fuzzy = 0
+    if fuzzy:
+        q.fuzzy = 1
     f = api.search(q)
 
     for g in f.groups:

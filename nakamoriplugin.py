@@ -55,7 +55,7 @@ def list_all_filters():
 
 @plugin.route('/fs-<filters_id>')
 def list_filter_by_filters_id(filters_id: int):
-    xbmc.log(f'/f/{filters_id}/filter', xbmc.LOGINFO)
+    xbmc.log(f'/fs-{filters_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filter_by_filters_id(filters_id)
     y_count = len(y)
@@ -75,7 +75,7 @@ def list_groups_by_filter_id(filter_id: int):
     :param filter_id: ID of Filter that we want list content of
     :return: Draw ListItem's Collection of Group
     """
-    xbmc.log(f'/f/{filter_id}/g', xbmc.LOGINFO)
+    xbmc.log(f'/f-{filter_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.series)
     y = kodi_models.list_all_groups_by_filter_id(filter_id)
     y_count = len(y)
@@ -90,14 +90,14 @@ def list_groups_by_filter_id(filter_id: int):
 
 @plugin.route('/f-<filter_id>/g-<group_id>')
 def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
-    xbmc.log(f'/f/{filter_id}/g/{group_id}', xbmc.LOGINFO)
+    xbmc.log(f'/f-{filter_id}/g-{group_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.series)
     pass
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
-    xbmc.log(f'/f/{filter_id}/s/{series_id}/ep', xbmc.LOGINFO)
+    xbmc.log(f'/f-{filter_id}/s-{series_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.episode)
     list_of_ep_types = []
     list_of_eps = []
@@ -125,7 +125,7 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
 
 @plugin.route('/f-<filter_id>/s-<series_id>/et-<eptype_id>')
 def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: int, eptype_id: int):
-    xbmc.log(f'/f/{filter_id}/s/{series_id}/et/{eptype_id}', xbmc.LOGINFO)
+    xbmc.log(f'/f-{filter_id}/s-{series_id}/et-{eptype_id}', xbmc.LOGINFO)
     kodi_models.set_sorting_method(ThisType.episode)
     y = kodi_models.list_episodes_for_series_by_series_id(series_id)
     y_count = len(y)
@@ -136,9 +136,9 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>/play')
+@plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
-    xbmc.log(f'/f/<{filter_id}>/s/<{series_id}>/e/<{ep_id}>/play', xbmc.LOGINFO)
+    xbmc.log(f'/f-{filter_id}/s-{series_id}/e-{ep_id}-play', xbmc.LOGINFO)
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
     file_id = 0
     if len(raw_files_list) == 1:
@@ -164,15 +164,42 @@ def show_search_menu():
     kodi_models.set_content('tvshows')
     kodi_models.set_category(plugin_addon.getLocalizedString(30221))
 
-    # Search
-    li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224)), offscreen=True)
-    kodi_models.set_art(li, None, 'new-search.png')
-    addDirectoryItem(plugin.handle, plugin.url_for(new_search, True), li, True)
+    use_fuzzy = plugin_addon.getSettingBool('use_fuzzy_search')
 
-    # quick search
-    li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30225)), offscreen=True)
-    kodi_models.set_art(li, None, 'new-search.png')
-    addDirectoryItem(plugin.handle, plugin.url_for(new_search, False), li, True)
+    # Search
+    if not use_fuzzy:
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224)), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, True, False, False), li, True)
+
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224)) + " Tag", offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, True, False, True), li, True)
+
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30225)), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, False, False, False), li, True)
+
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30225)) + ' Tag', offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, False, False, True), li, True)
+
+    else:
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224) + " (Fuzzy)"), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, True, True, False), li, True)
+
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224) + " Tag (Fuzzy)"), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, True, True, True), li, True)
+
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30225) + " (Fuzzy)"), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, False, True, False), li, True)
+
+        li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30225) + " Tag (Fuzzy)"), offscreen=True)
+        kodi_models.set_art(li, None, 'new-search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(new_search, False, True, True), li, True)
 
     # a-z search (no keyboard)
     # li = ListItem(label=kodi_models.bold('A-Z'), offscreen=True)
@@ -183,16 +210,22 @@ def show_search_menu():
     search_count = len(search_history)
     for ss in search_history:
         query = ss[0]
+        fuzziness = ss[1]
+        taginess = ss[2]
         if len(query) == 0:
             continue
-        item = ListItem(label=query, offscreen=True)
+        fuzzy = ''
+        if fuzziness == 1:
+            fuzzy = ' [fuzzy]'
+        tag = ''
+        if taginess == 1:
+            tag = 'tag:'
+        item = ListItem(label=tag + query + fuzzy, offscreen=True)
         kodi_models.set_art(item, None, 'search.png')
-        remove_item = (
-        plugin_addon.getLocalizedString(30204), f'RunScript(plugin.video.nakamori, /dialog/search/{query}/remove)')
+        remove_item = (plugin_addon.getLocalizedString(30204), f'RunScript(plugin.video.nakamori, /dialog/search/{query}-{fuzziness}-{taginess}/remove)')
         item.addContextMenuItems([remove_item])
 
-        addDirectoryItem(plugin.handle, plugin.url_for(search_for, query), item, True, totalItems=search_count)
-
+        addDirectoryItem(plugin.handle, plugin.url_for(search_for, query, fuzziness, taginess), item, True, totalItems=search_count)
 
     # add clear all for more than 10 items, no one wants to clear them one by one
     if len(search_history) > 10:
@@ -203,43 +236,30 @@ def show_search_menu():
     endOfDirectory(plugin.handle)
 
 
-@plugin.route('/search/<save>')
-def new_search(save: bool):
-    x = str(xbmc.getInfoLabel('Container.FolderPath')).lower()  # just in case, future proof
-    y = ''
-    query = ''
-    if x == 'plugin://plugin.video.nakamori/search':
-        y = 'search'
-    #elif 'nakamori/menu-search/' in x:
-    #    import re
-    #    try:
-    #        y = re.search("(^plugin://plugin.video.nakamori/menu-search/)(.+)(/)", x).group(2)
-    #        query = y
-    #    except:
-    #        y = 'search'
-    #elif 'nakamori/menu/series/' in x:  # returning, but cache should bypass this direction
-    #    y = 'series'
-    xbmc.log(f'------- SEARCH 2--------------------------- {y}', xbmc.LOGINFO)
-    if len(y) != 0:
-        if query == '':
-            query = kodi_models.search_box()
-        if query != '':
-            if str(save).lower() == "true":
-                import lib.search as search
-                if search.check_in_database(query):
-                    search.remove_search_history(query)
-                search.add_search_history(query)
-            search_for(query)
-        else:
-            show_search_menu()
+@plugin.route('/search/<save>-<fuzzy>-<tag>')
+def new_search(save: bool, fuzzy: bool, tag: bool):
+    fuzziness = 1 if str(fuzzy).lower() == 'true' else 0
+    taginess = 1 if str(tag).lower() == 'true' else 0
+    query = kodi_models.search_box()
+    if query != '':
+        if str(save).lower() == "true":
+            if search.check_in_database(query, fuzziness, taginess):
+                search.remove_search_history(query, fuzziness, taginess)
+            search.add_search_history(query, fuzziness, taginess)
+        search_for(query, fuzzy, tag)
     else:
-        xbmc.log('new_search len(y)=0, path: %s' % x, xbmc.LOGINFO)  # log this because it should be possible
+        show_search_menu()
 
 
-@plugin.route('/menu-search/<path:query>/')
-def search_for(query: str):
+@plugin.route('/menu-search/<query>-<fuzzy>-<tag>/')
+def search_for(query: str, fuzzy: bool, tag: bool):
+    kodi_models.set_content('tvshows')
+    kodi_models.set_category(query)
+
+    fuzziness = 1 if str(fuzzy).lower() == 'true' else 0
+    taginess = 1 if str(tag).lower() == 'true' else 0
     if len(query) > 0:
-        list_of_s = kodi_models.show_search_result_menu(query)
+        list_of_s = kodi_models.show_search_result_menu(query, fuzziness, taginess)
         list_count = len(list_of_s)
         for s in list_of_s:
             addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s.id),
@@ -259,9 +279,9 @@ def url_clear_search_terms():
     xbmc.executebuiltin('Container.Refresh')
 
 
-@plugin.route('/dialog/search/<query>/remove')
-def url_remove_search_term(query):
-    search.remove_search_history(query)
+@plugin.route('/dialog/search/<query>-<fuzzy>-<tag>/remove')
+def url_remove_search_term(query, fuzzy, tag):
+    search.remove_search_history(query, fuzzy, tag)
     xbmc.executebuiltin('Container.Refresh')
 
 

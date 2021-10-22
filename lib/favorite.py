@@ -5,12 +5,12 @@ import os.path
 import xbmc
 import xbmcaddon
 import xbmcgui
+import xbmcvfs
 
 
-ADDON_ID = 'plugin.video.nakamori'
-addon = xbmcaddon.Addon(id=ADDON_ID)
+addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 profileDir = addon.getAddonInfo('profile')
-profileDir = xbmc.translatePath(profileDir)
+profileDir = xbmcvfs.translatePath(profileDir)
 
 # create profile dirs
 if not os.path.exists(profileDir):

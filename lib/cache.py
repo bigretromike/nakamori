@@ -1,24 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import absolute_import, division, print_function, unicode_literals
 from sqlite3 import dbapi2 as database
-
 import os.path
 import time
-import sys
-
 import xbmc
 import xbmcaddon
 import xbmcgui
-
-
-def decode_utf8(_string):
-    return _string
-
+import xbmcvfs
 
 addon = xbmcaddon.Addon('plugin.video.nakamori')
 profileDir = addon.getAddonInfo('profile')
-profileDir = decode_utf8(xbmc.translatePath(profileDir))
+profileDir = xbmcvfs.translatePath(profileDir)
 
 # create profile dirs
 if not os.path.exists(profileDir):

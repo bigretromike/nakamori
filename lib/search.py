@@ -1,18 +1,16 @@
 # -*- coding: utf-8 -*-
+
 from sqlite3 import dbapi2 as database
-
 import os.path
-import sys
-
 import xbmc
 import xbmcaddon
 import xbmcgui
+import xbmcvfs
 
 
-ADDON_ID = 'plugin.video.nakamori'
-addon = xbmcaddon.Addon(id=ADDON_ID)
+addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 profileDir = addon.getAddonInfo('profile')
-profileDir = xbmc.translatePath(profileDir)
+profileDir = xbmcvfs.translatePath(profileDir)
 
 # create profile dirs
 if not os.path.exists(profileDir):
@@ -26,7 +24,7 @@ init_cursor = init_connection.cursor()
 
 # create table
 try:
-    init_cursor.execute('CREATE TABLE IF NOT EXISTS search (search_term);')
+    init_cursor.execute('CREATE TABLE IF NOT EXISTS search (search_term TEXT, fuzzy INTEGER, tag INTEGER);')
 except:
     pass
 
@@ -44,11 +42,10 @@ def get_search_history():
     try:
         db_connection = database.connect(db_file)
         db_cursor = db_connection.cursor()
-        db_cursor.execute('SELECT search_term FROM search ORDER BY ROWID DESC')
+        db_cursor.execute('SELECT search_term, fuzzy, tag FROM search ORDER BY ROWID DESC')
         faves = db_cursor.fetchall()
         for a_row in faves:
-            if len(a_row) > 0:
-                items.append(a_row)
+            items.append(a_row)
     except:
         pass
     finally:
@@ -57,31 +54,34 @@ def get_search_history():
     return items
 
 
-def add_search_history(query: str):
+def add_search_history(query: str, fuzzy: int, tag: int):
     """
     Add 'keyword' to Search History
     :param query: term to add to db
-    :param data: json
+    :param fuzzy:
+    :param tag:
     :return:
     """
     db_connection = database.connect(db_file)
     db_cursor = db_connection.cursor()
-    db_cursor.execute('INSERT INTO search (search_term) VALUES (?)', (query,))
+    db_cursor.execute('INSERT INTO search (search_term, fuzzy, tag) VALUES (?, ?, ?)', (query, fuzzy, tag))
     db_connection.commit()
     db_connection.close()
 
 
-def remove_search_history(query=None):
+def remove_search_history(query: str, fuzzy: int, tag: int):
     """
     Remove single term from Search History
     :param query:
+    :param fuzzy
+    :param tag
     :return:
     """
     db_connection = database.connect(db_file)
     db_cursor = db_connection.cursor()
 
     if query is not None:
-        db_cursor.execute('DELETE FROM search WHERE search_term=?', (query,))
+        db_cursor.execute('DELETE FROM search WHERE search_term=? and fuzzy=? and tag=?', (query, fuzzy, tag))
     else:
         db_cursor.execute('DELETE FROM search')
 
@@ -89,15 +89,17 @@ def remove_search_history(query=None):
     db_connection.close()
 
 
-def check_in_database(term):
+def check_in_database(term: str, fuzzy: int, tag: int):
     """
     Check if 'term' is inside database
     :param term: string that you check for
+    :param fuzzy:
+    :param tag:
     :return: True if exist in database, False if not
     """
     db_connection = database.connect(db_file)
     db_cursor = db_connection.cursor()
-    db_cursor.execute('SELECT Count(search_term) FROM search WHERE search_term=?', (term,))
+    db_cursor.execute('SELECT Count(search_term) FROM search WHERE search_term=? and fuzzy=? and tag=?', (term, fuzzy, tag))
     data = db_cursor.fetchone()
     return data[0] > 0
 
@@ -105,5 +107,5 @@ def check_in_database(term):
 def clear_search_history():
     do_clean = xbmcgui.Dialog().yesno('Confirm Delete', 'Are you sure you want to delete ALL search terms?')
     if do_clean:
-        remove_search_history()
+        remove_search_history(None, 0, 0)
         xbmc.executebuiltin('Container.Refresh')

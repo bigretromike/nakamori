@@ -46,11 +46,13 @@
                 <!-- apikey: 2 -->
                 <setting label="30018" type="string" id="apikey">
                     <level>2</level>
-                    <default/>
+                    <default></default>
+                    <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
                     <control type="edit" format="string">
                         <heading>30018</heading>
                     </control>
-                    <visible>true</visible>
                 </setting>
                 <!-- ipaddress: 2 -->
                 <setting label="30002" type="string" id="ipaddress">
@@ -73,7 +75,6 @@
                 <!-- login: 3 -->
                 <setting label="30015" type="string" id="login">
                     <level>3</level>
-                    <visible>true</visible>
                     <default>Default</default>
                     <control type="edit" format="string">
                         <heading>30015</heading>
@@ -82,8 +83,10 @@
                 <!-- password: 3 (this one is not showing? why?) -->
                 <setting label="30016" type="string" id="password">
                     <level>3</level>
-                    <visible>true</visible>
-                    <default/>
+                    <default></default>
+                    <constraints>
+		                <allowempty>true</allowempty>
+	                </constraints>
                     <control type="edit" format="string">
                         <heading>30016</heading>
                     </control>
@@ -2735,22 +2738,23 @@
             </group>
         </category>
 
+        <!-- Search -->
         <category id="searching" label="30221" help="">
-            <!-- searching -->
-            <group id="14" label="30021"> <!-- Searching -->
-                <setting label="30022" type="integer" id="maxlimit" help="">
+            <!-- searching: 0-1 -->
+            <group id="14" label="30021">
+                <!-- max limit search: 0 -->
+                <setting label="30022" type="integer" id="search_maxlimit" help="">
 	                <level>0</level>
-	                <default>20</default>
+	                <default>100</default>
 	                <control type="edit" format="integer">
 		                <heading>30022</heading>
 	                </control>
                 </setting>
-                <setting label="30033" type="integer" id="maxlimit_tag" help="">
-	                <level>0</level>
-	                <default>100</default>
-	                <control type="edit" format="integer">
-		                <heading>30033</heading>
-	                </control>
+                <!-- Use Fuzzy Search: 1-->
+                <setting label="30235" type="boolean" id="use_fuzzy_search">
+                    <level>1</level>
+	                <default>false</default>
+	                <control type="toggle"/>
                 </setting>
             </group>
             <!-- maintenance -->
@@ -3093,10 +3097,6 @@
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
-                    <dependencies>
-                        <dependency type="enable" setting="">!System.HasAddon(inputstream.adaptive)</dependency>
-                        <dependency type="visible" setting="">!System.HasAddon(inputstream.adaptive)</dependency>
-                    </dependencies>
                 </setting>
             </group>
             <group id="25" label="30000">
