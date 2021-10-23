@@ -149,6 +149,7 @@ def get_listitem_from_group(x: api2models.Group) -> ListItem:
 
 
 def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cast: List[api2models.Role] = None) -> ListItem:
+    is_resume_enabled = plugin_addon.getSettingBool('file_resume')
     name = x.name
     li = ListItem(name, offscreen=True)
 
@@ -180,6 +181,27 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
 
     add_context_menu(li, [viewed, empty, empty, empty, (plugin_addon.getLocalizedString(30147), '')])
     set_property(li, 'IsPlayable', True)
+    set_property(li, 'TotalTime', 1000000)
+    if is_resume_enabled:
+        time_to_start = 0
+        if x.files is not None:
+            if len(x.files) > 0:
+                time_to_start = x.files[0].offset if x.files[0].offset is not None else 0
+        set_property(li, 'ResumeTime', time_to_start)
+    # set_property(li, 'startoffset', str(100))
+
+    #xbmc.log(f'----------- resume support?: {resume}', xbmc.LOGINFO)
+    #if resume:
+    #    resume = f.offset if f.offset is not None else 0
+    #    item.setProperty('ResumeTime', str(resume))
+    #    item.setProperty('StartOffset', str(resume))
+    #    xbmc.log(f'----------- STARTOFFSET: {resume}', xbmc.LOGINFO)
+    #else:
+    #    item.setProperty('ResumeTime', '0')
+    #    item.setProperty('StartOffset', '0')
+
+
+    #self.setProperty('ResumeTime', str(resume_time))
     #set_path(li, url)  # TODO
 
     return li
@@ -522,7 +544,6 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
         spoiler_hide_this = True
 
     title = spoiler_control_unwatched_ep_title(x.name, spoiler_hide_this, map_episodetype_to_thistype(x.eptype))
-    xbmc.log(f'--------------> TITLE: {title}', xbmc.LOGINFO)
     if plugin_addon.getSettingBool('addepnumber'):
         title = f'{x.epnumber:02d}. {title}'
     video = {'aired': x.air,
@@ -552,6 +573,7 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
     if x.view == 1:
         video['playcount'] = 1
         video['overlay'] = 5
+
     li.setInfo('video', video)
 
 
@@ -864,6 +886,8 @@ def list_episodes_for_series_by_series_id(s_id: int) -> List[Tuple[int, ThisType
     q.allpics = 1
     q.id = s_id
     q.level = 1
+    if plugin_addon.getSettingBool('file_resume'):
+        q.level = 2  # we need eps-offset if we want resume
     q.tagfilter = get_tag_setting_flag()
     x = api.series_get_by_id(q)
 
@@ -879,6 +903,7 @@ def list_all_recent_series_and_episodes() -> List[Tuple[int, ThisType, ListItem]
     list_of_li = []
     q = api2models.QueryOptions()
     q.allpics = 1
+    q.level = 1
     s = api.series_get_recent(q)
     for ss in s:
         list_of_li.append((ss.id, ThisType.series, get_listitem_from_serie(ss)))

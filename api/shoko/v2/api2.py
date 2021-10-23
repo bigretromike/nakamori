@@ -475,11 +475,11 @@ class Client:
             output.append(RawFile.Decoder(file))
         return output
     
-    def file_offset(self, opts: QueryOptions):
+    def file_offset(self, data: dict):
         """Set file offset
     
         `Id` and `offset` are required"""
-        return self.api_client.call(url='/api/offset', call_type=APIType.POST, query=opts.__dict__)
+        return self.api_client.call(url='/api/file/offset', call_type=APIType.POST, data=data)
     
     def file_watch(self, id: int):
         """Mark file with `id` as watched"""

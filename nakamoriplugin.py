@@ -148,6 +148,7 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
 
 @plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
+    is_resume_enable = plugin_addon.getSettingBool('file_resume')
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
     file_id = 0
     if len(raw_files_list) == 1:
@@ -164,7 +165,7 @@ def open_episode(filter_id: int, series_id: int, ep_id: int):
         else:
             file_id = raw_files_list[0].id
     if file_id != 0:
-        play = naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True)
+        play = naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True, resume=is_resume_enable)
 
 
 @plugin.route('/f-0/r-<file_id>-play')
@@ -184,7 +185,8 @@ def list_unsorted():
 
 @plugin.route('/dialog/wizard/logout')
 def logout_user_from_nakamori():
-    # go back to plugins
+    xbmc.executebuiltin('ReplaceWindow("10000")')
+    plugin_addon.setSettingString('apikey', 'set-new-apikey')
     # reset apikey
     pass
 
