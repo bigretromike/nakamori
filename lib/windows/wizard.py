@@ -200,13 +200,21 @@ class ConnectionWizard(xbmcgui.WindowXML):
                 # show message
                 kodi_utils.message_box(MSG_HEADER, MSG_CONNECT)
 
+    def get_ip(self):
+        return str(self._box_ip.getText())
+
+    def get_port(self):
+        return str(self._box_port.getText())
+
 
 def open_connection_wizard():
     ui = ConnectionWizard('connection_wizard.xml', CWD, 'default', '1080i')
     ui.doModal()
     x = ui.cancelled
+    adr = ui.get_ip()
+    prt = ui.get_port()
     del ui
-    return x
+    return x, adr, prt
 
 
 def open_login_wizard():

@@ -426,6 +426,9 @@ def unwatched_episode(ep_id):
 
 
 def main():
+    # if we need to change/save ip/apikey we need to 'close' plugin so kodi can flush changes into file/memory.
+    # if we dont do that, kodi will 'read' old setting file while we already configure proper one to use.
+
     # stage 0 - everything before connecting
     kodi_utils.get_device_id()
 
@@ -435,13 +438,11 @@ def main():
             # go back to avoid loops
             xbmc.executebuiltin("Action(Back,%s)" % xbmcgui.getCurrentWindowId())
             xbmc.executebuiltin("Dialog.Close(all, true)")
-
-            if wizard.open_connection_wizard():
-                return False
-
+            wiz_cancel, ip, port = wizard.open_connection_wizard()
+            return False
     # stage 2 - Check server startup status
     if not shoko_utils.get_server_status():
-        pass
+        return False
 
     # stage 3 - auth
     auth = shoko_utils.auth()
@@ -451,8 +452,7 @@ def main():
         xbmc.executebuiltin("Dialog.Close(all, true)")
         status, apikey = wizard.open_login_wizard()
         auth = shoko_utils.auth(new_apikey=apikey)
-        if not auth:
-            raise RuntimeError("try again with other settings")
+        return False
     else:
         return True
 
@@ -463,7 +463,7 @@ if __name__ == '__main__':
     xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
     xbmc.log('===========================', xbmc.LOGDEBUG)
     if main():
-        # let's support scripts without hacking like we used to
+        # let's support scripts ('/dialog/') without tweaking routing lib
         if sys.argv[1].startswith('/dialog/'):
             plugin.run(argv=[sys.argv[1]])
         else:
