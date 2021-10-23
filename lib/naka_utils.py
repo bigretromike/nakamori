@@ -34,6 +34,31 @@ class WatchedStatus(IntEnum):
     WATCHED = 2
 
 
+def map_episodetype_int_to_thistype(input_type: int) -> ThisType:
+    if input_type == int(ThisType.episodes):
+        return ThisType.episodes
+    elif input_type == int(ThisType.credits):
+        return ThisType.credits
+    elif input_type == int(ThisType.misc):
+        return ThisType.misc
+    elif input_type == int(ThisType.movie):
+        return ThisType.movie
+    elif input_type == int(ThisType.other):
+        return ThisType.other
+    elif input_type == int(ThisType.ova):
+        return ThisType.ova
+    elif input_type == int(ThisType.parodies):
+        return ThisType.parodies
+    elif input_type == int(ThisType.specials):
+        return ThisType.specials
+    elif input_type == int(ThisType.trailers):
+        return ThisType.trailers
+    elif input_type == int(ThisType.tvepisodes):
+        return ThisType.tvepisodes
+    elif input_type == int(ThisType.webclips):
+        return ThisType.webclips
+
+
 def map_episodetype_to_thistype(input_type: str) -> ThisType:
     this = input_type.lower()
     if this == "episode":

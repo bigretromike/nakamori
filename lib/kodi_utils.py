@@ -56,3 +56,12 @@ def color(text_to_color, color_name, enable_color=True):
     if enable_color:
         return ''.join(['[COLOR %s]' % color_name, text_to_color, '[/COLOR]'])
     return text_to_color
+
+
+def move_to(position: int = 0):
+    if plugin_addon.getSettingBool('select_first'):
+        xbmc.sleep(100)
+        win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+        cid = win.getFocusId()
+        ctl = win.getControl(cid)
+        ctl.selectItem(int(position))

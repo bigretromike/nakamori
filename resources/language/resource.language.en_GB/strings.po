@@ -1182,6 +1182,11 @@ msgctxt "#30237"
 msgid "Would you like to run wizard to configure connection with Shoko Server?"
 msgstr "Would you like to run wizard to configure connection with Shoko Server?"
 
+#: kodi_modles.py #
+msgctxt "#30238"
+msgid "-continue-"
+msgstr "-continue-"
+
 ##################################
 
 #: wizard.xml #

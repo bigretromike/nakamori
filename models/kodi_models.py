@@ -880,7 +880,7 @@ def list_all_series_by_filter_id(id: int) -> List[Tuple[int, ListItem]]:
     return list_of_listitems
 
 
-def list_episodes_for_series_by_series_id(s_id: int) -> List[Tuple[int, ThisType, ListItem]]:
+def list_episodes_for_series_by_series_id(s_id: int) -> Tuple[List[Tuple[int, ThisType, ListItem]], api2models.Serie]:
     list_of_li = []
     q = api2.QueryOptions()
     q.allpics = 1
@@ -896,7 +896,7 @@ def list_episodes_for_series_by_series_id(s_id: int) -> List[Tuple[int, ThisType
     for ep in x.eps:
         list_of_li.append((ep.id, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep, series_title, x.roles)))
 
-    return list_of_li
+    return list_of_li, x
 
 
 def list_all_recent_series_and_episodes() -> List[Tuple[int, ThisType, ListItem]]:
@@ -1081,3 +1081,31 @@ def get_file_name(filename):
     if len(name_split) > 1:
         name = name_split[len(name_split) - 1]
     return name
+
+
+def add_continue_item(series: api2models.Serie, episode_type: ThisType) -> ListItem:
+    if not plugin_addon.getSettingBool('show_continue'):
+        return None
+    #continue_url = script(script_utils.url_move_to_item(watched_index))
+    continue_url = '/'
+
+    continue_text = plugin_addon.getLocalizedString(30238)
+    if plugin_addon.getSettingBool('replace_continue'):
+        if episode_type == ThisType.specials:
+            eps = series.watched_sizes.Specials if series.watched_sizes.Specials is not None else 0
+            total = series.total_sizes.Specials if series.total_sizes.Specials is not None else 0
+            if plugin_addon.getSettingBool('local_total'):
+                total = series.local_sizes.Specials if series.local_sizes.Specials is not None else 0
+        else:
+            eps = series.watched_sizes.Episodes if series.watched_sizes.Episodes is not None else 0
+            total = series.total_sizes.Episodes if series.total_sizes.Episodes is not None else 0
+            if plugin_addon.getSettingBool('local_total'):
+                total = series.local_sizes.Episodes if series.local_sizes.Episodes is not None else 0
+
+        continue_text = '[ %s: %s/%s ]' % (map_thitype_to_eptype(episode_type), eps, total)
+
+    #continue_item = CustomItem(continue_text, '', continue_url, -1, False)
+    continue_item = ListItem(label=continue_text, path=continue_url, offscreen=True)
+    #continue_item.infolabels['episode'] = 0
+    #continue_item.infolabels['season'] = 0
+    return continue_item

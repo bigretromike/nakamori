@@ -3,7 +3,7 @@
 from lib import kodi_utils
 from lib import shoko_utils
 from lib import naka_player
-from lib.naka_utils import ThisType
+from lib.naka_utils import ThisType, map_episodetype_int_to_thistype
 from models import kodi_models
 
 import routing
@@ -12,7 +12,7 @@ import xbmc
 import xbmcgui
 from xbmcgui import ListItem
 import xbmcaddon
-from xbmcplugin import addDirectoryItem, endOfDirectory
+from xbmcplugin import addDirectoryItem, endOfDirectory, addDirectoryItems
 import sys
 import lib.search as search
 import lib.favorite as favorite
@@ -111,7 +111,9 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     list_of_ep_types = []
     list_of_eps = []
 
-    for e in kodi_models.list_episodes_for_series_by_series_id(series_id):
+    _e, s = kodi_models.list_episodes_for_series_by_series_id(series_id)
+
+    for e in _e:
         list_of_eps.append(e)
 
     for ep_id, ep_type, li in list_of_eps:
@@ -121,6 +123,8 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
         else:
             addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
 
+    first_not_watched = -1
+    list_items_to_add = []
     if do_we_want_to_make_eptype_setting:
         if len(list_of_ep_types) > 1:
             kodi_models.set_content('tvshows')
@@ -128,9 +132,23 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
                 li = kodi_models.get_listitem_from_episodetype(ep_type)
                 addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
         else:
+            con = kodi_models.add_continue_item(series=s, episode_type=list_of_ep_types[0])
+
+            _index = 0 if con is None else 1
             for ep_id, ep_type, li in list_of_eps:
-                addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
+                _index += 1
+                if first_not_watched == -1 and li.getVideoInfoTag().getPlayCount() == 0:
+                    li.select(selected=True)
+                    first_not_watched = _index
+                list_items_to_add.append((plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False))
+
+            if con is not None:
+                _con = (plugin.url_for(move_to, first_not_watched), con, False)
+                list_items_to_add.insert(0, _con)
+
+            addDirectoryItems(plugin.handle, list_items_to_add)
     endOfDirectory(plugin.handle)
+    kodi_utils.move_to(first_not_watched)
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>/et-<eptype_id>')
@@ -138,12 +156,28 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
     kodi_models.set_content('episodes')
 
     kodi_models.set_sorting_method(ThisType.episodes)
-    y = kodi_models.list_episodes_for_series_by_series_id(series_id)
-    y_count = len(y)
+    y, s = kodi_models.list_episodes_for_series_by_series_id(series_id)
+    #y_count = len(y)
+
+    first_not_watched = -1
+    con = kodi_models.add_continue_item(series=s, episode_type=map_episodetype_int_to_thistype(eptype_id))
+    list_items_to_add = []
+    _index = 0 if con is None else 1
     for ep_id, ep_type, li in y:
         if int(ep_type) == int(eptype_id):
-            addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=y_count)
+            _index += 1
+            if first_not_watched == -1 and li.getVideoInfoTag().getPlayCount() == 0:
+                li.select(selected=True)
+                first_not_watched = _index
+            list_items_to_add.append((plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False))
+
+    if con is not None:
+        _con = (plugin.url_for(move_to, first_not_watched), con, False)
+        list_items_to_add.insert(0, _con)
+
+    addDirectoryItems(plugin.handle, list_items_to_add)
     endOfDirectory(plugin.handle)
+    kodi_utils.move_to(first_not_watched)
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play')
@@ -423,6 +457,11 @@ def watched_episode(ep_id):
 @plugin.route('/dialog/episode/<ep_id>/unwatched')
 def unwatched_episode(ep_id):
     kodi_models.set_watch_mark(ThisType.episodes, ep_id, False)
+
+
+@plugin.route('/dialog/move_to/<position>')
+def move_to(position: int):
+    kodi_utils.move_to(int(position))
 
 
 def main():
