@@ -89,6 +89,7 @@
 	                </constraints>
                     <control type="edit" format="string">
                         <heading>30016</heading>
+                        <hidden>true</hidden>
                     </control>
                 </setting>
             </group>
@@ -1384,7 +1385,7 @@
                 </setting>
             </group>
 	    </category>
-        
+
 	    <!-- browsing -->
         <category id="browsing" label="30054" help="">
 		    <!-- title settings: 0 -->
