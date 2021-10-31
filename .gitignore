@@ -1,1 +1,5 @@
-/build/*
+/.idea/inspectionProfiles
+/.idea
+*.pyc
+.vscode/launch.json
+config.json

@@ -1,0 +1,2 @@
+# in root directory
+pytest 

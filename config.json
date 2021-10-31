@@ -1,0 +1,9 @@
+{
+  "_comment": "config file for using while testing py",
+  "proto": "http",
+  "address": "localhost",
+  "port": 8111,
+  "version": 2,
+  "apikey": "",
+  "timeout": 120
+}
