@@ -60,8 +60,11 @@ def color(text_to_color, color_name, enable_color=True):
 
 def move_to(position: int = 0):
     if plugin_addon.getSettingBool('select_first'):
-        xbmc.sleep(100)
-        win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
-        cid = win.getFocusId()
-        ctl = win.getControl(cid)
-        ctl.selectItem(int(position))
+        try:
+            xbmc.sleep(100)
+            win = xbmcgui.Window(xbmcgui.getCurrentWindowId())
+            cid = win.getFocusId()
+            ctl = win.getControl(cid)
+            ctl.selectItem(int(position))
+        except Exception as e:
+            xbmc.log(f'--- move_to did not work this time: {e}', xbmc.LOGINFO)
