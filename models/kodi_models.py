@@ -137,7 +137,9 @@ def get_listitem_from_group(x: api2models.Group) -> ListItem:
         set_art(li, x.art)
     set_folder(li, True)
 
-    set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(x.votes), default=True)
+    rating = x.rating if x.rating is not None else 0
+    votes = x.votes if x.votes is not None else 0
+    set_rating(li, rate_type='anidb', rate_value=float(rating), votes=int(votes), default=True)
     # add_season(li, season_name='__season__', season_number=1)
     set_info_for_group(li, x)
     set_cast(li, get_cast(x.roles))
