@@ -89,8 +89,9 @@ def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
         set_art(li, x.art)
     set_folder(li, True)
     set_unieque_ids(li, x.aid)
+    rating = x.rating if x.rating is not None else 0
     votes = int(x.votes) if x.votes is not None else 0
-    set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(votes), default=True)
+    set_rating(li, rate_type='anidb', rate_value=float(rating), votes=int(votes), default=True)
     # add_season(li, season_name='__season__', season_number=1)
     was_watched = is_series_watched(x)
     set_info_for_series(li, x, was_watched)
