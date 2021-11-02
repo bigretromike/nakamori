@@ -322,7 +322,11 @@ def get_proper_title(s: api2models.Serie) -> str:
     else:
         t = s.name
     # We need to assume not airing, as there is no end date provided in API
-    return title_coloring(t, s.local_sizes.Episodes, s.total_sizes.Episodes, s.local_sizes.Specials, s.total_sizes.Specials, False, is_movie=True if s.ismovie == 1 else False)
+    if type(s) == api2models.Serie:
+        is_movie = True if s.ismovie is not None and s.ismovie == 1 else False
+    else:
+        is_movie = False
+    return title_coloring(t, s.local_sizes.Episodes, s.total_sizes.Episodes, s.local_sizes.Specials, s.total_sizes.Specials, False, is_movie=is_movie)
 
 
 def set_category(category: str):
