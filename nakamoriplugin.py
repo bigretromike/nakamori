@@ -100,8 +100,13 @@ def list_groups_by_filter_id(filter_id: int):
 
 @plugin.route('/f-<filter_id>/g-<group_id>')
 def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
+    kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.series)
-    pass
+    y = kodi_models.list_all_series_by_group_id(group_id)
+    y_count = len(y)
+    for obj_id, li in y:
+        addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
+    endOfDirectory(plugin.handle)
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>')

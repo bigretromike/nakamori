@@ -6,6 +6,7 @@ from api.common import APIClient, APIType
 from api.shoko.v2.api2models import *
 import json
 import os
+from typing import Union
 
 # read test config from file that is not sync with gh
 if os.path.exists("config.json"):
@@ -73,7 +74,7 @@ class Client:
     #
     # Common
     #
-    def cloud_list(self):
+    def cloud_list(self):  # cloud stuff is being deleted after shoko4.1.1+
         # 501: Not Implemented
         return self.api_client.call(url='/api/cloud/list', call_type=APIType.GET)
     
@@ -97,15 +98,14 @@ class Client:
         response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
         return Filter.Decoder(response)
 
-    #def filters(self, opts: QueryOptions = QueryOptions()) -> Filters:
-    #    response = self.api_client.call(url='/api/filter', call_type=APIType.GET, query=opts.__dict__)
-    #    return Filters.Decoder(response)
-    
-    def group(self, opts: QueryOptions = QueryOptions()):
+    def group(self, opts: QueryOptions = QueryOptions()) -> Union[List[Group], Group]:
         response = self.api_client.call(url='/api/group', call_type=APIType.GET, query=opts.__dict__)
-        output: list[Group] = []
-        for group in response:
-            output.append(Group.Decoder(group))
+        if opts.id is not None:
+            output: Group = Group.Decoder(response)
+        else:
+            output: list[Group] = []
+            for group in response:
+                output.append(Group.Decoder(group))
         return output
     
     def group_watch(self, id: int):

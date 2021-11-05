@@ -887,6 +887,20 @@ def list_all_series_by_filter_id(id: int) -> List[Tuple[int, ListItem]]:
     return list_of_listitems
 
 
+def list_all_series_by_group_id(gid: int) -> List[Tuple[int, ListItem]]:
+    list_of_listitems = []
+    q = api2.QueryOptions()
+    q.id = gid
+    q.level = 1
+    q.tagfilter = get_tag_setting_flag()
+    x = api.group(q)
+
+    for s in x.series:
+        list_of_listitems.append((s.id, get_listitem_from_serie(s)))
+
+    return list_of_listitems
+
+
 def list_episodes_for_series_by_series_id(s_id: int) -> Tuple[List[Tuple[int, ThisType, ListItem]], api2models.Serie]:
     list_of_li = []
     q = api2.QueryOptions()
