@@ -17,12 +17,12 @@ import sys
 import lib.search as search
 import lib.favorite as favorite
 from operator import itemgetter
+import string
 
 plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
 plugin = routing.Plugin()
 
 # TODO  this is setthing inside Shoko that will Group Series into parent Groups (ex. Monogatari-Series)
-setting_from_shoko_that_we_need_to_fetch_later_use_series_grouping = False
 do_we_want_to_make_eptype_setting = True
 
 
@@ -162,7 +162,6 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
 
     kodi_models.set_sorting_method(ThisType.episodes)
     y, s = kodi_models.list_episodes_for_series_by_series_id(series_id)
-    #y_count = len(y)
 
     first_not_watched = -1
     con = kodi_models.add_continue_item(series=s, episode_type=map_episodetype_int_to_thistype(eptype_id))
@@ -247,8 +246,12 @@ def show_search_menu():
     kodi_models.set_content('tvshows')
     kodi_models.set_category(plugin_addon.getLocalizedString(30221))
 
-    use_fuzzy = plugin_addon.getSettingBool('use_fuzzy_search')
+    # A-Z search (no keyboard needed)
+    li = ListItem(label=kodi_models.bold('A-Z'), offscreen=True)
+    kodi_models.set_art(li, None, 'search.png')
+    addDirectoryItem(plugin.handle, plugin.url_for(az_search), li, True)
 
+    use_fuzzy = plugin_addon.getSettingBool('use_fuzzy_search')
     # Search
     if not use_fuzzy:
         li = ListItem(label=kodi_models.bold(plugin_addon.getLocalizedString(30224)), offscreen=True)
@@ -284,11 +287,7 @@ def show_search_menu():
         kodi_models.set_art(li, None, 'new-search.png')
         addDirectoryItem(plugin.handle, plugin.url_for(new_search, False, True, True), li, True)
 
-    # a-z search (no keyboard)
-    # li = ListItem(label=kodi_models.bold('A-Z'), offscreen=True)
-    # kodi_models.set_art(li, None, 'search.png')
-    # addDirectoryItem(plugin.handle, plugin.url_for(az_search), li, True)
-
+    # draw search history we have saved
     search_history = search.get_search_history()
     search_count = len(search_history)
     for ss in search_history:
@@ -334,7 +333,7 @@ def new_search(save: bool, fuzzy: bool, tag: bool):
         show_search_menu()
 
 
-@plugin.route('/menu-search/<query>-<fuzzy>-<tag>/')
+@plugin.route('/menu-search/<query>-<fuzzy>-<tag>')
 def search_for(query: str, fuzzy: bool, tag: bool):
     kodi_models.set_content('tvshows')
     kodi_models.set_category(query)
@@ -353,7 +352,40 @@ def search_for(query: str, fuzzy: bool, tag: bool):
 
 @plugin.route('/search/az')
 def az_search():
-    pass
+    kodi_models.set_content('tvshows')
+    kodi_models.set_content('A-Z')
+    az_count = len(string.ascii_uppercase)
+    for c in string.ascii_uppercase:
+        item = ListItem(label=c, offscreen=True)
+        kodi_models.set_art(item, None, 'search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(az_search_for, c), item, True, totalItems=az_count)
+    endOfDirectory(plugin.handle)
+
+
+@plugin.route('/menu-search/az/<characters>')
+def az_search_for(characters: str):
+    kodi_models.set_content('tvshows')
+    kodi_models.set_content('A-Z')
+
+    # adding items to go "dir up" would make a backward loop while using backspace
+    # TODO find a good way to go 3-5 levels up without later looping with backspace or '..' item
+
+    ss = kodi_models.show_az_search_results(characters)
+    list_count = len(ss)
+    character_list = []
+    for s in ss:
+        _index = len(characters)
+        if len(s.match) > _index:
+            _new_char = s.match[_index].lower()
+            if _new_char not in character_list:
+                character_list.append(_new_char)
+        addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s.id),
+                         kodi_models.get_listitem_from_serie(s, s.match), True, totalItems=list_count)
+    for new_char in character_list:
+        item = ListItem(label=characters + new_char, offscreen=True)
+        kodi_models.set_art(item, None, 'search.png')
+        addDirectoryItem(plugin.handle, plugin.url_for(az_search_for, characters + new_char), item, True, totalItems=list_count)
+    endOfDirectory(plugin.handle)
 
 
 @plugin.route('/dialog/search/clear')
@@ -412,6 +444,7 @@ def add_favorite(sid):
 
 @plugin.route('/shoko')
 def show_shoko():
+    # todo shoko menu
     pass
 
 
@@ -436,11 +469,13 @@ def show_recent():
 
 @plugin.route('/calendar')
 def show_calendar():
+    # todo calendar
     pass
 
 
 @plugin.route('/calendar_classic')
 def show_calendar_classic():
+    # todo calendar classic
     pass
 
 
@@ -502,9 +537,9 @@ def main():
 
 
 if __name__ == '__main__':
-    xbmc.log('===========================', xbmc.LOGDEBUG)
-    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGDEBUG)
-    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
+    xbmc.log('===========================', xbmc.LOGINFO)
+    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGINFO)
+    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGINFO)
     xbmc.log('===========================', xbmc.LOGDEBUG)
     if main():
         # let's support scripts ('/dialog/') without tweaking routing lib

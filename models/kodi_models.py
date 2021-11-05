@@ -81,7 +81,7 @@ def get_listitem_from_filter(x: api2models.Filter) -> ListItem:
     return li
 
 
-def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
+def get_listitem_from_serie(x: api2models.Serie, forced_title: str = None) -> ListItem:
     name = x.name
     li = ListItem(label=name, offscreen=True)
 
@@ -94,7 +94,7 @@ def get_listitem_from_serie(x: api2models.Serie) -> ListItem:
     set_rating(li, rate_type='anidb', rate_value=float(rating), votes=int(votes), default=True)
     # add_season(li, season_name='__season__', season_number=1)
     was_watched = is_series_watched(x)
-    set_info_for_series(li, x, was_watched)
+    set_info_for_series(li, x, was_watched, forced_title)
     set_cast(li, get_cast(x.roles))
     add_fav = (plugin_addon.getLocalizedString(30212), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/add)')
     if favorite.check_in_database(x.id):
@@ -300,27 +300,29 @@ def title_coloring(title, episode_count, total_count, special_count, total_speci
     return color_title
 
 
-def get_proper_title(s: api2models.Serie) -> str:
-    use_server_title = plugin_addon.getSettingBool("use_server_title")
-    this_type = plugin_addon.getSetting("title_type").lower()
-    this_lang = plugin_addon.getSetting("displaylang").lower()
-    t = ''
+def get_proper_title(s: api2models.Serie, forced_title: str = None) -> str:
+    t = forced_title
+    if forced_title is None:
+        use_server_title = plugin_addon.getSettingBool("use_server_title")
+        this_type = plugin_addon.getSetting("title_type").lower()
+        this_lang = plugin_addon.getSetting("displaylang").lower()
 
-    list_of_good_titles = []
-    if not use_server_title:
-        for tt in s.titles:
-            if tt.Language.lower() == this_lang:
-                list_of_good_titles.append(tt)
-            if tt.Type.lower() == this_type:
-                if tt not in list_of_good_titles:
+        list_of_good_titles = []
+        if not use_server_title:
+            for tt in s.titles:
+                if tt.Language.lower() == this_lang:
                     list_of_good_titles.append(tt)
-                else:
-                    # if we added good langauge already and its in good type then we have a winner
-                    break
-        # no matter what pick first on the list
-        t = list_of_good_titles[0].Title
-    else:
-        t = s.name
+                if tt.Type.lower() == this_type:
+                    if tt not in list_of_good_titles:
+                        list_of_good_titles.append(tt)
+                    else:
+                        # if we added good langauge already and its in good type then we have a winner
+                        break
+            # no matter what pick first on the list
+            t = list_of_good_titles[0].Title
+        else:
+            t = s.name
+
     # We need to assume not airing, as there is no end date provided in API
     if type(s) == api2models.Serie:
         is_movie = True if s.ismovie is not None and s.ismovie == 1 else False
@@ -605,9 +607,9 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
     li.setInfo('video', video)
 
 
-def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedStatus):
+def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedStatus, forced_title: str = None):
     # Kodi 20 speed improvment: https://github.com/xbmc/xbmc/pull/19459
-    title = get_proper_title(x)
+    title = get_proper_title(x, forced_title)
     summary = make_text_nice(x.summary)
     video = {'aired': x.air,
              'year': x.year,
@@ -705,6 +707,22 @@ def show_search_result_menu(query: str, fuzzy: bool, tag: bool) -> List[api2mode
     if fuzzy:
         q.fuzzy = 1
     f = api.search(q)
+
+    for g in f.groups:
+        for s in g.series:
+            list_of_series.append(s)
+    return list_of_series
+
+
+def show_az_search_results(query: str) -> List[api2models.Serie]:
+    list_of_series = []
+    q = api2models.QueryOptions()
+    q.query = query
+    q.limit = plugin_addon.getSettingInt('search_maxlimit')
+    q.level = 0
+    q.allpics = 1
+    q.fuzzy = 0
+    f = api.serie_startswith(q)
 
     for g in f.groups:
         for s in g.series:
@@ -1125,8 +1143,5 @@ def add_continue_item(series: api2models.Serie, episode_type: ThisType) -> ListI
 
         continue_text = '[ %s: %s/%s ]' % (map_thitype_to_eptype(episode_type), eps, total)
 
-    #continue_item = CustomItem(continue_text, '', continue_url, -1, False)
     continue_item = ListItem(label=continue_text, path=continue_url, offscreen=True)
-    #continue_item.infolabels['episode'] = 0
-    #continue_item.infolabels['season'] = 0
     return continue_item

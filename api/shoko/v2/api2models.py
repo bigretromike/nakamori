@@ -1050,6 +1050,7 @@ class Serie:
                  name: str = '',
                  titles: List[AnimeTitle] = [],
                  summary: str = '',
+                 match: str = '',
                  url: str = '',
                  added: str = '',
                  edited: str = '',
@@ -1078,6 +1079,7 @@ class Serie:
         self.name: str = name
         self.titles: List[AnimeTitle] = titles
         self.summary: str = summary
+        self.match: str = match
         self.url: str = url
         self.added: str = added
         self.edited: str = edited
@@ -1131,6 +1133,7 @@ class Serie:
             title = AnimeTitle.Decoder(title)
             serie.titles.append(title)
         serie.summary = json.get("summary")
+        serie.match = json.get("match")
         serie.url = json.get("url")
         serie.added = json.get("added")
         serie.edited = json.get("edited")
