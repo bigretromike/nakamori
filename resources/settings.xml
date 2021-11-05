@@ -2990,6 +2990,9 @@
 	                <control type="edit" format="integer">
 		                <heading>30069</heading>
 	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="enableCache">true</dependency>
+                    </dependencies>
                 </setting>
             </group>
 <!-- TODO -->

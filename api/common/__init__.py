@@ -4,6 +4,7 @@ from urllib.request import Request, urlopen
 from io import BytesIO
 import gzip
 import json
+from lib import cache
 
 
 class APIType(Enum):
@@ -30,6 +31,8 @@ class APIClient:
         api_key if needed for most calls
     timeout : int
         time until Request timeout without getting any response
+    try_cache: bool
+        enable ability to first ask for cached for data and if its expired or missing ask server and cache response
 
     Methods
     -------
@@ -43,7 +46,9 @@ class APIClient:
                  api_port: int = 8111,
                  api_version: int = 3,
                  api_key: str = '',
-                 timeout: int = 120):
+                 timeout: int = 120,
+                 try_cache: bool = False
+                 ):
         """
         Constructs all the necessary attributes for the person object.
 
@@ -61,6 +66,8 @@ class APIClient:
                 authentication api_key
             timeout: int
                 time until Request timeout without getting any response
+            try_cache: bool
+                nable ability to first ask for cached for data and if its expired or missing ask server and cache response
         """
         self.proto = api_proto
         self.address = api_address
@@ -68,6 +75,7 @@ class APIClient:
         self.version = api_version
         self.apikey = api_key
         self.timeout = timeout
+        self.try_cache = try_cache
 
     def call(self,
              url: str = '/',
@@ -158,18 +166,33 @@ class APIClient:
             print(f"Unknown === {url}")
 
         if req is not None:
-            response = urlopen(req, timeout=int(self.timeout))
-
-            if response.info().get('Content-Encoding') == 'gzip':
-                try:
-                    buf = BytesIO(response.read())
-                    f = gzip.GzipFile(fileobj=buf)
-                    data = f.read()
-                except Exception as e:
-                    print(f"Failed to decompress === {e}")
+            if self.try_cache and req.method == 'GET':
+                found_in_cache, response = cache.try_cache(req.selector)
+                if not found_in_cache:
+                    response = urlopen(req, timeout=int(self.timeout))
+                    if response.status == 200:
+                        response = response.read()
+                        cache.remove_cache(req.selector)
+                        try:
+                            cache.add_cache(req.selector, response)
+                        except:
+                            # silent this one
+                            pass
+                data = response
             else:
-                data = response.read()
-            response.close()
+                response = urlopen(req, timeout=int(self.timeout))
+
+            if not self.try_cache:
+                if response.info().get('Content-Encoding') == 'gzip':
+                    try:
+                        buf = BytesIO(response.read())
+                        f = gzip.GzipFile(fileobj=buf)
+                        data = f.read()
+                    except Exception as e:
+                        print(f"Failed to decompress === {e}")
+                else:
+                    data = response.read()
+                response.close()
             try:
                 return json.loads(data)
             except:
@@ -187,3 +210,6 @@ class APIClient:
                 apikey that will be pass and save into api client
         """
         self.apikey = apikey
+
+    def set_cache(self, enable_cache):
+        self.try_cache = enable_cache

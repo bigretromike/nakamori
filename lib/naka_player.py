@@ -50,8 +50,8 @@ def scrobble_trakt(ep_id, status, current_time, total_time, movie):
 
 
 def finished_episode(ep_id, file_id, current_time, total_time):
-    xbmc.log('----------------------- FINISHIND EPISODE ----------------', xbmc.LOGINFO)
-    xbmc.log(f'{ep_id} / {file_id} / {current_time} / {total_time}', xbmc.LOGINFO)
+    xbmc.log('----------------------- FINISHIND EPISODE ----------------', xbmc.LOGDEBUG)
+    xbmc.log(f'ep_id: {ep_id} / file_id: {file_id} / now: {current_time} / total: {total_time}', xbmc.LOGDEBUG)
 
     _finished = False
 
@@ -83,7 +83,7 @@ def finished_episode(ep_id, file_id, current_time, total_time):
             set_watch_mark(mark_type=ThisType.episodes, mark_id=ep_id, watched=True)
 
             # vote on finished series
-            if plugin_addon.getSetting('vote_on_series') == 'true':
+            if plugin_addon.getSettingBool('vote_on_series'):
                 q = api2models.QueryOptions()
                 q.id = ep_id
                 series: api2models.Serie = API.series_from_ep(q)
@@ -197,7 +197,6 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
                 item.setPath(url_for_player)
 
             handle = int(sys.argv[1])
-            xbmc.log(f'------------------------- NAKA PLAYER PLAY handle: {handle} -------------------', xbmc.LOGINFO)
             if handle == -1:
                 player.play(item=url_for_player, listitem=item)
             else:
@@ -208,15 +207,13 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
             xbmc.log(f'{e}', xbmc.LOGINFO)
 
         # leave player alive so we can handle onPlayBackStopped/onPlayBackEnded
-        # TODO Move the instance to Service, so that it is never disposed
-        ####xbmc.sleep(int(plugin_addon.getSetting('player_sleep')))
-        return player_loop(player, is_transcoded, is_finished, ep_id, party_mode)
+        player_loop(player, is_transcoded, is_finished, ep_id, party_mode)
+    del player
 
 
 def player_loop(player, is_transcoded, is_transcode_finished, ep_id, party_mode):
+    monitor = xbmc.Monitor()
     try:
-        monitor = xbmc.Monitor()
-
         # seek to beginning of stream :hack: https://github.com/peak3d/inputstream.adaptive/issues/94
         if is_transcoded:
             while not xbmc.Player().isPlayingVideo():
@@ -277,9 +274,9 @@ def player_loop(player, is_transcoded, is_transcode_finished, ep_id, party_mode)
             return -1
         else:
             pass
-        return 0
-    except:
-        return -1
+    except Exception as e:
+        xbmc.log(f'=== player_loop exception: {e}', xbmc.LOGINFO)
+    del monitor
 
 
 def get_client_settings():
@@ -476,11 +473,11 @@ class Player(xbmc.Player):
     def __init__(self):
         #spam('Player Initialized')
         xbmc.Player.__init__(self)
-        self._t = None  # trakt thread
+        self._t: Thread = None  # trakt thread
         self._t_running = True
-        self._s = None  # shoko thread
+        self._s: Thread = None  # shoko thread
         self._s_running = True
-        self._u = None  # update thread
+        self._u: Thread = None  # update thread
         self._u_running = True
         self._details = None
         self.Playlist = None
@@ -606,7 +603,6 @@ class Player(xbmc.Player):
         xbmc.log('===== [ naka-player ] ===== end start_loops', xbmc.LOGINFO)
 
     def onPlayBackStopped(self):
-        #spam('Playback Stopped')
         try:
             self.handle_finished_episode()
         except:
@@ -614,7 +610,6 @@ class Player(xbmc.Player):
         self.PlaybackStatus = PlaybackStatus.STOPPED
 
     def onPlayBackEnded(self):
-        #spam('Playback Ended')
         try:
             self.handle_finished_episode()
         except:
@@ -622,12 +617,10 @@ class Player(xbmc.Player):
         self.PlaybackStatus = PlaybackStatus.ENDED
 
     def onPlayBackPaused(self):
-        #spam('Playback Paused')
         self.PlaybackStatus = PlaybackStatus.PAUSED
         self.scrobble_time()
 
     def onPlayBackSeek(self, time_to_seek, seek_offset):
-        #log('Playback Paused - time_to_seek=%s seek_offset=%s' % (time_to_seek, seek_offset))
         self.time = self.getTime()
         self.scrobble_time()
 
@@ -662,7 +655,11 @@ class Player(xbmc.Player):
                     scrobble_trakt(self.ep_id, 1, self.time, self.duration, self.is_movie)
                 except:
                     pass
-                xbmc.sleep(10000)
+                for x in range(0, 100):
+                    xbmc.sleep(100)
+                    if self._t_running:
+                        break
+        xbmc.log('===== [ naka-player ] ===== KILLED: tick_loop_trakt', xbmc.LOGINFO)
 
     def kill_tick_loop_shoko(self):
         self._s_running = False
@@ -677,7 +674,11 @@ class Player(xbmc.Player):
                         x = API.file_offset({"id": self.file_id, "offset": int(self.time)})
                 except:
                     pass
-                xbmc.sleep(10000)
+                for x in range(0, 100):
+                    xbmc.sleep(100)
+                    if self._s_running:
+                        break
+        xbmc.log('===== [ naka-player ] ===== KILLED: tick_loop_shoko', xbmc.LOGINFO)
 
     def kill_tick_loop_update_time(self):
         self._u_running = False
@@ -687,7 +688,7 @@ class Player(xbmc.Player):
             if self.PlaybackStatus == PlaybackStatus.PLAYING and self.isPlayingVideo():
                 try:
                     # Leia seems to have a bug where calling self.getTotalTime() fails at times
-                    # Try until it succeeds (we first init duration from feed())
+                    # Try until it succeed (we first init duration from feed())
                     self.set_duration()
                     if not self.is_external:
                         self.time = self.getTime()
@@ -695,7 +696,11 @@ class Player(xbmc.Player):
                         self.time += 1
                 except:
                     pass  # while buffering
-                xbmc.sleep(2500)  # wait 1sec
+                for x in range(0, 25):
+                    xbmc.sleep(100)
+                    if self._u_running:
+                        break
+        xbmc.log('===== [ naka-player ] ===== KILLED: tick_loop_update_time', xbmc.LOGINFO)
 
     def handle_finished_episode(self):
         self.Playlist = None
@@ -711,3 +716,6 @@ class Player(xbmc.Player):
         self.kill_tick_loop_trakt()
         self.kill_tick_loop_shoko()
         self.kill_tick_loop_update_time()
+        self._t.join()
+        self._s.join()
+        self._u.join()

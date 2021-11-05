@@ -7,6 +7,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcvfs
+import json
 
 addon = xbmcaddon.Addon('plugin.video.nakamori')
 profileDir = addon.getAddonInfo('profile')
@@ -24,12 +25,35 @@ _db_cursor = _db_connection.cursor()
 
 # create table
 try:
-    _db_cursor.execute('CREATE TABLE IF NOT EXISTS [cache] ([url] TEXT NULL, [json] TEXT NULL, [created] FLOAT NULL);')
+    _db_cursor.execute('CREATE TABLE IF NOT EXISTS [cache] ([url] TEXT unique, [data] BLOB NULL, [created] FLOAT);')
+    _db_cursor.execute('CREATE TABLE IF NOT EXISTS [last] ([id] INTEGER unique, [url] TEXT);')
+    _db_cursor.execute('INSERT INTO last (id, url) VALUES (1, "");')
+    _db_connection.commit()
 except:
     pass
 
 # close connection
 _db_connection.close()
+
+
+def get_last():
+    items = None
+    try:
+        db_connection = database.connect(db_file)
+        db_cursor = db_connection.cursor()
+        db_cursor.execute('SELECT url FROM last WHERE id=1')
+        items = db_cursor.fetchone()[0]
+    except:
+        pass
+    return items
+
+
+def set_last(url: str):
+    db_connection = database.connect(db_file)
+    db_cursor = db_connection.cursor()
+    db_cursor.execute('UPDATE last set url = ? where id = 1', (url, ))
+    db_connection.commit()
+    db_connection.close()
 
 
 def get_cached_data():
@@ -42,7 +66,7 @@ def get_cached_data():
     try:
         db_connection = database.connect(db_file)
         db_cursor = db_connection.cursor()
-        db_cursor.execute('SELECT url, json, created FROM cache')
+        db_cursor.execute('SELECT url, data, created FROM cache')
         faves = db_cursor.fetchall()
         for a_row in faves:
             if len(a_row) > 0:
@@ -60,7 +84,7 @@ def get_data_from_cache(url):
     try:
         db_connection = database.connect(db_file)
         db_cursor = db_connection.cursor()
-        db_cursor.execute('SELECT json, created FROM cache WHERE url=?', (url,))
+        db_cursor.execute('SELECT data, created FROM cache WHERE url=?', (url,))
         items = db_cursor.fetchone()
     except:
         pass
@@ -74,12 +98,15 @@ def add_cache(url, json_body):
     :param json_body: json respond
     :return:
     """
-    date = time.time()
-    db_connection = database.connect(db_file)
-    db_cursor = db_connection.cursor()
-    db_cursor.execute('INSERT INTO cache (url, json, created) VALUES (?, ?, ?)', (url, json_body, date))
-    db_connection.commit()
-    db_connection.close()
+    if '/watch' not in url:
+        date = time.time()
+        db_connection = database.connect(db_file)
+        db_cursor = db_connection.cursor()
+        db_cursor.execute('INSERT INTO cache (url, data, created) VALUES (?, ?, ?)', (url, json_body, date))
+        db_connection.commit()
+        db_connection.close()
+        if '/api/ep' not in url:
+            set_last(url)
 
 
 def remove_cache(url=None):
@@ -103,3 +130,19 @@ def clear_cache(params):
     if do_clean:
         remove_cache(params)
         xbmc.executebuiltin('Container.Refresh')
+
+
+def try_cache(url_in):
+    xbmc.log(f'=== cache lookup: {url_in} ===', xbmc.LOGDEBUG)
+    db_row = get_data_from_cache(url_in)
+    if db_row is not None:
+        valid_until = int(addon.getSetting('expireCache'))
+        expire_second = time.time() - float(db_row[1])
+        xbmc.log(f'=== is cache expiring: {expire_second} > {valid_until} ===', xbmc.LOGDEBUG)
+        if expire_second > valid_until:
+            # expire, get new date
+            remove_cache(url_in)
+            return False, None
+        else:
+            return True, db_row[0]
+    return False, None

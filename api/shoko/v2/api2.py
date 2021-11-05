@@ -27,7 +27,10 @@ class Client:
         self.apikey = apikey
         self.timeout = timeout
         self.api_client = APIClient(api_proto='http', api_address=self.address, api_port=self.port, api_version=self.version, api_key=self.apikey, timeout=self.timeout)
-    
+
+    def set_cache(self, enable_cache):
+        self.api_client.set_cache(enable_cache)
+
     #
     # Auth
     #

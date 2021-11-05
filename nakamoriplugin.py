@@ -56,7 +56,7 @@ def list_all_filters():
         elif f_type == ThisType.menu:
             addDirectoryItem(plugin.handle, li.getPath(), li, True, totalItems=y_count)
 
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/fs-<filters_id>')
@@ -71,7 +71,7 @@ def list_filter_by_filters_id(filters_id: int):
         if obj_type == ThisType.filters:
             addDirectoryItem(plugin.handle, plugin.url_for(list_filter_by_filters_id, obj_id), li, True, totalItems=y_count)
 
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/f-<filter_id>')
@@ -95,7 +95,7 @@ def list_groups_by_filter_id(filter_id: int):
         if obj_type == ThisType.series:
             addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
 
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/f-<filter_id>/g-<group_id>')
@@ -106,7 +106,7 @@ def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
     y_count = len(y)
     for obj_id, li in y:
         addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, filter_id, obj_id), li, True, totalItems=y_count)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>')
@@ -152,8 +152,9 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
                 list_items_to_add.insert(0, _con)
 
             addDirectoryItems(plugin.handle, list_items_to_add)
-    endOfDirectory(plugin.handle)
-    kodi_utils.move_to(first_not_watched)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
+    if len(list_of_ep_types) == 1:
+        kodi_utils.move_to(first_not_watched)
 
 
 @plugin.route('/f-<filter_id>/s-<series_id>/et-<eptype_id>')
@@ -180,7 +181,7 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
         list_items_to_add.insert(0, _con)
 
     addDirectoryItems(plugin.handle, list_items_to_add)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
     kodi_utils.move_to(first_not_watched)
 
 
@@ -203,12 +204,12 @@ def open_episode(filter_id: int, series_id: int, ep_id: int):
         else:
             file_id = raw_files_list[0].id
     if file_id != 0:
-        play = naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True, resume=is_resume_enable)
+        naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True, resume=is_resume_enable)
 
 
 @plugin.route('/f-0/r-<file_id>-play')
 def open_rawfile(file_id: int):
-    play = naka_player.play_video(file_id=file_id, ep_id=0, s_id=0, force_direct_play=True)
+    naka_player.play_video(file_id=file_id, ep_id=0, s_id=0, force_direct_play=True)
 
 
 def list_unsorted():
@@ -218,7 +219,7 @@ def list_unsorted():
     x_count = len(x)
     for r_id, r in x:
         addDirectoryItem(plugin.handle, plugin.url_for(open_rawfile, r_id), r, False, totalItems=x_count)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/dialog/wizard/logout')
@@ -315,7 +316,7 @@ def show_search_menu():
         kodi_models.set_art(li, None, 'new-search.png')
         addDirectoryItem(plugin.handle, plugin.url_for(url_clear_search_terms), li, False)
 
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/search/<save>-<fuzzy>-<tag>')
@@ -347,7 +348,7 @@ def search_for(query: str, fuzzy: bool, tag: bool):
             addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s.id),
                              kodi_models.get_listitem_from_serie(s), True, totalItems=list_count)
 
-        endOfDirectory(plugin.handle)
+        endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/search/az')
@@ -359,7 +360,7 @@ def az_search():
         item = ListItem(label=c, offscreen=True)
         kodi_models.set_art(item, None, 'search.png')
         addDirectoryItem(plugin.handle, plugin.url_for(az_search_for, c), item, True, totalItems=az_count)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/menu-search/az/<characters>')
@@ -385,7 +386,7 @@ def az_search_for(characters: str):
         item = ListItem(label=characters + new_char, offscreen=True)
         kodi_models.set_art(item, None, 'search.png')
         addDirectoryItem(plugin.handle, plugin.url_for(az_search_for, characters + new_char), item, True, totalItems=list_count)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/dialog/search/clear')
@@ -410,6 +411,11 @@ def vote_for_episode(ep_id):
     kodi_models.vote_for_episode(ep_id)
 
 
+@plugin.route('/dialog/refresh')
+def refresh_kodi():
+    xbmc.executebuiltin('Container.Refresh')
+
+
 @plugin.route('/favorites')
 def show_favorites():
     kodi_models.set_content('tvshows')
@@ -421,7 +427,7 @@ def show_favorites():
         remove_item = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorites/{s_id}/remove)')
         li.addContextMenuItems([remove_item])
         addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s_id), li, True, totalItems=count_li)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/dialog/favorites/<sid>/remove')
@@ -464,7 +470,7 @@ def show_recent():
             addDirectoryItem(plugin.handle, plugin.url_for(open_episode, 0, 0, o_id), li, False, totalItems=list_count)
         elif o_type == ThisType.raw:
             addDirectoryItem(plugin.handle, plugin.url_for(open_rawfile, o_id), li, False, totalItems=list_count)
-    endOfDirectory(plugin.handle)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
 
 
 @plugin.route('/calendar')
@@ -537,9 +543,9 @@ def main():
 
 
 if __name__ == '__main__':
-    xbmc.log('===========================', xbmc.LOGINFO)
-    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGINFO)
-    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGINFO)
+    xbmc.log('===========================', xbmc.LOGDEBUG)
+    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGDEBUG)
+    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
     xbmc.log('===========================', xbmc.LOGDEBUG)
     if main():
         # let's support scripts ('/dialog/') without tweaking routing lib

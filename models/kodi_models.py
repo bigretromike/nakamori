@@ -14,6 +14,7 @@ from typing import List, Tuple
 from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype, map_thitype_to_eptype
 import os
 import lib.favorite as favorite
+import lib.cache as cache
 
 plugin = routing.Plugin()
 plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
@@ -28,6 +29,8 @@ api = api2.Client(address=plugin_addon.getSetting('ipaddress'),
                   port=plugin_addon.getSettingInt('port'),
                   apikey=plugin_addon.getSetting('apikey'),
                   timeout=plugin_addon.getSettingInt('timeout'))
+xbmc.log(f'=== enabling cache: {plugin_addon.getSettingBool("enableCache")} ===', xbmc.LOGDEBUG)
+api.set_cache(plugin_addon.getSettingBool('enableCache'))
 
 
 def spoiler_control_unwatched_ep_title(title: str, hide: bool, this_type: ThisType) -> str:
@@ -109,9 +112,7 @@ def get_listitem_from_serie(x: api2models.Serie, forced_title: str = None) -> Li
     if was_watched == WatchedStatus.WATCHED:
         viewed = (plugin_addon.getLocalizedString(30127), f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/unwatched)')
 
-    empty = ('', '')
-
-    add_context_menu(li, [add_fav, vote, viewed, empty, empty, empty, (plugin_addon.getLocalizedString(30147), '')])
+    add_context_menu(li, [add_fav, vote, viewed])
 
     set_property(li, 'IsPlayable', False)
     watched = 0
@@ -180,9 +181,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     if x.view == 1:
         viewed = (plugin_addon.getLocalizedString(30129), f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/unwatched)')
 
-    empty = ('', '')
-
-    add_context_menu(li, [viewed, empty, empty, empty, (plugin_addon.getLocalizedString(30147), '')])
+    add_context_menu(li, [viewed])
     set_property(li, 'IsPlayable', True)
     set_property(li, 'TotalTime', 1000000)
     if is_resume_enabled:
@@ -435,6 +434,10 @@ def set_watch_mark(mark_type: ThisType = ThisType.episodes, mark_id: int = 0, wa
             msg = plugin_addon.getLocalizedString(30201) + ' ' + (plugin_addon.getLocalizedString(30202) if watched else plugin_addon.getLocalizedString(30203))
             xbmc.executebuiltin('Notification(' + plugin_addon.getLocalizedString(30200) + ', ' + msg + ', 2000, ' + plugin_addon.getAddonInfo('icon') + ')')
 
+        if plugin_addon.getSettingBool('enableCache'):
+            url = cache.get_last()
+            xbmc.log(f'=== clear cache for watch mark: {url}', xbmc.LOGINFO)
+            cache.remove_cache(url)
         xbmc.executebuiltin('Container.Refresh')
 
 
@@ -664,6 +667,11 @@ def set_stream_info(li: ListItem, r: api2models.RawFile):
 
 
 def add_context_menu(li: ListItem, menu: List[Tuple[str, str]]):
+    menu.append((plugin_addon.getLocalizedString(30131), 'RunScript(plugin.video.nakamori, /dialog/refresh)'))
+    menu.append(('', ''))
+    menu.append(('', ''))
+    menu.append(('', ''))
+    menu.append((plugin_addon.getLocalizedString(30147), ''))
     li.addContextMenuItems(menu)
 
 
@@ -1112,6 +1120,10 @@ def vote_for_episode(ep_id: int):
                                                                plugin_addon.getLocalizedString(30322),
                                                                str(my_vote), plugin_addon.getAddonInfo('icon')))
     api.episode_vote(id=ep_id, score=my_vote)
+    if plugin_addon.getSettingBool('enableCache'):
+        url = cache.get_last()
+        xbmc.log(f'=== clear cache for watch mark: {url}', xbmc.LOGINFO)
+        cache.remove_cache(url)
 
 
 def get_file_name(filename):

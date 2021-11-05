@@ -664,7 +664,7 @@ msgctxt "#30130"
 msgid "Playlist Mode"
 msgstr "Playlist Mode"
 
-#: settings.xml #
+#: settings.xml, kodi_models.py #
 msgctxt "#30131"
 msgid "Refresh"
 msgstr "Refresh"
