@@ -9,6 +9,7 @@ from models.kodi_models import set_watch_mark, is_series_watched, vote_for_episo
 from lib.naka_utils import ThisType, WatchedStatus
 from threading import Thread
 import sys
+import os
 
 from api.shoko.v2 import api2, api2models
 
@@ -140,7 +141,7 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
             pass
 
     # now continue
-    file_url = ''
+    url_for_player = ''
     f: api2models.RawFile
     if int(ep_id) != 0:
         q = api2models.QueryOptions()
@@ -157,18 +158,27 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
     else:
         f = API.file(id=file_id)
 
-    if file_url is not None:
+    # check if we have same access to file as server aka localhost
+    if os.path.isfile(f.server_path):
+        if f.server_path.startswith(u'\\\\'):
+            url_for_player = 'smb:' + f.server_path.replace('\\', '/')
+        else:
+            url_for_player = f.server_path
+    else:
+        url_for_player = self.url
+
+    if url_for_player != '':
         is_transcoded = False
         m3u8_url = ''
         subs_extension = ''
         is_finished = False
         if not force_direct_play:
-            if 'smb://' in file_url:
-                file_url = f.url
-            is_transcoded, m3u8_url, subs_extension, is_finished = process_transcoder(file_id, file_url, force_transcode_play)
+            #if 'smb://' in url_for_player:
+            #    url_for_player = f.url
+            is_transcoded, m3u8_url, subs_extension, is_finished = process_transcoder(file_id, url_for_player, force_transcode_play)
 
         player = Player()
-        player.feed(file_id, ep_id, int(f.duration/1000), m3u8_url if is_transcoded else file_url, mark_as_watched)
+        player.feed(file_id, ep_id, int(f.duration/1000), m3u8_url if is_transcoded else url_for_player, mark_as_watched)
 
         try:
             item = xbmcgui.ListItem()
@@ -191,19 +201,22 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
                 #    item.setSubtitles([subs_url, ])
                 #    item.addStreamInfo('subtitle', {'language': 'Default', })
             else:
-                # file_url = f.remote_url_for_player
-                # player.play(item=file_url, listitem=item)
-                url_for_player = f.url  # file_url
                 item.setPath(url_for_player)
 
-            handle = int(sys.argv[1])
-            if handle == -1:
+            xbmc.log(f'============== [ HANDLE for Player ] = {sys.argv[1]}', xbmc.LOGDEBUG)
+            try:
+                handle = int(sys.argv[1])
+                if handle == -1:
+                    player.play(item=url_for_player, listitem=item)
+                else:
+                    # thanks to anxdpanic for pointing in right direction
+                    xbmcplugin.setResolvedUrl(handle, True, item)
+            except:
+                # when playing thing tru context menu, handle is not there
+                # TODO without handle there is no episode info we can look, Is it a dealbreaker? no but if fix is there use one.
                 player.play(item=url_for_player, listitem=item)
-            else:
-                # thanks to anxdpanic for pointing in right direction
-                xbmcplugin.setResolvedUrl(handle, True, item)
         except Exception as e:
-            xbmc.log('ERROR NAKA PLAYER---------------------------', xbmc.LOGINFO)
+            xbmc.log('ERROR NAKA PLAYER---------------------------', xbmc.LOGERROR)
             xbmc.log(f'{e}', xbmc.LOGINFO)
 
         # leave player alive so we can handle onPlayBackStopped/onPlayBackEnded

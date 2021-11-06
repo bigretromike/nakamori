@@ -185,8 +185,17 @@ def open_eptype_by_eptype_by_series_id_and_filter_id(filter_id: int, series_id: 
     kodi_utils.move_to(first_not_watched)
 
 
+@plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play/dontmark')
+def open_episode_dont_mark(filter_id: int, series_id: int, ep_id: int):
+    play_episode(filter_id, series_id, ep_id, False)
+
+
 @plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
+    play_episode(filter_id, series_id, ep_id, True)
+
+
+def play_episode(filter_id: int, series_id: int, ep_id: int, use_watch_mark: bool):
     is_resume_enable = plugin_addon.getSettingBool('file_resume')
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
     file_id = 0
@@ -204,7 +213,21 @@ def open_episode(filter_id: int, series_id: int, ep_id: int):
         else:
             file_id = raw_files_list[0].id
     if file_id != 0:
-        naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True, resume=is_resume_enable)
+        naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True, resume=is_resume_enable, mark_as_watched=use_watch_mark)
+
+
+@plugin.route('/f-0/s-<series_id>/e-<ep_id>-pick')
+def pick_file_and_play(series_id: int, ep_id: int):
+    raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
+    items = [kodi_models.get_file_name(x.filename) for x in raw_files_list]
+    my_file = xbmcgui.Dialog().select(plugin_addon.getLocalizedString(30196), items)
+    if my_file > -1:
+        file_id = raw_files_list[my_file].id
+    else:
+        # cancel -1,0
+        file_id = 0
+    if file_id != 0:
+        naka_player.play_video(file_id=file_id, ep_id=ep_id, s_id=series_id, force_direct_play=True, resume=is_resume_enable, mark_as_watched=True)
 
 
 @plugin.route('/f-0/r-<file_id>-play')
@@ -548,8 +571,9 @@ if __name__ == '__main__':
     xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
     xbmc.log('===========================', xbmc.LOGDEBUG)
     if main():
-        # let's support scripts ('/dialog/') without tweaking routing lib
-        if sys.argv[1].startswith('/dialog/'):
-            plugin.run(argv=[sys.argv[1]])
+        # let's support scripts ('/dialog/') without remixing routing lib
+        if sys.argv[0] == 'nakamoriplugin.py' or sys.argv[1].startswith('/dialog/'):
+            url = plugin.url_for_path(sys.argv[1])
+            plugin.run(argv=[url])
         else:
             plugin.run()

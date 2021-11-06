@@ -99,20 +99,8 @@ def get_listitem_from_serie(x: api2models.Serie, forced_title: str = None) -> Li
     was_watched = is_series_watched(x)
     set_info_for_series(li, x, was_watched, forced_title)
     set_cast(li, get_cast(x.roles))
-    add_fav = (plugin_addon.getLocalizedString(30212), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/add)')
-    if favorite.check_in_database(x.id):
-        add_fav = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorites/{x.id}/remove)')
 
-    userrate = ''
-    if x.userrating is not None and int(x.userrating) > 0:
-        userrate = f' ({x.userrating})'
-    vote = (plugin_addon.getLocalizedString(30124) + userrate, f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/vote)')
-    viewed = (plugin_addon.getLocalizedString(30126), f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/watched)')
-
-    if was_watched == WatchedStatus.WATCHED:
-        viewed = (plugin_addon.getLocalizedString(30127), f'RunScript(plugin.video.nakamori, /dialog/series/{x.id}/unwatched)')
-
-    add_context_menu(li, [add_fav, vote, viewed])
+    add_context_menu_for_series(li, x, was_watched)
 
     set_property(li, 'IsPlayable', False)
     watched = 0
@@ -172,16 +160,8 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     set_info_for_episode(li, x, series_title)
     if cast is not None:
         set_cast(li, get_cast(cast))
-    userrate = ''
-    if x.userrating is not None and int(x.userrating) > 0:
-        userrate = f' ({x.userrating})'
-    # TODO https://github.com/bigretromike/nakamori/issues/464
-    vote = (plugin_addon.getLocalizedString(30125) + userrate, f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/vote)')
-    viewed = (plugin_addon.getLocalizedString(30128), f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/watched)')
-    if x.view == 1:
-        viewed = (plugin_addon.getLocalizedString(30129), f'RunScript(plugin.video.nakamori, /dialog/episode/{x.id}/unwatched)')
 
-    add_context_menu(li, [viewed])
+    add_context_menu_for_episode(li, x)
     set_property(li, 'IsPlayable', True)
     set_property(li, 'TotalTime', 1000000)
     if is_resume_enabled:
@@ -666,13 +646,72 @@ def set_stream_info(li: ListItem, r: api2models.RawFile):
         li.addStreamInfo('subtitle', subtitle)
 
 
-def add_context_menu(li: ListItem, menu: List[Tuple[str, str]]):
-    menu.append((plugin_addon.getLocalizedString(30131), 'RunScript(plugin.video.nakamori, /dialog/refresh)'))
-    menu.append(('', ''))
-    menu.append(('', ''))
-    menu.append(('', ''))
-    menu.append((plugin_addon.getLocalizedString(30147), ''))
-    li.addContextMenuItems(menu)
+def add_context_menu_for_series(li: ListItem, s: api2models.Serie, was_watched: WatchedStatus):
+    _menu: List[Tuple[str, str]] = []
+
+    if plugin_addon.getSettingBool('show_favorites'):
+        add_fav = (plugin_addon.getLocalizedString(30212), f'RunScript(plugin.video.nakamori, /dialog/favorites/{s.id}/add)')
+        if favorite.check_in_database(s.id):
+            add_fav = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorites/{s.id}/remove)')
+        _menu.append(add_fav)
+
+    if plugin_addon.getSettingBool('context_show_vote_Series'):
+        userrate = ''
+        if s.userrating is not None and int(s.userrating) > 0:
+            userrate = f' ({s.userrating})'
+        vote = (plugin_addon.getLocalizedString(30124) + userrate, f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/vote)')
+        _menu.append(vote)
+
+    viewed = (plugin_addon.getLocalizedString(30126), f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/watched)')
+    if was_watched == WatchedStatus.WATCHED:
+        viewed = (plugin_addon.getLocalizedString(30127), f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/unwatched)')
+    _menu.append(viewed)
+
+    li.addContextMenuItems(_menu)
+
+
+def add_context_menu_for_episode(li: ListItem, e: api2models.Episode):
+    s = get_series_id_from_ep_id(e.id)
+    _menu: List[Tuple[str, str]] = []
+    if plugin_addon.getSettingBool('context_show_play'):
+        _menu.append((plugin_addon.getLocalizedString(30065), f'RunScript(plugin.video.nakamori, /f-0/s-{s.id}/e-{e.id}-play)'))
+    if plugin_addon.getSettingBool('context_show_play_no_watch'):
+        _menu.append((plugin_addon.getLocalizedString(30132), f'RunScript(plugin.video.nakamori, /f-0/s-{s.id}/e-{e.id}-play/dontmark)'))
+    # if plugin_addon.getSettingBool('context_show_force_transcode'):
+    # if plugin_addon.getSettingBool('context_show_directplay'):
+    # if plugin_addon.getSettingBool('context_show_probe'):
+    if plugin_addon.getSettingBool('context_pick_file'):
+        _menu.append((plugin_addon.getLocalizedString(30133), f'RunScript(plugin.video.nakamori, /f-0/s-{s.id}/e-{e.id}-pick'))
+    # if plugin_addon.getSettingBool('context_playlist'):
+    if plugin_addon.getSettingBool('context_show_vote_Episode'):
+        userrate = ''
+        if e.userrating is not None and int(e.userrating) > 0:
+            userrate = f' ({e.userrating})'
+        vote = (plugin_addon.getLocalizedString(30125) + userrate, f'RunScript(plugin.video.nakamori, /dialog/episode/{e.id}/vote)')
+        # TODO https://github.com/bigretromike/nakamori/issues/464
+        # _menu.append(vote)
+    if plugin_addon.getSettingBool('context_show_vote_Series'):
+        vote = (plugin_addon.getLocalizedString(30124), f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/vote)')
+        _menu.append(vote)
+
+    # watched/unwatched
+    viewed = (plugin_addon.getLocalizedString(30128), f'RunScript(plugin.video.nakamori, /dialog/episode/{e.id}/watched)')
+    if e.view == 1:
+        viewed = (plugin_addon.getLocalizedString(30129), f'RunScript(plugin.video.nakamori, /dialog/episode/{e.id}/unwatched)')
+    _menu.append(viewed)
+
+    if plugin_addon.getSettingBool('context_show_info'):
+        _menu.append((plugin_addon.getLocalizedString(30123), 'Action(Info)'))
+
+    if plugin_addon.getSettingBool('context_refresh'):
+        _menu.append((plugin_addon.getLocalizedString(30131), 'RunScript(plugin.video.nakamori, /dialog/refresh)'))
+
+    # seperate our menu from kodi
+    _menu.append(('', ''))
+    _menu.append(('', ''))
+    _menu.append(('', ''))
+    _menu.append((plugin_addon.getLocalizedString(30147), ''))
+    li.addContextMenuItems(_menu)
 
 
 def set_property(li: ListItem, name, value):
@@ -765,8 +804,8 @@ def main_menu_items() -> List[ListItem]:
 
     # TODO airing today
     # if plugin_addon.getSetting('show_airing_today') == 'true':
-    #    name = kodi_utils.color(plugin_localize(30211), plugin_addon.getSetting('color_favorites'), color)
-    #    item = CustomItem(plugin_localize(30223), 'airing.png', url_for(show_airing_today_menu))
+    #    name = kodi_utils.color(plugin_addon.getLocalizedString(30211), plugin_addon.getSetting('color_favorites'), color)
+    #    item = CustomItem(plugin_addon.getLocalizedString(30223), 'airing.png', url_for(show_airing_today_menu))
     #    item.sort_index = 1
     #    items.append(item)
 
@@ -1157,3 +1196,10 @@ def add_continue_item(series: api2models.Serie, episode_type: ThisType) -> ListI
 
     continue_item = ListItem(label=continue_text, path=continue_url, offscreen=True)
     return continue_item
+
+
+def get_series_id_from_ep_id(ep_id: int) -> api2models.Serie:
+    q = api2models.QueryOptions()
+    q.id = ep_id
+    x = api.series_from_ep(q)
+    return x

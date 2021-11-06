@@ -333,7 +333,7 @@ msgctxt "#30064"
 msgid "Tweaks"
 msgstr "Tweaks"
 
-#: settings.xml @
+#: settings.xml, kodi_models.py #
 msgctxt "#30065"
 msgid "Play"
 msgstr "Play"
@@ -624,7 +624,7 @@ msgctxt "#30122"
 msgid "Remove Missing Files"
 msgstr "Remove Missing Files"
 
-#: settings.xml #
+#: settings.xml, kodi_models.py #
 msgctxt "#30123"
 msgid "More Info"
 msgstr "More Info"
@@ -669,7 +669,7 @@ msgctxt "#30131"
 msgid "Refresh"
 msgstr "Refresh"
 
-#: settings.xml #
+#: settings.xml, kodi_models.py #
 msgctxt "#30132"
 msgid "Play (No Scrobble)"
 msgstr "Play (No Scrobble)"
@@ -679,7 +679,7 @@ msgctxt "#30133"
 msgid "Inspect Files"
 msgstr "Inspect Files"
 
-#: settings.xml #
+#: settings.xml <<<<<<<<<
 msgctxt "#30134"
 msgid "View Cast"
 msgstr "View Cast"

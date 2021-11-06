@@ -2571,76 +2571,74 @@
 	                <control type="toggle"/>
                 </setting>
             </group>
-<!-- TODO -->
-            <!-- context menu settings: 5 -->
+
+            <!-- context menu settings: 3 -->
 		    <group id="11" label="30057">
-                <!-- play: 5 -->
+                <!-- play: 3 -->
                 <setting label="30065" type="boolean" id="context_show_play">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- play without mark: 5 -->
+                <!-- play without mark: 3 -->
                 <setting label="30132" type="boolean" id="context_show_play_no_watch">
                     <level>3</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- force transcode play: 5 -->
+            <!-- TODO -->
+                <!-- force transcode play: 3 -->
                 <setting label="30174" type="boolean" id="context_show_force_transcode">
                     <level>3</level>
 	                <default>false</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- play direct: 5 -->
+            <!-- TODO -->
+                <!-- play direct: 3 -->
                 <setting label="30175" type="boolean" id="context_show_directplay">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- probe file: 5 -->
+            <!-- TODO -->
+                <!-- probe file: 3 -->
                 <setting label="30177" type="boolean" id="context_show_probe">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- pick file menu: 5 -->
+                <!-- pick file menu: 3 -->
                 <setting label="30133" type="boolean" id="context_pick_file">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- playlist: 5 -->
+            <!-- TODO -->
+                <!-- playlist: 3 -->
                 <setting label="30130" type="boolean" id="context_playlist">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- vote episode: 5 -->
+                <!-- vote episode: 3 -->
                 <setting label="30125" type="boolean" id="context_show_vote_Episode">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- vote series: 5 -->
+                <!-- vote series: 3 -->
                 <setting label="30124" type="boolean" id="context_show_vote_Series">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- show info: 5 -->
+                <!-- show info: 3 -->
                 <setting label="30123" type="boolean" id="context_show_info">
                     <level>3</level>
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- view cast: 5 -->
-                <setting label="30134" type="boolean" id="context_view_cast">
-                    <level>3</level>
-	                <default>true</default>
-	                <control type="toggle"/>
-                </setting>
-                <!-- refresh: 5 -->
+                <!-- refresh: 3 -->
                 <setting label="30131" type="boolean" id="context_refresh">
                     <level>3</level>
 	                <default>true</default>
@@ -2657,7 +2655,7 @@
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
-        </setting>
+                </setting>
                 <!-- fix desynced images in kodi database: 5 -->
                 <setting label="30139" type="action" id="action5">
                 <level>3</level>
@@ -2665,7 +2663,7 @@
                     <control type="button" format="action">
                         <close>true</close>
                     </control>
-        </setting>
+                </setting>
             </group>
         </category>
 
@@ -2860,8 +2858,7 @@
 <!-- TODO -->
             <!-- kodi player settings: 0-5 -->
             <group id="18" label="30026">
-<!-- TODO -->
-                <!-- play resume: 5 -->
+                <!-- play resume: 0 -->
                 <setting label="30020" type="boolean" id="file_resume">
                     <level>3</level>
 	                <default>true</default>
@@ -2889,6 +2886,7 @@
 		                <heading>30004</heading>
 	                </control>
                 </setting>
+<!-- TODO -->
                 <!-- use external player watch fix: 1 -->
                 <setting label="30149" type="boolean" id="external_player">
                     <level>0</level>
@@ -2974,8 +2972,8 @@
 	                <control type="toggle"/>
                 </setting>
             </group>
-<!-- TODO -->
-            <!-- cache -->
+
+            <!-- cache: 1-2 -->
             <group id="23" label="30029">
                 <!-- enable cache: 1 -->
                 <setting label="30030" type="boolean" id="enableCache">
