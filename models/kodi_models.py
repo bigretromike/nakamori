@@ -279,7 +279,7 @@ def title_coloring(title, episode_count, total_count, special_count, total_speci
     return color_title
 
 
-def get_proper_title(s: api2models.Serie, forced_title: str = None) -> str:
+def get_proper_title(s: api2models.Serie, forced_title: str = None) -> Tuple[str, str]:
     t = forced_title
     if forced_title is None:
         use_server_title = plugin_addon.getSettingBool("use_server_title")
@@ -307,7 +307,7 @@ def get_proper_title(s: api2models.Serie, forced_title: str = None) -> str:
         is_movie = True if s.ismovie is not None and s.ismovie == 1 else False
     else:
         is_movie = False
-    return title_coloring(t, s.local_sizes.Episodes, s.total_sizes.Episodes, s.local_sizes.Specials, s.total_sizes.Specials, False, is_movie=is_movie)
+    return title_coloring(t, s.local_sizes.Episodes, s.total_sizes.Episodes, s.local_sizes.Specials, s.total_sizes.Specials, False, is_movie=is_movie), t
 
 
 def set_category(category: str):
@@ -570,7 +570,7 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
 
 
 def set_info_for_group(li: ListItem, x: api2models.Group):
-    title = get_proper_title(x)
+    title, non_color_title = get_proper_title(x)
     summary = make_text_nice(x.summary)
     video = {'aired': x.air,
              'year': x.year,
@@ -578,7 +578,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
              'plotoutline': " ".join(summary.split(".", 3)[:2]),
              'title': title,
              'originaltitle': title,
-             'sorttitle': title,
+             'sorttitle': non_color_title,
              'tvshowtitle': title,
              'mediatype': 'tvshow',
              'rating': float(x.rating),
@@ -592,7 +592,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
 
 def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedStatus, forced_title: str = None):
     # Kodi 20 speed improvment: https://github.com/xbmc/xbmc/pull/19459
-    title = get_proper_title(x, forced_title)
+    title, non_color_title = get_proper_title(x, forced_title)
     summary = make_text_nice(x.summary)
     video = {'aired': x.air,
              'year': x.year,
@@ -600,7 +600,7 @@ def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedSt
              'plotoutline': " ".join(summary.split(".", 3)[:2]),
              'title': title,
              'originaltitle': title,
-             'sorttitle': title,
+             'sorttitle': non_color_title,
              'tvshowtitle': title,
              'mediatype': 'tvshow',
              'rating': float(spoiler_control_ratings(x.rating, x.viewed == 0, ThisType.series)),
@@ -988,7 +988,7 @@ def list_episodes_for_series_by_series_id(s_id: int) -> Tuple[List[Tuple[int, Th
     q.tagfilter = get_tag_setting_flag()
     x = api.series_get_by_id(q)
 
-    series_title = get_proper_title(x)
+    series_title, non_color_title = get_proper_title(x)
 
     for ep in x.eps:
         list_of_li.append((ep.id, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep, series_title, x.roles, x.id)))
