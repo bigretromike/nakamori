@@ -140,7 +140,7 @@ def get_listitem_from_group(x: api2models.Group) -> ListItem:
     return li
 
 
-def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cast: List[api2models.Role] = None) -> ListItem:
+def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cast: List[api2models.Role] = None, series_id: int = -1) -> ListItem:
     is_resume_enabled = plugin_addon.getSettingBool('file_resume')
     name = x.name
     li = ListItem(name, offscreen=True)
@@ -161,7 +161,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     if cast is not None:
         set_cast(li, get_cast(cast))
 
-    add_context_menu_for_episode(li, x)
+    add_context_menu_for_episode(li, x, series_id)
     set_property(li, 'IsPlayable', True)
     set_property(li, 'TotalTime', 1000000)
     if is_resume_enabled:
@@ -667,21 +667,32 @@ def add_context_menu_for_series(li: ListItem, s: api2models.Serie, was_watched: 
         viewed = (plugin_addon.getLocalizedString(30127), f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/unwatched)')
     _menu.append(viewed)
 
+    if plugin_addon.getSettingBool('context_show_info'):
+        _menu.append((plugin_addon.getLocalizedString(30123), 'Action(Info)'))
+
+    if plugin_addon.getSettingBool('context_refresh'):
+        _menu.append((plugin_addon.getLocalizedString(30131), 'RunScript(plugin.video.nakamori, /dialog/refresh)'))
+
+    # seperate our menu from kodi
+    _menu.append(('', ''))
+    _menu.append(('', ''))
+    _menu.append(('', ''))
+    _menu.append((plugin_addon.getLocalizedString(30147), ''))
     li.addContextMenuItems(_menu)
 
 
-def add_context_menu_for_episode(li: ListItem, e: api2models.Episode):
-    s = get_series_id_from_ep_id(e.id)
+def add_context_menu_for_episode(li: ListItem, e: api2models.Episode, s_id: int):
+    # s = get_series_id_from_ep_id(e.id)
     _menu: List[Tuple[str, str]] = []
     if plugin_addon.getSettingBool('context_show_play'):
-        _menu.append((plugin_addon.getLocalizedString(30065), f'RunScript(plugin.video.nakamori, /f-0/s-{s.id}/e-{e.id}-play)'))
+        _menu.append((plugin_addon.getLocalizedString(30065), f'RunScript(plugin.video.nakamori, /f-0/s-{s_id}/e-{e.id}-play)'))
     if plugin_addon.getSettingBool('context_show_play_no_watch'):
-        _menu.append((plugin_addon.getLocalizedString(30132), f'RunScript(plugin.video.nakamori, /f-0/s-{s.id}/e-{e.id}-play/dontmark)'))
+        _menu.append((plugin_addon.getLocalizedString(30132), f'RunScript(plugin.video.nakamori, /f-0/s-{s_id}/e-{e.id}-play/dontmark)'))
     # if plugin_addon.getSettingBool('context_show_force_transcode'):
     # if plugin_addon.getSettingBool('context_show_directplay'):
     # if plugin_addon.getSettingBool('context_show_probe'):
     if plugin_addon.getSettingBool('context_pick_file'):
-        _menu.append((plugin_addon.getLocalizedString(30133), f'RunScript(plugin.video.nakamori, /f-0/s-{s.id}/e-{e.id}-pick'))
+        _menu.append((plugin_addon.getLocalizedString(30133), f'RunScript(plugin.video.nakamori, /f-0/s-{s_id}/e-{e.id}-pick'))
     # if plugin_addon.getSettingBool('context_playlist'):
     if plugin_addon.getSettingBool('context_show_vote_Episode'):
         userrate = ''
@@ -691,7 +702,7 @@ def add_context_menu_for_episode(li: ListItem, e: api2models.Episode):
         # TODO https://github.com/bigretromike/nakamori/issues/464
         # _menu.append(vote)
     if plugin_addon.getSettingBool('context_show_vote_Series'):
-        vote = (plugin_addon.getLocalizedString(30124), f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/vote)')
+        vote = (plugin_addon.getLocalizedString(30124), f'RunScript(plugin.video.nakamori, /dialog/series/{s_id}/vote)')
         _menu.append(vote)
 
     # watched/unwatched
@@ -980,7 +991,7 @@ def list_episodes_for_series_by_series_id(s_id: int) -> Tuple[List[Tuple[int, Th
     series_title = get_proper_title(x)
 
     for ep in x.eps:
-        list_of_li.append((ep.id, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep, series_title, x.roles)))
+        list_of_li.append((ep.id, map_episodetype_to_thistype(ep.eptype), get_listitem_from_episode(ep, series_title, x.roles, x.id)))
 
     return list_of_li, x
 
@@ -995,7 +1006,7 @@ def list_all_recent_series_and_episodes() -> List[Tuple[int, ThisType, ListItem]
         list_of_li.append((ss.id, ThisType.series, get_listitem_from_serie(ss)))
     e = api.episodes_get_recent(q)
     for ee in e:
-        list_of_li.append((ee.id, ThisType.episodes, get_listitem_from_episode(ee, '')))
+        list_of_li.append((ee.id, ThisType.episodes, get_listitem_from_episode(ee, '', None, s.id)))
     f = api.file_recent()
     for ff in f:
         list_of_li.append((ff.id, ThisType.raw, get_listitem_from_rawfile(ff)))
