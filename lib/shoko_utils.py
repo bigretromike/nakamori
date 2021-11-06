@@ -68,7 +68,7 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
 
         was_canceled = False
         busy = xbmcgui.DialogProgress()
-        busy.create('serwer status', startup_state)
+        busy.create(plugin_addon.getLocalizedString(30239), startup_state)
         busy.update(1)
         # poll every second until the server gives us a response that we want
         while True:
@@ -89,7 +89,7 @@ def get_server_status(ip: str = plugin_addon.getSetting('ipaddress'), port: int 
                 return True
 
             startup_state = json_tree.get('startup_state', '')
-            busy.update(1, f"current status :{startup_state}")
+            busy.update(1, f"{startup_state}")
 
             startup_failed = json_tree.get('startup_failed', False)
             if startup_failed:

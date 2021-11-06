@@ -1187,6 +1187,11 @@ msgctxt "#30238"
 msgid "-continue-"
 msgstr "-continue-"
 
+#: shoko_utils.py #
+msgctxt "#30239"
+msgid "ShokoServer is booting up..."
+msgstr "ShokoServer is booting up..."
+
 ##################################
 
 #: wizard.xml #
