@@ -38,7 +38,7 @@ def spoiler_control_unwatched_ep_title(title: str, hide: bool, this_type: ThisTy
     if hide and not plugin_addon.getSetting('hide_title').lower() == 'never':
         if plugin_addon.getSetting('hide_title').lower() == 'both':
             return spoiler
-        elif plugin_addon.getSetting('hide_title').lower() == map_thitype_to_eptype(this_type):
+        elif plugin_addon.getSetting('hide_title').lower() == map_thitype_to_eptype(this_type).lower():
             return spoiler
     return title
 
@@ -48,7 +48,7 @@ def spoiler_control_ratings(rating, hide: bool, this_type: ThisType):
     if hide and not plugin_addon.getSetting('hide_rating').lower() == 'never':
         if plugin_addon.getSetting('hide_rating').lower() == "both":
             return hidden_rating
-        elif plugin_addon.getSetting('hide_rating').lower() == map_thitype_to_eptype(this_type):
+        elif plugin_addon.getSetting('hide_rating').lower() == map_thitype_to_eptype(this_type).lower():
             return hidden_rating
     return rating
 
@@ -207,7 +207,7 @@ def get_listitem_from_episodetype(x: ThisType, art: api2models.ArtCollection) ->
     if plugin_addon.getSettingBool('eptypes_series_art'):
         set_art(li, art)
     else:
-        set_art(li, None, f'%s.png' % map_thitype_to_eptype(x))
+        set_art(li, None, f'%s.png' % map_thitype_to_eptype(x).lower())
     set_folder(li, True)
     set_property(li, 'IsPlayable', False)
     return li
