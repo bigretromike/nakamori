@@ -4,12 +4,14 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 
-from lib.kodi_utils import get_device_id
+from lib.kodi_utils import get_device_id, message_box
 from models.kodi_models import set_watch_mark, is_series_watched, vote_for_episode, vote_for_series
 from lib.naka_utils import ThisType, WatchedStatus
 from threading import Thread
 import sys
 import os
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 from api.shoko.v2 import api2, api2models
 
@@ -163,9 +165,22 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
         if f.server_path.startswith(u'\\\\'):
             url_for_player = 'smb:' + f.server_path.replace('\\', '/')
         else:
+            # TODO maybe use xbmcvfs.exists for 404 ?
             url_for_player = f.server_path
     else:
-        url_for_player = self.url
+        try:
+            req = Request(f.url, method='HEAD')
+            resp = urlopen(req)
+            a = resp.read()
+            url_for_player = f.url
+        except HTTPError as htterr:
+            url_for_player = ''
+            if htterr.code == 404:
+                message_box(title=plugin_addon.getLocalizedString(30242) + ': ' + str(htterr.code),
+                            text=plugin_addon.getLocalizedString(30241))
+            else:
+                message_box(title=plugin_addon.getLocalizedString(30242),
+                            text=str(htterr.code))
 
     if url_for_player != '':
         is_transcoded = False
@@ -219,7 +234,7 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
             xbmc.log('ERROR NAKA PLAYER---------------------------', xbmc.LOGERROR)
             xbmc.log(f'{e}', xbmc.LOGINFO)
 
-        # leave player alive so we can handle onPlayBackStopped/onPlayBackEnded
+        # leave loop from player alive so we can handle onPlayBackStopped/onPlayBackEnded
         player_loop(player, is_transcoded, is_finished, ep_id, party_mode)
     del player
 

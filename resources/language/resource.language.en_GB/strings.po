@@ -1197,6 +1197,16 @@ msgctxt "#30240"
 msgid "Group episode types together"
 msgstr "Group episode types together"
 
+#: naka_player.py #
+msgctxt "#30241"
+msgid "File you are trying to access if unavailable"
+msgstr "File you are trying to access if unavailable"
+
+#: naka_player.py #
+msgctxt "#30242"
+msgid "Error"
+msgstr "Error"
+
 ##################################
 
 #: wizard.xml #
