@@ -461,11 +461,18 @@ def set_art(li: ListItem, art: api2models.ArtCollection, overwrite_image: str = 
 
     else:
         if len(art.fanart) > 0:
-            li.setArt({'fanart': set_pic_url(art.fanart[0].url), 'clearart': set_pic_url(art.fanart[0].url)})
+            if plugin_addon.getSettingBool('replace_404') and art.fanart[0].url == '/api/v2/image/support/plex_404.png':
+                li.setArt({'fanart': os.path.join(plugin_img_path, 'backgrounds', '404.png')})
+            else:
+                li.setArt({'fanart': set_pic_url(art.fanart[0].url), 'clearart': set_pic_url(art.fanart[0].url)})
         if len(art.thumb) > 0:
-            li.setArt({'thumb': set_pic_url(art.thumb[0].url)})
-            li.setArt({'icon': set_pic_url(art.thumb[0].url)})
-            li.setArt({'poster': set_pic_url(art.thumb[0].url)})
+            if plugin_addon.getSettingBool('replace_404') and art.thumb[0].url == '/api/v2/image/support/plex_404.png':
+                li.setArt({'thumb': os.path.join(plugin_img_path, 'thumb', '404.png')})
+                li.setArt({'poster': os.path.join(plugin_img_path, 'thumb', '404.png')})
+            else:
+                li.setArt({'thumb': set_pic_url(art.thumb[0].url)})
+                li.setArt({'icon': set_pic_url(art.thumb[0].url)})
+                li.setArt({'poster': set_pic_url(art.thumb[0].url)})
         if len(art.banner) > 0:
             li.setArt({'banner': set_pic_url(art.banner[0].url)})
 

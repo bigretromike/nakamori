@@ -2570,7 +2570,7 @@
 	                <default>true</default>
 	                <control type="toggle"/>
                 </setting>
-                <!-- show continue: 0 -->
+                <!-- show eptypes: 0 -->
                 <setting label="30240" type="boolean" id="show_eptypes">
                     <level>0</level>
 	                <default>true</default>
@@ -2584,6 +2584,12 @@
                     <dependencies>
 	                    <dependency type="enable" operator="is" setting="show_eptypes">true</dependency>
                     </dependencies>
+                </setting>
+                <!-- replace 404 images: 0 -->
+                <setting label="30244" type="boolean" id="replace_404">
+                    <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
                 </setting>
             </group>
 
