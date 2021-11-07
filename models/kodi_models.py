@@ -217,7 +217,7 @@ def get_cast(c: List[api2models.Role]) -> List[dict]:
         pic = role.character_image
         if use_seiyuu:
             pic = role.staff_image
-        roles.append({"name": role.staff, "role": role.character, "thumbnail": http.format(pic)})
+        roles.append({"name": role.staff, "role": role.character, "thumbnail": set_pic_url(pic)})
     return roles
 
 
