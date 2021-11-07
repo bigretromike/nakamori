@@ -111,8 +111,6 @@ def open_group_by_group_id_and_filter_id(filter_id: int, group_id: int):
 
 @plugin.route('/f-<filter_id>/s-<series_id>')
 def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
-    kodi_models.set_content('episodes')
-    kodi_models.set_sorting_method(ThisType.episodes)
     list_of_ep_types = []
     list_of_eps = []
 
@@ -129,10 +127,14 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
     list_items_to_add = []
     if len(list_of_ep_types) > 1 and do_we_want_to_make_eptype_setting:
         kodi_models.set_content('seasons')
+        kodi_models.set_sorting_method(ThisType.tvepisodes)
         for ep_type in list_of_ep_types:
             li = kodi_models.get_listitem_from_episodetype(ep_type, s.art)
             addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
     else:
+        kodi_models.set_content('episodes')
+        kodi_models.set_sorting_method(ThisType.episodes)
+
         con = kodi_models.add_continue_item(series=s, episode_type=list_of_ep_types[0])
 
         _index = 0 if con is None else 1

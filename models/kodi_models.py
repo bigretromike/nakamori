@@ -548,23 +548,23 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
         if ep_type == ThisType.episodes:
             pass
         elif ep_type == ThisType.specials:
-            title = 's' + title
-            sort_title = 's' + sort_title
+            title = 'S' + title
+            sort_title = 'S' + sort_title
         elif ep_type == ThisType.credits:
-            title = 'c' + title
-            sort_title = 'c' + sort_title
+            title = 'C' + title
+            sort_title = 'C' + sort_title
         elif ep_type == ThisType.parodies:
-            title = 'p' + title
-            sort_title = 'p' + sort_title
+            title = 'P' + title
+            sort_title = 'P' + sort_title
         elif ep_type == ThisType.trailers:
-            title = 't' + title
-            sort_title = 't' + sort_title
+            title = 'T' + title
+            sort_title = 'T' + sort_title
         elif ep_type == ThisType.ova:
-            title = 'o' + title
-            sort_title = 'o' + sort_title
+            title = 'O' + title
+            sort_title = 'O' + sort_title
         elif ep_type == ThisType.webclips:
-            title = 'w' + title
-            sort_title = 'w' + sort_title
+            title = 'W' + title
+            sort_title = 'W' + sort_title
         else:
             title = '*' + title
             sort_title = '*' + sort_title
@@ -1079,6 +1079,9 @@ def set_sorting_method(x: ThisType):
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_DATE)
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_YEAR)
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_VIDEO_RATING)
+    elif x == ThisType.tvepisodes:
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_UNSORTED)
+        xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_TITLE)
     else:
         xbmcplugin.addSortMethod(plugin.handle, xbmcplugin.SORT_METHOD_NONE)
 
