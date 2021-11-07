@@ -535,9 +535,37 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
     if x.view is None or x.view == 0:
         spoiler_hide_this = True
 
-    title = spoiler_control_unwatched_ep_title(x.name, spoiler_hide_this, map_episodetype_to_thistype(x.eptype))
+    ep_type = map_episodetype_to_thistype(x.eptype)
+    title = spoiler_control_unwatched_ep_title(x.name, spoiler_hide_this, ep_type)
+    sort_title = title
     if plugin_addon.getSettingBool('addepnumber'):
         title = f'{x.epnumber:02d}. {title}'
+        sort_title = f'{x.epnumber:04d} {title}'
+
+        if ep_type == ThisType.episodes:
+            pass
+        elif ep_type == ThisType.specials:
+            title = 's' + title
+            sort_title = 's' + sort_title
+        elif ep_type == ThisType.credits:
+            title = 'c' + title
+            sort_title = 'c' + sort_title
+        elif ep_type == ThisType.parodies:
+            title = 'p' + title
+            sort_title = 'p' + sort_title
+        elif ep_type == ThisType.trailers:
+            title = 't' + title
+            sort_title = 't' + sort_title
+        elif ep_type == ThisType.ova:
+            title = 'o' + title
+            sort_title = 'o' + sort_title
+        elif ep_type == ThisType.webclips:
+            title = 'w' + title
+            sort_title = 'w' + sort_title
+        else:
+            title = '*' + title
+            sort_title = '*' + sort_title
+
     video = {'aired': x.air,
              'year': x.year,
              'episode': int(x.epnumber),
@@ -545,7 +573,7 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
              'plot': spoiler_control_plot(x.summary, spoiler_hide_this),
              'title': title,
              'originaltitle': title,
-             'sorttitle': f'{x.epnumber:04d} {title}',
+             'sorttitle': sort_title,
              'tvshowtitle': series_title,
              'mediatype': 'episode',
              'season': 1,

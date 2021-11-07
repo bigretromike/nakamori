@@ -1192,6 +1192,11 @@ msgctxt "#30239"
 msgid "ShokoServer is booting up..."
 msgstr "ShokoServer is booting up..."
 
+#: settings.xml #
+msgctxt "#30240"
+msgid "Group episode types together"
+msgstr "Group episode types together"
+
 ##################################
 
 #: wizard.xml #
