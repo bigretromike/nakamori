@@ -87,24 +87,24 @@ def map_filter_group_to_thistype(input_type: str) -> ThisType:
 
 def map_thitype_to_eptype(input_type: ThisType) -> str:
     if input_type == ThisType.episodes:
-        return 'episodes'
+        return 'Episodes'
     elif input_type == ThisType.credits:
-        return 'credits'
+        return 'Credits'
     elif input_type == ThisType.misc:
-        return 'misc'
+        return 'Misc'
     elif input_type == ThisType.movie:
-        return 'movie'
+        return 'Movie'
     elif input_type == ThisType.other:
-        return 'other'
+        return 'Other'
     elif input_type == ThisType.ova:
-        return 'ova'
+        return 'OVA'
     elif input_type == ThisType.parodies:
-        return 'parodies'
+        return 'Parodies'
     elif input_type == ThisType.specials:
-        return 'specials'
+        return 'Specials'
     elif input_type == ThisType.trailers:
-        return 'trailes'
+        return 'Trailes'
     elif input_type == ThisType.tvepisodes:
-        return 'tvepisodes'
+        return 'TVEpisodes'
     elif input_type == ThisType.webclips:
-        return 'webclips'
+        return 'WebClips'
