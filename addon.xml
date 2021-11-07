@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="4.0.0-b14" provider-name="BigRetroMike, SteveMavic, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="4.0.0~beta14" provider-name="BigRetroMike, SteveMavic, da3dsoul">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.routing" version="0.2.3"/>
