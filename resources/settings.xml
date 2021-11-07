@@ -2573,8 +2573,17 @@
                 <!-- show continue: 0 -->
                 <setting label="30240" type="boolean" id="show_eptypes">
                     <level>0</level>
+	                <default>true</default>
+	                <control type="toggle"/>
+                </setting>
+                <!-- eptypes_series_art: 1 -->
+                <setting label="30243" type="boolean" id="eptypes_series_art" parent="show_eptypes">
+                    <level>1</level>
 	                <default>false</default>
 	                <control type="toggle"/>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="show_eptypes">true</dependency>
+                    </dependencies>
                 </setting>
             </group>
 

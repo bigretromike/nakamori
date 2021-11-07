@@ -122,19 +122,15 @@ def open_series_by_series_id_and_filter_id(filter_id: int, series_id: int):
         list_of_eps.append(e)
 
     for ep_id, ep_type, li in list_of_eps:
-        #if do_we_want_to_make_eptype_setting:
         if ep_type not in list_of_ep_types:
             list_of_ep_types.append(ep_type)
-        #else:
-        #    addDirectoryItem(plugin.handle, plugin.url_for(open_episode, filter_id, series_id, ep_id), li, False, totalItems=len(list_of_eps))
 
     first_not_watched = -1
     list_items_to_add = []
-    #if do_we_want_to_make_eptype_setting:
     if len(list_of_ep_types) > 1 and do_we_want_to_make_eptype_setting:
-        kodi_models.set_content('tvshows')
+        kodi_models.set_content('seasons')
         for ep_type in list_of_ep_types:
-            li = kodi_models.get_listitem_from_episodetype(ep_type)
+            li = kodi_models.get_listitem_from_episodetype(ep_type, s.art)
             addDirectoryItem(plugin.handle, plugin.url_for(open_eptype_by_eptype_by_series_id_and_filter_id, filter_id, series_id, int(ep_type)), li, True, totalItems=len(list_of_ep_types))
     else:
         con = kodi_models.add_continue_item(series=s, episode_type=list_of_ep_types[0])

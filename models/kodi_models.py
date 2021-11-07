@@ -201,10 +201,13 @@ def get_listitem_from_rawfile(x: api2models.RawFile) -> ListItem:
     return li
 
 
-def get_listitem_from_episodetype(x: ThisType) -> ListItem:
+def get_listitem_from_episodetype(x: ThisType, art: api2models.ArtCollection) -> ListItem:
     name = map_thitype_to_eptype(x)
     li = ListItem(label=name, offscreen=True)
-    set_art(li, None, f'%s.png' % map_thitype_to_eptype(x))
+    if plugin_addon.getSettingBool('eptypes_series_art'):
+        set_art(li, art)
+    else:
+        set_art(li, None, f'%s.png' % map_thitype_to_eptype(x))
     set_folder(li, True)
     set_property(li, 'IsPlayable', False)
     return li
@@ -315,7 +318,7 @@ def set_category(category: str):
 
 
 def set_content(content_type: str = ''):
-    # files, movies, videos, tvshows, episodes, artists ...
+    # files, movies, videos, tvshows, episodes, artists ... undocumented: seasons ?
     xbmcplugin.setContent(plugin.handle, content_type)
 
 
