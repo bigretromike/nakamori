@@ -1552,3 +1552,128 @@ msgstr "Would you like to use those values?"
 msgctxt "#30366"
 msgid "Would you like to stop scanning?"
 msgstr "Would you like to stop scanning?"
+
+#: nakamoriplugin.py
+msgctxt "#30367"
+msgid "AniDB"
+msgstr "AniDB"
+
+#: nakamoriplugin.py
+msgctxt "#30368"
+msgid "Import"
+msgstr "Import"
+
+#: nakamoriplugin.py
+msgctxt "#30369"
+msgid "TvDB"
+msgstr "TvDB"
+
+#: nakamoriplugin.py
+msgctxt "#30370"
+msgid "MovieDB"
+msgstr "MovieDB"
+
+#: nakamoriplugin.py
+msgctxt "#30371"
+msgid "Images"
+msgstr "Images"
+
+#: nakamoriplugin.py
+msgctxt "#30372"
+msgid "Trakt"
+msgstr "Trakt"
+
+#: nakamoriplugin.py
+msgctxt "#30373"
+msgid "AVDump mismatched files"
+msgstr "AVDump mismatched files"
+
+#: nakamoriplugin.py
+msgctxt "#30374"
+msgid "Recreate all groups"
+msgstr "Recreate all groups"
+
+#: nakamoriplugin.py
+msgctxt "#30375"
+msgid "Sync hashes"
+msgstr "Sync hashes"
+
+#: nakamoriplugin.py
+msgctxt "#30376"
+msgid "Update all mediainfo"
+msgstr "Update all mediainfo"
+
+#: nakamoriplugin.py
+msgctxt "#30377"
+msgid "Update series stats"
+msgstr "Update series stats"
+
+#: nakamoriplugin.py
+msgctxt "#30378"
+msgid "Download missing data"
+msgstr "Download missing data"
+
+#: nakamoriplugin.py
+msgctxt "#30379"
+msgid "Sync votes"
+msgstr "Sync votes"
+
+#: nakamoriplugin.py
+msgctxt "#30380"
+msgid "Sync \"My List\""
+msgstr "Sync \"My List\""
+
+#: nakamoriplugin.py
+msgctxt "#30381"
+msgid "Update all info"
+msgstr "Update all info"
+
+#: nakamoriplugin.py
+msgctxt "#30382"
+msgid "Remove missing files"
+msgstr "Remove missing files"
+
+#: nakamoriplugin.py
+msgctxt "#30383"
+msgid "Remove missing files (keep in \"My List\")"
+msgstr "Remove missing files (keep in \"My List\")"
+
+#: nakamoriplugin.py
+msgctxt "#30384"
+msgid "Run import"
+msgstr "Run import"
+
+#: nakamoriplugin.py
+msgctxt "#30385"
+msgid "Regenerate links"
+msgstr "Regenerate links"
+
+#: nakamoriplugin.py
+msgctxt "#30386"
+msgid "Update all info"
+msgstr "Update all info"
+
+#: nakamoriplugin.py
+msgctxt "#30387"
+msgid "Update all info"
+msgstr "Update all info"
+
+#: nakamoriplugin.py
+msgctxt "#30388"
+msgid "Update all"
+msgstr "Update all"
+
+#: nakamoriplugin.py
+msgctxt "#30389"
+msgid "Validate all"
+msgstr "Validate all"
+
+#: nakamoriplugin.py
+msgctxt "#30390"
+msgid "Sync Trakt collection"
+msgstr "Sync Trakt collection"
+
+#: nakamoriplugin.py
+msgctxt "#30391"
+msgid "Update all info"
+msgstr "Update all info"

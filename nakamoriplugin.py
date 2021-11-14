@@ -472,9 +472,195 @@ def add_favorite(sid):
 
 @plugin.route('/shoko')
 def show_shoko():
-    # todo shoko menu
-    pass
+    # - AniDB                       (Folder)
+    # - Import                      (Folder)
+    # - TvDB                        (Folder)
+    # - MovieDB                     (Folder)
+    # - Images                      (Folder)
+    # - Trakt                       (Folder)
+    # - AVDump mismatched files     (item)
+    # - Recreate all groups         (item)
+    # - Sync hashes                 (item)
+    # - Update all mediainfo        (item)
+    # - Update series stats         (item)
 
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # AniDB (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_anidb_directory), ListItem(label=plugin_addon.getLocalizedString(30367)), True),
+        # Import (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_import_directory), ListItem(label=plugin_addon.getLocalizedString(30368)), True),
+        # TvDB (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_tvdb_directory), ListItem(label=plugin_addon.getLocalizedString(30369)), True),
+        # MovieDB (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_moviedb_directory), ListItem(label=plugin_addon.getLocalizedString(30370)), True),
+        # Images (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_images_directory), ListItem(label=plugin_addon.getLocalizedString(30371)), True),
+        # Trakt (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_trakt_directory), ListItem(label=plugin_addon.getLocalizedString(30372)), True),
+        # AVDump mismatched files (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30373)), False),
+        # Recreate all groups (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30374)), False),
+        # Sync hashes (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30375)), False),
+        # Update all mediainfo (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30376)), False),
+        # Update series stats (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30377)), False)
+    ]
+    # add folders and items to 'Shoko' directory
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+
+# # IN CASE OF - we want separate folder for Shoko actions in Shoko directory (the one in '/' route)
+# # 1. uncomment this function
+# # 2. add directory item in show_shoko()
+# # 3. delete duplicate items
+# # 4. (opt) add localized string for directory name
+# @plugin.route('/shoko/shoko')
+# def show_shoko_shoko_directory():
+#     # 'Shoko'                         (Folder)
+#     # - AVDump mismatched files       (item)
+#     # - Recreate all groups           (item)
+#     # - Sync hashes                   (item)
+#     # - Update all mediainfo          (item)
+#     # - Update series stats           (item)
+
+#     kodi_models.set_content('tvshows')
+
+#     directory_items = [
+#         # AVDump mismatched files (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30373)), False),
+#         # Recreate all groups (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30374)), False),
+#         # Sync hashes (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30375)), False),
+#         # Update all mediainfo (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30376)), False),
+#         # Update series stats (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30377)), False)
+#     ]
+#     # add items to 'Shoko' directory 
+#     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+#     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+
+@plugin.route('/shoko/anidb')
+def show_shoko_anidb_directory():
+    # 'AniDB'                           (Folder)
+    #     - Download missing data       (item)
+    #     - Sync votes                  (item)
+    #     - Sync "My List"              (item)
+    #     - Update all info             (item)
+
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # Download missing data (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30378)), False),
+        # Sync votes (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30379)), False),
+        # Sync "My List" (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30380)), False),
+        # Update all info (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30381)), False)
+    ]
+    # add items to 'AniDB' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/import')
+def show_shoko_import_directory():
+    # Import                                            (Folder)
+    #     - Remove missing files                        (item)
+    #     - Remove missing files (keep in "My List")    (item)
+    #     - Run import                                  (item)
+
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # Remove missing files (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30382)), False),
+        # Remove missing files (keep in "My List") (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30383)), False),
+        # Run import (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30384)), False)
+    ]
+    # add items to 'Import' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/tvdb')
+def show_shoko_tvdb_directory():
+    # TvDB                      (Folder)
+    #     - Regenerate links    (item)
+    #     - Update all info     (item)
+
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # Regenerate links (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30385)), False),
+        # Update all info (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30386)), False)
+    ]
+    # add items to 'TvDB' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/moviedb')
+def show_shoko_moviedb_directory():
+    # MovieDB                   (Folder)
+    #     - Update all info     (item)
+
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # Update all info (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30387)), False)
+    ]
+    # add items to 'MovieDB' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/images')
+def show_shoko_images_directory():
+    # Images                (Folder)
+    #     - Update all      (item)
+    #     - Validate all    (item)
+
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # Update all (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30388)), False),
+        # Validate all (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30389)), False)
+    ]
+    # add items to 'Images' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/trakt')
+def show_shoko_trakt_directory():
+    # Trakt                         (Folder)
+    #     - Sync Trakt collection   (item)
+    #     - Update all info         (item)
+
+    kodi_models.set_content('tvshows')
+
+    directory_items = [
+        # Sync Trakt collection (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30390)), False),
+        # Update all info (url, ListItem, isFolder)
+        ('', ListItem(label=plugin_addon.getLocalizedString(30391)), False)
+    ]
+    # add items to 'Trakt' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
 @plugin.route('/settings')
 def show_settings():
