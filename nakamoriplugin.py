@@ -485,6 +485,8 @@ def show_shoko():
     # - Update series stats         (item)
 
     kodi_models.set_content('tvshows')
+    # set category to '.. / Shoko'
+    kodi_models.set_category(plugin_addon.getLocalizedString(30115))
 
     directory_items = [
         # AniDB (url, ListItem, isFolder)
@@ -530,6 +532,7 @@ def show_shoko():
 #     # - Update series stats           (item)
 
 #     kodi_models.set_content('tvshows')
+#     kodi_models.set_category(plugin_addon.getLocalizedString())
 
 #     directory_items = [
 #         # AVDump mismatched files (url, ListItem, isFolder)
@@ -557,6 +560,8 @@ def show_shoko_anidb_directory():
     #     - Update all info             (item)
 
     kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / AniDB'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30367)}')
 
     directory_items = [
         # Download missing data (url, ListItem, isFolder)
@@ -580,6 +585,8 @@ def show_shoko_import_directory():
     #     - Run import                                  (item)
 
     kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Import'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30368)}')
 
     directory_items = [
         # Remove missing files (url, ListItem, isFolder)
@@ -600,6 +607,8 @@ def show_shoko_tvdb_directory():
     #     - Update all info     (item)
 
     kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / TvDB'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30369)}')
 
     directory_items = [
         # Regenerate links (url, ListItem, isFolder)
@@ -617,6 +626,8 @@ def show_shoko_moviedb_directory():
     #     - Update all info     (item)
 
     kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / MovieDB'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30370)}')
 
     directory_items = [
         # Update all info (url, ListItem, isFolder)
@@ -633,6 +644,8 @@ def show_shoko_images_directory():
     #     - Validate all    (item)
 
     kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Images'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30371)}')
 
     directory_items = [
         # Update all (url, ListItem, isFolder)
@@ -651,6 +664,8 @@ def show_shoko_trakt_directory():
     #     - Update all info         (item)
 
     kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Trakt'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30372)}')
 
     directory_items = [
         # Sync Trakt collection (url, ListItem, isFolder)
