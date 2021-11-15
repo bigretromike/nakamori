@@ -6,6 +6,7 @@ import xbmcgui
 from xbmcgui import ListItem
 import xbmcplugin
 import re
+from api.shoko.v3 import api3
 import routing
 
 from lib.kodi_utils import bold
@@ -25,12 +26,16 @@ if xbmc.getCondVisibility(f'System.HasAddon({plugin_addon.getSetting("icon_pack"
 
 http = "http://" + plugin_addon.getSetting('ipaddress') + ":" + str(plugin_addon.getSettingInt('port')) + "%s"
 
-api = api2.Client(address=plugin_addon.getSetting('ipaddress'),
+apiv2 = api2.Client(address=plugin_addon.getSetting('ipaddress'),
+                  port=plugin_addon.getSettingInt('port'),
+                  apikey=plugin_addon.getSetting('apikey'),
+                  timeout=plugin_addon.getSettingInt('timeout'))
+apiv3 = api3.Client(address=plugin_addon.getSetting('ipaddress'),
                   port=plugin_addon.getSettingInt('port'),
                   apikey=plugin_addon.getSetting('apikey'),
                   timeout=plugin_addon.getSettingInt('timeout'))
 xbmc.log(f'=== enabling cache: {plugin_addon.getSettingBool("enableCache")} ===', xbmc.LOGDEBUG)
-api.set_cache(plugin_addon.getSettingBool('enableCache'))
+apiv2.set_cache(plugin_addon.getSettingBool('enableCache'))
 
 
 def spoiler_control_unwatched_ep_title(title: str, hide: bool, this_type: ThisType) -> str:
@@ -404,14 +409,14 @@ def set_watch_mark(mark_type: ThisType = ThisType.episodes, mark_id: int = 0, wa
     if plugin_addon.getSettingBool('syncwatched'):
         if watched:
             if mark_type == ThisType.episodes:
-                api.episode_watch(mark_id)
+                apiv2.episode_watch(mark_id)
             elif mark_type == ThisType.series:
-                api.serie_watch(mark_id)
+                apiv2.serie_watch(mark_id)
         else:
             if mark_type == ThisType.episodes:
-                api.episode_unwatch(mark_id)
+                apiv2.episode_unwatch(mark_id)
             elif mark_type == ThisType.series:
-                api.serie_unwatch(mark_id)
+                apiv2.serie_unwatch(mark_id)
 
         if plugin_addon.getSetting('watchedbox') == 'true':
             msg = plugin_addon.getLocalizedString(30201) + ' ' + (plugin_addon.getLocalizedString(30202) if watched else plugin_addon.getLocalizedString(30203))
@@ -803,7 +808,7 @@ def show_search_result_menu(query: str, fuzzy: bool, tag: bool) -> List[api2mode
     q.fuzzy = 0
     if fuzzy:
         q.fuzzy = 1
-    f = api.search(q)
+    f = apiv2.search(q)
 
     for g in f.groups:
         for s in g.series:
@@ -819,7 +824,7 @@ def show_az_search_results(query: str) -> List[api2models.Serie]:
     q.level = 0
     q.allpics = 1
     q.fuzzy = 0
-    f = api.serie_startswith(q)
+    f = apiv2.serie_startswith(q)
 
     for g in f.groups:
         for s in g.series:
@@ -911,7 +916,7 @@ def list_all_favorites() -> List[Tuple[int, ListItem]]:
     q.allpics = 1
     for ss in favorite_history:
         q.id = ss[0]
-        s = api.series_get_by_id(q)
+        s = apiv2.series_get_by_id(q)
         li = get_listitem_from_serie(s)
         remove_item = (plugin_addon.getLocalizedString(30213), f'RunScript(plugin.video.nakamori, /dialog/favorite/{q.id}/remove)')
         li.addContextMenuItems([remove_item])
@@ -930,7 +935,7 @@ def list_all_filters() -> List[Tuple[int, ThisType, ListItem, str]]:
     q.allpics = 1
     q.level = 0
     q.tagfilter = get_tag_setting_flag()
-    x = api.filter(q)
+    x = apiv2.filter(q)
     set_category('')
 
     show_unsort = plugin_addon.getSettingBool('show_unsort')
@@ -958,7 +963,7 @@ def list_all_filter_by_filters_id(id: int) -> List[Tuple[int, ThisType, ListItem
     q.id = id
     q.level = 1
     q.tagfilter = get_tag_setting_flag()
-    x = api.filter(q)
+    x = apiv2.filter(q)
     set_category(x.name)
 
     for f in x.filters:
@@ -973,7 +978,7 @@ def list_all_groups_by_filter_id(id: int) -> List[Tuple[int, ThisType, ListItem]
     q.id = id
     q.level = 2  # 1 - empty series
     q.tagfilter = get_tag_setting_flag()
-    x = api.filter(q)
+    x = apiv2.filter(q)
 
     set_category(x.name)
 
@@ -994,7 +999,7 @@ def list_all_series_by_filter_id(id: int) -> List[Tuple[int, ListItem]]:
     q.id = id
     q.level = 1
     q.tagfilter = get_tag_setting_flag()
-    x = api.filter(q)
+    x = apiv2.filter(q)
 
     for s in x.groups:
         list_of_listitems.append((s.id, get_listitem_from_group(s)))
@@ -1008,7 +1013,7 @@ def list_all_series_by_group_id(gid: int) -> List[Tuple[int, ListItem]]:
     q.id = gid
     q.level = 1
     q.tagfilter = get_tag_setting_flag()
-    x = api.group(q)
+    x = apiv2.group(q)
 
     for s in x.series:
         list_of_listitems.append((s.id, get_listitem_from_serie(s)))
@@ -1025,7 +1030,7 @@ def list_episodes_for_series_by_series_id(s_id: int) -> Tuple[List[Tuple[int, Th
     if plugin_addon.getSettingBool('file_resume'):
         q.level = 2  # we need eps-offset if we want resume
     q.tagfilter = get_tag_setting_flag()
-    x = api.series_get_by_id(q)
+    x = apiv2.series_get_by_id(q)
 
     series_title, non_color_title = get_proper_title(x)
 
@@ -1040,13 +1045,13 @@ def list_all_recent_series_and_episodes() -> List[Tuple[int, ThisType, ListItem]
     q = api2models.QueryOptions()
     q.allpics = 1
     q.level = 1
-    s = api.series_get_recent(q)
+    s = apiv2.series_get_recent(q)
     for ss in s:
         list_of_li.append((ss.id, ThisType.series, get_listitem_from_serie(ss)))
-    e = api.episodes_get_recent(q)
+    e = apiv2.episodes_get_recent(q)
     for ee in e:
         list_of_li.append((ee.id, ThisType.episodes, get_listitem_from_episode(ee, '', None, s.id)))
-    f = api.file_recent()
+    f = apiv2.file_recent()
     for ff in f:
         list_of_li.append((ff.id, ThisType.raw, get_listitem_from_rawfile(ff)))
     return list_of_li
@@ -1057,14 +1062,14 @@ def get_file_id_from_ep_id(ep_id: int) -> List[api2models.RawFile]:
     q.id = ep_id
     q.level = 1
     q.tagfilter = get_tag_setting_flag()
-    x = api.episode_get(q)
+    x = apiv2.episode_get(q)
     return x.files
 
 
 def list_all_unsorted() -> List[Tuple[int, ListItem]]:
     list_of_listitems = []
     unsort_limit = plugin_addon.getSettingInt('unsort_limit')
-    x = api.file_unsort(level=1, limit=unsort_limit)
+    x = apiv2.file_unsort(level=1, limit=unsort_limit)
 
     for r in x:
         list_of_listitems.append((r.id, get_listitem_from_rawfile(r)))
@@ -1166,7 +1171,7 @@ def did_you_rate_every_episode(series_id: int) -> Tuple[bool, str]:
     suggest_rating_based_on_episode_rating = []
     suggest_rating = 0
 
-    s = api.series_get_by_id(q)
+    s = apiv2.series_get_by_id(q)
     for ep in s.eps:
         if ep.userrating is None or (int(ep.userrating) == 0 and map_episodetype_to_thistype(ep.eptype) == ThisType.episodes):
             all_rated = False
@@ -1197,7 +1202,7 @@ def vote_for_series(series_id: int):
     xbmc.executebuiltin('Notification(%s, %s %s, 7500, %s)' % (plugin_addon.getLocalizedString(30321),
                                                                plugin_addon.getLocalizedString(30322),
                                                                str(my_vote), plugin_addon.getAddonInfo('icon')))
-    api.serie_vote(id=series_id, score=my_vote)
+    apiv2.serie_vote(id=series_id, score=my_vote)
 
 
 def vote_for_episode(ep_id: int):
@@ -1211,7 +1216,7 @@ def vote_for_episode(ep_id: int):
     xbmc.executebuiltin('Notification(%s, %s %s, 7500, %s)' % (plugin_addon.getLocalizedString(30323),
                                                                plugin_addon.getLocalizedString(30322),
                                                                str(my_vote), plugin_addon.getAddonInfo('icon')))
-    api.episode_vote(id=ep_id, score=my_vote)
+    apiv2.episode_vote(id=ep_id, score=my_vote)
     if plugin_addon.getSettingBool('enableCache'):
         url = cache.get_last()
         xbmc.log(f'=== clear cache for watch mark: {url}', xbmc.LOGINFO)
@@ -1254,5 +1259,5 @@ def add_continue_item(series: api2models.Serie, episode_type: ThisType) -> ListI
 def get_series_id_from_ep_id(ep_id: int) -> api2models.Serie:
     q = api2models.QueryOptions()
     q.id = ep_id
-    x = api.series_from_ep(q)
+    x = apiv2.series_from_ep(q)
     return x
