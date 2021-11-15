@@ -213,6 +213,7 @@ class Client:
         """
         Updates all series stats such as watched state and missing files.
         """
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v2/Modules/Common.cs
         return self.api_client.call(url='/api/stats_update', call_type=APIType.GET)
     
     def mediainfo_update(self):
@@ -222,12 +223,14 @@ class Client:
         # typo in API endpoint?
         # should be media? meta?
         # assumed to be mediainfo
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v2/Modules/Common.cs
         return self.api_client.call(url='/api/medainfo_update', call_type=APIType.GET)
     
-    def hash_sync(self):
+    def sync_hashes(self):
         """
         Sync Hashes - download/upload hashes from/to webcache
         """
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v2/Modules/Common.cs
         return self.api_client.call(url='/api/hash/sync', call_type=APIType.GET)
     
     def foler_rescan(self, id: int):
@@ -419,6 +422,7 @@ class Client:
     
     def av_dump_mismatched_files(self):
         """Gets files whose data does not match AniDB and dump it"""
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v2/Modules/Common.cs
         return self.api_client.call(url='/api/avdumpmismatchedfiles', call_type=APIType.GET)
     
     def file_deprecated(self, level: int):
@@ -896,7 +900,7 @@ class Client:
         """Scan TvDB"""
         return self.api_client.call(url='/api/tvdb/update', call_type=APIType.GET)
     
-    def tvdb_regenrate_links(self):
+    def tvdb_regenerate_links(self):
         # 500: Internal Server Error
         """Regenerate All Episode Links"""
         return self.api_client.call(url='/api/tvdb/regenlinks', call_type=APIType.GET)
