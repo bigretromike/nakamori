@@ -478,11 +478,11 @@ def show_shoko():
     # - MovieDB                     (Folder)
     # - Images                      (Folder)
     # - Trakt                       (Folder)
-    # - AVDump mismatched files     (item)
-    # - Recreate all groups         (item)
-    # - Sync hashes                 (item)
-    # - Update all mediainfo        (item)
-    # - Update series stats         (item)
+    # - AVDump mismatched files     (item) apiv3.avdump_mismatched_files
+    # - Recreate all groups         (item) apiv3.recreate_all_groups
+    # - Sync hashes                 (item) apiv2.sync_hashes (apiv3.sync_hashes always returns BadRequest)
+    # - Update all mediainfo        (item) apiv3.update_all_mediainfo
+    # - Update series stats         (item) apiv3.update_series_stats
 
     kodi_models.set_content('tvshows')
     # set category to '.. / Shoko'
@@ -502,20 +502,60 @@ def show_shoko():
         # Trakt (url, ListItem, isFolder)
         (plugin.url_for(show_shoko_trakt_directory), ListItem(label=plugin_addon.getLocalizedString(30372)), True),
         # AVDump mismatched files (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30373)), False),
+        (plugin.url_for(shoko_avdump_mismatched_files), ListItem(label=plugin_addon.getLocalizedString(30373)), False),
         # Recreate all groups (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30374)), False),
+        (plugin.url_for(shoko_recreate_all_groups), ListItem(label=plugin_addon.getLocalizedString(30374)), False),
         # Sync hashes (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30375)), False),
+        (plugin.url_for(shoko_sync_hashes), ListItem(label=plugin_addon.getLocalizedString(30375)), False),
         # Update all mediainfo (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30376)), False),
+        (plugin.url_for(shoko_update_all_mediainfo), ListItem(label=plugin_addon.getLocalizedString(30376)), False),
         # Update series stats (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30377)), False)
+        (plugin.url_for(shoko_update_series_stats), ListItem(label=plugin_addon.getLocalizedString(30377)), False)
     ]
     # add folders and items to 'Shoko' directory
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
+@plugin.route('/shoko/avdump_mismatched_files')
+def shoko_avdump_mismatched_files():
+    kodi_models.shoko_avdump_mismatched_files()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 5000, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30373),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/recreate_all_groups')
+def shoko_recreate_all_groups():
+    kodi_models.shoko_recreate_all_groups()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 5000, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30374),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/sync_hashes')
+def shoko_sync_hashes():
+    kodi_models.shoko_sync_hashes()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 5000, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30375),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/update_all_mediainfo')
+def shoko_update_all_mediainfo():
+    kodi_models.shoko_update_all_mediainfo()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 5000, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30376),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/update_series_stats')
+def shoko_update_series_stats():
+    kodi_models.shoko_update_series_stats()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 5000, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30377),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))                                                                                                                                                                                                                                                                                
 
 # # IN CASE OF - we want separate folder for Shoko actions in Shoko directory (the one in '/' route)
 # # 1. uncomment this function
@@ -525,11 +565,11 @@ def show_shoko():
 # @plugin.route('/shoko/shoko')
 # def show_shoko_shoko_directory():
 #     # 'Shoko'                         (Folder)
-#     # - AVDump mismatched files       (item)
-#     # - Recreate all groups           (item)
-#     # - Sync hashes                   (item)
-#     # - Update all mediainfo          (item)
-#     # - Update series stats           (item)
+#     # - AVDump mismatched files       (item) apiv3.avdump_mismatched_files
+#     # - Recreate all groups           (item) apiv3.recreate_all_groups
+#     # - Sync hashes                   (item) apiv2.sync_hashes (apiv3.sync_hashes always returns BadRequest)
+#     # - Update all mediainfo          (item) apiv3.update_all_mediainfo
+#     # - Update series stats           (item) apiv3.update_series_stats
 
 #     kodi_models.set_content('tvshows')
 #     kodi_models.set_category(plugin_addon.getLocalizedString())

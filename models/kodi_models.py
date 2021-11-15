@@ -1261,3 +1261,18 @@ def get_series_id_from_ep_id(ep_id: int) -> api2models.Serie:
     q.id = ep_id
     x = apiv2.series_from_ep(q)
     return x
+
+def shoko_avdump_mismatched_files():
+    apiv3.avdump_mismatched_files()
+
+def shoko_recreate_all_groups():
+    apiv3.recreate_all_groups()
+
+def shoko_sync_hashes():
+    apiv2.sync_hashes()
+
+def shoko_update_all_mediainfo():
+    apiv3.update_all_mediainfo()
+
+def shoko_update_series_stats():
+    apiv3.update_series_stats()

@@ -1677,3 +1677,8 @@ msgstr "Sync Trakt collection"
 msgctxt "#30391"
 msgid "Update all info"
 msgstr "Update all info"
+
+#: nakamoriplugin.py
+msgctxt "#30392"
+msgid "The command has been sent"
+msgstr "The command has been sent"
