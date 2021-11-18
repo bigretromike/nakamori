@@ -75,8 +75,12 @@ class Client:
     def sync_trakt(self):
         return self._action_api_('SyncTrakt')
 
-    def remove_missing_files(self):
-        return self._action_api_('RemoveMissingFiles/{removeFromMyList}')
+    def remove_missing_files(self, removeFromMyList: bool = True):
+        if removeFromMyList:
+            command = 'RemoveMissingFiles/true'
+        else:
+            command = 'RemoveMissingFiles/false'
+        return self._action_api_(command)
 
     def update_all_tvdbinfo(self):
         return self._action_api_('UpdateAllTvDBInfo')

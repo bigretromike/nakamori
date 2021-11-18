@@ -1560,8 +1560,8 @@ msgstr "AniDB"
 
 #: nakamoriplugin.py
 msgctxt "#30368"
-msgid "Import"
-msgstr "Import"
+msgid "Import folders"
+msgstr "Import folders"
 
 #: nakamoriplugin.py
 msgctxt "#30369"
@@ -1682,3 +1682,8 @@ msgstr "Update all info"
 msgctxt "#30392"
 msgid "The command has been sent"
 msgstr "The command has been sent"
+
+#: nakamoriplugin.py
+msgctxt "#30393"
+msgid "Rescan folder"
+msgstr "Rescan folder"

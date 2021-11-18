@@ -1276,3 +1276,28 @@ def shoko_update_all_mediainfo():
 
 def shoko_update_series_stats():
     apiv3.update_series_stats()
+
+def get_import_folders_items() -> List[Tuple[str, ListItem, bool]]:
+    items: List[Tuple[str, ListItem, bool]] = []
+    for folder in apiv2.folder_list():
+        item = (
+            # import folder (
+            #   url, 
+            #   ListItem, 
+            #   isFolder
+            # )
+            f'plugin://plugin.video.nakamori/shoko/import_folders/{folder.ImportFolderName}-{folder.ImportFolderID}', 
+            ListItem(label=folder.ImportFolderName), 
+            True
+        )
+        items.append(item)
+    return items
+
+def import_folders_run_import_all():
+    apiv3.import_folder()
+
+def import_folder_remove_missing_files(removeFromMyList: bool = True):
+    apiv3.remove_missing_files(removeFromMyList)
+
+def user_import_folder_rescan(id):
+    apiv3.scan_import_folder_by_id(id)
