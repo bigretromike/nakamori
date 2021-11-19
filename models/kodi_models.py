@@ -1319,3 +1319,6 @@ def tvdb_regenerate_links():
 
 def tvdb_update_all_info():
     apiv3.update_all_tvdbinfo()
+
+def moviedb_update_all_info():
+    apiv3.update_all_moviedb_info()

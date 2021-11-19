@@ -775,11 +775,19 @@ def show_shoko_moviedb_directory():
 
     directory_items = [
         # Update all info (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30387)), False)
+        (plugin.url_for(moviedb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30387)), False)
     ]
     # add items to 'MovieDB' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/moviedb/update_all_info')
+def moviedb_update_all_info():
+    kodi_models.moviedb_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30370),
+                                                                   plugin_addon.getLocalizedString(30387),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
 
 @plugin.route('/shoko/images')
 def show_shoko_images_directory():
