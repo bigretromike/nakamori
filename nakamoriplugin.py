@@ -605,17 +605,49 @@ def show_shoko_anidb_directory():
 
     directory_items = [
         # Download missing data (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30378)), False),
+        (plugin.url_for(anidb_download_missing_data), ListItem(label=plugin_addon.getLocalizedString(30378)), False),
         # Sync votes (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30379)), False),
+        (plugin.url_for(anidb_sync_votes), ListItem(label=plugin_addon.getLocalizedString(30379)), False),
         # Sync "My List" (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30380)), False),
+        (plugin.url_for(anidb_sync_my_list), ListItem(label=plugin_addon.getLocalizedString(30380)), False),
         # Update all info (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30381)), False)
+        (plugin.url_for(anidb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30381)), False)
     ]
     # add items to 'AniDB' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/anidb/download_missing_data')
+def anidb_download_missing_data():
+    kodi_models.anidb_download_missing_data()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30378),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/anidb/sync_votes')
+def anidb_sync_votes():
+    kodi_models.anidb_sync_votes()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30379),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/anidb/sync_my_list')
+def anidb_sync_my_list():
+    kodi_models.anidb_sync_my_list()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30380),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/anidb/update_all_info')
+def anidb_update_all_info():
+    kodi_models.anidb_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30381),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
 
 @plugin.route('/shoko/import_folders')
 def show_shoko_import_folders_directory():

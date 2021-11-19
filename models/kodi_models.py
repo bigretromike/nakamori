@@ -1301,3 +1301,15 @@ def import_folder_remove_missing_files(removeFromMyList: bool = True):
 
 def user_import_folder_rescan(id):
     apiv3.scan_import_folder_by_id(id)
+
+def anidb_download_missing_data():
+    apiv3.download_missing_anidb_anime_data()
+
+def anidb_sync_votes():
+    apiv3.sync_votes()
+
+def anidb_sync_my_list():
+    apiv3.sync_mylist()
+
+def anidb_update_all_info():    
+    apiv3.update_all_anidb_info()
