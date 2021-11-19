@@ -1328,3 +1328,9 @@ def images_update_all():
 
 def images_validate_all():
     apiv3.validate_all_images()
+
+def trakt_sync_trakt_collection():
+    apiv3.sync_trakt()
+
+def trakt_update_all_info():
+    apiv3.update_all_trakt_info()

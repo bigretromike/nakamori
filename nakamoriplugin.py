@@ -839,13 +839,29 @@ def show_shoko_trakt_directory():
 
     directory_items = [
         # Sync Trakt collection (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30390)), False),
+        (plugin.url_for(trakt_sync_trakt_collection), ListItem(label=plugin_addon.getLocalizedString(30390)), False),
         # Update all info (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30391)), False)
+        (plugin.url_for(trakt_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30391)), False)
     ]
     # add items to 'Trakt' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/trakt/sync_trakt_collection')
+def trakt_sync_trakt_collection():
+    kodi_models.trakt_sync_trakt_collection()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30372),
+                                                                   plugin_addon.getLocalizedString(30390),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/trakt/update_all_info')
+def trakt_update_all_info():
+    kodi_models.trakt_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30372),
+                                                                   plugin_addon.getLocalizedString(30391),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
 
 @plugin.route('/settings')
 def show_settings():
