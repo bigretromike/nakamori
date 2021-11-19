@@ -472,9 +472,396 @@ def add_favorite(sid):
 
 @plugin.route('/shoko')
 def show_shoko():
-    # todo shoko menu
-    pass
+    # - AniDB                       (Folder)
+    # - Import folders              (Folder)
+    # - TvDB                        (Folder)
+    # - MovieDB                     (Folder)
+    # - Images                      (Folder)
+    # - Trakt                       (Folder)
+    # - AVDump mismatched files     (item) apiv3.avdump_mismatched_files
+    # - Recreate all groups         (item) apiv3.recreate_all_groups
+    # - Sync hashes                 (item) apiv2.sync_hashes (apiv3.sync_hashes always returns BadRequest)
+    # - Update all mediainfo        (item) apiv3.update_all_mediainfo
+    # - Update series stats         (item) apiv3.update_series_stats
 
+    kodi_models.set_content('tvshows')
+    # set category to '.. / Shoko'
+    kodi_models.set_category(plugin_addon.getLocalizedString(30115))
+
+    directory_items = [
+        # AniDB (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_anidb_directory), ListItem(label=plugin_addon.getLocalizedString(30367)), True),
+        # Import folders (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_import_folders_directory), ListItem(label=plugin_addon.getLocalizedString(30368)), True),
+        # TvDB (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_tvdb_directory), ListItem(label=plugin_addon.getLocalizedString(30369)), True),
+        # MovieDB (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_moviedb_directory), ListItem(label=plugin_addon.getLocalizedString(30370)), True),
+        # Images (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_images_directory), ListItem(label=plugin_addon.getLocalizedString(30371)), True),
+        # Trakt (url, ListItem, isFolder)
+        (plugin.url_for(show_shoko_trakt_directory), ListItem(label=plugin_addon.getLocalizedString(30372)), True),
+        # AVDump mismatched files (url, ListItem, isFolder)
+        (plugin.url_for(shoko_avdump_mismatched_files), ListItem(label=plugin_addon.getLocalizedString(30373)), False),
+        # Recreate all groups (url, ListItem, isFolder)
+        (plugin.url_for(shoko_recreate_all_groups), ListItem(label=plugin_addon.getLocalizedString(30374)), False),
+        # Sync hashes (url, ListItem, isFolder)
+        (plugin.url_for(shoko_sync_hashes), ListItem(label=plugin_addon.getLocalizedString(30375)), False),
+        # Update all mediainfo (url, ListItem, isFolder)
+        (plugin.url_for(shoko_update_all_mediainfo), ListItem(label=plugin_addon.getLocalizedString(30376)), False),
+        # Update series stats (url, ListItem, isFolder)
+        (plugin.url_for(shoko_update_series_stats), ListItem(label=plugin_addon.getLocalizedString(30377)), False)
+    ]
+    # add folders and items to 'Shoko' directory
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+
+@plugin.route('/shoko/avdump_mismatched_files')
+def shoko_avdump_mismatched_files():
+    kodi_models.shoko_avdump_mismatched_files()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30373),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/recreate_all_groups')
+def shoko_recreate_all_groups():
+    kodi_models.shoko_recreate_all_groups()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30374),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/sync_hashes')
+def shoko_sync_hashes():
+    kodi_models.shoko_sync_hashes()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30375),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/update_all_mediainfo')
+def shoko_update_all_mediainfo():
+    kodi_models.shoko_update_all_mediainfo()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30376),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/update_series_stats')
+def shoko_update_series_stats():
+    kodi_models.shoko_update_series_stats()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30115),
+                                                                   plugin_addon.getLocalizedString(30377),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))                                                                                                                                                                                                                                                                                
+
+# # IN CASE OF - we want separate folder for Shoko actions in Shoko directory (the one in '/' route)
+# # 1. uncomment this function
+# # 2. add directory item in show_shoko()
+# # 3. delete duplicate items
+# # 4. (opt) add localized string for directory name
+# @plugin.route('/shoko/shoko')
+# def show_shoko_shoko_directory():
+#     # 'Shoko'                         (Folder)
+#     # - AVDump mismatched files       (item) apiv3.avdump_mismatched_files
+#     # - Recreate all groups           (item) apiv3.recreate_all_groups
+#     # - Sync hashes                   (item) apiv2.sync_hashes (apiv3.sync_hashes always returns BadRequest)
+#     # - Update all mediainfo          (item) apiv3.update_all_mediainfo
+#     # - Update series stats           (item) apiv3.update_series_stats
+
+#     kodi_models.set_content('tvshows')
+#     kodi_models.set_category(plugin_addon.getLocalizedString())
+
+#     directory_items = [
+#         # AVDump mismatched files (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30373)), False),
+#         # Recreate all groups (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30374)), False),
+#         # Sync hashes (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30375)), False),
+#         # Update all mediainfo (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30376)), False),
+#         # Update series stats (url, ListItem, isFolder)
+#         ('', ListItem(label=plugin_addon.getLocalizedString(30377)), False)
+#     ]
+#     # add items to 'Shoko' directory 
+#     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+#     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+
+@plugin.route('/shoko/anidb')
+def show_shoko_anidb_directory():
+    # 'AniDB'                           (Folder)
+    #     - Download missing data       (item)
+    #     - Sync votes                  (item)
+    #     - Sync "My List"              (item)
+    #     - Update all info             (item)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / AniDB'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30367)}')
+
+    directory_items = [
+        # Download missing data (url, ListItem, isFolder)
+        (plugin.url_for(anidb_download_missing_data), ListItem(label=plugin_addon.getLocalizedString(30378)), False),
+        # Sync votes (url, ListItem, isFolder)
+        (plugin.url_for(anidb_sync_votes), ListItem(label=plugin_addon.getLocalizedString(30379)), False),
+        # Sync "My List" (url, ListItem, isFolder)
+        (plugin.url_for(anidb_sync_my_list), ListItem(label=plugin_addon.getLocalizedString(30380)), False),
+        # Update all info (url, ListItem, isFolder)
+        (plugin.url_for(anidb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30381)), False)
+    ]
+    # add items to 'AniDB' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/anidb/download_missing_data')
+def anidb_download_missing_data():
+    kodi_models.anidb_download_missing_data()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30378),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/anidb/sync_votes')
+def anidb_sync_votes():
+    kodi_models.anidb_sync_votes()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30379),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/anidb/sync_my_list')
+def anidb_sync_my_list():
+    kodi_models.anidb_sync_my_list()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30380),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/anidb/update_all_info')
+def anidb_update_all_info():
+    kodi_models.anidb_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30367),
+                                                                   plugin_addon.getLocalizedString(30381),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/import_folders')
+def show_shoko_import_folders_directory():
+    # Import folders                                    (Folder)
+    #     - Remove missing files                        (item)
+    #     - Remove missing files (keep in "My List")    (item)
+    #     - Run import                                  (item)
+    #     - (User import folders)                       (Folders)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Import folders'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30368)}')
+
+
+    directory_items = [
+        # Remove missing files (url, ListItem, isFolder)
+        (plugin.url_for(import_folder_remove_missing_files), ListItem(label=plugin_addon.getLocalizedString(30382)), False),
+        # Remove missing files (keep in "My List") (url, ListItem, isFolder)
+        (plugin.url_for(import_folder_remove_missing_files_keep), ListItem(label=plugin_addon.getLocalizedString(30383)), False),
+        # Run import (url, ListItem, isFolder)
+        (plugin.url_for(import_folder_run_import_all), ListItem(label=plugin_addon.getLocalizedString(30384)), False)
+    ]
+    
+    # get list items of import folders
+    directory_items += kodi_models.get_import_folders_items()
+
+    # add items to 'Import folders' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/import_folders/remove_missing_files')
+def import_folder_remove_missing_files():
+    kodi_models.import_folder_remove_missing_files(True)
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30368),
+                                                                   plugin_addon.getLocalizedString(30382),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/import_folders/remove_missing_files_keep')
+def import_folder_remove_missing_files_keep():
+    kodi_models.import_folder_remove_missing_files(False)
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30368),
+                                                                   plugin_addon.getLocalizedString(30383),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/import_folders/run_import_all')
+def import_folder_run_import_all():
+    kodi_models.import_folders_run_import_all()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30368),
+                                                                   plugin_addon.getLocalizedString(30384),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/import_folders/<folder_name>-<folder_id>')
+def show_shoko_user_import_folder_directory(folder_name, folder_id):
+    # Import folder             (folder)
+    #     - Rescan folder       (item)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Import folders / folder_name'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30368)} / {folder_name}')
+
+    directory_items = [
+        # Rescan folder (url, ListItem, isFolder)
+        (plugin.url_for(user_import_folder_rescan, folder_name, folder_id), ListItem(label=plugin_addon.getLocalizedString(30393)), False),
+    ]
+
+    # add items to this user's import folder directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/import_folders/<folder_name>-<folder_id>/rescan')
+def user_import_folder_rescan(folder_name, folder_id):
+    kodi_models.user_import_folder_rescan(folder_id)
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (folder_name,
+                                                                   plugin_addon.getLocalizedString(30393),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/tvdb')
+def show_shoko_tvdb_directory():
+    # TvDB                      (Folder)
+    #     - Regenerate links    (item)
+    #     - Update all info     (item)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / TvDB'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30369)}')
+
+    directory_items = [
+        # Regenerate links (url, ListItem, isFolder)
+        (plugin.url_for(tvdb_regenerate_links), ListItem(label=plugin_addon.getLocalizedString(30385)), False),
+        # Update all info (url, ListItem, isFolder)
+        (plugin.url_for(tvdb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30386)), False)
+    ]
+    # add items to 'TvDB' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/tvdb/regenerate_links')
+def tvdb_regenerate_links():
+    kodi_models.tvdb_regenerate_links()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30369),
+                                                                   plugin_addon.getLocalizedString(30385),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/tvdb/update_all_info')
+def tvdb_update_all_info():
+    kodi_models.tvdb_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30369),
+                                                                   plugin_addon.getLocalizedString(30386),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/moviedb')
+def show_shoko_moviedb_directory():
+    # MovieDB                   (Folder)
+    #     - Update all info     (item)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / MovieDB'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30370)}')
+
+    directory_items = [
+        # Update all info (url, ListItem, isFolder)
+        (plugin.url_for(moviedb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30387)), False)
+    ]
+    # add items to 'MovieDB' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/moviedb/update_all_info')
+def moviedb_update_all_info():
+    kodi_models.moviedb_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30370),
+                                                                   plugin_addon.getLocalizedString(30387),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/images')
+def show_shoko_images_directory():
+    # Images                (Folder)
+    #     - Update all      (item)
+    #     - Validate all    (item)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Images'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30371)}')
+
+    directory_items = [
+        # Update all (url, ListItem, isFolder)
+        (plugin.url_for(images_update_all), ListItem(label=plugin_addon.getLocalizedString(30388)), False),
+        # Validate all (url, ListItem, isFolder)
+        (plugin.url_for(images_validate_all), ListItem(label=plugin_addon.getLocalizedString(30389)), False)
+    ]
+    # add items to 'Images' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/images/update_all')
+def images_update_all():
+    kodi_models.images_update_all()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30371),
+                                                                   plugin_addon.getLocalizedString(30388),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+
+@plugin.route('/shoko/images/validate_all')
+def images_validate_all():
+    kodi_models.images_validate_all()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30371),
+                                                                   plugin_addon.getLocalizedString(30389),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+
+@plugin.route('/shoko/trakt')
+def show_shoko_trakt_directory():
+    # Trakt                         (Folder)
+    #     - Sync Trakt collection   (item)
+    #     - Update all info         (item)
+
+    kodi_models.set_content('tvshows')
+    # set category to ' .. / Shoko / Trakt'
+    kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30372)}')
+
+    directory_items = [
+        # Sync Trakt collection (url, ListItem, isFolder)
+        (plugin.url_for(trakt_sync_trakt_collection), ListItem(label=plugin_addon.getLocalizedString(30390)), False),
+        # Update all info (url, ListItem, isFolder)
+        (plugin.url_for(trakt_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30391)), False)
+    ]
+    # add items to 'Trakt' directory 
+    addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
+    endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/trakt/sync_trakt_collection')
+def trakt_sync_trakt_collection():
+    kodi_models.trakt_sync_trakt_collection()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30372),
+                                                                   plugin_addon.getLocalizedString(30390),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/trakt/update_all_info')
+def trakt_update_all_info():
+    kodi_models.trakt_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30372),
+                                                                   plugin_addon.getLocalizedString(30391),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
 
 @plugin.route('/settings')
 def show_settings():

@@ -62,6 +62,11 @@ class Client:
         return self._action_api_('RunImport')
 
     def sync_hashes(self):
+        """
+        This was for web cache hash syncing, and will be for perceptual hashing maybe eventually.
+        """
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v3/Controllers/ActionController.cs
+        # source stands - "return BadRequest();" :)
         return self._action_api_('SyncHashes')
 
     def sync_votes(self):
@@ -70,8 +75,12 @@ class Client:
     def sync_trakt(self):
         return self._action_api_('SyncTrakt')
 
-    def remove_missing_files(self):
-        return self._action_api_('RemoveMissingFiles/{removeFromMyList}')
+    def remove_missing_files(self, removeFromMyList: bool = True):
+        if removeFromMyList:
+            command = 'RemoveMissingFiles/true'
+        else:
+            command = 'RemoveMissingFiles/false'
+        return self._action_api_(command)
 
     def update_all_tvdbinfo(self):
         return self._action_api_('UpdateAllTvDBInfo')
@@ -89,6 +98,10 @@ class Client:
         return self._action_api_('ValidateAllImages')
 
     def avdump_mismatched_files(self):
+        """
+        Gets files whose data does not match AniDB
+        """
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v3/Controllers/ActionController.cs
         return self._action_api_('AVDumpMismatchedFiles')
 
     def download_missing_anidb_anime_data(self):
@@ -104,9 +117,17 @@ class Client:
         return self._action_api_('UpdateAllAniDBInfo')
 
     def update_all_mediainfo(self):
+        """
+        Queues a task to Update all media info
+        """
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v3/Controllers/ActionController.cs
         return self._action_api_('UpdateAllMediaInfo')
 
     def update_series_stats(self):
+        """
+        Queues commands to Update All Series Stats and Force a Recalculation of All Group Filters
+        """
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v3/Controllers/ActionController.cs
         return self._action_api_('UpdateSeriesStats')
 
     # endregion
@@ -371,6 +392,7 @@ class Client:
         return self._group_api(command=f'/{id}?deleteSeries={deleteseries}&deleteFiles={deletefiles}')
 
     def recreate_all_groups(self):
+        # https://github.com/ShokoAnime/ShokoServer/blob/master/Shoko.Server/API/v3/Controllers/GroupController.cs
         return self._group_api(command='/RecreateAllGroups')
 
     # endregion
