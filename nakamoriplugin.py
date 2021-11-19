@@ -801,13 +801,31 @@ def show_shoko_images_directory():
 
     directory_items = [
         # Update all (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30388)), False),
+        (plugin.url_for(images_update_all), ListItem(label=plugin_addon.getLocalizedString(30388)), False),
         # Validate all (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30389)), False)
+        (plugin.url_for(images_validate_all), ListItem(label=plugin_addon.getLocalizedString(30389)), False)
     ]
     # add items to 'Images' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/images/update_all')
+def images_update_all():
+    kodi_models.images_update_all()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30371),
+                                                                   plugin_addon.getLocalizedString(30388),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+
+@plugin.route('/shoko/images/validate_all')
+def images_validate_all():
+    kodi_models.images_validate_all()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30371),
+                                                                   plugin_addon.getLocalizedString(30389),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/trakt')
 def show_shoko_trakt_directory():

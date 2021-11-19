@@ -1322,3 +1322,9 @@ def tvdb_update_all_info():
 
 def moviedb_update_all_info():
     apiv3.update_all_moviedb_info()
+
+def images_update_all():
+    apiv3.update_all_images()
+
+def images_validate_all():
+    apiv3.validate_all_images()
