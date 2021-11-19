@@ -740,13 +740,29 @@ def show_shoko_tvdb_directory():
 
     directory_items = [
         # Regenerate links (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30385)), False),
+        (plugin.url_for(tvdb_regenerate_links), ListItem(label=plugin_addon.getLocalizedString(30385)), False),
         # Update all info (url, ListItem, isFolder)
-        ('', ListItem(label=plugin_addon.getLocalizedString(30386)), False)
+        (plugin.url_for(tvdb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30386)), False)
     ]
     # add items to 'TvDB' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
+@plugin.route('/shoko/tvdb/regenerate_links')
+def tvdb_regenerate_links():
+    kodi_models.tvdb_regenerate_links()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30369),
+                                                                   plugin_addon.getLocalizedString(30385),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
+
+@plugin.route('/shoko/tvdb/update_all_info')
+def tvdb_update_all_info():
+    kodi_models.tvdb_update_all_info()
+    xbmc.executebuiltin('Notification(%s / %s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30369),
+                                                                   plugin_addon.getLocalizedString(30386),
+                                                                   plugin_addon.getLocalizedString(30392),
+                                                                    plugin_addon.getAddonInfo('icon')))
 
 @plugin.route('/shoko/moviedb')
 def show_shoko_moviedb_directory():

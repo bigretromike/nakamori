@@ -1313,3 +1313,9 @@ def anidb_sync_my_list():
 
 def anidb_update_all_info():    
     apiv3.update_all_anidb_info()
+
+def tvdb_regenerate_links():
+    apiv3.regenerate_all_tvdb_episodes_matching()
+
+def tvdb_update_all_info():
+    apiv3.update_all_tvdbinfo()
