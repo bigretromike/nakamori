@@ -1050,7 +1050,7 @@ def list_all_recent_series_and_episodes() -> List[Tuple[int, ThisType, ListItem]
         list_of_li.append((ss.id, ThisType.series, get_listitem_from_serie(ss)))
     e = apiv2.episodes_get_recent(q)
     for ee in e:
-        list_of_li.append((ee.id, ThisType.episodes, get_listitem_from_episode(ee, '', None, s.id)))
+        list_of_li.append((ee.id, ThisType.episodes, get_listitem_from_episode(ee, '', None, ee.aid)))
     f = apiv2.file_recent()
     for ff in f:
         list_of_li.append((ff.id, ThisType.raw, get_listitem_from_rawfile(ff)))
