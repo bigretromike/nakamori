@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import lib.windows.ac_calendar
 from lib import kodi_utils
 from lib import shoko_utils
 from lib import naka_player
@@ -217,6 +217,7 @@ def play_episode(filter_id: int, series_id: int, ep_id: int, use_watch_mark: boo
 
 @plugin.route('/f-0/s-<series_id>/e-<ep_id>-pick')
 def pick_file_and_play(series_id: int, ep_id: int):
+    is_resume_enable = plugin_addon.getSettingBool('file_resume')
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
     items = [kodi_models.get_file_name(x.filename) for x in raw_files_list]
     my_file = xbmcgui.Dialog().select(plugin_addon.getLocalizedString(30196), items)
@@ -617,6 +618,7 @@ def show_shoko_anidb_directory():
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
 @plugin.route('/shoko/anidb/download_missing_data')
 def anidb_download_missing_data():
     kodi_models.anidb_download_missing_data()
@@ -624,6 +626,7 @@ def anidb_download_missing_data():
                                                                    plugin_addon.getLocalizedString(30378),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/anidb/sync_votes')
 def anidb_sync_votes():
@@ -633,6 +636,7 @@ def anidb_sync_votes():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/anidb/sync_my_list')
 def anidb_sync_my_list():
     kodi_models.anidb_sync_my_list()
@@ -641,6 +645,7 @@ def anidb_sync_my_list():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/anidb/update_all_info')
 def anidb_update_all_info():
     kodi_models.anidb_update_all_info()
@@ -648,6 +653,7 @@ def anidb_update_all_info():
                                                                    plugin_addon.getLocalizedString(30381),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/import_folders')
 def show_shoko_import_folders_directory():
@@ -678,6 +684,7 @@ def show_shoko_import_folders_directory():
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
 @plugin.route('/shoko/import_folders/remove_missing_files')
 def import_folder_remove_missing_files():
     kodi_models.import_folder_remove_missing_files(True)
@@ -685,6 +692,7 @@ def import_folder_remove_missing_files():
                                                                    plugin_addon.getLocalizedString(30382),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/import_folders/remove_missing_files_keep')
 def import_folder_remove_missing_files_keep():
@@ -694,6 +702,7 @@ def import_folder_remove_missing_files_keep():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/import_folders/run_import_all')
 def import_folder_run_import_all():
     kodi_models.import_folders_run_import_all()
@@ -701,6 +710,7 @@ def import_folder_run_import_all():
                                                                    plugin_addon.getLocalizedString(30384),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/import_folders/<folder_name>-<folder_id>')
 def show_shoko_user_import_folder_directory(folder_name, folder_id):
@@ -720,6 +730,7 @@ def show_shoko_user_import_folder_directory(folder_name, folder_id):
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
 @plugin.route('/shoko/import_folders/<folder_name>-<folder_id>/rescan')
 def user_import_folder_rescan(folder_name, folder_id):
     kodi_models.user_import_folder_rescan(folder_id)
@@ -727,6 +738,7 @@ def user_import_folder_rescan(folder_name, folder_id):
                                                                    plugin_addon.getLocalizedString(30393),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/tvdb')
 def show_shoko_tvdb_directory():
@@ -748,6 +760,7 @@ def show_shoko_tvdb_directory():
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
 @plugin.route('/shoko/tvdb/regenerate_links')
 def tvdb_regenerate_links():
     kodi_models.tvdb_regenerate_links()
@@ -756,6 +769,7 @@ def tvdb_regenerate_links():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/tvdb/update_all_info')
 def tvdb_update_all_info():
     kodi_models.tvdb_update_all_info()
@@ -763,6 +777,7 @@ def tvdb_update_all_info():
                                                                    plugin_addon.getLocalizedString(30386),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/moviedb')
 def show_shoko_moviedb_directory():
@@ -781,6 +796,7 @@ def show_shoko_moviedb_directory():
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
 @plugin.route('/shoko/moviedb/update_all_info')
 def moviedb_update_all_info():
     kodi_models.moviedb_update_all_info()
@@ -788,6 +804,7 @@ def moviedb_update_all_info():
                                                                    plugin_addon.getLocalizedString(30387),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/images')
 def show_shoko_images_directory():
@@ -808,6 +825,7 @@ def show_shoko_images_directory():
     # add items to 'Images' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
+
 
 @plugin.route('/shoko/images/update_all')
 def images_update_all():
@@ -847,6 +865,7 @@ def show_shoko_trakt_directory():
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
     endOfDirectory(handle=plugin.handle, cacheToDisc=False)
 
+
 @plugin.route('/shoko/trakt/sync_trakt_collection')
 def trakt_sync_trakt_collection():
     kodi_models.trakt_sync_trakt_collection()
@@ -855,6 +874,7 @@ def trakt_sync_trakt_collection():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/trakt/update_all_info')
 def trakt_update_all_info():
     kodi_models.trakt_update_all_info()
@@ -862,6 +882,7 @@ def trakt_update_all_info():
                                                                    plugin_addon.getLocalizedString(30391),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/settings')
 def show_settings():
@@ -884,13 +905,7 @@ def show_recent():
 
 @plugin.route('/calendar')
 def show_calendar():
-    # todo calendar
-    pass
-
-
-@plugin.route('/calendar_classic')
-def show_calendar_classic():
-    # todo calendar classic
+    lib.windows.ac_calendar.open_calendar()
     pass
 
 

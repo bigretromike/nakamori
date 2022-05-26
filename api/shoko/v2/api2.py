@@ -757,7 +757,6 @@ class Client:
         
         Return list of series"""
         response = self.api_client.call(url='/api/serie/fromep', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         return Serie.Decoder(response)
     
     def series_groups(self, opts: QueryOptions = QueryOptions()):
@@ -767,7 +766,6 @@ class Client:
         
         Return list of series"""
         response = self.api_client.call(url='/api/serie/groups', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         output: list[Group] = []
         for group in response:
             output.append(Group.Decoder(group))
@@ -780,7 +778,6 @@ class Client:
         
         Return list of series"""
         response = self.api_client.call(url='/api/serie/fromaid', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         return Serie.Decoder(response)
     
     #

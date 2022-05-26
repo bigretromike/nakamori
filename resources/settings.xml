@@ -639,6 +639,20 @@
 	                    <dependency type="enable" operator="is" setting="show_calendar">true</dependency>
                     </dependencies>
                 </setting>
+                <!-- calendar url: 1 -->
+                <setting label="30351" type="string" id="calendar_url" parent="show_calendar">
+                        <level>1</level>
+                        <default>https://raw.githubusercontent.com/bigretromike/anime-offline-calendar/master/seasons/%s-%02d.json</default>
+                        <constraints>
+                            <allowempty>false</allowempty>
+                        </constraints>
+                        <control type="edit" format="string">
+                            <heading>30351</heading>
+	                    </control>
+                        <dependencies>
+	                        <dependency type="enable" operator="is" setting="show_calendar">true</dependency>
+                        </dependencies>
+                </setting>
                 <!-- unsort: 1 -->
                 <setting label="30106" type="boolean" id="show_unsort">
                     <level>1</level>

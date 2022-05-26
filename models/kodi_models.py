@@ -1109,8 +1109,14 @@ def make_text_nice(data: str = ''):
     # the only one I could care to make settings if someone ask for
     data = remove_anidb_annotations(data)
     data = remove_anidb_comments(data)
+    data = remove_html(data)
     data = remove_multi_empty_lines(data)
     return data
+
+
+def remove_html(data=''):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
 
 
 def remove_anidb_links(data=''):
@@ -1261,6 +1267,26 @@ def get_series_id_from_ep_id(ep_id: int) -> api2models.Serie:
     q.id = ep_id
     x = apiv2.series_from_ep(q)
     return x
+
+
+def get_soon_series(starting_item: int, date: int) -> api2models.Group:
+    q = api2.QueryOptions()
+    q.offset = starting_item
+    q.d = date
+    q.level = 2
+    return apiv2.series_soon(q)
+
+
+def series_from_anidb(aid: int) -> api2models.Serie:
+    q = api2.QueryOptions()
+    q.aid = aid
+    q.level = 2
+    return apiv2.series_from_anidb(q)
+
+
+def return_used_server_address() -> str:
+    return f'http://{plugin_addon.getSetting("ipaddress")}:{plugin_addon.getSettingInt("port")}'
+
 
 def shoko_avdump_mismatched_files():
     apiv3.avdump_mismatched_files()
