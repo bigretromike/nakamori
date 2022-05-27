@@ -969,12 +969,16 @@ def main():
 if __name__ == '__main__':
     xbmc.log('===========================', xbmc.LOGDEBUG)
     xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGDEBUG)
-    xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
+    if len(sys.argv) > 1:
+        xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
     xbmc.log('===========================', xbmc.LOGDEBUG)
     if main():
         # let's support scripts ('/dialog/') without remixing routing lib
-        if sys.argv[0] == 'nakamoriplugin.py' or sys.argv[1].startswith('/dialog/'):
-            url = plugin.url_for_path(sys.argv[1])
-            plugin.run(argv=[url])
+        if len(sys.argv) > 1:
+            if sys.argv[0] == 'nakamoriplugin.py' or sys.argv[1].startswith('/dialog/'):
+                url = plugin.url_for_path(sys.argv[1])
+                plugin.run(argv=[url])
+            else:
+                plugin.run()
         else:
             plugin.run()
