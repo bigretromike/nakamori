@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from json import JSONEncoder
-from sys import int_info
 
 from typing import List
 
@@ -178,11 +177,12 @@ class Sizes:
 
     @staticmethod
     def Decoder(json: dict):
+        if json is None:
+            return Sizes()
         if not isinstance(json, dict):
             try:
                 json = json.__dict__
             except:
-                # print(json)
                 print(f"Exception at: {__class__.__name__}.{__class__.Decoder.__name__} --- json is not dictionary")
                 return Sizes()
                 
@@ -561,13 +561,13 @@ class MediaInfo:
 
         mediainfo.general = General.Decoder(json.get("general"))
         for a in json.get("audios", []):
-            mediainfo.audios.append(Stream.Decoder(a))
+            mediainfo.audios.append(Stream.Decoder(json.get("audios", []).get(a, '')))
         for a in json.get("videos", []):
-            mediainfo.videos.append(Stream.Decoder(a))
+            mediainfo.videos.append(Stream.Decoder(json.get("videos", []).get(a, '')))
         for a in json.get("subtitles", []):
-            mediainfo.subtitles.append(Stream.Decoder(a))
+            mediainfo.subtitles.append(Stream.Decoder(json.get("subtitles", []).get(a, '')))
         for a in json.get("menus", []):
-            mediainfo.menus.append(Stream.Decoder(a))
+            mediainfo.menus.append(Stream.Decoder(json.get("menus", []).get(a, '')))
 
         return mediainfo
 
@@ -731,8 +731,10 @@ class RawFile:
             rawfile.tags = []
         tmp = json.get("tags", [])
         for tag in tmp:
-            rawfile.tags.append(tag)        
-        rawfile.art = ArtCollection.Decoder(json.get("art"))
+            rawfile.tags.append(tag)
+        rawfile.art = ArtCollection()
+        if json.get("art") is not None:
+            rawfile.art = ArtCollection.Decoder(json.get("art"))
 
         return rawfile
 

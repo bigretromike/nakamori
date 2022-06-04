@@ -3,24 +3,24 @@ import lib.windows.ac_calendar
 from lib import kodi_utils
 from lib import shoko_utils
 from lib import naka_player
+from lib.addon_utils import plugin
 from lib.naka_utils import ThisType, map_episodetype_int_to_thistype
 from models import kodi_models
-
-import routing
+from sys import argv
 from lib.windows import wizard
 import xbmc
 import xbmcgui
 from xbmcgui import ListItem
 import xbmcaddon
 from xbmcplugin import addDirectoryItem, endOfDirectory, addDirectoryItems
-import sys
+
 import lib.search as search
 import lib.favorite as favorite
 from operator import itemgetter
 import string
 
 plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
-plugin = routing.Plugin()
+
 
 # TODO  this is setthing inside Shoko that will Group Series into parent Groups (ex. Monogatari-Series)
 do_we_want_to_make_eptype_setting = plugin_addon.getSettingBool('show_eptypes')
@@ -191,10 +191,12 @@ def open_episode_dont_mark(filter_id: int, series_id: int, ep_id: int):
 
 @plugin.route('/f-<filter_id>/s-<series_id>/e-<ep_id>-play')
 def open_episode(filter_id: int, series_id: int, ep_id: int):
+    kodi_utils.debug(f'open_episode: /f-{filter_id}/s-{series_id}/e-{ep_id}-play')
     play_episode(filter_id, series_id, ep_id, True)
 
 
 def play_episode(filter_id: int, series_id: int, ep_id: int, use_watch_mark: bool):
+    kodi_utils.debug(f'play_episode: {filter_id}, {series_id}, {ep_id}, {use_watch_mark}')
     is_resume_enable = plugin_addon.getSettingBool('file_resume')
     raw_files_list = kodi_models.get_file_id_from_ep_id(ep_id)
     file_id = 0
@@ -526,6 +528,7 @@ def shoko_avdump_mismatched_files():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/recreate_all_groups')
 def shoko_recreate_all_groups():
     kodi_models.shoko_recreate_all_groups()
@@ -533,6 +536,7 @@ def shoko_recreate_all_groups():
                                                                    plugin_addon.getLocalizedString(30374),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/sync_hashes')
 def shoko_sync_hashes():
@@ -542,6 +546,7 @@ def shoko_sync_hashes():
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
 
+
 @plugin.route('/shoko/update_all_mediainfo')
 def shoko_update_all_mediainfo():
     kodi_models.shoko_update_all_mediainfo()
@@ -549,6 +554,7 @@ def shoko_update_all_mediainfo():
                                                                    plugin_addon.getLocalizedString(30376),
                                                                    plugin_addon.getLocalizedString(30392),
                                                                     plugin_addon.getAddonInfo('icon')))
+
 
 @plugin.route('/shoko/update_series_stats')
 def shoko_update_series_stats():
@@ -967,18 +973,17 @@ def main():
 
 
 if __name__ == '__main__':
-    xbmc.log('===========================', xbmc.LOGDEBUG)
-    xbmc.log(f'======= {sys.argv[0]}', xbmc.LOGDEBUG)
-    if len(sys.argv) > 1:
-        xbmc.log(f'======= {sys.argv[1]}', xbmc.LOGDEBUG)
-    xbmc.log('===========================', xbmc.LOGDEBUG)
+    kodi_utils.debug('===========================')
+    kodi_utils.debug(f'======= {argv}')
+    kodi_utils.debug('===========================')
+
     if main():
         # let's support scripts ('/dialog/') without remixing routing lib
-        if len(sys.argv) > 1:
-            if sys.argv[0] == 'nakamoriplugin.py' or sys.argv[1].startswith('/dialog/'):
-                url = plugin.url_for_path(sys.argv[1])
+        if len(argv) > 1:
+            if argv[0] == 'nakamoriplugin.py' or argv[1].startswith('/dialog/'):
+                url = plugin.url_for_path(argv[1])
                 plugin.run(argv=[url])
             else:
-                plugin.run()
+                plugin.run(argv)
         else:
-            plugin.run()
+            plugin.run(argv)

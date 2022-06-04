@@ -5,6 +5,7 @@ from io import BytesIO
 import gzip
 import json
 from lib import cache
+from lib.kodi_utils import debug
 
 
 class APIType(Enum):
@@ -115,8 +116,8 @@ class APIClient:
                 # unfortunately 'api-version' parameter is must-have in api v2
                 url = f"{self.proto}://{self.address}:{self.port}{url}?api-version={self.version}"
             else:
-                url = f"{self.proto}://{self.address}:{self.port}{url}" # ?api-version={self.version}"
-        print(f"{url}")
+                url = f"{self.proto}://{self.address}:{self.port}{url}"  # ?api-version={self.version}"
+        debug(f"api.call = {url}")
 
         headers = {
             'Accept': '*/*',

@@ -368,7 +368,6 @@ msgctxt "#30071"
 msgid "Airing Series with all episodes (including specials)"
 msgstr "Airing Series with all episodes (including specials)"
 
-
 #: settings.xml #
 msgctxt "#30072"
 msgid "Replace -continue- with Episode counter"
@@ -939,6 +938,21 @@ msgctxt "#30185"
 msgid "Require all Episodes being rated before suggesting"
 msgstr "Require all Episodes being rated before suggesting"
 
+#: settings.xml
+msgctxt "#30186"
+msgid "Tagline Settings"
+msgstr "Tagline Settings"
+
+#: settings.xml
+msgctxt "#30187"
+msgid "Use tags as tagline"
+msgstr "Use tags as tagline"
+
+#: settings.xml
+msgctxt "#30188"
+msgid "Max length of tagline"
+msgstr "Max length of tagline"
+
 #: shoko_utils.py
 msgctxt "#30189"
 msgid "Queued File for Rehash"
@@ -1216,6 +1230,16 @@ msgstr "Use Series art for episode grouping instead of Image/IconPack"
 msgctxt "#30244"
 msgid "Replace missing images with those from Image/IconPack"
 msgstr "Replace missing images with those from Image/IconPack"
+
+#: settings.xml
+msgctxt "#30245"
+msgid "Shorten Tagline"
+msgstr "Shorten Tagline"
+
+#: settings.xml
+msgctxt "#30246"
+msgid "Write more info to log file"
+msgstr "Write more info to log file"
 
 ##################################
 

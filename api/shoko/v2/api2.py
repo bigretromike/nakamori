@@ -4,6 +4,7 @@
 
 from api.common import APIClient, APIType
 from api.shoko.v2.api2models import *
+from lib.kodi_utils import debug
 import json
 import os
 from typing import Union
@@ -402,6 +403,7 @@ class Client:
             'level': level
         }
         response = self.api_client.call(url='/api/file', call_type=APIType.GET, query=query)
+        debug(f'RESPOND = {str(type(response))}: {response}')
         # _json = json.loads(response)
         output: RawFile = RawFile.Decoder(response)
         return output
@@ -498,7 +500,7 @@ class Client:
     def episodes_get(self, opts: QueryOptions = QueryOptions()):
         """Get episodes"""
         response = self.api_client.call(url='/api/ep', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
+        debug(f'Response: {response}')
         output: list[Episode] = []
         for episode in response:
             output.append(Episode.Decoder(episode))
@@ -507,7 +509,7 @@ class Client:
     def episode_get(self, opts: QueryOptions = QueryOptions()):
         """Get episodes"""
         response = self.api_client.call(url='/api/ep', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
+        debug(f'Response: {response}')
         output: Episode = Episode.Decoder(response)
         return output
     
@@ -617,7 +619,6 @@ class Client:
     def series_get(self, opts: QueryOptions = QueryOptions):
         """Get list of `Series`"""
         response = self.api_client.call(url='/api/serie', call_type=APIType.GET, query=opts.__dict__)
-        # _json = json.loads(response)
         output: list[Serie] = []
         for serie in response:
             output.append(Serie.Decoder(serie))

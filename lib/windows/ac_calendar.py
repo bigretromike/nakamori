@@ -2,22 +2,12 @@
 import time
 import json
 import datetime
-import _strptime  # fix for import lockis held by another thread.
-import re
-import os
-
-#from nakamori_utils import script_utils
-#from nakamori_utils import model_utils
-#from proxy.python_version_proxy import python_proxy as pyproxy
-import xbmcgui
-import xbmc
-import xbmcaddon
 import xbmcvfs
 
 from models.kodi_models import *
 from api.shoko.v2 import api2models
+from lib.kodi_utils import debug
 
-#from nakamori_utils.globalvars import *
 
 # noinspection PyUnresolvedReferences
 try:
@@ -88,7 +78,7 @@ class Calendar2(xbmcgui.WindowXML):
 
     def AddSeriesToCalendar(self, check_back_in_time: bool = False):
         self.json_data = None
-        xbmc.log(f'self.calendar_end={self.calendar_end}, self.data={self.data}, len={len(self.used_dates)}, self.json_data={self.json_data}', xbmc.LOGINFO)
+        debug(f'self.calendar_end={self.calendar_end}, self.data={self.data}, len={len(self.used_dates)}, self.json_data={self.json_data}')
         if not self.calendar_end:
             busy = xbmcgui.DialogProgress()
             busy.create(ADDON.getLocalizedString(30317), ADDON.getLocalizedString(30318))
@@ -119,7 +109,7 @@ class Calendar2(xbmcgui.WindowXML):
                     self.json_data = None
                     self.calendar_end = True
             else:
-                xbmc.log('------------ > data is not None ', xbmc.LOGINFO)
+                debug('------------ > data is not None ')
 
             _size = 0
             _json = None
@@ -160,7 +150,7 @@ class Calendar2(xbmcgui.WindowXML):
         }
 
         if self.day_count >= 3:
-            xbmc.log(f'=== self.day_count={self.day_count}', xbmc.LOGINFO)
+            debug(f'=== self.day_count={self.day_count}')
             pass
         else:
             self.AddSeriesToCalendar()
@@ -260,7 +250,7 @@ class Calendar2(xbmcgui.WindowXML):
             name_of_day = day_date.weekday()
 
             self.last_processed_date = day_date.strftime('%Y%m%d')
-            xbmc.log('---------> I SET self.last_processed_date: %s' % self.last_processed_date, xbmc.LOGINFO)
+            debug('---------> I SET self.last_processed_date: %s' % self.last_processed_date)
 
         fanart = os.path.join(img, 'icons', 'new-search.png')
         if series.art.thumb.__len__() > 0:
@@ -301,8 +291,7 @@ class Calendar2(xbmcgui.WindowXML):
                 chars_width -= char_width
                 char_count -= 1
                 text_lenght_till_split = char_count
-                xbmc.log('--> we found that text_lenght_till_split is not correct, so we calculate %s'
-                         % text_lenght_till_split, xbmc.LOGWARNING)
+                debug(f'we found that text_lenght_till_split is not correct, so we calculate {text_lenght_till_split}')
 
             list_of_lines = textwrap.wrap(summary, width=int(text_lenght_till_split))
             three_line_support = 1
@@ -370,7 +359,7 @@ class Calendar2(xbmcgui.WindowXML):
             except TypeError:
                 new_date = datetime.datetime(*(time.strptime(self.first_process_date, '%Y%m%d')[0:6]))
             except:
-                xbmc.log(f'=== E: new_date ===== {new_date}', xbmc.LOGERROR)
+                xbmc.log(f'=== E: new_date ===== {self.first_process_date}', xbmc.LOGERROR)
             if type(new_date) == datetime:
                 if new_date < day_date:
                     self.first_process_date = self.last_processed_date
@@ -412,8 +401,7 @@ class Calendar2(xbmcgui.WindowXML):
                 chars_width -= char_width
                 char_count -= 1
                 text_lenght_till_split = char_count
-                xbmc.log('--> we found that text_lenght_till_split is not correct, so we calculate %s'
-                         % text_lenght_till_split, xbmc.LOGWARNING)
+                debug(f'we found that text_lenght_till_split is not correct, so we calculate {text_lenght_till_split}')
 
             list_of_lines = textwrap.wrap(summary, width=int(text_lenght_till_split))
             three_line_support = 1
@@ -524,7 +512,7 @@ def clear_cache():
                                for file in files]
             for f in files_to_delete:
                 os.remove(f)
-                xbmc.log('clear-cache deleted: ' + str(f), xbmc.LOGINFO)
+                debug('clear-cache deleted: ' + str(f))
     if os.path.exists(os.path.join(profileDir, 'json')):
         clear = xbmcgui.Dialog().yesno(ADDON.getLocalizedString(30019), ADDON.getLocalizedString(30020))
         if clear:
@@ -533,5 +521,5 @@ def clear_cache():
                                for file in files]
             for f in files_to_delete:
                 os.remove(f)
-                xbmc.log('clear-cache deleted: ' + str(f), xbmc.LOGINFO)
+                debug('clear-cache deleted: ' + str(f))
 

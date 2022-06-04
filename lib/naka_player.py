@@ -4,7 +4,7 @@ import xbmcgui
 import xbmcplugin
 import xbmcaddon
 
-from lib.kodi_utils import get_device_id, message_box
+from lib.kodi_utils import get_device_id, message_box, debug
 from models.kodi_models import set_watch_mark, is_series_watched, vote_for_episode, vote_for_series
 from lib.naka_utils import ThisType, WatchedStatus
 from threading import Thread
@@ -53,8 +53,8 @@ def scrobble_trakt(ep_id, status, current_time, total_time, movie):
 
 
 def finished_episode(ep_id, file_id, current_time, total_time):
-    xbmc.log('----------------------- FINISHIND EPISODE ----------------', xbmc.LOGDEBUG)
-    xbmc.log(f'ep_id: {ep_id} / file_id: {file_id} / now: {current_time} / total: {total_time}', xbmc.LOGDEBUG)
+    debug('----------------------- FINISHIND EPISODE ----------------')
+    debug(f'ep_id: {ep_id} / file_id: {file_id} / now: {current_time} / total: {total_time}')
 
     _finished = False
 
@@ -125,55 +125,79 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
     :return: True if successfully playing
     """
 
+    debug('Get Player')
     # check if we're already playing something
-    player = xbmc.Player()
+    # player = xbmc.Player()
+    player = Player()
 
+    debug('Check if Player is playing video')
     if player.isPlayingVideo():
+        debug('Player is playin video...')
         playing_item = player.getPlayingFile()
+        debug(f'Video playing: {playing_item}')
         player.stop()
+        debug('Player.stop()')
 
     # wait for it to stop
     while True:
+        debug('Waiting for player stopping video...')
         try:
             if not player.isPlayingVideo():
+                debug('Player is not playing video')
                 break
             xbmc.sleep(500)
             continue
         except:
+            debug('Exception in waiting function')
             pass
 
     # now continue
     url_for_player = ''
+
     f: api2models.RawFile
     if int(ep_id) != 0:
+        debug(f'Episode ID: {ep_id}')
         q = api2models.QueryOptions()
         q.id = ep_id
-        ep: api2models.Episode = API.episodes_get(q)
+        ep: api2models.Episode = API.episode_get(q)
+        debug(f'Episode data: {str(ep)}')
         series: api2models.Serie
         if s_id == 0:
+            debug('Get series info...')
             series = API.series_from_ep(q)
+            debug(f'Series data: {str(series)}')
         else:
             q.id = s_id
-            series = API.series_get(q)
+            debug(f'Series Id: {s_id}')
+            series = API.series_get_by_id(q)
+            debug(f'Series data: {str(series)}')
 
         f = API.file(id=file_id)
     else:
         f = API.file(id=file_id)
+    debug(f'File Id: {file_id}')
+    debug(f'File data: {str(f)}')
 
     # check if we have same access to file as server aka localhost
+    debug('Check if file is accessible')
     if os.path.isfile(f.server_path):
+        debug('File accessible, fixing file path')
         if f.server_path.startswith(u'\\\\'):
             url_for_player = 'smb:' + f.server_path.replace('\\', '/')
         else:
             # TODO maybe use xbmcvfs.exists for 404 ?
             url_for_player = f.server_path
+        debug(f'File local path: {url_for_player}')
     else:
         try:
+            debug('Accessing file via http')
             req = Request(f.url, method='HEAD')
             resp = urlopen(req)
             a = resp.read()
             url_for_player = f.url
+            debug(f'File url discovered: {url_for_player}')
         except HTTPError as htterr:
+            debug('Error while discovering url via http')
             url_for_player = ''
             if htterr.code == 404:
                 message_box(title=plugin_addon.getLocalizedString(30242) + ': ' + str(htterr.code),
@@ -192,16 +216,26 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
             #    url_for_player = f.url
             is_transcoded, m3u8_url, subs_extension, is_finished = process_transcoder(file_id, url_for_player, force_transcode_play)
 
-        player = Player()
+        debug('Create Nakamori Player')
+        # player = Player()
+        debug(f'Feed player with file_id: {file_id}, ep_id: {ep_id}, duration: {int(f.duration/1000)}, '
+              f'm3u8_url: {m3u8_url}, is_transcoded: {is_transcoded}, url_for_player: {url_for_player}, '
+              f'mark_as_watched: {mark_as_watched}')
         player.feed(file_id, ep_id, int(f.duration/1000), m3u8_url if is_transcoded else url_for_player, mark_as_watched)
 
         try:
-            item = xbmcgui.ListItem()
+            item = xbmcgui.ListItem(path=url_for_player, offscreen=True)
             item.setProperty('IsPlayable', 'true')
+            item.setIsFolder(False)
+            from models.kodi_models import set_info_for_episode
+            set_info_for_episode(item, ep, series.titles[0].Title)
+            # based on https://github.com/xbmc/xbmc/pull/19530  Kodi20
+            item.setProperty('ForceResolvePlugin', 'true')
 
             #file_url = f.url_for_player if f is not None else None
 
             if is_transcoded:
+                debug('Transcoding...')
                 # player.play(item=m3u8_url)
                 url_for_player = m3u8_url
                 item.setPath(url_for_player)
@@ -216,17 +250,27 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
                 #    item.setSubtitles([subs_url, ])
                 #    item.addStreamInfo('subtitle', {'language': 'Default', })
             else:
+                debug(f'setPath: {url_for_player}')
                 item.setPath(url_for_player)
 
-            xbmc.log(f'============== [ HANDLE for Player ] = {sys.argv[1]}', xbmc.LOGDEBUG)
+            debug(f'============== [ HANDLE for Player ] = {sys.argv[1]}')
             try:
                 handle = int(sys.argv[1])
+                #xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]), listitem=item, url=url_for_player, isFolder=False, totalItems=1)
+                #xbmcplugin.endOfDirectory(handle=int(sys.argv[1]), succeeded=True, cacheToDisc=False)
+
                 if handle == -1:
+                    debug('Player method: play')
+
                     player.play(item=url_for_player, listitem=item)
                 else:
+                    # item.setContentLookup(False)
+                    # item.setMimeType('video/x-matroska')
+                    debug('Player method: setResolvedUrl')
                     # thanks to anxdpanic for pointing in right direction
                     xbmcplugin.setResolvedUrl(handle, True, item)
             except:
+                debug('Error in handle, use method: play')
                 # when playing thing tru context menu, handle is not there
                 # TODO without handle there is no episode info we can look, Is it a dealbreaker? no but if fix is there use one.
                 player.play(item=url_for_player, listitem=item)
@@ -234,8 +278,10 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
             xbmc.log('ERROR NAKA PLAYER---------------------------', xbmc.LOGERROR)
             xbmc.log(f'{e}', xbmc.LOGINFO)
 
+        debug('Player loop: start')
         # leave loop from player alive so we can handle onPlayBackStopped/onPlayBackEnded
         player_loop(player, is_transcoded, is_finished, ep_id, party_mode)
+        debug('Player loop: stops')
     del player
 
 
@@ -499,7 +545,7 @@ def process_transcoder(file_id, file_url, force_transcode_play=False):
 # noinspection PyUnusedFunction
 class Player(xbmc.Player):
     def __init__(self):
-        #spam('Player Initialized')
+        debug('Player Initialized')
         xbmc.Player.__init__(self)
         self._t: Thread = None  # trakt thread
         self._t_running = True
@@ -528,11 +574,11 @@ class Player(xbmc.Player):
         self.CanControl = True
 
     def reset(self):
-        #spam('Player reset')
+        debug('Player reset')
         self.__init__()
 
     def feed(self, file_id, ep_id, duration, path, scrobble):
-        #spam('Player feed - file_id=%s ep_id=%s duration=%s path=%s scrobble=%s' % (file_id, ep_id, duration, path, scrobble))
+        debug('Player feed - file_id=%s ep_id=%s duration=%s path=%s scrobble=%s' % (file_id, ep_id, duration, path, scrobble))
         self.file_id = file_id
         self.ep_id = ep_id
         self.duration = duration
@@ -541,7 +587,7 @@ class Player(xbmc.Player):
 
     def onAVStarted(self):
         # Will be called when Kodi has a video or audiostream, before playing file
-        #spam('onAVStarted')
+        debug('onAVStarted')
 
         # isExternalPlayer() ONLY works when isPlaying(), other than that it throw 0 always
         # setting it before results in false setting
@@ -560,11 +606,11 @@ class Player(xbmc.Player):
 
     def onAVChange(self):
         # Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes.
-        #spam('onAVChange')
+        debug('onAVChange')
         pass
 
     def onPlayBackStarted(self):
-        #spam('Playback Started')
+        debug('Playback Started')
         self.started_playing = True
         try:
             if plugin_addon.getSetting('enableEigakan') == 'true':
@@ -591,7 +637,7 @@ class Player(xbmc.Player):
             pass
 
     def onPlayBackResumed(self):
-        #spam('Playback Resumed')
+        debug('Playback Resumed')
         self.PlaybackStatus = PlaybackStatus.PLAYING
         try:
             self.start_loops()
@@ -600,11 +646,11 @@ class Player(xbmc.Player):
             pass
 
     def start_loops(self):
-        xbmc.log('===== [ naka-player ] ===== start_loops', xbmc.LOGINFO)
+        debug('===== [ naka-player ] ===== start_loops')
         try:
             self.kill_tick_loop_trakt()
         except Exception as e:
-            xbmc.log(f'===== [ naka-player ] ===== {e}', xbmc.LOGINFO)
+            debug(f'===== [ naka-player ] ===== {e}')
             pass
         self._t_running = True
         self._t = Thread(target=self.tick_loop_trakt, args=())
@@ -628,7 +674,7 @@ class Player(xbmc.Player):
         self._u = Thread(target=self.tick_loop_update_time, args=())
         self._u.daemon = True
         self._u.start()
-        xbmc.log('===== [ naka-player ] ===== end start_loops', xbmc.LOGINFO)
+        debug('===== [ naka-player ] ===== end start_loops')
 
     def onPlayBackStopped(self):
         try:
@@ -687,7 +733,7 @@ class Player(xbmc.Player):
                     xbmc.sleep(100)
                     if self._t_running:
                         break
-        xbmc.log('===== [ naka-player ] ===== KILLED: tick_loop_trakt', xbmc.LOGINFO)
+        debug('===== [ naka-player ] ===== KILLED: tick_loop_trakt')
 
     def kill_tick_loop_shoko(self):
         self._s_running = False
@@ -702,11 +748,11 @@ class Player(xbmc.Player):
                         x = API.file_offset({"id": self.file_id, "offset": int(self.time)})
                 except:
                     pass
-                for x in range(0, 100):
-                    xbmc.sleep(100)
-                    if self._s_running:
+                for x in range(0, 10):
+                    xbmc.sleep(1000)
+                    if not self._s_running:
                         break
-        xbmc.log('===== [ naka-player ] ===== KILLED: tick_loop_shoko', xbmc.LOGINFO)
+        debug('===== [ naka-player ] ===== KILLED: tick_loop_shoko')
 
     def kill_tick_loop_update_time(self):
         self._u_running = False
@@ -728,7 +774,7 @@ class Player(xbmc.Player):
                     xbmc.sleep(100)
                     if self._u_running:
                         break
-        xbmc.log('===== [ naka-player ] ===== KILLED: tick_loop_update_time', xbmc.LOGINFO)
+        debug('===== [ naka-player ] ===== KILLED: tick_loop_update_time')
 
     def handle_finished_episode(self):
         self.Playlist = None

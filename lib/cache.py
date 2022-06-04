@@ -7,7 +7,7 @@ import xbmc
 import xbmcaddon
 import xbmcgui
 import xbmcvfs
-import json
+from lib.kodi_utils import debug
 
 addon = xbmcaddon.Addon('plugin.video.nakamori')
 profileDir = addon.getAddonInfo('profile')
@@ -133,12 +133,12 @@ def clear_cache(params):
 
 
 def try_cache(url_in):
-    xbmc.log(f'=== cache lookup: {url_in} ===', xbmc.LOGDEBUG)
+    debug(f'=== cache lookup: {url_in} ===')
     db_row = get_data_from_cache(url_in)
     if db_row is not None:
         valid_until = int(addon.getSetting('expireCache'))
         expire_second = time.time() - float(db_row[1])
-        xbmc.log(f'=== is cache expiring: {expire_second} > {valid_until} ===', xbmc.LOGDEBUG)
+        debug(f'=== is cache expiring: {expire_second} > {valid_until} ===')
         if expire_second > valid_until:
             # expire, get new date
             remove_cache(url_in)

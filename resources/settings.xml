@@ -1501,6 +1501,32 @@
 	                <control type="toggle"/>
                 </setting>
             </group>
+            <!-- tagline settings: 0 -->
+            <group id="22" label="30186">
+                <!-- Use tags as tagline: 0 -->
+                <setting label="30187" type="boolean" id="tagline_tags">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <!-- Shorten Tagline: 0 -->
+                <setting label="30245" type="boolean" id="tagline_short">
+                    <level>0</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
+                <!-- Max length of tagline: 0 -->
+                <setting label="30188" type="integer" id="tagline_length" help="">
+	                <level>0</level>
+	                <default>50</default>
+	                <control type="edit" format="integer">
+		                <heading>30188</heading>
+	                </control>
+                    <dependencies>
+	                    <dependency type="enable" operator="is" setting="tagline_short">true</dependency>
+                    </dependencies>
+                </setting>
+            </group>
             <!-- title colorization: 1 -->
             <group id="7" label="30019">
                 <!-- title color: 1 -->
@@ -2959,6 +2985,12 @@
 <!-- TODO -->
             <!-- debug: 3 -->
             <group id="20" label="30173">
+                <!-- Write more info to log file: 3 -->
+                <setting label="30246" type="boolean" id="debug_log">
+                    <level>3</level>
+	                <default>false</default>
+	                <control type="toggle"/>
+                </setting>
                 <!-- remote debug: 3 -->
                 <setting label="30063" type="boolean" id="remote_debug">
                     <level>3</level>

@@ -9,7 +9,7 @@ import re
 from api.shoko.v3 import api3
 import routing
 
-from lib.kodi_utils import bold
+from lib.kodi_utils import bold, debug
 from lib.shoko_utils import get_tag_setting_flag
 from typing import List, Tuple
 from lib.naka_utils import ThisType, WatchedStatus, map_episodetype_to_thistype, map_filter_group_to_thistype, map_thitype_to_eptype
@@ -34,7 +34,8 @@ apiv3 = api3.Client(address=plugin_addon.getSetting('ipaddress'),
                   port=plugin_addon.getSettingInt('port'),
                   apikey=plugin_addon.getSetting('apikey'),
                   timeout=plugin_addon.getSettingInt('timeout'))
-xbmc.log(f'=== enabling cache: {plugin_addon.getSettingBool("enableCache")} ===', xbmc.LOGDEBUG)
+
+debug(f'enabling cache: {plugin_addon.getSettingBool("enableCache")}')
 apiv2.set_cache(plugin_addon.getSettingBool('enableCache'))
 
 
@@ -108,6 +109,8 @@ def get_listitem_from_serie(x: api2models.Serie, forced_title: str = None) -> Li
     add_context_menu_for_series(li, x, was_watched)
 
     set_property(li, 'IsPlayable', False)
+    set_property(li, 'ForceResolvePlugin', True)
+
     watched = 0
     if x.watched_sizes.Episodes is not None:
         watched = x.watched_sizes.Episodes
@@ -169,6 +172,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     add_context_menu_for_episode(li, x, series_id)
     set_property(li, 'IsPlayable', True)
     set_property(li, 'TotalTime', 1000000)
+    set_property(li, 'ForceResolvePlugin', True)
     if is_resume_enabled:
         time_to_start = 0
         if x.files is not None:
@@ -203,6 +207,7 @@ def get_listitem_from_rawfile(x: api2models.RawFile) -> ListItem:
     set_stream_info(li, x)
     # add_context_menu(li, [])  #TODO scan etc
     set_property(li, 'IsPlayable', True)
+    set_property(li, 'ForceResolvePlugin', True)
     return li
 
 
@@ -424,7 +429,7 @@ def set_watch_mark(mark_type: ThisType = ThisType.episodes, mark_id: int = 0, wa
 
         if plugin_addon.getSettingBool('enableCache'):
             url = cache.get_last()
-            xbmc.log(f'=== clear cache for watch mark: {url}', xbmc.LOGINFO)
+            debug(f'=== clear cache for watch mark: {url}')
             cache.remove_cache(url)
         xbmc.executebuiltin('Container.Refresh')
 
@@ -582,6 +587,9 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
             title = '*' + title
             sort_title = '*' + sort_title
 
+    # TODO migrate to new for kodi20 https://xbmc.github.io/docs.kodi.tv/master/kodi-base/d9/dc2/group__python___info_tag_video.html
+    # videoinfo = xbmc.InfoTagVideo(offscreen=True)
+
     video = {'aired': x.air,
              'year': x.year,
              'episode': int(x.epnumber),
@@ -628,6 +636,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
              'rating': float(x.rating),
              'premiered': x.air,
              'tag': get_tags(x.tags),
+             'tagline': get_tagline(str(get_tags(x.tags))),
              'votes': str(x.votes)}
     if x.userrating is not None:
         video['userrating'] = int(x.userrating)
@@ -650,6 +659,7 @@ def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedSt
              'rating': float(spoiler_control_ratings(x.rating, x.viewed == 0, ThisType.series)),
              'premiered': x.air,
              'tag': get_tags(x.tags),
+             'tagline': get_tagline(str(get_tags(x.tags))),
              'votes': str(spoiler_control_ratings(x.votes, x.viewed == 0, ThisType.series))
              }
     if x.userrating is not None:
@@ -787,7 +797,7 @@ def search_box():
     Shows a keyboard, and returns the text entered
     :return: the text that was entered
     """
-    keyb = xbmc.Keyboard('', plugin_addon.getLocalizedString(30026))
+    keyb = xbmc.Keyboard('', plugin_addon.getLocalizedString(30326))
     keyb.doModal()
     search_text = ''
 
@@ -1225,7 +1235,7 @@ def vote_for_episode(ep_id: int):
     apiv2.episode_vote(id=ep_id, score=my_vote)
     if plugin_addon.getSettingBool('enableCache'):
         url = cache.get_last()
-        xbmc.log(f'=== clear cache for watch mark: {url}', xbmc.LOGINFO)
+        debug(f'=== clear cache for watch mark: {url}')
         cache.remove_cache(url)
 
 
@@ -1288,11 +1298,22 @@ def return_used_server_address() -> str:
     return f'http://{plugin_addon.getSetting("ipaddress")}:{plugin_addon.getSettingInt("port")}'
 
 
+def get_tagline(x: str) -> str:
+    if plugin_addon.getSettingBool('tagline_tags'):
+        x = x.replace('[', '').replace(']', '').replace('\'', '')
+        if plugin_addon.getSettingBool('tagline_short'):
+            x = x[:int(plugin_addon.getSettingInt("tagline_length"))]
+        return x
+    return ''
+
+
 def shoko_avdump_mismatched_files():
     apiv3.avdump_mismatched_files()
 
+
 def shoko_recreate_all_groups():
     apiv3.recreate_all_groups()
+
 
 def shoko_sync_hashes():
     apiv2.sync_hashes()

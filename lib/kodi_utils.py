@@ -68,3 +68,8 @@ def move_to(position: int = 0):
             ctl.selectItem(int(position))
         except Exception as e:
             xbmc.log(f'--- move_to did not work this time: {e}', xbmc.LOGINFO)
+
+
+def debug(text: str):
+    if plugin_addon.getSettingBool("debug_log"):
+        xbmc.log(f'== [NAKA_DEBUG] == {text}', xbmc.LOGINFO)

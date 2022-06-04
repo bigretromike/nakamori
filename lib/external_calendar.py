@@ -4,7 +4,7 @@ import time
 import json
 import os
 import re
-# import error_handler as eh
+from lib.kodi_utils import debug
 from urllib.error import HTTPError
 from models.kodi_models import make_text_nice
 
@@ -41,7 +41,7 @@ def pack_json(new_list):
 
 
 def process_month(year, month, day, day_already_processed, url):
-    xbmc.log(f'== process_month == {year}/{month}/{day} : already = {day_already_processed} - url={url} ', xbmc.LOGINFO)
+    debug(f'== process_month == {year}/{month}/{day} : already = {day_already_processed} - url={url} ')
     day_is = datetime.date(year, month, day)
     week = day_is.isocalendar()[1]
     if is_seasons:
@@ -57,7 +57,7 @@ def process_month(year, month, day, day_already_processed, url):
     if not os.path.exists(y) and not download_external_source(url, year, month, week):
         return None
     if not os.path.exists(y):
-        xbmc.log('=== 404 calendar and no file', xbmc.LOGINFO)
+        debug('=== 404 calendar and no file')
         return None
 
     content = open(y, 'r').read()
@@ -122,7 +122,7 @@ def download_external_source(url, year=datetime.datetime.now().year, month=datet
         url = url % (year, week)
         z = os.path.join(x, '%s-%02d.json' % (year, week))
 
-    xbmc.log('URL===> ' + url, xbmc.LOGINFO)
+    debug('URL===> ' + url)
     try:
         content = request.urlopen(url).read().decode('utf-8')
 
@@ -195,7 +195,7 @@ def download_external_source(url, year=datetime.datetime.now().year, month=datet
             return False
     except HTTPError as ex:
         if ex.code == 404:
-            xbmc.log('calendar data was found more, 404', xbmc.LOGINFO)
+            debug('calendar data was found more, 404')
             return True
         else:
             return False
