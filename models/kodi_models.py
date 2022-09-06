@@ -310,8 +310,11 @@ def get_proper_title(s: api2models.Serie, forced_title: str = None) -> Tuple[str
                     else:
                         # if we added good langauge already and its in good type then we have a winner
                         break
-            # no matter what pick first on the list
-            t = list_of_good_titles[0].Title
+            if len(list_of_good_titles) > 0:
+                # no matter what pick first on the list
+                t = list_of_good_titles[0].Title
+            else:
+                t = s.name
         else:
             t = s.name
 
@@ -320,6 +323,7 @@ def get_proper_title(s: api2models.Serie, forced_title: str = None) -> Tuple[str
         is_movie = True if s.ismovie is not None and s.ismovie == 1 else False
     else:
         is_movie = False
+
     return title_coloring(t, s.local_sizes.Episodes, s.total_sizes.Episodes, s.local_sizes.Specials, s.total_sizes.Specials, False, is_movie=is_movie), t
 
 
@@ -613,7 +617,7 @@ def set_info_for_episode(li: ListItem, x: api2models.Episode, series_title: str)
         video['season'] = 0
         video['sortseason'] = 0
     if x.userrating is not None:
-        video['userrating'] = int(x.userrating)
+        video['userrating'] = int(float(x.userrating))
     if x.view == 1:
         video['playcount'] = 1
         video['overlay'] = 5
@@ -639,7 +643,7 @@ def set_info_for_group(li: ListItem, x: api2models.Group):
              'tagline': get_tagline(str(get_tags(x.tags))),
              'votes': str(x.votes)}
     if x.userrating is not None:
-        video['userrating'] = int(x.userrating)
+        video['userrating'] = int(float(x.userrating))
     li.setInfo('video', video)
 
 
@@ -663,7 +667,7 @@ def set_info_for_series(li: ListItem, x: api2models.Serie, is_watched: WatchedSt
              'votes': str(spoiler_control_ratings(x.votes, x.viewed == 0, ThisType.series))
              }
     if x.userrating is not None:
-        video['userrating'] = int(x.userrating)
+        video['userrating'] = int(float(x.userrating))
     video['mediatype'] = 'tvshow'
     if x.ismovie == 1:
         video['mediatype'] = 'movie'
@@ -711,7 +715,7 @@ def add_context_menu_for_series(li: ListItem, s: api2models.Serie, was_watched: 
 
     if plugin_addon.getSettingBool('context_show_vote_Series'):
         userrate = ''
-        if s.userrating is not None and int(s.userrating) > 0:
+        if s.userrating is not None and int(float(s.userrating)) > 0:
             userrate = f' ({s.userrating})'
         vote = (plugin_addon.getLocalizedString(30124) + userrate, f'RunScript(plugin.video.nakamori, /dialog/series/{s.id}/vote)')
         _menu.append(vote)
@@ -750,7 +754,7 @@ def add_context_menu_for_episode(li: ListItem, e: api2models.Episode, s_id: int)
     # if plugin_addon.getSettingBool('context_playlist'):
     if plugin_addon.getSettingBool('context_show_vote_Episode'):
         userrate = ''
-        if e.userrating is not None and int(e.userrating) > 0:
+        if e.userrating is not None and int(float(e.userrating)) > 0:
             userrate = f' ({e.userrating})'
         vote = (plugin_addon.getLocalizedString(30125) + userrate, f'RunScript(plugin.video.nakamori, /dialog/episode/{e.id}/vote)')
         # TODO https://github.com/bigretromike/nakamori/issues/464
@@ -1041,7 +1045,6 @@ def list_episodes_for_series_by_series_id(s_id: int) -> Tuple[List[Tuple[int, Th
         q.level = 2  # we need eps-offset if we want resume
     q.tagfilter = get_tag_setting_flag()
     x = apiv2.series_get_by_id(q)
-
     series_title, non_color_title = get_proper_title(x)
 
     for ep in x.eps:
@@ -1189,9 +1192,9 @@ def did_you_rate_every_episode(series_id: int) -> Tuple[bool, str]:
 
     s = apiv2.series_get_by_id(q)
     for ep in s.eps:
-        if ep.userrating is None or (int(ep.userrating) == 0 and map_episodetype_to_thistype(ep.eptype) == ThisType.episodes):
+        if ep.userrating is None or (int(float(ep.userrating)) == 0 and map_episodetype_to_thistype(ep.eptype) == ThisType.episodes):
             all_rated = False
-            suggest_rating_based_on_episode_rating.append(int(ep.userrating))
+            suggest_rating_based_on_episode_rating.append(int(float(ep.userrating)))
     for uservote in suggest_rating_based_on_episode_rating:
         suggest_rating += uservote
     suggest_rating = float(suggest_rating/len(suggest_rating_based_on_episode_rating))
