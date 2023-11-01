@@ -851,15 +851,20 @@ def main_menu_items() -> List[ListItem]:
     # 'Unsort': 5, 'Settings' (both): 7, 'Shoko Menu': 8, 'Search': 9, Experiment: 99}
 
     items: List[ListItem] = []
-    img = plugin_img_path + '/%s/%s'
+    # img = plugin_img_path + '/%s/%s'
 
     if plugin_addon.getSettingBool('show_favorites'):
         name = color(plugin_addon.getLocalizedString(30211), plugin_addon.getSetting('color_favorites'))
         if plugin_addon.getSettingBool('bold_favorites'):
             name = bold(name)
         item = ListItem(name, path='plugin://plugin.video.nakamori/favorites')
-        img_name = 'airing.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        # img_name = 'airing.png'
+        item.setArt({
+            'fanart': f'{plugin_img_path}/backgrounds/airing.png',
+            'banners': f'{plugin_img_path}/banners/airing.png',
+            'poster': f'{plugin_img_path}/icons/airing.png',
+            'icon': f'{plugin_img_path}/icons/airing.png'
+        })
         items.append(item)
 
     if plugin_addon.getSettingBool('show_recent2'):
@@ -867,8 +872,13 @@ def main_menu_items() -> List[ListItem]:
         if plugin_addon.getSettingBool('bold_recent2'):
             name = bold(name)
         item = ListItem(name, path='plugin://plugin.video.nakamori/recent')
-        img_name = '/airing.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        # img_name = 'airing.png'
+        item.setArt({
+            'fanart': f'{plugin_img_path}/backgrounds/airing.png',
+            'banners': f'{plugin_img_path}/banners/airing.png',
+            'poster': f'{plugin_img_path}/icons/airing.png',
+            'icon': f'{plugin_img_path}/icons/airing.png'
+        })
         items.append(item)
 
     # TODO airing today
@@ -888,8 +898,13 @@ def main_menu_items() -> List[ListItem]:
             # isfolter
         else:
             item = ListItem(name, path='plugin://plugin.video.nakamori/calendar')
-        img_name = 'calendar.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        # img_name = 'calendar.png'
+        item.setArt({
+            'fanart': f'{plugin_img_path}/backgrounds/calendar.png',
+            'banners': f'{plugin_img_path}/banners/calendar.png',
+            'poster': f'{plugin_img_path}/icons/calendar.png',
+            'icon': f'{plugin_img_path}/icons/calendar.png'
+        })
         items.append(item)
 
     if plugin_addon.getSettingBool('show_settings'):
@@ -897,8 +912,13 @@ def main_menu_items() -> List[ListItem]:
         if plugin_addon.getSettingBool('bold_settings'):
             name = bold(name)
         item = ListItem(name, path='plugin://plugin.video.nakamori/settings')
-        img_name = 'settings.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        # img_name = 'settings.png'
+        item.setArt({
+            'fanart': f'{plugin_img_path}/backgrounds/settings.png',
+            'banners': f'{plugin_img_path}/banners/settings.png',
+            'poster': f'{plugin_img_path}/icons/settings.png',
+            'icon': f'{plugin_img_path}/icons/settings.png'
+        })
         items.append(item)
 
     if plugin_addon.getSettingBool('show_shoko'):
@@ -906,8 +926,13 @@ def main_menu_items() -> List[ListItem]:
         if plugin_addon.getSettingBool('bold_shoko'):
             name = bold(name)
         item = ListItem(name, path='plugin://plugin.video.nakamori/shoko')
-        img_name = 'settings.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        # img_name = 'settings.png'
+        item.setArt({
+            'fanart': f'{plugin_img_path}/backgrounds/settings.png',
+            'banners': f'{plugin_img_path}/banners/settings.png',
+            'poster': f'{plugin_img_path}/icons/settings.png',
+            'icon': f'{plugin_img_path}/icons/settings.png'
+        })
         items.append(item)
 
     if plugin_addon.getSettingBool('show_search'):
@@ -915,8 +940,13 @@ def main_menu_items() -> List[ListItem]:
         if plugin_addon.getSettingBool('bold_search'):
             name = bold(name)
         item = ListItem(name, path='plugin://plugin.video.nakamori/search')
-        img_name = 'search.png'
-        item.setArt({'fanart': img % ('backgrounds', img_name), 'banners': img % ('banners', img_name), 'poster': img % ('icons', img_name)})
+        # img_name = 'search.png'
+        item.setArt({
+            'fanart': f'{plugin_img_path}/backgrounds/search.png', 
+            'banners': f'{plugin_img_path}/banners/search.png', 
+            'poster': f'{plugin_img_path}/icons/search.png', 
+            'icon': f'{plugin_img_path}/icons/search.png'
+        })
         items.append(item)
 
     return items

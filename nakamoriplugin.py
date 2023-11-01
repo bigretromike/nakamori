@@ -38,7 +38,6 @@ def list_all_filters():
         # also let's flag this information in sqlite version, mark
         pass
 
-    kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filters()
     x = kodi_models.main_menu_items()
@@ -49,6 +48,27 @@ def list_all_filters():
     y.sort(key=itemgetter(3))
 
     for filter_id, f_type, li, label in y:
+        if label == "Tags":
+            li.setArt({
+                'fanart': f'{kodi_models.plugin_img_path}/backgrounds/tags.png',
+                'banners': f'{kodi_models.plugin_img_path}/banners/tags.png',
+                'poster': f'{kodi_models.plugin_img_path}/icons/tags.png',
+                'icon': f'{kodi_models.plugin_img_path}/icons/tags.png'
+            })
+        elif label == "Years":
+            li.setArt({
+                'fanart': f'{kodi_models.plugin_img_path}/backgrounds/years.png',
+                'banners': f'{kodi_models.plugin_img_path}/banners/years.png',
+                'poster': f'{kodi_models.plugin_img_path}/icons/years.png',
+                'icon': f'{kodi_models.plugin_img_path}/icons/years.png'
+            })
+        elif label == "Seasons":
+            li.setArt({
+                'fanart': f'{kodi_models.plugin_img_path}/backgrounds/seasons.png',
+                'banners': f'{kodi_models.plugin_img_path}/banners/seasons.png',
+                'poster': f'{kodi_models.plugin_img_path}/icons/seasons.png',
+                'icon': f'{kodi_models.plugin_img_path}/icons/seasons.png'
+            })
         if f_type == ThisType.filter:
             addDirectoryItem(plugin.handle, plugin.url_for(list_groups_by_filter_id, filter_id), li, True, totalItems=y_count)
         elif f_type == ThisType.filters:
