@@ -1711,3 +1711,93 @@ msgstr "The command has been sent"
 msgctxt "#30393"
 msgid "Rescan folder"
 msgstr "Rescan folder"
+
+#: nakamoriplugin.py
+msgctxt "#30394"
+msgid "Used by the 'Unrecognized' utility to find files in your library that don't match to a file in AniDB."
+msgstr "Used by the 'Unrecognized' utility to find files in your library that don't match to a file in AniDB."
+
+#: nakamoriplugin.py
+msgctxt "#30395"
+msgid "Deletes all existing groups in Shoko and recreates them"
+msgstr "Deletes all existing groups in Shoko and recreates them"
+
+#: nakamoriplugin.py
+msgctxt "#30396"
+msgid "Updates all media info"
+msgstr "Updates all media info"
+
+#: nakamoriplugin.py
+msgctxt "#30397"
+msgid "Recalculates series stats and group filters"
+msgstr "Recalculates series stats and group filters"
+
+#: nakamoriplugin.py
+msgctxt "#30398"
+msgid "Force downloads XML data from AniDB. This should only be necessary if the XML has been edited/deleted or Shoko has closed/crashed unexpectedly"
+msgstr "Force downloads XML data from AniDB. This should only be necessary if the XML has been edited/deleted or Shoko has closed/crashed unexpectedly"
+
+#: nakamoriplugin.py
+msgctxt "#30399"
+msgid "Sync Votes from Shoko to AniDB"
+msgstr "Sync Votes from Shoko to AniDB"
+
+#: nakamoriplugin.py
+msgctxt "#30400"
+msgid "Syncs all of the states in Shoko's library to AniDB. BEWARE THIS IS ONE WAY AND CAN ERASE ANIDB DATA IRREVERSIBLY"
+msgstr "Syncs all of the states in Shoko's library to AniDB. BEWARE THIS IS ONE WAY AND CAN ERASE ANIDB DATA IRREVERSIBLY"
+
+#: nakamoriplugin.py
+msgctxt "#30401"
+msgid "Updates All AniDB Series Info"
+msgstr "Updates All AniDB Series Info"
+
+#: nakamoriplugin.py
+msgctxt "#30402"
+msgid "Removes entries in Shoko and MyList for files thats are no longer accessible"
+msgstr "Removes entries in Shoko and MyList for files thats are no longer accessible"
+
+#: nakamoriplugin.py
+msgctxt "#30403"
+msgid "Removes entries in Shoko (but keeps them in MyList) for files thats are no longer accessible"
+msgstr "Removes entries in Shoko (but keeps them in MyList) for files thats are no longer accessible"
+
+#: nakamoriplugin.py
+msgctxt "#30404"
+msgid "Checks for new files in your Shoko folders, hashes them, and scans sites (AniDB, TvDB, etc) for metadata and images"
+msgstr "Checks for new files in your Shoko folders, hashes them, and scans sites (AniDB, TvDB, etc) for metadata and images"
+
+#: nakamoriplugin.py
+msgctxt "#30405"
+msgid "Regenerate all episode matchings for TvDB. You should not need to run this unless someone from the Shoko team or the release notes have told you to"
+msgstr "Regenerate all episode matchings for TvDB. You should not need to run this unless someone from the Shoko team or the release notes have told you to"
+
+#: nakamoriplugin.py
+msgctxt "#30406"
+msgid "Updates all TvDB Series Info"
+msgstr "Updates all TvDB Series Info"
+
+#: nakamoriplugin.py
+msgctxt "#30407"
+msgid "Updates all MovieDB info"
+msgstr "Updates all MovieDB info"
+
+#: nakamoriplugin.py
+msgctxt "#30408"
+msgid "Updates and downloads any missing images"
+msgstr "Updates and downloads any missing images"
+
+#: nakamoriplugin.py
+msgctxt "#30409"
+msgid "Finds any invalid images and redownloads them"
+msgstr "Finds any invalid images and redownloads them"
+
+#: nakamoriplugin.py
+msgctxt "#30410"
+msgid "Sync states from Trakt into Shoko - if you have Trakt setup"
+msgstr "Sync states from Trakt into Shoko - if you have Trakt setup"
+
+#: nakamoriplugin.py
+msgctxt "#30411"
+msgid "Sync all Trakt info into Shoko"
+msgstr "Sync all Trakt info into Shoko"

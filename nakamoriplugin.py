@@ -507,9 +507,30 @@ def show_shoko():
     # - Update all mediainfo        (item) apiv3.update_all_mediainfo
     # - Update series stats         (item) apiv3.update_series_stats
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to '.. / Shoko'
     kodi_models.set_category(plugin_addon.getLocalizedString(30115))
+
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    avdump_mismatched_files_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30373))
+    avdump_mismatched_files_li.setArt(list_item_art)
+    avdump_mismatched_files_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30394)}) # setting 'description'
+    recreate_all_groups_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30374))
+    recreate_all_groups_li.setArt(list_item_art)
+    recreate_all_groups_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30395)}) # setting 'description'
+    sync_hashes_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30375))
+    sync_hashes_li.setArt(list_item_art)
+    sync_hashes_li.setInfo(type="video", infoLabels={"plot": ""}) # setting 'description'
+    update_all_mediainfo_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30376))
+    update_all_mediainfo_li.setArt(list_item_art)
+    update_all_mediainfo_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30396)}) # setting 'description'
+    update_series_stats_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30377))
+    update_series_stats_li.setArt(list_item_art)
+    update_series_stats_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30397)}) # setting 'description'
 
     directory_items = [
         # AniDB (url, ListItem, isFolder)
@@ -525,15 +546,15 @@ def show_shoko():
         # Trakt (url, ListItem, isFolder)
         (plugin.url_for(show_shoko_trakt_directory), ListItem(label=plugin_addon.getLocalizedString(30372)), True),
         # AVDump mismatched files (url, ListItem, isFolder)
-        (plugin.url_for(shoko_avdump_mismatched_files), ListItem(label=plugin_addon.getLocalizedString(30373)), False),
+        (plugin.url_for(shoko_avdump_mismatched_files), avdump_mismatched_files_li, False),
         # Recreate all groups (url, ListItem, isFolder)
-        (plugin.url_for(shoko_recreate_all_groups), ListItem(label=plugin_addon.getLocalizedString(30374)), False),
+        (plugin.url_for(shoko_recreate_all_groups), recreate_all_groups_li, False),
         # Sync hashes (url, ListItem, isFolder)
-        (plugin.url_for(shoko_sync_hashes), ListItem(label=plugin_addon.getLocalizedString(30375)), False),
+        (plugin.url_for(shoko_sync_hashes), sync_hashes_li, False),
         # Update all mediainfo (url, ListItem, isFolder)
-        (plugin.url_for(shoko_update_all_mediainfo), ListItem(label=plugin_addon.getLocalizedString(30376)), False),
+        (plugin.url_for(shoko_update_all_mediainfo), update_all_mediainfo_li, False),
         # Update series stats (url, ListItem, isFolder)
-        (plugin.url_for(shoko_update_series_stats), ListItem(label=plugin_addon.getLocalizedString(30377)), False)
+        (plugin.url_for(shoko_update_series_stats), update_series_stats_li, False)
     ]
     # add folders and items to 'Shoko' directory
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
@@ -626,19 +647,37 @@ def show_shoko_anidb_directory():
     #     - Sync "My List"              (item)
     #     - Update all info             (item)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / AniDB'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30367)}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    download_missing_data_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30378))
+    download_missing_data_li.setArt(list_item_art)
+    download_missing_data_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30398)}) # setting 'description'
+    sync_votes_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30379))
+    sync_votes_li.setArt(list_item_art)
+    sync_votes_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30399)}) # setting 'description'
+    sync_my_list_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30380))
+    sync_my_list_li.setArt(list_item_art)
+    sync_my_list_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30400)}) # setting 'description'
+    update_all_info_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30381))
+    update_all_info_li.setArt(list_item_art)
+    update_all_info_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30401)}) # setting 'description'
+
     directory_items = [
         # Download missing data (url, ListItem, isFolder)
-        (plugin.url_for(anidb_download_missing_data), ListItem(label=plugin_addon.getLocalizedString(30378)), False),
+        (plugin.url_for(anidb_download_missing_data), download_missing_data_li, False),
         # Sync votes (url, ListItem, isFolder)
-        (plugin.url_for(anidb_sync_votes), ListItem(label=plugin_addon.getLocalizedString(30379)), False),
+        (plugin.url_for(anidb_sync_votes), sync_votes_li, False),
         # Sync "My List" (url, ListItem, isFolder)
-        (plugin.url_for(anidb_sync_my_list), ListItem(label=plugin_addon.getLocalizedString(30380)), False),
+        (plugin.url_for(anidb_sync_my_list), sync_my_list_li, False),
         # Update all info (url, ListItem, isFolder)
-        (plugin.url_for(anidb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30381)), False)
+        (plugin.url_for(anidb_update_all_info), update_all_info_li, False)
     ]
     # add items to 'AniDB' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
@@ -689,18 +728,32 @@ def show_shoko_import_folders_directory():
     #     - Run import                                  (item)
     #     - (User import folders)                       (Folders)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / Import folders'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30368)}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    remove_missing_files_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30382))
+    remove_missing_files_li.setArt(list_item_art)
+    remove_missing_files_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30402)}) # setting 'description'
+    remove_missing_files_keep_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30383))
+    remove_missing_files_keep_li.setArt(list_item_art)
+    remove_missing_files_keep_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30403)}) # setting 'description'
+    run_import_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30384))
+    run_import_li.setArt(list_item_art)
+    run_import_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30404)}) # setting 'description'
 
     directory_items = [
         # Remove missing files (url, ListItem, isFolder)
-        (plugin.url_for(import_folder_remove_missing_files), ListItem(label=plugin_addon.getLocalizedString(30382)), False),
+        (plugin.url_for(import_folder_remove_missing_files), remove_missing_files_li, False),
         # Remove missing files (keep in "My List") (url, ListItem, isFolder)
-        (plugin.url_for(import_folder_remove_missing_files_keep), ListItem(label=plugin_addon.getLocalizedString(30383)), False),
+        (plugin.url_for(import_folder_remove_missing_files_keep), remove_missing_files_keep_li, False),
         # Run import (url, ListItem, isFolder)
-        (plugin.url_for(import_folder_run_import_all), ListItem(label=plugin_addon.getLocalizedString(30384)), False)
+        (plugin.url_for(import_folder_run_import_all), run_import_li, False)
     ]
     
     # get list items of import folders
@@ -743,13 +796,21 @@ def show_shoko_user_import_folder_directory(folder_name, folder_id):
     # Import folder             (folder)
     #     - Rescan folder       (item)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / Import folders / folder_name'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30368)} / {folder_name}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    rescan_folder_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30393))
+    rescan_folder_li.setArt(list_item_art)
+
     directory_items = [
         # Rescan folder (url, ListItem, isFolder)
-        (plugin.url_for(user_import_folder_rescan, folder_name, folder_id), ListItem(label=plugin_addon.getLocalizedString(30393)), False),
+        (plugin.url_for(user_import_folder_rescan, folder_name, folder_id), rescan_folder_li, False),
     ]
 
     # add items to this user's import folder directory 
@@ -772,15 +833,27 @@ def show_shoko_tvdb_directory():
     #     - Regenerate links    (item)
     #     - Update all info     (item)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / TvDB'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30369)}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    regenerate_links_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30385))
+    regenerate_links_li.setArt(list_item_art)
+    regenerate_links_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30405)}) # setting 'description'
+    update_all_info_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30386))
+    update_all_info_li.setArt(list_item_art)
+    update_all_info_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30406)}) # setting 'description'
+
     directory_items = [
         # Regenerate links (url, ListItem, isFolder)
-        (plugin.url_for(tvdb_regenerate_links), ListItem(label=plugin_addon.getLocalizedString(30385)), False),
+        (plugin.url_for(tvdb_regenerate_links), regenerate_links_li, False),
         # Update all info (url, ListItem, isFolder)
-        (plugin.url_for(tvdb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30386)), False)
+        (plugin.url_for(tvdb_update_all_info), update_all_info_li, False)
     ]
     # add items to 'TvDB' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
@@ -810,13 +883,22 @@ def show_shoko_moviedb_directory():
     # MovieDB                   (Folder)
     #     - Update all info     (item)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / MovieDB'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30370)}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    update_all_info_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30387))
+    update_all_info_li.setArt(list_item_art)
+    update_all_info_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30407)}) # setting 'description'
+
     directory_items = [
         # Update all info (url, ListItem, isFolder)
-        (plugin.url_for(moviedb_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30387)), False)
+        (plugin.url_for(moviedb_update_all_info), update_all_info_li, False)
     ]
     # add items to 'MovieDB' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
@@ -838,15 +920,27 @@ def show_shoko_images_directory():
     #     - Update all      (item)
     #     - Validate all    (item)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / Images'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30371)}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    update_all_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30388))
+    update_all_li.setArt(list_item_art)
+    update_all_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30408)}) # setting 'description'
+    validate_all_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30389))
+    validate_all_li.setArt(list_item_art)
+    validate_all_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30409)}) # setting 'description'
+
     directory_items = [
         # Update all (url, ListItem, isFolder)
-        (plugin.url_for(images_update_all), ListItem(label=plugin_addon.getLocalizedString(30388)), False),
+        (plugin.url_for(images_update_all), update_all_li, False),
         # Validate all (url, ListItem, isFolder)
-        (plugin.url_for(images_validate_all), ListItem(label=plugin_addon.getLocalizedString(30389)), False)
+        (plugin.url_for(images_validate_all), validate_all_li, False)
     ]
     # add items to 'Images' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
@@ -877,15 +971,27 @@ def show_shoko_trakt_directory():
     #     - Sync Trakt collection   (item)
     #     - Update all info         (item)
 
-    kodi_models.set_content('tvshows')
+    # kodi_models.set_content('tvshows')
     # set category to ' .. / Shoko / Trakt'
     kodi_models.set_category(f'{plugin_addon.getLocalizedString(30115)} / {plugin_addon.getLocalizedString(30372)}')
 
+    list_item_art = {
+        'poster': f'{kodi_models.plugin_img_path}/icons/command.png',
+        'icon': f'{kodi_models.plugin_img_path}/icons/command.png'
+    }
+
+    sync_trakt_collection_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30390))
+    sync_trakt_collection_li.setArt(list_item_art)
+    sync_trakt_collection_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30410)}) # setting 'description'
+    update_all_info_li = xbmcgui.ListItem(label=plugin_addon.getLocalizedString(30391))
+    update_all_info_li.setArt(list_item_art)
+    update_all_info_li.setInfo(type="video", infoLabels={"plot": plugin_addon.getLocalizedString(30411)}) # setting 'description'
+
     directory_items = [
         # Sync Trakt collection (url, ListItem, isFolder)
-        (plugin.url_for(trakt_sync_trakt_collection), ListItem(label=plugin_addon.getLocalizedString(30390)), False),
+        (plugin.url_for(trakt_sync_trakt_collection), sync_trakt_collection_li, False),
         # Update all info (url, ListItem, isFolder)
-        (plugin.url_for(trakt_update_all_info), ListItem(label=plugin_addon.getLocalizedString(30391)), False)
+        (plugin.url_for(trakt_update_all_info), update_all_info_li, False)
     ]
     # add items to 'Trakt' directory 
     addDirectoryItems(handle=plugin.handle, items=directory_items, totalItems=directory_items.__len__())
