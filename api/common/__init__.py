@@ -117,7 +117,6 @@ class APIClient:
                 url = f"{self.proto}://{self.address}:{self.port}{url}?api-version={self.version}"
             else:
                 url = f"{self.proto}://{self.address}:{self.port}{url}"  # ?api-version={self.version}"
-        debug(f"api.call = {url}")
 
         headers = {
             'Accept': '*/*',
@@ -137,11 +136,9 @@ class APIClient:
         # Api Calls
         req = None
         if call_type == APIType.GET:
-            print(f"Api.GET === {url} -- -H {headers} -D {data}")
             req = Request(url, data=data, headers=headers, method="GET")
 
         elif call_type == APIType.POST:
-            print(f"Api.POST === {url} -- -H {headers} -D {data}")
             if type(data) is dict:
                 data = json.dumps(data).encode("utf-8")
             else:
@@ -150,21 +147,24 @@ class APIClient:
             req = Request(url, data=data, headers=headers, method="POST")
 
         elif call_type == APIType.DELETE:
-            print(f"Api.DELETE === {url} -- -H {headers} -D {data}")
             data = json.dumps(data).encode("utf-8")
             req = Request(url, data=data, headers=headers, method="DELETE")
 
         elif call_type == APIType.PATCH:
-            print(f"Api.PATCH === {url} -- -H {headers} -D {data}")
             data = json.dumps(data).encode("utf-8")
             req = Request(url, data=data, headers=headers, method="PATCH")
 
         elif call_type == APIType.PUT:
-            print(f"Api.PUT == {url} -- -H {headers} -D {data}")
             data = json.dumps(data).encode("utf-8")
             req = Request(url, data=data, headers=headers, method="PUT")
         else:
             print(f"Unknown === {url}")
+            debug(f"Unknown === {url}")
+
+        print(f"Sending HTTP request: {req.method} {req.get_full_url()}\r\nHeaders: {req.headers}\r\nData: {req.data}")
+        debug(f"Sending HTTP request: {req.method} {req.get_full_url()}")
+        debug(f"\t\tHeaders: {req.headers}")
+        debug(f"\t\tData: {req.data}")
 
         if req is not None:
             if self.try_cache and req.method == 'GET':
