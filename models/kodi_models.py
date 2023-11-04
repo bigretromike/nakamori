@@ -97,7 +97,7 @@ def get_listitem_from_serie(x: api2models.Serie, forced_title: str = None) -> Li
     if x.art is not None:
         set_art(li, x.art)
     set_folder(li, True)
-    set_unieque_ids(li, x.aid)
+    set_unique_ids(li, x.aid)
     rating = x.rating if x.rating is not None else 0
     votes = int(x.votes) if x.votes is not None else 0
     set_rating(li, rate_type='anidb', rate_value=float(rating), votes=int(votes), default=True)
@@ -162,7 +162,7 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
     if x.art is not None:
         set_art(li, spoiler_control_images(x.art, hide_spoiler))
     set_folder(li, False)
-    set_unieque_ids(li, x.aid)
+    set_unique_ids(li, x.aid)
     # set_rating(li, rate_type='anidb', rate_value=float(x.rating), votes=int(x.votes), default=True)
     #add_season(li, season_name='__season__', season_number=1)
     set_info_for_episode(li, x, series_title)
@@ -501,7 +501,7 @@ def set_folder(li: ListItem, is_folder: bool = True):
     li.setIsFolder(is_folder)
 
 
-def set_unieque_ids(li: ListItem, anidb_id=None):
+def set_unique_ids(li: ListItem, anidb_id=None):
     if anidb_id is not None:
         li.setUniqueIDs({'anidb': anidb_id})
 
