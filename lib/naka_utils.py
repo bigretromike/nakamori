@@ -4,8 +4,8 @@ from enum import IntEnum
 
 
 class ThisType(IntEnum):
-    filters = 0
-    filter = 1
+    filters = 0 # "Seasons" or "Tags" has additional filters inside. Multinode filter
+    filter = 1 # "All", "Continue Watching", "Missing episodes", "Recently watched"... Single node filter
     group = 2
     series = 3
     # episodes type
