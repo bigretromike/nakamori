@@ -1157,6 +1157,9 @@ def unwatched_episode(ep_id):
 def move_to(position: int):
     kodi_utils.move_to(int(position))
 
+@plugin.route('nakamoriplugin.py')  # funny how kodi handles this (while using routing)
+def run_as_program():
+    xbmc.executebuiltin('Addon.OpenSettings(plugin.video.nakamori)')
 
 def main():
     # if we need to change/save ip/apikey we need to 'close' plugin so kodi can flush changes into file/memory.
