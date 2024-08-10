@@ -8,11 +8,11 @@ from lib.naka_utils import ThisType, map_episodetype_int_to_thistype
 from models import kodi_models
 from sys import argv
 from lib.windows import wizard
-import xbmc
-import xbmcgui
-from xbmcgui import ListItem
-import xbmcaddon
-from xbmcplugin import addDirectoryItem, endOfDirectory, addDirectoryItems
+import xbmc # type: ignore
+import xbmcgui # type: ignore
+from xbmcgui import ListItem # type: ignore
+import xbmcaddon # type: ignore
+from xbmcplugin import addDirectoryItem, endOfDirectory, addDirectoryItems # type: ignore
 
 import lib.search as search
 import lib.favorite as favorite
@@ -37,7 +37,8 @@ def list_all_filters():
         # spot for 'what's new window'
         # also let's flag this information in sqlite version, mark
         pass
-
+    # set_content is needed beause we will lose Skin support
+    kodi_models.set_content('tvshows')
     kodi_models.set_sorting_method(ThisType.filter)
     y = kodi_models.list_all_filters()
     x = kodi_models.main_menu_items()
@@ -478,7 +479,6 @@ def show_favorites():
 @plugin.route('/dialog/favorites/<sid>/remove')
 def remove_favorite(sid):
     favorite.remove_favorite(sid)
-    favorite.add_favorite(sid)
     xbmc.executebuiltin('Notification(%s, %s, 7500, %s)' % (plugin_addon.getLocalizedString(30211),
                                                             plugin_addon.getLocalizedString(30213),
                                                             plugin_addon.getAddonInfo('icon')))
