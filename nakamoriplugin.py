@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from lib.external_calendar import ADDON
 import lib.windows.ac_calendar
 from lib import kodi_utils
 from lib import shoko_utils
@@ -1034,12 +1035,103 @@ def show_recent():
             addDirectoryItem(plugin.handle, plugin.url_for(open_rawfile, o_id), li, False, totalItems=list_count)
     endOfDirectory(plugin.handle, cacheToDisc=False)
 
-
 @plugin.route('/calendar')
 def show_calendar():
     lib.windows.ac_calendar.open_calendar()
     pass
 
+# region THIS_IS_JUST_BECAUSE_THERE_WAS_NOTHING
+# TODO: move this out, make it work better, dont leave this here.
+used_dates = []
+day_count = 0
+_serie_processed = 0
+_first_process_date = None
+
+def add_this(series, day: bool=False, serie_processed=_serie_processed, first_process_date=_first_process_date):
+    import datetime
+    from datetime import time
+    air_date = series.get('air', '')    
+    if serie_processed > 60:
+        return False
+
+    if not day:
+        try:  # python bug workaround
+            day_date = datetime.datetime.strptime(air_date, '%Y-%m-%d')
+        except TypeError:
+            day_date = datetime.datetime(*(time.strptime(air_date, '%Y-%m-%d')[0:6]))
+
+        last_processed_date = day_date.strftime('%Y%m%d')
+        if first_process_date is not None:
+            try:  # python bug workaround
+                new_date = datetime.datetime.strptime(first_process_date, '%Y%m%d')
+            except TypeError:
+                new_date = datetime.datetime(*(time.strptime(first_process_date, '%Y%m%d')[0:6]))
+            except:
+                xbmc.log(f'=== E: new_date ===== {first_process_date}', xbmc.LOGERROR)
+            if type(new_date) == datetime:
+                if new_date < day_date:
+                    first_process_date = last_processed_date
+
+        import os
+        fanart = os.path.join(os.path.join(xbmcaddon.Addon(id='plugin.video.nakamori').getAddonInfo('path'), 'resources', 'media'), 'icons', 'new-search.png')
+        if len(series['art']['thumb']) > 0:
+            fanart = series['art']['thumb'][0]['url']
+            if fanart is not None and ':' not in fanart:
+                from models.kodi_models import return_used_server_address
+                fanart = return_used_server_address() + fanart
+        title = series['titles'][0]['Title']  # support better format here, until then this is ok
+        aid = series.get('aid', 0)
+        is_movie = series.get('ismovie', 0)
+        from models.kodi_models import make_text_nice
+        summary = make_text_nice(str(series.get('summary', '')))
+        ep = 0
+        if ' - ep' in title:
+            import re
+            search = re.search(r'( \- ep )(\d*)', title)
+            ep = search.group(2)
+            title = title.replace(search.group(1) + ep, '')
+    else:
+        title = series.get('air', '')
+        import os
+        fanart = os.path.join(os.path.join(xbmcaddon.Addon(id='plugin.video.nakamori').getAddonInfo('path'), 'resources', 'media'), 'icons', 'new-search.png')
+        air_date = title
+        aid = 0
+        ep = 0
+        summary = title
+        
+    series_listitem = xbmcgui.ListItem(label=title)
+    series_listitem.setArt({'thumb': fanart, 'fanart': fanart, 'poster': fanart})
+    # series_listitem.setUniqueIDs({'anidb': aid}')
+    series_listitem.setInfo('video', {'title': title, 'aired': air_date, 'plot': summary})
+    series_listitem.setProperty('title', title)
+    series_listitem.setProperty('aired', str(air_date))
+    series_listitem.setProperty('aid', str(aid))
+    series_listitem.setProperty('ep', str(ep))
+    
+    return(aid, series_listitem)
+    
+
+@plugin.route('/calendar_classic')
+def show_calendar_classic():
+    import datetime
+    from lib.external_calendar import return_only_few
+    body = return_only_few(when=datetime.datetime.now().strftime('%Y%m%d'), offset=0, url=str(ADDON.getSetting('calendar_url')))
+    import json
+    _json = json.loads(body)
+    lisek = []
+    for series in _json['series']:
+        air_date = series.get('air', '')
+        if air_date not in used_dates:
+            used_dates.append(air_date)
+            lisek.append(add_this(series, day=True))
+        lisek.append(add_this(series))
+    
+    count_li = len(lisek)
+    for s_id, li in lisek:
+        addDirectoryItem(plugin.handle, plugin.url_for(open_series_by_series_id_and_filter_id, 0, s_id), li, True, totalItems=count_li)
+    endOfDirectory(plugin.handle, cacheToDisc=False)
+
+# endregion
 
 @plugin.route('/dialog/series/<series_id>/watched')
 def watched_series(series_id):
