@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from api.shoko.v2 import api2, api2models
-import xbmc
-import xbmcaddon
-import xbmcgui
-from xbmcgui import ListItem
-import xbmcplugin
+import xbmc # type: ignore
+import xbmcaddon # type: ignore
+import xbmcgui # type: ignore
+from xbmcgui import ListItem # type: ignore
+import xbmcplugin # type: ignore
 import re
 from api.shoko.v3 import api3
-import routing
+import routing # type: ignore
 
 from lib.kodi_utils import bold, debug
 from lib.shoko_utils import get_tag_setting_flag
@@ -201,7 +201,9 @@ def get_listitem_from_episode(x: api2models.Episode, series_title: str = '', cas
 def get_listitem_from_rawfile(x: api2models.RawFile) -> ListItem:
     name = get_file_name(x.filename)
     li = ListItem(name, path=x.url, offscreen=True)
-
+    from lib.kodi_utils import debug as d
+    d("---------------------------")
+    d(str(x))
     set_folder(li, True)
     set_info_for_rawfile(li, x)
     set_stream_info(li, x)
@@ -531,7 +533,8 @@ def set_info_for_rawfile(li: ListItem, x: api2models.RawFile):
              'originaltitle': x.filename,
              'sorttitle': x.filename,
              'mediatype': 'file',
-             'playcount': 0
+             'playcount': 0,
+             'duration': x.duration / 1000
              }
     li.setInfo('video', video)
 
@@ -696,12 +699,15 @@ def set_stream_info(li: ListItem, r: api2models.RawFile):
     for a in r.media.audios:
         audio = {'codec': a.Codec, 'language': a.Language, 'channels': a.Channels}
         li.addStreamInfo('audio', audio)
+        # li.addAudioStream(audio)
     for v in r.media.videos:
         video = {'codes': v.Codec, 'width': v.Width, 'heigh': v.Height, 'duration': v.Duration}
         li.addStreamInfo('video', video)
+        # li.addVideoStream(video)
     for s in r.media.subtitles:
         subtitle = {'language': s.Language}
         li.addStreamInfo('subtitle', subtitle)
+        # li.addSubtitleStream(subtitle)
 
 
 def add_context_menu_for_series(li: ListItem, s: api2models.Serie, was_watched: WatchedStatus):

@@ -3,10 +3,10 @@
 from sqlite3 import dbapi2 as database
 import os.path
 import time
-import xbmc
-import xbmcaddon
-import xbmcgui
-import xbmcvfs
+import xbmc # type: ignore
+import xbmcaddon # type: ignore
+import xbmcgui # type: ignore
+import xbmcvfs # type: ignore
 from lib.kodi_utils import debug
 
 addon = xbmcaddon.Addon('plugin.video.nakamori')

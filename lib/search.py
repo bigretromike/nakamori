@@ -2,10 +2,10 @@
 
 from sqlite3 import dbapi2 as database
 import os.path
-import xbmc
-import xbmcaddon
-import xbmcgui
-import xbmcvfs
+import xbmc # type: ignore
+import xbmcaddon # type: ignore
+import xbmcgui # type: ignore
+import xbmcvfs # type: ignore
 
 
 addon = xbmcaddon.Addon(id='plugin.video.nakamori')

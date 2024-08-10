@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-import routing
+import routing # type: ignore
 
 plugin = routing.Plugin()

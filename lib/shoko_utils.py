@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import xbmcaddon
-import xbmcgui
-import xbmc
+import xbmcaddon # type: ignore
+import xbmcgui # type: ignore
+import xbmc # type: ignore
 
 import json
 

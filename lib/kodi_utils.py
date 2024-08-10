@@ -3,10 +3,10 @@
 import os
 from uuid import uuid4
 
-import xbmcaddon
-import xbmcvfs
-import xbmcgui
-import xbmc
+import xbmcaddon # type: ignore
+import xbmcvfs # type: ignore
+import xbmcgui # type: ignore
+import xbmc # type: ignore
 
 plugin_addon = xbmcaddon.Addon('plugin.video.nakamori')
 

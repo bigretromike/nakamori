@@ -8,9 +8,9 @@ from lib.kodi_utils import debug
 from urllib.error import HTTPError
 from models.kodi_models import make_text_nice
 
-import xbmc
-import xbmcaddon
-import xbmcvfs
+import xbmc # type: ignore
+import xbmcaddon # type: ignore
+import xbmcvfs # type: ignore
 from urllib import request
 
 ADDON = xbmcaddon.Addon(id='plugin.video.nakamori')

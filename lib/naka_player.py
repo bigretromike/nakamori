@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import xbmc
-import xbmcgui
-import xbmcplugin
-import xbmcaddon
+import xbmc # type: ignore
+import xbmcgui # type: ignore
+import xbmcplugin # type: ignore
+import xbmcaddon # type: ignore
 
 from lib.kodi_utils import get_device_id, message_box, debug
 from models.kodi_models import set_watch_mark, is_series_watched, vote_for_episode, vote_for_series

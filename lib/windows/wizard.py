@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import xbmcgui
-import xbmcaddon
+import xbmcgui # type: ignore
+import xbmcaddon # type: ignore
 
 from lib import shoko_utils, kodi_utils
 

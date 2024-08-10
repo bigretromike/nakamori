@@ -487,7 +487,7 @@ class Stream:
         stream.Title = json.get("Title")
         stream.Language = json.get("Language")
         stream.Key = json.get("Key")
-        stream.Duration = json.get("Duration")
+        stream.Duration = int(int(json.get("Duration")) / 1000)
         stream.Height = json.get("Height")
         stream.Width = json.get("Width")
         stream.Bitrate = json.get("Bitrate")

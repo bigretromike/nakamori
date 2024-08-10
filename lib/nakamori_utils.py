@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import xbmcaddon
-import xbmc
+import xbmcaddon # type: ignore
+import xbmc # type: ignore
 
 from urllib.parse import urlparse, quote, unquote_plus, quote_plus, urlencode
 from urllib.request import urlopen, Request

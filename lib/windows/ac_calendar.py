@@ -2,7 +2,7 @@
 import time
 import json
 import datetime
-import xbmcvfs
+import xbmcvfs # type: ignore
 
 from models.kodi_models import *
 from api.shoko.v2 import api2models
