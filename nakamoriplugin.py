@@ -453,7 +453,7 @@ def vote_for_series(series_id):
     kodi_models.vote_for_series(int(series_id))
 
 
-@plugin.route('/dialog/episode/vote/<ep_id>')
+@plugin.route('/dialog/episode/<ep_id>/vote')
 def vote_for_episode(ep_id):
     kodi_models.vote_for_episode(ep_id)
 

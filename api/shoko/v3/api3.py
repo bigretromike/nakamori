@@ -213,6 +213,10 @@ class Client:
 
     def episode_by_id_watched_state(self, id: int, watched: bool = True):
         return self._episode_api_(command=f'{id}/watched/{watched}', call_type=APIType.POST)
+        
+    def episode_vote(self, id: int, vote: int):
+        data = {'Value': vote}
+        return self._episode_api_(command=f'{id}/Vote', call_type=APIType.POST, data=data)
 
     # endregion
 

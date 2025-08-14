@@ -763,8 +763,7 @@ def add_context_menu_for_episode(li: ListItem, e: api2models.Episode, s_id: int)
         if e.userrating is not None and int(float(e.userrating)) > 0:
             userrate = f' ({e.userrating})'
         vote = (plugin_addon.getLocalizedString(30125) + userrate, f'RunScript(plugin.video.nakamori, /dialog/episode/{e.id}/vote)')
-        # TODO https://github.com/bigretromike/nakamori/issues/464
-        # _menu.append(vote)
+        _menu.append(vote)
     if plugin_addon.getSettingBool('context_show_vote_Series'):
         vote = (plugin_addon.getLocalizedString(30124), f'RunScript(plugin.video.nakamori, /dialog/series/{s_id}/vote)')
         _menu.append(vote)
@@ -1271,7 +1270,8 @@ def vote_for_episode(ep_id: int):
     xbmc.executebuiltin('Notification(%s, %s %s, 7500, %s)' % (plugin_addon.getLocalizedString(30323),
                                                                plugin_addon.getLocalizedString(30322),
                                                                str(my_vote), plugin_addon.getAddonInfo('icon')))
-    apiv2.episode_vote(id=ep_id, score=my_vote)
+    # apiv2.episode_vote(id=ep_id, score=my_vote)  # not fixed in shoko
+    apiv3.episode_vote(id=ep_id, vote=my_vote)
     if plugin_addon.getSettingBool('enableCache'):
         url = cache.get_last()
         debug(f'=== clear cache for watch mark: {url}')
