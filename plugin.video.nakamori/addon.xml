@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.nakamori" name="Nakamori" version="4.1.10" provider-name="BigRetroMike, SteveMavic, da3dsoul">
+<addon id="plugin.video.nakamori" name="Nakamori" version="4.2.0" provider-name="BigRetroMike, SteveMavic, da3dsoul">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 		<import addon="script.module.routing" version="0.2.3"/>
@@ -15,12 +15,16 @@
 		<description lang="en_GB">Nakamori gives you the ability to interact with your Anime collection (via ShokoServer) for Kodi-enabled devices. You are able to use many of the commands available to Desktop right from inside Kodi, such as marking watched status, voting, rescanning and rehashing files, and more!</description>
 		<disclaimer lang="en_GB">This plugin to work require working ShokoServer instance. https://shokoanime.com</disclaimer>
 		<news>
-                4.1.10 (14/08/2025)
-		[added] Episode Vote that finally works
- 
-		4.1.9 (14/08/2025)
+                4.2.0 (14/08/2025)
 		[fix] some mess with player threads
 		[added] now Nakamori will remember your audio/sub setting for whole series
+ 
+		4.1.7 (10/08/2024)
+		[fix] Unsort duration info
+		[fix] running from programs opens settings
+		[fix] classic calendar (ugly prototype)
+		[fix] skin support
+		[fix] favorite remove
 		</news>
 		<platform>all</platform>
 		<language>en</language>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window id="999">
+    <defaultcontrol always="true">901</defaultcontrol>
+    <backgroundcolor>0x00000000</backgroundcolor>
+    <zorder>1</zorder>
+    <coordinates>
+        <posx>0</posx>
+        <posy>0</posy>
+    </coordinates>
+    <animation effect="fade" start="0" end="100" time="300">WindowOpen</animation>
+    <animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+    <controls>
+        <!-- bg -->
+        <control type="image">
+            <description></description>
+            <posx>0</posx>
+            <posy>0</posy>
+            <width>1920</width>
+            <height>1080</height>
+            <texture>common/ac-bg.png</texture>
+        </control>
+
+        <!-- body -->
+        <control type="group" id="900">
+            <posx>212</posx>
+            <control type="group" id="901">
+                <defaultcontrol>55</defaultcontrol>
+
+                <control type="panel" id="55">
+                    <onleft>1</onleft>
+                    <left>0</left>
+                    <top>50</top>
+                    <width>1900</width>
+                    <height>1010</height>
+                    <visible>true</visible>
+                    <pagecontrol>60</pagecontrol>
+                    <itemlayout height="315" width="510"> <!-- + odstęp 50 -->
+                        <!-- info bg -->
+                        <control type="image">
+                            <description>serie</description>
+                            <top>0</top>
+                            <width>460</width>
+                            <height>265</height>
+                            <texture>common/series-bg.png</texture>
+                        </control>
+                        <!-- summary -->
+                        <control type="image">
+                            <top>0</top>
+                            <left>0</left>
+                            <width>185</width>
+                            <height>265</height>
+                            <info>ListItem.Art(fanart)</info>
+                        </control>
+                        <!-- title -->
+                        <control type="textbox">
+                            <top>17</top>
+                            <left>202</left>
+                            <width>258</width>
+                            <height>76</height>
+                            <font>font_flag</font>
+                            <textcolor>black</textcolor>
+                            <monofont>mono30</monofont>
+                            <shadowcolor>FFFFFFFF</shadowcolor>
+                            <align>left</align>
+                            <info>ListItem.Property(title)</info>
+                        </control>
+                        <!-- poster -->
+                        <control type="image">
+                            <top>93</top>
+                            <left>202</left>
+                            <width>241</width>
+                            <height>105</height>
+                            <align>left</align>
+                            <aspectratio scalediffuse="false" align="left" aligny="top">keep</aspectratio>
+                            <info>ListItem.Art(poster)</info>
+                        </control>
+                        <!-- air -->
+                        <control type="label">
+                            <top>230</top>
+                            <left>202</left>
+                            <width>244</width>
+                            <height>44</height>
+                            <font>font_flag</font>
+                            <textcolor>black</textcolor>
+                            <label></label>
+                            <info>ListItem.Property(aired)</info>
+                        </control>
+                        <!-- end info -->
+                    </itemlayout>
+                    <focusedlayout height="315" width="510"> <!-- + odstęp 50 -->
+                        <!-- info bg -->
+                        <control type="image">
+                            <description>serie</description>
+                            <top>0</top>
+                            <width>460</width>
+                            <height>265</height>
+                            <texture>common/series-bg-focused.png</texture>
+                        </control>
+                        <!-- summary -->
+                        <control type="image">
+                            <top>0</top>
+                            <left>0</left>
+                            <width>185</width>
+                            <height>265</height>
+                            <info>ListItem.Art(fanart)</info>
+                        </control>
+                        <!-- title -->
+                        <control type="textbox">
+                            <top>17</top>
+                            <left>202</left>
+                            <width>258</width>
+                            <height>76</height>
+                            <font>font_flag</font>
+                            <textcolor>black</textcolor>
+                            <monofont>mono30</monofont>
+                            <shadowcolor>FFFFFFFF</shadowcolor>
+                            <align>left</align>
+                            <info>ListItem.Property(title)</info>
+                        </control>
+                        <!-- poster -->
+                        <control type="image">
+                             <top>93</top>
+                             <left>202</left>
+                             <width>241</width>
+                             <height>105</height>
+                             <align>left</align>
+                             <aspectratio scalediffuse="false" align="left" aligny="top">keep</aspectratio>
+                             <info>ListItem.Art(poster)</info>
+                        </control>
+                        <!-- air -->
+                        <control type="label">
+                            <top>230</top>
+                            <left>202</left>
+                            <width>244</width>
+                            <height>44</height>
+                            <font>font_flag</font>
+                            <textcolor>black</textcolor>
+                            <label></label>
+                            <info>ListItem.Property(aired)</info>
+                        </control>
+                        <!-- end info -->
+                    </focusedlayout>
+                </control>
+
+            </control>
+        </control>
+
+
+    </controls>
+</window>
