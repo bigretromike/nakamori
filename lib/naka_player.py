@@ -3,20 +3,42 @@ import xbmc # type: ignore
 import xbmcgui # type: ignore
 import xbmcplugin # type: ignore
 import xbmcaddon # type: ignore
+import xbmcvfs # type: ignore
 
-from lib.kodi_utils import get_device_id, message_box, debug
+from lib.kodi_utils import get_device_id, message_box, debug, if_debug
 from models.kodi_models import set_watch_mark, is_series_watched, vote_for_episode, vote_for_series
 from lib.naka_utils import ThisType, WatchedStatus
 from threading import Thread
 import sys
 import os
+import json
+import time
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 from api.shoko.v2 import api2, api2models
-
+from sqlite3 import dbapi2 as database
 
 plugin_addon = xbmcaddon.Addon(id='plugin.video.nakamori')
+profileDir = plugin_addon.getAddonInfo('profile')
+profileDir = xbmcvfs.translatePath(profileDir)
+
+db_file = os.path.join(profileDir, 'player.db')
+
+# connect to db
+_db_connection = database.connect(db_file)
+_db_cursor = _db_connection.cursor()
+
+# create table
+try:
+    _db_cursor.execute('CREATE TABLE IF NOT EXISTS [player] ([series] INTEGER PRIMARY KEY, [audio] TEXT, [sub] TEXT, [speed] TEXT, [updated] FLOAT)')
+    _db_connection.commit()
+except:
+    pass
+
+# close connection
+_db_connection.close()
+
 
 busy = xbmcgui.DialogProgress()
 clientid = get_device_id()
@@ -39,6 +61,73 @@ eigakan_host = 'http://' + eigakan_url + ':' + eigakan_port
 
 magic_chunk = 'chunk-stream0-00003.m4s'
 
+
+def get_player_info():
+    try:
+        # {'id': 1, 'jsonrpc': '2.0', 'result': {'currentaudiostream': {'bitrate': 0, 'channels': 2, 'codec': 'aac', 'index': 0, 'isdefault': True, 'isimpaired': False, 'isoriginal': False, 'language': 'eng', 'name': 'English - AAC-LC stereo', 'samplerate': 0}, 'currentsubtitle': {'index': 1, 'isdefault': True, 'isforced': False, 'isimpaired': False, 'language': 'eng', 'name': 'Dialogue'}, 'speed': 1, 'subtitleenabled': True}}
+        _data = json.loads(xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0","method": "Player.GetProperties","params":{"playerid": 1,"properties": ["currentsubtitle", "currentaudiostream", "speed", "subtitleenabled"]},"id": 1})))
+        _ai = _data['result']['currentaudiostream']['index']  # 0
+        _si = _data['result']['currentsubtitle']['index']  # 1
+        _se = _data['result']['subtitleenabled']  # True
+        _s = _data['result']['speed']  # 1
+        debug(str(_data))
+        # if file is not playing speed = 0, we dont need that
+        if _s == 0:
+            _s = 1
+        return (_ai, _se, _si, _s)
+    except Exception as e:
+        debug("issue with get_player_info(): " + str(e))
+        return None
+
+
+def get_user_settings(series_id: int, text: str = ""):
+    item = None
+    _data = '--before--'
+    try:
+        db_connection = database.connect(db_file)
+        db_cursor = db_connection.cursor()
+        db_cursor.execute(f'SELECT audio, sub, speed FROM player WHERE series="{series_id}"')
+        _se = True
+        _data = db_cursor.fetchone()
+        debug('USER_DB_DATA = ' + str(_data) + ' ' + text)
+        if _data is not None:
+            _a, _si, _s = _data
+            if _si == -1:
+                _se = False
+            return (_a, _se, _si, _s)
+    except Exception as E:
+        debug('get_user_settings() '+ text + 'issue: ' + str(E) + ' value ' + str(_data))
+    return None
+
+
+def set_user_settings(series_id: int, audio: str, is_sub: bool, sub: str, speed: str):
+    date = time.time()
+    debug(f'set_user_settings() input: id={series_id}, a={audio}, se={is_sub}, si={sub}, s={speed}, d={date}')
+    if is_sub == False:
+        sub = -1
+        
+    try:
+        db_connection = database.connect(db_file)
+        db_cursor = db_connection.cursor()
+        old_settings = get_user_settings(series_id, "inside set_user_settings() ")
+        if old_settings is None:
+            debug('OLD_SETTINGS IS NONE')
+            db_cursor.execute('INSERT INTO player (series, audio, sub, speed, updated) VALUES (?, ?, ?, ?, ?)', (series_id, audio, sub, speed, date))
+        else:
+            if audio is None:
+                audio = old_settings[0]
+            if sub is None:
+                is_sub = old_settings[1]
+                if is_sub == False:
+                    sub = -1
+                else:
+                    sub = old_settings[2]
+            db_cursor.execute('UPDATE player set audio = ?, sub = ?, speed = ?, updated = ? where series = ?', (audio, sub, speed, date, series_id))
+            debug(f'USER_SETTINGS SAVED: id={series_id}, a={audio}, se={is_sub}, si={sub}, s={speed} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+        db_connection.commit()
+        db_connection.close()
+    except Exception as e:
+        debug('issue with set_user_settings(): ' + str(e))
 
 def trancode_url(file_id):
     video_url = eigakan_host + '/api/transcode/%s/%s' % (clientid, file_id)
@@ -165,6 +254,7 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
         if s_id == 0:
             debug('Get series info...')
             series = API.series_from_ep(q)
+            s_id = series.id
             debug(f'Series data: {str(series)}')
         else:
             q.id = s_id
@@ -218,10 +308,10 @@ def play_video(file_id, ep_id=0, s_id=0, mark_as_watched=True, resume=False, for
 
         debug('Create Nakamori Player')
         # player = Player()
-        debug(f'Feed player with file_id: {file_id}, ep_id: {ep_id}, duration: {int(f.duration/1000)}, '
+        debug(f'Feed player with file_id: {file_id}, ep_id: {ep_id}, s_id {s_id}, duration: {int(f.duration/1000)}, '
               f'm3u8_url: {m3u8_url}, is_transcoded: {is_transcoded}, url_for_player: {url_for_player}, '
               f'mark_as_watched: {mark_as_watched}')
-        player.feed(file_id, ep_id, int(f.duration/1000), m3u8_url if is_transcoded else url_for_player, mark_as_watched)
+        player.feed(file_id, ep_id, s_id, int(f.duration/1000), m3u8_url if is_transcoded else url_for_player, mark_as_watched)
 
         try:
             item = xbmcgui.ListItem(path=url_for_player, offscreen=True)
@@ -299,8 +389,7 @@ def player_loop(player, is_transcoded, is_transcode_finished, ep_id, party_mode)
                     # TODO part1: hack is temporary and not working in 100%
                     # TODO part2: (with small segments + fast cpu, you wont start from 1st segment)
                     # xbmc.executebuiltin('Seek(-60)')
-                    xbmc.executeJSONRPC(
-                        '{"jsonrpc":"2.0","method":"Player.Seek","params":{"playerid":1,"value":{"seconds":0}},"id":1}')
+                    xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Player.Seek","params":{"playerid":1,"value":{"seconds":0}},"id":1}')
 
         # let's check if the only file in player has started
         while not player.started_playing:
@@ -553,6 +642,8 @@ class Player(xbmc.Player):
         self._s_running = True
         self._u: Thread = None  # update thread
         self._u_running = True
+        self._n: Thread = None  # user_settings thread
+        self._n_running = True
         self._details = None
         self.Playlist = None
         self.PlaybackStatus = PlaybackStatus.STOPPED
@@ -562,6 +653,7 @@ class Player(xbmc.Player):
         self.is_movie = None
         self.file_id = 0
         self.ep_id = 0
+        self.s_id = 0
         # we will store duration and time in kodi format here, so that calls to the player will match
         self.duration = 0
         self.time = 0
@@ -572,22 +664,99 @@ class Player(xbmc.Player):
         self.party_mode = False
         self.started_playing = False
         self.CanControl = True
+        self.user_setting_loaded = False
+        self.user_speed = 1.0
+        self.user_audio_index = None
+        self.user_sub = None
+        self.user_sub_index = None
+        self.shoko_offset_update_allow = True
 
     def reset(self):
         debug('Player reset')
         self.__init__()
 
-    def feed(self, file_id, ep_id, duration, path, scrobble):
-        debug('Player feed - file_id=%s ep_id=%s duration=%s path=%s scrobble=%s' % (file_id, ep_id, duration, path, scrobble))
+    def feed(self, file_id, ep_id, s_id, duration, path, scrobble):
+        debug('Player feed - file_id=%s ep_id=%s s_id=%s duration=%s path=%s scrobble=%s' % (file_id, ep_id, s_id, duration, path, scrobble))
         self.file_id = file_id
         self.ep_id = ep_id
+        self.s_id = s_id
         self.duration = duration
         self.path = path
         self.scrobble = scrobble
 
+    def update_user_setting(self):
+        if self.user_setting_loaded:
+            try:
+                if not self.isExternalPlayer() and self.isPlayingVideo():
+                    _s = get_player_info()
+                    debug('update_user_setting(): ' + str(_s))
+                    if _s is not None:
+                        audio, is_sub, sub, speed = _s
+                        self.user_speed = speed
+                        self.user_audio_index = audio
+                        self.user_sub = is_sub
+                        self.user_sub_index = sub
+                        set_user_settings(self.s_id, self.user_audio_index, self.user_sub, self.user_sub_index, self.user_speed)
+            except Exception as e:
+                debug('issue in update_user_setting(): ' + str(e))
+        else:
+            debug('update_user_setting() not triggered because not self.user_setting_loaded')
+            
+    def pass_user_setting_to_player(self, audio, is_sub, sub, speed):
+        try:
+            # _data = json.loads(xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0","method": "Player.GetProperties","params":{"playerid": 1,"properties": ["currentsubtitle", "currentaudiostream", "speed", "subtitleenabled"]},"id": 1})))
+            # debug(str(_data))
+            # speed is fast-fowarding but I dont judge; You need to enable Sync_playback_to_display to being able to speed up until 1.5
+            # tempo is what we need but kodi dont allow to access it, we need to intercept keymapping and inject counter etc.... 
+            # 
+            debug(f'user_setting: SetSpeed {speed}')
+            _a1 = xbmc.executeJSONRPC(json.dumps({"jsonrpc":"2.0","id":1,"method":"Player.SetSpeed","params":{"playerid": 1, "speed": int(speed)}}))
+            # TODO setting works, reading does not, I dont want custom windows to set speed
+            # _a11 = xbmc.executeJSONRPC(json.dumps({"jsonrpc":"2.0","id":1,"method":"Player.SetTempo","params":{"playerid": 1, "tempo": 1.2}}))  
+            debug('JSON-RPC: speed: ' + str(_a1))
+            # debug('JSON-RPC: tempo: ' + str(_a11))
+            debug(f'user_setting: SetAudioStream {audio}')
+            # _a2 = xbmc.executeJSONRPC(json.dumps({"jsonrpc":"2.0","id":1,"method":"Player.SetAudioStream","params":{"playerid": 1, "stream": int(audio)}}))
+            self.setAudioStream(int(audio))
+            debug(f'user_setting: SetSubtitle {sub}')
+            if str(is_sub).lower() == "true":
+                # enabling subtitles via JSON-RPC add 10second delay before they are shown, to fix it you have to Seek, which is not fun for multi episode night
+                #_a3 = xbmc.executeJSONRPC(json.dumps({"jsonrpc":"2.0","id":1,"method":"Player.SetSubtitle","params":{"playerid": 1, "subtitle": int(sub), "enable": True}}))
+                debug('enable subs')
+                self.setSubtitleStream(int(sub))
+                self.showSubtitles(True)
+            else:
+                #_a3 = xbmc.executeJSONRPC(json.dumps({"jsonrpc":"2.0","id":1,"method":"Player.SetSubtitle","params":{"playerid": 1, "subtitle": "off", "enable": False}}))
+                debug('disable subs')
+                self.showSubtitles(False)
+            
+            # debug('JSON-RPC: audio: ' + str(_a2))
+            # debug('JSON-RPC: subtitle: ' + str(_a3))
+        except Exception as E:
+            debug('issue in pass_user_setting_to_player: ' + str(E))
+
     def onAVStarted(self):
         # Will be called when Kodi has a video or audiostream, before playing file
+        # this is good place for user_settings, this is trigger just after loading audio/video stream to player, and is trigger once (please test it)
         debug('onAVStarted')
+        debug('Series:' + str(self.s_id) + ' Episode:' + str(self.ep_id) + ' File:' + str(self.file_id))
+        
+        debug('Access user audio/sub settings for this series')
+        _settings = get_user_settings(self.s_id)
+        debug('USER_SETTING: ' + str(_settings))
+        #self.user_setting_loaded = True
+        if _settings is not None:
+            audio, is_sub, sub, speed = _settings
+            self.user_speed = speed
+            self.user_audio_index = audio
+            self.user_sub = is_sub
+            self.user_sub_index = sub
+            self.pass_user_setting_to_player(self.user_audio_index, self.user_sub, self.user_sub_index, self.user_speed)
+            xbmc.sleep(1000)
+            self.user_setting_loaded = True
+        else:
+            # if missing use default ones
+            self.update_user_setting()
 
         # isExternalPlayer() ONLY works when isPlaying(), other than that it throw 0 always
         # setting it before results in false setting
@@ -599,18 +768,19 @@ class Player(xbmc.Player):
             #eh.exception(ErrorPriority.HIGH)
             pass
         #spam(self)
-
+        
         #if kodi_proxy.external_player(self):
         #    log('Using External Player')
         #    self.is_external = True
 
     def onAVChange(self):
-        # Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes.
+        # Will be called when Kodi has a video, audio or subtitle stream. Also happens when the stream changes. - naka - which is also change of audio stream, but not sub stream
+        # also this is trigger few times just before playing file (on loading audio stream, then on loading video stream)
         debug('onAVChange')
-        pass
+        # self.update_user_setting() # overwrite setting while setting player with user settings
 
     def onPlayBackStarted(self):
-        debug('Playback Started')
+        debug('onPlayBackStarted')
         self.started_playing = True
         try:
             if plugin_addon.getSetting('enableEigakan') == 'true':
@@ -637,7 +807,7 @@ class Player(xbmc.Player):
             pass
 
     def onPlayBackResumed(self):
-        debug('Playback Resumed')
+        debug('onPlayBackResumed')
         self.PlaybackStatus = PlaybackStatus.PLAYING
         try:
             self.start_loops()
@@ -674,6 +844,16 @@ class Player(xbmc.Player):
         self._u = Thread(target=self.tick_loop_update_time, args=())
         self._u.daemon = True
         self._u.start()
+        
+        try:
+            self.kill_tick_loop_user()
+        except:
+            pass
+        self._n_running = True
+        self._n = Thread(target=self.tick_loop_user, args=())
+        self._n.daemon = True
+        self._n.start()
+        
         debug('===== [ naka-player ] ===== end start_loops')
 
     def onPlayBackStopped(self):
@@ -691,6 +871,8 @@ class Player(xbmc.Player):
         self.PlaybackStatus = PlaybackStatus.ENDED
 
     def onPlayBackPaused(self):
+        debug('onPlayBackPaused')
+        self.update_user_setting()
         self.PlaybackStatus = PlaybackStatus.PAUSED
         self.scrobble_time()
 
@@ -724,13 +906,15 @@ class Player(xbmc.Player):
         if not self.scrobble:
             return
         while self._t_running:
+            if not self._t_running:
+                break
             if self.PlaybackStatus == PlaybackStatus.PLAYING and self.isPlayingVideo():
                 try:
                     scrobble_trakt(self.ep_id, 1, self.time, self.duration, self.is_movie)
                 except:
                     pass
-                for x in range(0, 100):
-                    xbmc.sleep(100)
+                for x in range(0, 10):
+                    xbmc.sleep(1000)
                     if self._t_running:
                         break
         debug('===== [ naka-player ] ===== KILLED: tick_loop_trakt')
@@ -742,16 +926,25 @@ class Player(xbmc.Player):
         if not self.scrobble:
             return
         while self._s_running:
+            if not self._s_running:
+                break
             if self.PlaybackStatus == PlaybackStatus.PLAYING and self.isPlayingVideo():
                 try:
-                    if plugin_addon.getSettingBool('file_resume') and self.time > 10:
+                    if plugin_addon.getSettingBool('file_resume') and self.time > 10 and self.shoko_offset_update_allow:
+                        self.shoko_offset_update_allow = False
                         x = API.file_offset({"id": self.file_id, "offset": int(self.time)})
+                        xbmc.sleep(1000) # wait 3 seconds, because with higher Tempo we hit this more often
+                        self.shoko_offset_update_allow = True
+                        if if_debug():
+                            # 5 years and kodi did not fix the issue, leaving this to easy check for fix
+                            debug(str(xbmc.executeJSONRPC('{"jsonrpc":"2.0","id":6,"method":"Player.GetItem","params":{"playerid":1,"properties":["dynpath","showtitle","title","episode","season","uniqueid","playcount","lastplayed","userrating","tvshowid","file","mediapath"]}}')))
                 except:
-                    pass
-                for x in range(0, 10):
-                    xbmc.sleep(1000)
-                    if not self._s_running:
-                        break
+                    self.shoko_offset_update_allow = True
+                    
+            for x in range(10):
+                xbmc.sleep(1000)
+                if not self._s_running:
+                    break
         debug('===== [ naka-player ] ===== KILLED: tick_loop_shoko')
 
     def kill_tick_loop_update_time(self):
@@ -759,6 +952,9 @@ class Player(xbmc.Player):
 
     def tick_loop_update_time(self):
         while self._u_running:
+            if not self._u_running:
+                break
+                
             if self.PlaybackStatus == PlaybackStatus.PLAYING and self.isPlayingVideo():
                 try:
                     # Leia seems to have a bug where calling self.getTotalTime() fails at times
@@ -766,15 +962,40 @@ class Player(xbmc.Player):
                     self.set_duration()
                     if not self.is_external:
                         self.time = self.getTime()
+                        if self.time is None:
+                            debug('[ naka-player-external time is None ]')
+                        else:
+                            debug('[ naka-player-external ] time = ' + str(self.time))
                     else:
-                        self.time += 1
+                        self.time += 5
+                        debug('[ naka-player-external +5] time = ' + str(self.time))
                 except:
-                    pass  # while buffering
-                for x in range(0, 25):
-                    xbmc.sleep(100)
-                    if self._u_running:
-                        break
+                    pass  # while buffering/loading getTime() will raise error
+
+            for _ in range(5):
+                xbmc.sleep(1000)
+                if not self._u_running:
+                    break
         debug('===== [ naka-player ] ===== KILLED: tick_loop_update_time')
+        
+    def kill_tick_loop_user(self):
+        self._n_running = False
+
+    def tick_loop_user(self):
+        while self._n_running:
+            if not self._n_running:
+                break
+            try:
+                # try to update current used settings as user settings # once 60 second
+                self.update_user_setting()
+            except:
+                pass
+
+            for x in range(0, 60):
+                xbmc.sleep(1000)
+                if not self._n_running:
+                    break
+        debug('===== [ naka-player ] ===== KILLED: tick_loop_user')
 
     def handle_finished_episode(self):
         self.Playlist = None
@@ -787,9 +1008,37 @@ class Player(xbmc.Player):
             pass
 
         self.is_finished = finished_episode(self.ep_id, self.file_id, self.time, self.duration)
-        self.kill_tick_loop_trakt()
-        self.kill_tick_loop_shoko()
-        self.kill_tick_loop_update_time()
-        self._t.join()
-        self._s.join()
-        self._u.join()
+        
+        self._t_running = False
+        self._s_running = False
+        self._u_running = False
+        self._n_running = False
+        # self.kill_tick_loop_trakt()
+        # self.kill_tick_loop_shoko()
+        # self.kill_tick_loop_update_time()
+        # self.kill_tick_loop_user()
+        
+        def stop_thread(thread, thread_name=""):
+            if thread and thread.is_alive():
+                debug(f"Stopping {thread_name} thread...")
+                thread.join(timeout=5.0)  # Wait up to 5 seconds for clean shutdown
+                if thread.is_alive():
+                    debug(f"Warning: {thread_name} thread did not stop gracefully")
+        
+        stop_thread(self._t, "Trakt")
+        stop_thread(self._s, "Shoko")
+        stop_thread(self._u, "Update Time")
+        stop_thread(self._n, "User Settings")        
+        
+        self._t = None
+        self._s = None
+        self._u = None
+        self._n = None
+        # self._t.join()
+        # self._s.join()
+        # self._u.join()
+        # self._n.join()
+        # self._t.stop()
+        # self._s.stop()
+        # self._u.stop()
+        # self._n.stop()

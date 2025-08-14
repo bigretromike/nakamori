@@ -1,3 +1,4 @@
+*.py text eol=lf
 /.idea/inspectionProfiles
 /.idea
 *.pyc

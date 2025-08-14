@@ -73,3 +73,8 @@ def move_to(position: int = 0):
 def debug(text: str):
     if plugin_addon.getSettingBool("debug_log"):
         xbmc.log(f'== [NAKA_DEBUG] == {text}', xbmc.LOGINFO)
+
+def if_debug():
+    if plugin_addon.getSettingBool("debug_log"):
+        return True
+    return False
